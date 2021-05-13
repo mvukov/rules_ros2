@@ -27,5 +27,14 @@ def ros2_repositories():
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcutils.BUILD.bazel",
         sha256 = "ce4e0148c4d759ce93fda96d36e0009ef2f2974b3ca0a67e022ce8cc078cd43f",
         strip_prefix = "rcutils-1.1.3",
-        urls = ["https://github.com/ros2/rcutils/archive/refs/tags/1.1.3.tar.gz"],
+        urls = ["https://github.com/ros2/rcutils/archive/1.1.3.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "ros2_rosidl",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel",
+        sha256 = "d839ccfa148ca27686759921300d67b88366d5fc320c3c8b483c04362bd89a2c",
+        strip_prefix = "rosidl-1.2.1",
+        urls = ["https://github.com/ros2/rosidl/archive/1.2.1.tar.gz"],
     )

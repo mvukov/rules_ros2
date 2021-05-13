@@ -1,0 +1,21 @@
+""" Builds rosidl.
+"""
+
+cc_library(
+    name = "rosidl_typesupport_interface",
+    hdrs = glob(["rosidl_typesupport_interface/include/**/*.h"]),
+    includes = ["rosidl_typesupport_interface/include"],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "rosidl_runtime_c",
+    hdrs = glob(["rosidl_runtime_c/include/**/*.h"]),
+    includes = ["rosidl_runtime_c/include"],
+    srcs = glob(["rosidl_runtime_c/src/*.c"]),
+    deps = [
+        ":rosidl_typesupport_interface",
+        "@ros2_rcutils//:rcutils",
+    ],
+    visibility = ["//visibility:public"],
+)
