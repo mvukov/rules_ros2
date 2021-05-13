@@ -1,0 +1,4 @@
+build:opt -c opt
+build:opt --copt=-O3
+
+test --test_output=errors

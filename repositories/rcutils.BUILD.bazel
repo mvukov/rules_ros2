@@ -1,0 +1,71 @@
+""" Builds rcutils.
+"""
+
+load(
+    "@com_github_mvukov_rules_ros2//repositories:generate_logging_macros.bzl",
+    "logging_macros",
+)
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+
+_GENERATE_LOGGING_MACROS_PY = "@com_github_mvukov_rules_ros2//repositories:generate_logging_macros.py"
+
+py_binary(
+    name = "generate_logging_macros",
+    srcs = [
+        "rcutils/logging.py",
+        _GENERATE_LOGGING_MACROS_PY,
+    ],
+    main = _GENERATE_LOGGING_MACROS_PY,
+    deps = [requirement("empy")],
+    visibility = ["//visibility:public"],
+)
+
+logging_macros(
+    name = "logging_macros",
+    output = "include/rcutils/logging_macros.h",
+    template = "resource/logging_macros.h.em",
+)
+
+cc_library(
+    name = "rcutils",
+    hdrs = glob(["include/**/*.h"]) + [":logging_macros"],
+    includes = ["include"],
+    local_defines = select({
+        "@platforms//os:linux": ["_GNU_SOURCE"],
+        "//conditions:default": [],
+    }),
+    srcs = [
+        "src/allocator.c",
+        "src/array_list.c",
+        "src/char_array.c",
+        "src/cmdline_parser.c",
+        "src/common.h",
+        "src/env.c",
+        "src/error_handling.c",
+        "src/error_handling_helpers.h",
+        "src/filesystem.c",
+        "src/find.c",
+        "src/format_string.c",
+        "src/get_env.c",
+        "src/hash_map.c",
+        "src/logging.c",
+        "src/process.c",
+        "src/qsort.c",
+        "src/repl_str.c",
+        "src/shared_library.c",
+        "src/snprintf.c",
+        "src/split.c",
+        "src/strdup.c",
+        "src/strerror.c",
+        "src/string_array.c",
+        "src/string_map.c",
+        "src/testing/fault_injection.c",
+        "src/time.c",
+        "src/uint8_array.c",
+    ] + select({
+        "@platforms//os:linux": ["src/time_unix.c"],
+        "@platforms//os:macos": ["src/time_unix.c"],
+        "@platforms//os:windows": ["src/time_win32.c"],
+    }),
+    visibility = ["//visibility:public"],
+)

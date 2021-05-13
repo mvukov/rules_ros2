@@ -1,0 +1,6 @@
+exports_files([
+    "deps.bzl",
+    "generate_logging_macros.bzl",
+    "generate_logging_macros.py",
+    "repositories.bzl",
+])
