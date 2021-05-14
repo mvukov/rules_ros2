@@ -1,0 +1,39 @@
+""" Builds libyaml.
+"""
+
+load(
+    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "expand_template",
+)
+
+expand_template(
+    name = "config_h",
+    template = "cmake/config.h.in",
+    out = "include/config.h",
+    substitutions = {
+        "@YAML_VERSION_MAJOR@": "0",
+        "@YAML_VERSION_MINOR@": "2",
+        "@YAML_VERSION_PATCH@": "5",
+        "@YAML_VERSION_STRING@": "0.2.5",
+    },
+)
+
+cc_library(
+    name = "yaml",
+    hdrs = ["include/yaml.h"],
+    includes = ["include"],
+    srcs = [
+        "src/api.c",
+        "src/dumper.c",
+        "src/emitter.c",
+        "src/loader.c",
+        "src/parser.c",
+        "src/reader.c",
+        "src/scanner.c",
+        "src/writer.c",
+        "src/yaml_private.h",
+    ] + [":config_h"],
+    copts = ["-w"],
+    local_defines = ["HAVE_CONFIG_H"],
+    visibility = ["//visibility:public"],
+)

@@ -94,3 +94,21 @@ def ros2_repositories():
         strip_prefix = "rcl_logging-1.1.0",
         urls = ["https://github.com/ros2/rcl_logging/archive/1.1.0.tar.gz"],
     )
+
+    maybe(
+        http_archive,
+        name = "libyaml",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:libyaml.BUILD.bazel",
+        sha256 = "2c103fc473e904c6fe7580277f1fa16b6d716e54d5e3f32a8913c4850ae03b3f",
+        strip_prefix = "libyaml-acd6f6f014c25e46363e718381e0b35205df2d83",
+        urls = ["https://github.com/yaml/libyaml/archive/acd6f6f014c25e46363e718381e0b35205df2d83.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "ros2_rcl",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rcl.BUILD.bazel",
+        sha256 = "f56b714081c866af2e83133841fabc301f3c91190d1abd3ec2a2835712886080",
+        strip_prefix = "rcl-1.1.11",
+        urls = ["https://github.com/ros2/rcl/archive/1.1.11.tar.gz"],
+    )

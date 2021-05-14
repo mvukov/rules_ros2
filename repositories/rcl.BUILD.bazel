@@ -1,0 +1,17 @@
+""" Builds rcl.
+"""
+
+cc_library(
+    name = "rcl_yaml_param_parser",
+    hdrs = glob(["rcl_yaml_param_parser/include/**/*.h"]),
+    includes = ["rcl_yaml_param_parser/include"],
+    srcs = glob([
+        "rcl_yaml_param_parser/src/*.c",
+        "rcl_yaml_param_parser/src/impl/*.h",
+    ]),
+    deps = [
+        "@libyaml//:yaml",
+        "@ros2_rcutils//:rcutils",
+    ],
+    visibility = ["//visibility:public"],
+)
