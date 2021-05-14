@@ -112,3 +112,12 @@ def ros2_repositories():
         strip_prefix = "rcl-1.1.11",
         urls = ["https://github.com/ros2/rcl/archive/1.1.11.tar.gz"],
     )
+
+    maybe(
+        http_archive,
+        name = "ros2_tracing",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:ros2_tracing.BUILD.bazel",
+        sha256 = "e8ff2628f24a2e31b8c884780898c074841a9c0dc92f7d00e079eb2cd0ba6d6d",
+        strip_prefix = "ros2_tracing-6535577457eb8fb8ec23373b0829590b27ff50c0",
+        urls = ["https://gitlab.com/ros-tracing/ros2_tracing/-/archive/6535577457eb8fb8ec23373b0829590b27ff50c0.tar.gz"],
+    )

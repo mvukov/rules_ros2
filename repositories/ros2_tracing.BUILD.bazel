@@ -1,0 +1,32 @@
+""" Builds ros2_tracing.
+"""
+
+load(
+    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "expand_template",
+)
+
+expand_template(
+    name = "config_h",
+    template = "tracetools/include/tracetools/config.h.in",
+    out = "tracetools/include/tracetools/config.h",
+    substitutions = {
+        "#cmakedefine TRACETOOLS_DISABLED": "/* #cmakedefine TRACETOOLS_DISABLED */",
+        "#cmakedefine TRACETOOLS_LTTNG_ENABLED": "/* #cmakedefine TRACETOOLS_LTTNG_ENABLED */",
+    },
+)
+
+cc_library(
+    name = "tracetools",
+    hdrs = [
+        "tracetools/include/tracetools/tracetools.h",
+        "tracetools/include/tracetools/utils.hpp",
+        "tracetools/include/tracetools/visibility_control.hpp",
+    ] + [":config_h"],
+    includes = ["tracetools/include/"],
+    srcs = [
+        "tracetools/src/tracetools.c",
+        "tracetools/src/utils.cpp",
+    ],
+    visibility = ["//visibility:public"],
+)
