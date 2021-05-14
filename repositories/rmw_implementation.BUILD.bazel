@@ -1,0 +1,17 @@
+""" Builds rmw_implementation.
+"""
+
+cc_library(
+    name = "rmw_implementation",
+    srcs = [
+        "rmw_implementation/src/functions.cpp",
+        "rmw_implementation/src/functions.hpp",
+        "rmw_implementation/src/visibility_control.h",
+    ],
+    deps = [
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rcutils//:rcutils",
+        "@ros2_rmw//:rmw",
+    ],
+    visibility = ["//visibility:public"],
+)

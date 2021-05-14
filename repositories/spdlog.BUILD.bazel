@@ -1,0 +1,19 @@
+""" Builds spdlog.
+"""
+
+cc_library(
+    name = "spdlog",
+    srcs = glob(["src/**/*.cpp"], exclude = ["src/fmt.cpp"]) + ["include/spdlog/fmt/fmt.h"],
+    hdrs = glob(["include/**/*.h"], exclude = ["include/spdlog/fmt/*.h"]),
+    includes = ["include"],
+    copts = ["-w"],
+    linkopts = ["-lpthread"],
+    defines = [
+        "SPDLOG_COMPILED_LIB",
+        "SPDLOG_FMT_EXTERNAL",
+    ],
+    deps = [
+        "@fmt//:fmt",
+    ],
+    visibility = ["//visibility:public"],
+)
