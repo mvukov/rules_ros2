@@ -23,7 +23,6 @@ cc_library(
     visibility = ["//visibility:public"],
 )
 
-
 py_library(
     name = "rosidl_adapter_lib",
     srcs = [

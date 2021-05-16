@@ -3,8 +3,8 @@
 
 load(
     "@com_github_mvukov_rules_ros2//ros2:rosidl.bzl",
-    "ros_idl_library",
     "c_ros_idl_library",
+    "ros_idl_library",
 )
 
 ros_idl_library(
@@ -23,9 +23,11 @@ ros_idl_library(
 c_ros_idl_library(
     name = "c_builtin_interfaces",
     deps = [":builtin_interfaces"],
+    visibility = ["//visibility:public"],
 )
 
 c_ros_idl_library(
     name = "c_rcl_interfaces",
     deps = [":rcl_interfaces"],
+    visibility = ["//visibility:public"],
 )

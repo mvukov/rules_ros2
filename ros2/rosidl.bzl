@@ -73,9 +73,9 @@ def to_snake_case(not_snake_case):
         item = not_snake_case[i]
         if i < len(not_snake_case) - 1:
             next_char_will_be_underscored = (
-                not_snake_case[i+1] == "_" or
-                not_snake_case[i+1] == " " or
-                not_snake_case[i+1].isupper()
+                not_snake_case[i + 1] == "_" or
+                not_snake_case[i + 1] == " " or
+                not_snake_case[i + 1].isupper()
             )
         if (item == " " or item == "_") and next_char_will_be_underscored:
             continue
@@ -104,15 +104,17 @@ def _c_generator_aspect_impl(target, ctx):
 
     adapter_arguments = struct(
         package_name = target_name,
-        non_idl_tuples = [":{}".format(src.path) for src in srcs]
+        non_idl_tuples = [":{}".format(src.path) for src in srcs],
     )
 
-    relative_dir = '{}'.format(target_name)
+    relative_dir = "{}".format(target_name)
     adapter_arguments_file = ctx.actions.declare_file(
-        "{}/rosidl_adapter_args.json".format(relative_dir))
+        "{}/rosidl_adapter_args.json".format(relative_dir),
+    )
     ctx.actions.write(adapter_arguments_file, adapter_arguments.to_json())
     adapter_map = ctx.actions.declare_file(
-        "{}/rosidl_adapter_map.idls".format(relative_dir))
+        "{}/rosidl_adapter_map.idls".format(relative_dir),
+    )
     output_dir = adapter_map.dirname
 
     idl_files = []
@@ -120,14 +122,17 @@ def _c_generator_aspect_impl(target, ctx):
         extension = src.extension
         stem = src.basename[:-len(extension) - 1]
         idl_files.append(ctx.actions.declare_file(
-            "{}/{}/{}.idl".format(relative_dir, extension, stem)))
+            "{}/{}/{}.idl".format(relative_dir, extension, stem),
+        ))
 
     adapter_cmd_args = ctx.actions.args()
-    adapter_cmd_args.add(package_name, format="--package-name=%s")
+    adapter_cmd_args.add(package_name, format = "--package-name=%s")
     adapter_cmd_args.add(
-        adapter_arguments_file.path, format="--arguments-file=%s")
-    adapter_cmd_args.add(output_dir, format="--output-dir=%s")
-    adapter_cmd_args.add(adapter_map.path, format="--output-file=%s")
+        adapter_arguments_file.path,
+        format = "--arguments-file=%s",
+    )
+    adapter_cmd_args.add(output_dir, format = "--output-dir=%s")
+    adapter_cmd_args.add(adapter_map.path, format = "--output-file=%s")
 
     ctx.actions.run(
         inputs = srcs + [adapter_arguments_file],
@@ -141,7 +146,8 @@ def _c_generator_aspect_impl(target, ctx):
         extension = src.extension
         stem = src.basename[:-len(extension) - 1]
         generator_idl_tuples.append(
-            "{}:{}/{}.idl".format(output_dir, extension, stem))
+            "{}:{}/{}.idl".format(output_dir, extension, stem),
+        )
 
     templates = ctx.attr._templates[DefaultInfo].files.to_list()
     template_dir = templates[0].dirname
@@ -155,12 +161,15 @@ def _c_generator_aspect_impl(target, ctx):
         target_dependencies = [],
     )
     generator_arguments_file = ctx.actions.declare_file(
-        "{}/rosidl_generator_c_args.json".format(relative_dir))
+        "{}/rosidl_generator_c_args.json".format(relative_dir),
+    )
     ctx.actions.write(generator_arguments_file, generator_arguments.to_json())
 
     generator_cmd_args = ctx.actions.args()
     generator_cmd_args.add(
-        generator_arguments_file.path, format="--generator-arguments-file=%s")
+        generator_arguments_file.path,
+        format = "--generator-arguments-file=%s",
+    )
 
     generator_outputs = []
     for src in srcs:
@@ -169,7 +178,8 @@ def _c_generator_aspect_impl(target, ctx):
         snake_case_stem = to_snake_case(stem)
         for t in _C_GENERATOR_OUTPUT_TEMPLATES:
             generator_outputs.append(ctx.actions.declare_file(
-                "{}/{}/{}".format(relative_dir, extension, t % snake_case_stem)))
+                "{}/{}/{}".format(relative_dir, extension, t % snake_case_stem),
+            ))
 
     ctx.actions.run(
         inputs = idl_files + templates + [generator_arguments_file],
@@ -179,7 +189,8 @@ def _c_generator_aspect_impl(target, ctx):
     )
 
     visibility_control_h = ctx.actions.declare_file(
-        "{}/msg/rosidl_generator_c__visibility_control.h".format(relative_dir))
+        "{}/msg/rosidl_generator_c__visibility_control.h".format(relative_dir),
+    )
     ctx.actions.expand_template(
         template = _get_visibility_control_template(templates),
         output = visibility_control_h,
@@ -198,7 +209,7 @@ def _c_generator_aspect_impl(target, ctx):
         RosIdlCGeneratorAspectInfo(
             idl_files = idl_files,
             c_files = c_files,
-        )
+        ),
     ]
 
 c_generator_aspect = aspect(
@@ -218,7 +229,7 @@ c_generator_aspect = aspect(
         "_templates": attr.label(
             default = Label("@ros2_rosidl//:rosidl_generator_c_templates"),
         ),
-    }
+    },
 )
 
 def _c_ros_idl_compile_impl(ctx):
@@ -228,7 +239,7 @@ def _c_ros_idl_compile_impl(ctx):
             for dep in ctx.attr.deps
         ],
     )
-    return [DefaultInfo(files=files)]
+    return [DefaultInfo(files = files)]
 
 c_ros_idl_compile = rule(
     attrs = {

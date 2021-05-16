@@ -15,3 +15,21 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
 )
+
+cc_library(
+    name = "rcl",
+    hdrs = glob(["rcl/include/**/*.h"]),
+    includes = ["rcl/include"],
+    srcs = glob(["rcl/src/rcl/*.c", "rcl/src/rcl/*.h"]),
+    local_defines = ["ROS_PACKAGE_NAME=\\\"rcl\\\""],
+    deps = [
+        ":rcl_yaml_param_parser",
+        "@ros2_rcl_interfaces//:c_rcl_interfaces",
+        "@ros2_rcl_logging//:rcl_logging_spdlog",
+        "@ros2_rcutils//:rcutils",
+        "@ros2_rmw_implementation//:rmw_implementation",
+        "@ros2_rosidl//:rosidl_runtime_c",
+        "@ros2_tracing//:tracetools",
+    ],
+    visibility = ["//visibility:public"],
+)
