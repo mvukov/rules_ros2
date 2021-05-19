@@ -33,12 +33,13 @@ def ros2_repositories():
     )
 
     maybe(
-        http_archive,
+        native.new_local_repository,
         name = "ros2_rosidl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel",
-        sha256 = "d839ccfa148ca27686759921300d67b88366d5fc320c3c8b483c04362bd89a2c",
-        strip_prefix = "rosidl-1.2.1",
-        urls = ["https://github.com/ros2/rosidl/archive/1.2.1.tar.gz"],
+        path = "../ros2_foxy/src/ros2/rosidl",
+        # sha256 = "d839ccfa148ca27686759921300d67b88366d5fc320c3c8b483c04362bd89a2c",
+        # strip_prefix = "rosidl-1.2.1",
+        # urls = ["https://github.com/ros2/rosidl/archive/1.2.1.tar.gz"],
     )
 
     maybe(
@@ -121,3 +122,13 @@ def ros2_repositories():
         strip_prefix = "ros2_tracing-6535577457eb8fb8ec23373b0829590b27ff50c0",
         urls = ["https://gitlab.com/ros-tracing/ros2_tracing/-/archive/6535577457eb8fb8ec23373b0829590b27ff50c0.tar.gz"],
     )
+
+    maybe(
+        http_archive,
+        name = "ros2_rcl_interfaces",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rcl_interfaces.BUILD.bazel",
+        sha256 = "0579862f4031dbefccec61a012f7e559f3c3a08cfc2ed0e1c72015eff47b7be6",
+        strip_prefix = "rcl_interfaces-ee04e046132be9d9fdcdaeff8dd54a5d0d9aa022",
+        urls = ["https://github.com/ros2/rcl_interfaces/archive/ee04e046132be9d9fdcdaeff8dd54a5d0d9aa022.tar.gz"],
+    )
+

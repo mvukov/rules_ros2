@@ -7,3 +7,6 @@
 empy==3.3.4 \
     --hash=sha256:73ac49785b601479df4ea18a7c79bc1304a8a7c34c02b9472cf1206ae88f01b3
     # via -r requirements.txt
+lark-parser==0.11.3 \
+    --hash=sha256:e29ca814a98bb0f81674617d878e5f611cb993c19ea47f22c80da3569425f9bd
+    # via -r requirements.txt

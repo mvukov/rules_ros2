@@ -1,0 +1,6 @@
+""" ROS2 common definitions.
+"""
+
+exports_files([
+    "rosidl.bzl",
+])
