@@ -52,12 +52,13 @@ def ros2_repositories():
     )
 
     maybe(
-        http_archive,
+        native.new_local_repository,
         name = "ros2_rcpputils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel",
-        sha256 = "20b9863c516a48b20ff0dadd02bf17a3d1c42c3c47b07f78e118cf9c3cd000c9",
-        strip_prefix = "rcpputils-1.3.1",
-        urls = ["https://github.com/ros2/rcpputils/archive/1.3.1.tar.gz"],
+        path = "../ros2_foxy/src/ros2/rcpputils",
+        # sha256 = "20b9863c516a48b20ff0dadd02bf17a3d1c42c3c47b07f78e118cf9c3cd000c9",
+        # strip_prefix = "rcpputils-1.3.1",
+        # urls = ["https://github.com/ros2/rcpputils/archive/1.3.1.tar.gz"],
     )
 
     maybe(
@@ -130,4 +131,41 @@ def ros2_repositories():
         sha256 = "0579862f4031dbefccec61a012f7e559f3c3a08cfc2ed0e1c72015eff47b7be6",
         strip_prefix = "rcl_interfaces-ee04e046132be9d9fdcdaeff8dd54a5d0d9aa022",
         urls = ["https://github.com/ros2/rcl_interfaces/archive/ee04e046132be9d9fdcdaeff8dd54a5d0d9aa022.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "ros2_rclcpp",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel",
+        sha256 = "b231f234342abb7f7b749ff769257535fbccb90fa0982bc4c3e476eaf403f465",
+        strip_prefix = "rclcpp-d12ed36e89fc3440acc82ef6563273de95d5a008",
+        urls = ["https://github.com/ros2/rclcpp/archive/d12ed36e89fc3440acc82ef6563273de95d5a008.tar.gz"],
+    )
+
+    maybe(
+        native.new_local_repository,
+        name = "ros2_rosidl_typesupport",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_typesupport.BUILD.bazel",
+        path = "../ros2_foxy/src/ros2/rosidl_typesupport",
+        # sha256 = "be72eb2113afa712286dc9e983d257174b544803af1e34f7d6338766cfeefd63",
+        # strip_prefix = "rosidl_typesupport-1.0.2",
+        # urls = ["https://github.com/ros2/rosidl_typesupport/archive/1.0.2.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "ros2_libstatistics_collector",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:libstatistics_collector.BUILD.bazel",
+        sha256 = "ff473044c51400cdd8ee73754e78723bc34401326e3fab257a70a031b3b56064",
+        strip_prefix = "libstatistics_collector-562e0dd9e388ef4309b4630f2fc731d949235465",
+        urls = ["https://github.com/ros-tooling/libstatistics_collector/archive/562e0dd9e388ef4309b4630f2fc731d949235465.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "ros2_common_interfaces",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:common_interfaces.BUILD.bazel",
+        sha256 = "cb190749506d0612fcee1a8712da49d1509899c75d91035f4da83469c0746a9d",
+        strip_prefix = "common_interfaces-2.0.4",
+        urls = ["https://github.com/ros2/common_interfaces/archive/2.0.4.tar.gz"],
     )

@@ -1,0 +1,5 @@
+BasedOnStyle: Google
+SortIncludes: true
+IncludeBlocks: Preserve
+DerivePointerAlignment: false
+PointerAlignment: Left

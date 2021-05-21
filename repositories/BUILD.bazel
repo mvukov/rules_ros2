@@ -2,5 +2,9 @@ exports_files([
     "deps.bzl",
     "generate_logging_macros.bzl",
     "generate_logging_macros.py",
+    "generate_rclcpp_interface_getter.py",
+    "generate_rclcpp_interface_traits.py",
+    "generate_rclcpp_logging_macros.py",
+    "rclcpp_interfaces.bzl",
     "repositories.bzl",
 ])

@@ -1,0 +1,11 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+cc_binary(
+    name = "talker",
+    srcs = ["talker.cc"],
+    copts = ["-std=c++14"],
+    deps = [
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)

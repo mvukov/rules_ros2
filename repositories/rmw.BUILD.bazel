@@ -12,3 +12,11 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
 )
+
+cc_library(
+    name = "rmw_cpp",
+    hdrs = glob(["rmw/include/**/*.hpp"]),
+    includes = ["rmw/include"],
+    deps = [":rmw"],
+    visibility = ["//visibility:public"],
+)

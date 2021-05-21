@@ -1,0 +1,16 @@
+""" Builds libstatistics_collector.
+"""
+
+cc_library(
+    name = "libstatistics_collector",
+    hdrs = glob(["include/**/*.hpp"]),
+    includes = ["include"],
+    srcs = glob(["src/**/*.cpp"]),
+    copts = ["-std=c++14"],
+    deps = [
+        "@ros2_rcl//:rcl",
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rcl_interfaces//:cpp_statistics_msgs",
+    ],
+    visibility = ["//visibility:public"],
+)

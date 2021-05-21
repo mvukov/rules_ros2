@@ -1,0 +1,21 @@
+""" Builds common_interfaces.
+"""
+
+load(
+    "@com_github_mvukov_rules_ros2//ros2:rosidl.bzl",
+    "cpp_ros_idl_library",
+    "ros_idl_library",
+)
+
+ros_idl_library(
+    name = "std_msgs",
+    srcs = glob(["std_msgs/msg/*.msg"]),
+    deps = ["@ros2_rcl_interfaces//:builtin_interfaces"],
+    visibility = ["//visibility:public"],
+)
+
+cpp_ros_idl_library(
+    name = "cpp_std_msgs",
+    deps = [":std_msgs"],
+    visibility = ["//visibility:public"],
+)
