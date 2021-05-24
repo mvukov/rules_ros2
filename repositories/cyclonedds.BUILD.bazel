@@ -34,12 +34,6 @@ expand_template(
     },
 )
 
-# WITH_LWIP: OFF
-# WITH_DNS: ON
-# WITH_FREERTOS: OFF
-
-# configure include/dds/version.h.in into
-
 genrule(
     name = "export_h",
     visibility = ["//visibility:private"],
@@ -216,6 +210,7 @@ cc_library(
 
 _DDSI_SRCS = [
     "ddsi_eth.c",
+    "ddsi_eth.h",  # Manually added!
     "ddsi_ssl.c",
     "ddsi_tcp.c",
     "ddsi_tran.c",
@@ -277,8 +272,6 @@ _DDSI_SRCS = [
     "sysdeps.c",
     # ENABLE_LIFESPAN
     "ddsi_lifespan.c",
-    # Manually added:
-    "ddsi_eth.h",
 ]
 
 _DDSI_PRIVATE_HDRS = [
@@ -443,12 +436,21 @@ cc_library(
         "src/core/ddsi/include",
         "src/core/ddsi/src",
     ],
+    defines = [
+        "DDSI_INCLUDE_NETWORK_PARTITIONS",
+        "DDSI_INCLUDE_SSM",
+        "DDSI_INCLUDE_LIFESPAN",
+        "DDSI_INCLUDE_DEADLINE_MISSED",
+    ],
     srcs = [
         "src/core/ddsi/src/{}".format(f)
         for f in _DDSI_SRCS
     ] + [
         "src/core/ddsi/include/dds/ddsi/{}".format(f)
         for f in _DDSI_PRIVATE_HDRS
+    ] + [
+        "src/core/ddsc/src/{}".format(f)
+        for f in _DDSC_SRCS
     ] + [
         "src/core/ddsc/src/{}".format(f)
         for f in _DDSC_PRIVATE_HDRS
