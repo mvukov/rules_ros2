@@ -178,3 +178,12 @@ def ros2_repositories():
         strip_prefix = "cyclonedds-457a07132d394e6461ca23a5c27ddaefbb8ab868",
         urls = ["https://github.com/eclipse-cyclonedds/cyclonedds/archive/457a07132d394e6461ca23a5c27ddaefbb8ab868.tar.gz"],
     )
+
+    maybe(
+        http_archive,
+        name = "ros2_rmw_dds_common",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_dds_common.BUILD.bazel",
+        sha256 = "34e46de0e2858af57d996b5d17fbfd76b58b1c37b64321d2c6bafaf4198d64db",
+        strip_prefix = "rmw_dds_common-1.0.3",
+        urls = ["https://github.com/ros2/rmw_dds_common/archive/1.0.3.tar.gz"],
+    )
