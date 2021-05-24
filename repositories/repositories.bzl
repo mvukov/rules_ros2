@@ -169,3 +169,12 @@ def ros2_repositories():
         strip_prefix = "common_interfaces-2.0.4",
         urls = ["https://github.com/ros2/common_interfaces/archive/2.0.4.tar.gz"],
     )
+
+    maybe(
+        http_archive,
+        name = "cyclonedds",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:cyclonedds.BUILD.bazel",
+        sha256 = "b4488c641f914e8c51827dc50151edc1ffd915a53ed0f61c25f74d249267627d",
+        strip_prefix = "cyclonedds-457a07132d394e6461ca23a5c27ddaefbb8ab868",
+        urls = ["https://github.com/eclipse-cyclonedds/cyclonedds/archive/457a07132d394e6461ca23a5c27ddaefbb8ab868.tar.gz"],
+    )
