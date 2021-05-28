@@ -62,12 +62,13 @@ def ros2_repositories():
     )
 
     maybe(
-        http_archive,
+        native.new_local_repository,
         name = "ros2_rmw_implementation",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel",
-        sha256 = "b56555fc55bb5897d82b3c5585ef6c70218ec14fb49faee5a9c5526d6fc1fec0",
-        strip_prefix = "rmw_implementation-1.0.2",
-        urls = ["https://github.com/ros2/rmw_implementation/archive/1.0.2.tar.gz"],
+        path = "../ros2_foxy/src/ros2/rmw_implementation",
+        # sha256 = "b56555fc55bb5897d82b3c5585ef6c70218ec14fb49faee5a9c5526d6fc1fec0",
+        # strip_prefix = "rmw_implementation-1.0.2",
+        # urls = ["https://github.com/ros2/rmw_implementation/archive/1.0.2.tar.gz"],
     )
 
     maybe(

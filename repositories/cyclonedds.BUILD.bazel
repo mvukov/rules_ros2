@@ -204,7 +204,11 @@ cc_library(
     ],
     srcs = _DDSRT_SRCS,
     linkopts = ["-lpthread"],
-    defines = ["DDSRT_WITH_DNS"],
+    defines = [
+        "DDSRT_WITH_DNS=1",
+        "DDSRT_WITH_FREERTOS=0",
+        "DDSRT_WITH_LWIP=0",
+    ],
     deps = [],
 )
 
@@ -441,6 +445,7 @@ cc_library(
         "DDSI_INCLUDE_SSM",
         "DDSI_INCLUDE_LIFESPAN",
         "DDSI_INCLUDE_DEADLINE_MISSED",
+        "ddsc_EXPORTS",
     ],
     srcs = [
         "src/core/ddsi/src/{}".format(f)

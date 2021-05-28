@@ -9,3 +9,13 @@ cc_binary(
         "@ros2_rclcpp//:rclcpp",
     ],
 )
+
+cc_binary(
+    name = "listener",
+    srcs = ["listener.cc"],
+    copts = ["-std=c++14"],
+    deps = [
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
