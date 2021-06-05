@@ -23,15 +23,10 @@ RosIdlInfo = provider("Provides info for IDL code generation.", fields = [
 ])
 
 def _ros_idl_library_impl(ctx):
-    package_name = ctx.attr.package_name
-    if not package_name:
-        package_name = ctx.label.name
-
     return [
         DefaultInfo(files = depset(ctx.files.srcs)),
         RosIdlInfo(
             info = struct(
-                package_name = package_name,
                 srcs = ctx.files.srcs,
             ),
             deps = depset(
@@ -48,7 +43,6 @@ ros_idl_library = rule(
             mandatory = True,
         ),
         "deps": attr.label_list(providers = [RosIdlInfo]),
-        "package_name": attr.string(),  # TODO(mvukov) Remove!
     },
     implementation = _ros_idl_library_impl,
 )
@@ -93,9 +87,9 @@ def to_snake_case(not_snake_case):
 def _get_stem(path):
     return path.basename[:-len(path.extension) - 1]
 
-def _run_adapter(ctx, target_name, package_name, relative_dir, srcs):
+def _run_adapter(ctx, package_name, relative_dir, srcs):
     adapter_arguments = struct(
-        package_name = target_name,
+        package_name = package_name,
         non_idl_tuples = [":{}".format(src.path) for src in srcs],
     )
 
@@ -138,29 +132,30 @@ def _run_adapter(ctx, target_name, package_name, relative_dir, srcs):
 
     return idl_files, idl_tuples, output_dir
 
-def _run_interface_generator(
+def _run_generator(
         ctx,
-        lang,
         srcs,
-        target_name,
         package_name,
         idl_files,
         idl_tuples,
         relative_dir,
         output_dir,
-        templates,
-        output_mapping):
-    template_dir = templates[0].dirname
+        generator,
+        generator_templates,
+        output_mapping,
+        visibility_control_template = None,
+        extra_generator_args = None):
+    generator_templates = generator_templates[DefaultInfo].files.to_list()
 
     generator_arguments = struct(
         package_name = package_name,
         idl_tuples = idl_tuples,
         output_dir = output_dir,
-        template_dir = template_dir,
-        target_dependencies = [],
+        template_dir = generator_templates[0].dirname,
+        target_dependencies = [],  # TODO(mvukov) Do we need this?
     )
     generator_arguments_file = ctx.actions.declare_file(
-        "{}/rosidl_interface_generator_{}_args.json".format(relative_dir, lang),
+        "{}/{}_args.json".format(relative_dir, generator.basename),
     )
     ctx.actions.write(generator_arguments_file, generator_arguments.to_json())
 
@@ -169,166 +164,46 @@ def _run_interface_generator(
         generator_arguments_file.path,
         format = "--generator-arguments-file=%s",
     )
+    if extra_generator_args:
+        for arg in extra_generator_args:
+            generator_cmd_args.add(arg)
 
     generator_outputs = {}
     for src in srcs:
         extension = src.extension
-        stem = src.basename[:-len(extension) - 1]
+        stem = _get_stem(src)
         snake_case_stem = to_snake_case(stem)
         for t in output_mapping:
-            relative_file = "{}/{}/{}".format(relative_dir, extension, t % snake_case_stem)
-            generator_outputs[relative_file] = ctx.actions.declare_file(relative_file)
+            relative_file = "{}/{}/{}".format(
+                relative_dir,
+                extension,
+                t % snake_case_stem,
+            )
+            generator_outputs[relative_file] = ctx.actions.declare_file(
+                relative_file,
+            )
 
     ctx.actions.run(
-        inputs = idl_files + templates + [generator_arguments_file],
+        inputs = idl_files + generator_templates + [generator_arguments_file],
         outputs = generator_outputs.values(),
-        executable = ctx.executable._interface_generator,
+        executable = generator,
         arguments = [generator_cmd_args],
     )
 
-    if lang == "c":
-        relative_file = "{}/msg/rosidl_generator_c__visibility_control.h".format(relative_dir)
-        visibility_control_h = ctx.actions.declare_file(relative_file)
-        generator_outputs[relative_file] = visibility_control_h
-        ctx.actions.expand_template(
-            template = ctx.file._interface_visibility_control_template,
-            output = visibility_control_h,
-            substitutions = {
-                "@PROJECT_NAME@": target_name,
-                "@PROJECT_NAME_UPPER@": target_name.upper(),
-            },
-        )
-
-    return generator_outputs
-
-def _run_typesupport_generator(
-        ctx,
-        lang,
-        srcs,
-        target_name,
-        package_name,
-        idl_files,
-        idl_tuples,
-        relative_dir,
-        output_dir,
-        templates,
-        output_mapping):
-    template_dir = templates[0].dirname
-
-    generator_arguments = struct(
-        package_name = package_name,
-        idl_tuples = idl_tuples,
-        output_dir = output_dir,
-        template_dir = template_dir,
-        target_dependencies = [],
-    )
-    generator_arguments_file = ctx.actions.declare_file(
-        "{}/rosidl_typesupport_generator_{}_args.json".format(
+    if visibility_control_template:
+        visibility_control_basename = _get_stem(visibility_control_template)
+        relative_file = "{}/msg/{}".format(
             relative_dir,
-            lang,
-        ),
-    )
-    ctx.actions.write(generator_arguments_file, generator_arguments.to_json())
-
-    generator_cmd_args = ctx.actions.args()
-    generator_cmd_args.add(
-        generator_arguments_file.path,
-        format = "--generator-arguments-file=%s",
-    )
-
-    # TODO(mvukov) There are also rosidl_typesupport_connext_c and
-    # rosidl_typesupport_fastrtps_c.
-    generator_cmd_args.add(
-        "--typesupports=rosidl_typesupport_introspection_{}".format(lang),
-    )
-
-    generator_outputs = {}
-    for src in srcs:
-        extension = src.extension
-        snake_case_stem = to_snake_case(_get_stem(src))
-        for t in output_mapping:
-            relative_file = "{}/{}/{}".format(relative_dir, extension, t % snake_case_stem)
-            generator_outputs[relative_file] = ctx.actions.declare_file(relative_file)
-
-    ctx.actions.run(
-        inputs = idl_files + templates + [generator_arguments_file],
-        outputs = generator_outputs.values(),
-        executable = ctx.executable._typesupport_generator,
-        arguments = [generator_cmd_args],
-    )
-
-    if lang == "c":
-        relative_file = "{}/msg/rosidl_typesupport_c__visibility_control.h".format(relative_dir)
-        visibility_control_h = ctx.actions.declare_file(relative_file)
-        generator_outputs[relative_file] = visibility_control_h
-        ctx.actions.expand_template(
-            template = ctx.file._typesupport_visibility_control_template,
-            output = visibility_control_h,
-            substitutions = {
-                "@PROJECT_NAME@": target_name,
-                "@PROJECT_NAME_UPPER@": target_name.upper(),
-            },
+            visibility_control_basename,
         )
-
-    return generator_outputs
-
-def _run_typesupport_introspection_generator(
-        ctx,
-        lang,
-        srcs,
-        target_name,
-        package_name,
-        idl_files,
-        idl_tuples,
-        relative_dir,
-        output_dir,
-        templates,
-        output_mapping):
-    template_dir = templates[0].dirname
-
-    generator_arguments = struct(
-        package_name = package_name,
-        idl_tuples = idl_tuples,
-        output_dir = output_dir,
-        template_dir = template_dir,
-        target_dependencies = [],
-    )
-    generator_arguments_file = ctx.actions.declare_file(
-        "{}/rosidl_typesupport_introspection_generator_{}_args.json".format(relative_dir, lang),
-    )
-    ctx.actions.write(generator_arguments_file, generator_arguments.to_json())
-
-    generator_cmd_args = ctx.actions.args()
-    generator_cmd_args.add(
-        generator_arguments_file.path,
-        format = "--generator-arguments-file=%s",
-    )
-
-    generator_outputs = {}
-    for src in srcs:
-        extension = src.extension
-        snake_case_stem = to_snake_case(_get_stem(src))
-        for t in output_mapping:
-            relative_file = "{}/{}/{}".format(relative_dir, extension, t % snake_case_stem)
-            generator_outputs[relative_file] = ctx.actions.declare_file(relative_file)
-
-    ctx.actions.run(
-        inputs = idl_files + templates + [generator_arguments_file],
-        outputs = generator_outputs.values(),
-        executable = ctx.executable._typesupport_introspection_generator,
-        arguments = [generator_cmd_args],
-    )
-
-    if lang == "c":
-        relative_file = "{}/msg/rosidl_typesupport_introspection_c__visibility_control.h".format(relative_dir)
         visibility_control_h = ctx.actions.declare_file(relative_file)
         generator_outputs[relative_file] = visibility_control_h
         ctx.actions.expand_template(
-            template = ctx.file._typesupport_introspection_visibility_control_template,
+            template = visibility_control_template,
             output = visibility_control_h,
             substitutions = {
-                "@PROJECT_NAME@": target_name,
-                "@PROJECT_NAME_UPPER@": target_name.upper(),
+                "@PROJECT_NAME@": package_name,
+                "@PROJECT_NAME_UPPER@": package_name.upper(),
             },
         )
 
@@ -354,63 +229,69 @@ _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING = [
 ]
 
 def _c_generator_aspect_impl(target, ctx):
-    target_name = target.label.name
-    info = target[RosIdlInfo].info
-    package_name = info.package_name
-    srcs = info.srcs
-    relative_dir = "{}".format(target_name)
+    package_name = target.label.name
+    srcs = target[RosIdlInfo].info.srcs
+    relative_dir = package_name
 
     idl_files, idl_tuples, output_dir = _run_adapter(
         ctx,
-        target_name,
         package_name,
         relative_dir,
         srcs,
     )
 
-    interface_outputs = _run_interface_generator(
+    interface_outputs = _run_generator(
         ctx,
-        "c",
         srcs,
-        target_name,
         package_name,
         idl_files,
         idl_tuples,
         relative_dir,
         output_dir,
-        ctx.attr._interface_templates[DefaultInfo].files.to_list(),
+        ctx.executable._interface_generator,
+        ctx.attr._interface_templates,
         _INTERFACE_GENERATOR_C_OUTPUT_MAPPING,
+        visibility_control_template = ctx.file._interface_visibility_control_template,
     )
 
-    typesupport_outputs = _run_typesupport_generator(
+    typesupport_outputs = _run_generator(
         ctx,
-        "c",
         srcs,
-        target_name,
         package_name,
         idl_files,
         idl_tuples,
         relative_dir,
         output_dir,
-        ctx.attr._typesupport_templates[DefaultInfo].files.to_list(),
+        ctx.executable._typesupport_generator,
+        ctx.attr._typesupport_templates,
         _TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING,
+        visibility_control_template = ctx.file._typesupport_visibility_control_template,
+        extra_generator_args = [
+            # TODO(mvukov) There are also rosidl_typesupport_connext_c and
+            # rosidl_typesupport_fastrtps_c.
+            "--typesupports=rosidl_typesupport_introspection_c",
+        ],
     )
 
-    typesupport_introspection_outputs = _run_typesupport_introspection_generator(
+    typesupport_introspection_outputs = _run_generator(
         ctx,
-        "c",
         srcs,
-        target_name,
         package_name,
         idl_files,
         idl_tuples,
         relative_dir,
         output_dir,
-        ctx.attr._typesupport_introspection_templates[DefaultInfo].files.to_list(),
+        ctx.executable._typesupport_introspection_generator,
+        ctx.attr._typesupport_introspection_templates,
         _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING,
+        visibility_control_template = ctx.file._typesupport_introspection_visibility_control_template,
     )
 
-    output_files = dicts.add(interface_outputs, typesupport_outputs, typesupport_introspection_outputs)
+    output_files = dicts.add(
+        interface_outputs,
+        typesupport_outputs,
+        typesupport_introspection_outputs,
+    )
     for dep in ctx.rule.attr.deps:
         output_files.update(dep[CGeneratorAspectInfo].output_files)
 
@@ -473,7 +354,9 @@ def _generator_impl(ctx, aspect_info):
     output_files = []
     for dep in ctx.attr.deps:
         for f_relative, f in dep[aspect_info].output_files.items():
-            f_symlink = ctx.actions.declare_file("{}/{}".format(relative_dir, f_relative))
+            f_symlink = ctx.actions.declare_file(
+                "{}/{}".format(relative_dir, f_relative),
+            )
             ctx.actions.symlink(output = f_symlink, target_file = f)
             output_files.append(f_symlink)
     return [DefaultInfo(files = depset(output_files))]
@@ -532,59 +415,58 @@ _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING = [
 ]
 
 def _cpp_generator_aspect_impl(target, ctx):
-    target_name = target.label.name
-    info = target[RosIdlInfo].info
-    package_name = info.package_name
-    srcs = info.srcs
-    relative_dir = "{}".format(target_name)
+    package_name = target.label.name
+    srcs = target[RosIdlInfo].info.srcs
+    relative_dir = package_name
 
     idl_files, idl_tuples, output_dir = _run_adapter(
         ctx,
-        target_name,
         package_name,
         relative_dir,
         srcs,
     )
 
-    interface_outputs = _run_interface_generator(
+    interface_outputs = _run_generator(
         ctx,
-        "cpp",
         srcs,
-        target_name,
         package_name,
         idl_files,
         idl_tuples,
         relative_dir,
         output_dir,
-        ctx.attr._interface_templates[DefaultInfo].files.to_list(),
+        ctx.executable._interface_generator,
+        ctx.attr._interface_templates,
         _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING,
     )
 
-    typesupport_outputs = _run_typesupport_generator(
+    typesupport_outputs = _run_generator(
         ctx,
-        "cpp",
         srcs,
-        target_name,
         package_name,
         idl_files,
         idl_tuples,
         relative_dir,
         output_dir,
-        ctx.attr._typesupport_templates[DefaultInfo].files.to_list(),
+        ctx.executable._typesupport_generator,
+        ctx.attr._typesupport_templates,
         _TYPESUPPORT_GENERATOR_CPP_OUTPUT_MAPPING,
+        extra_generator_args = [
+            # TODO(mvukov) There are also rosidl_typesupport_connext_cpp and
+            # rosidl_typesupport_fastrtps_cpp.
+            "--typesupports=rosidl_typesupport_introspection_cpp",
+        ],
     )
 
-    typesupport_introspection_outputs = _run_typesupport_introspection_generator(
+    typesupport_introspection_outputs = _run_generator(
         ctx,
-        "cpp",
         srcs,
-        target_name,
         package_name,
         idl_files,
         idl_tuples,
         relative_dir,
         output_dir,
-        ctx.attr._typesupport_introspection_templates[DefaultInfo].files.to_list(),
+        ctx.executable._typesupport_introspection_generator,
+        ctx.attr._typesupport_introspection_templates,
         _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING,
     )
 

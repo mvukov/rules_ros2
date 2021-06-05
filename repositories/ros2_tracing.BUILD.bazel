@@ -37,7 +37,6 @@ cc_library(
     ],
     includes = ["tracetools/include/"],
     srcs = [
-
         "tracetools/src/utils.cpp",
     ],
     deps = [":tracetools_c"],
