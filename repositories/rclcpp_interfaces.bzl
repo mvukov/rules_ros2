@@ -5,7 +5,7 @@
 def _get_stem(src):
     return src.basename[:-len(src.extension) - 1]
 
-def _generate(ctx, interface_name, template, generator, output):
+def _generate(ctx, interface_name, template, output):
     generator_args = ctx.actions.args()
     generator_args.add(interface_name)
     generator_args.add(output)
@@ -14,7 +14,7 @@ def _generate(ctx, interface_name, template, generator, output):
     ctx.actions.run(
         inputs = [template],
         outputs = [output],
-        executable = generator,
+        executable = ctx.executable.generator,
         arguments = [generator_args],
     )
 
@@ -40,14 +40,12 @@ def _rclcpp_interfaces_impl(ctx):
             ctx,
             interface_name,
             traits_template,
-            ctx.executable.traits_generator,
             interface_traits,
         )
         _generate(
             ctx,
             interface_name,
             getter_template,
-            ctx.executable.getter_generator,
             interface_getter,
         )
 
@@ -58,7 +56,7 @@ def _rclcpp_interfaces_impl(ctx):
 
 rclcpp_interfaces = rule(
     attrs = {
-        "getter_generator": attr.label(
+        "generator": attr.label(
             mandatory = True,
             executable = True,
             cfg = "exec",
@@ -72,11 +70,6 @@ rclcpp_interfaces = rule(
         ),
         "prefix_path": attr.string(
             mandatory = True,
-        ),
-        "traits_generator": attr.label(
-            mandatory = True,
-            executable = True,
-            cfg = "exec",
         ),
         "traits_template": attr.label(
             mandatory = True,

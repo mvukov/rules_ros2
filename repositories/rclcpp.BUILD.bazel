@@ -2,7 +2,7 @@
 """
 
 load(
-    "@com_github_mvukov_rules_ros2//repositories:generate_logging_macros.bzl",
+    "@com_github_mvukov_rules_ros2//repositories:logging_macros.bzl",
     "logging_macros",
 )
 load(
@@ -36,24 +36,12 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
-_GENERATE_RCLCPP_INTERFACE_TRAITS_PY = "@com_github_mvukov_rules_ros2//repositories:generate_rclcpp_interface_traits.py"
+_GENERATE_RCLCPP_INTERFACE_PY = "@com_github_mvukov_rules_ros2//repositories:generate_rclcpp_interface.py"
 
 py_binary(
-    name = "generate_rclcpp_interface_traits",
-    srcs = [_GENERATE_RCLCPP_INTERFACE_TRAITS_PY],
-    main = _GENERATE_RCLCPP_INTERFACE_TRAITS_PY,
-    deps = [
-        "@ros2_rcutils//:logging_generator",
-        requirement("empy"),
-    ],
-)
-
-_GENERATE_RCLCPP_INTERFACE_GETTER_PY = "@com_github_mvukov_rules_ros2//repositories:generate_rclcpp_interface_getter.py"
-
-py_binary(
-    name = "generate_rclcpp_interface_getter",
-    srcs = [_GENERATE_RCLCPP_INTERFACE_GETTER_PY],
-    main = _GENERATE_RCLCPP_INTERFACE_GETTER_PY,
+    name = "generate_rclcpp_interface",
+    srcs = [_GENERATE_RCLCPP_INTERFACE_PY],
+    main = _GENERATE_RCLCPP_INTERFACE_PY,
     deps = [
         "@ros2_rcutils//:logging_generator",
         requirement("empy"),
@@ -62,11 +50,10 @@ py_binary(
 
 rclcpp_interfaces(
     name = "rclcpp_interfaces",
-    getter_generator = ":generate_rclcpp_interface_getter",
+    generator = ":generate_rclcpp_interface",
     getter_template = "rclcpp/resource/get_interface.hpp.em",
     interfaces = ":interfaces",
     prefix_path = "include/rclcpp/node_interfaces",
-    traits_generator = ":generate_rclcpp_interface_traits",
     traits_template = "rclcpp/resource/interface_traits.hpp.em",
 )
 

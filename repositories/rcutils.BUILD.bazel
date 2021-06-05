@@ -2,12 +2,12 @@
 """
 
 load(
-    "@com_github_mvukov_rules_ros2//repositories:generate_logging_macros.bzl",
+    "@com_github_mvukov_rules_ros2//repositories:logging_macros.bzl",
     "logging_macros",
 )
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
-_GENERATE_LOGGING_MACROS_PY = "@com_github_mvukov_rules_ros2//repositories:generate_logging_macros.py"
+_GENERATE_LOGGING_MACROS_PY = "@com_github_mvukov_rules_ros2//repositories:generate_rcutils_logging_macros.py"
 
 py_library(
     name = "logging_generator",
