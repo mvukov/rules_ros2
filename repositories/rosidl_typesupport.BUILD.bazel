@@ -4,15 +4,24 @@
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 
 cc_library(
+    name = "rosidl_typesupport_c_c",
+    hdrs = glob(["rosidl_typesupport_c/include/**/*.h"]),
+    includes = ["rosidl_typesupport_c/include"],
+    srcs = glob(["rosidl_typesupport_c/src/*.c"]),
+    visibility = ["//visibility:public"],
+    copts = ["-std=c11"],
+)
+
+cc_library(
     name = "rosidl_typesupport_c",
     hdrs = glob(["rosidl_typesupport_c/include/**/*.h"]),
     includes = ["rosidl_typesupport_c/include"],
     srcs = glob([
-        "rosidl_typesupport_c/src/*.c",
         "rosidl_typesupport_c/src/*.cpp",
         "rosidl_typesupport_c/src/*.hpp",
     ]),
     deps = [
+        ":rosidl_typesupport_c_c",
         "@ros2_rcpputils//:rcpputils",
         "@ros2_rcutils//:rcutils",
         "@ros2_rosidl//:rosidl_runtime_c",
