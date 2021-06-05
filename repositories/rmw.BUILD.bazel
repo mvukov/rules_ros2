@@ -11,6 +11,7 @@ cc_library(
         "@ros2_rosidl//:rosidl_runtime_c",
     ],
     visibility = ["//visibility:public"],
+    copts = ["-std=c11"],
 )
 
 cc_library(

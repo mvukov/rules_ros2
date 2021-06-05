@@ -6,7 +6,7 @@ cc_library(
     srcs = glob(["src/**/*.cpp"], exclude = ["src/fmt.cpp"]) + ["include/spdlog/fmt/fmt.h"],
     hdrs = glob(["include/**/*.h"], exclude = ["include/spdlog/fmt/*.h"]),
     includes = ["include"],
-    copts = ["-w"],
+    copts = ["-std=c++14", "-w"],
     linkopts = ["-lpthread"],
     defines = [
         "SPDLOG_COMPILED_LIB",

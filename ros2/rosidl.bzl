@@ -346,7 +346,7 @@ _INTERFACE_GENERATOR_C_OUTPUT_MAPPING = [
     "detail/%s__type_support.h",
 ]
 
-_TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING = ["%s__type_support_c.cpp"]
+_TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING = ["%s__type_support.c"]
 
 _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING = [
     "detail/%s__rosidl_typesupport_introspection_c.h",
@@ -508,6 +508,7 @@ def c_ros_idl_library(name, deps, visibility = None):
             "@ros2_rosidl_typesupport//:rosidl_typesupport_c",
         ],
         visibility = visibility,
+        copts = ["-std=c11"],
     )
 
 CppGeneratorAspectInfo = provider("TBD", fields = [
@@ -522,7 +523,7 @@ _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING = [
 ]
 
 _TYPESUPPORT_GENERATOR_CPP_OUTPUT_MAPPING = [
-    "%s__type_support_cpp.cpp",
+    "%s__type_support.cpp",
 ]
 
 _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING = [

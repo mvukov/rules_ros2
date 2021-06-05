@@ -21,6 +21,7 @@ cc_library(
         "@ros2_rcutils//:rcutils",
     ],
     visibility = ["//visibility:public"],
+    copts = ["-std=c11"],
 )
 
 py_library(
@@ -160,6 +161,7 @@ cc_library(
     includes = ["rosidl_typesupport_introspection_c/include"],
     srcs = glob(["rosidl_typesupport_introspection_c/src/*.c"]),
     visibility = ["//visibility:public"],
+    copts = ["-std=c11"],
 )
 
 cc_library(
@@ -175,6 +177,7 @@ cc_library(
         ":rosidl_runtime_cpp",
     ],
     visibility = ["//visibility:public"],
+    copts = ["-std=c++14"],
 )
 
 py_library(

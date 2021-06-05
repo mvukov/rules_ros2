@@ -50,4 +50,5 @@ cc_library(
         "@platforms//os:macos": ["-ldl"],
     }, no_match_error = "Only Linux and macOS are supported!"),
     visibility = ["//visibility:public"],
+    copts = ["-std=c11"],
 )

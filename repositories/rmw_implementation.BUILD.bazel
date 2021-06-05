@@ -21,4 +21,5 @@ cc_library(
         "@ros2_rmw_cyclonedds//:rmw_cyclonedds",
     ],
     visibility = ["//visibility:public"],
+    copts = ["-std=c++14"],
 )

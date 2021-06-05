@@ -18,6 +18,7 @@ cc_library(
         "@ros2_rosidl//:rosidl_runtime_c",
     ],
     visibility = ["//visibility:public"],
+    copts = ["-std=c++14"],
 )
 
 cc_library(
@@ -37,6 +38,7 @@ cc_library(
         "@ros2_rosidl//:rosidl_runtime_c",
     ],
     visibility = ["//visibility:public"],
+    copts = ["-std=c++14"],
 )
 
 py_library(

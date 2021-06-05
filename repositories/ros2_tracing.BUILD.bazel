@@ -17,16 +17,30 @@ expand_template(
 )
 
 cc_library(
-    name = "tracetools",
+    name = "tracetools_c",
     hdrs = [
         "tracetools/include/tracetools/tracetools.h",
-        "tracetools/include/tracetools/utils.hpp",
         "tracetools/include/tracetools/visibility_control.hpp",
-    ] + [":config_h"],
+        ":config_h",
+    ],
     includes = ["tracetools/include/"],
     srcs = [
         "tracetools/src/tracetools.c",
+    ],
+    copts = ["-std=c11"],
+)
+
+cc_library(
+    name = "tracetools",
+    hdrs = [
+        "tracetools/include/tracetools/utils.hpp",
+    ],
+    includes = ["tracetools/include/"],
+    srcs = [
+
         "tracetools/src/utils.cpp",
     ],
+    deps = [":tracetools_c"],
     visibility = ["//visibility:public"],
+    copts = ["-std=c++14"],
 )
