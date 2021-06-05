@@ -1,6 +1,7 @@
 """Handles import of external/third-party repositories.
 """
 
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
@@ -32,14 +33,20 @@ def ros2_repositories():
         urls = ["https://github.com/ros2/rcutils/archive/1.1.3.tar.gz"],
     )
 
+    # maybe(
+    #     native.new_local_repository,
+    #     name = "ros2_rosidl",
+    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel",
+    #     path = "../ros2_foxy/src/ros2/rosidl",
+    # )
+
+    # foxy branch.
     maybe(
-        native.new_local_repository,
+        new_git_repository,
         name = "ros2_rosidl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/rosidl",
-        # sha256 = "d839ccfa148ca27686759921300d67b88366d5fc320c3c8b483c04362bd89a2c",
-        # strip_prefix = "rosidl-1.2.1",
-        # urls = ["https://github.com/ros2/rosidl/archive/1.2.1.tar.gz"],
+        remote = "https://github.com/mvukov/rosidl.git",
+        commit = "611c16181cfa832d2433e77c612bd75e303cca4e",
     )
 
     maybe(
@@ -51,24 +58,36 @@ def ros2_repositories():
         urls = ["https://github.com/ros2/rmw/archive/1.0.3.tar.gz"],
     )
 
+    # maybe(
+    #     native.new_local_repository,
+    #     name = "ros2_rcpputils",
+    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel",
+    #     path = "../ros2_foxy/src/ros2/rcpputils",
+    # )
+
+    # foxy branch.
     maybe(
-        native.new_local_repository,
+        new_git_repository,
         name = "ros2_rcpputils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/rcpputils",
-        # sha256 = "20b9863c516a48b20ff0dadd02bf17a3d1c42c3c47b07f78e118cf9c3cd000c9",
-        # strip_prefix = "rcpputils-1.3.1",
-        # urls = ["https://github.com/ros2/rcpputils/archive/1.3.1.tar.gz"],
+        remote = "https://github.com/mvukov/rcpputils.git",
+        commit = "190fe233f9a46de715232fb07d195e5b43b21afe",
     )
 
+    # maybe(
+    #     native.new_local_repository,
+    #     name = "ros2_rmw_implementation",
+    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel",
+    #     path = "../ros2_foxy/src/ros2/rmw_implementation",
+    # )
+
+    # foxy branch.
     maybe(
-        native.new_local_repository,
+        new_git_repository,
         name = "ros2_rmw_implementation",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/rmw_implementation",
-        # sha256 = "b56555fc55bb5897d82b3c5585ef6c70218ec14fb49faee5a9c5526d6fc1fec0",
-        # strip_prefix = "rmw_implementation-1.0.2",
-        # urls = ["https://github.com/ros2/rmw_implementation/archive/1.0.2.tar.gz"],
+        remote = "https://github.com/mvukov/rmw_implementation.git",
+        commit = "026462a1aac90352c67ba38b62652129144c821b",
     )
 
     maybe(
@@ -143,14 +162,20 @@ def ros2_repositories():
         urls = ["https://github.com/ros2/rclcpp/archive/d12ed36e89fc3440acc82ef6563273de95d5a008.tar.gz"],
     )
 
+    # maybe(
+    #     native.new_local_repository,
+    #     name = "ros2_rosidl_typesupport",
+    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_typesupport.BUILD.bazel",
+    #     path = "../ros2_foxy/src/ros2/rosidl_typesupport",
+    # )
+
+    # foxy branch.
     maybe(
-        native.new_local_repository,
+        new_git_repository,
         name = "ros2_rosidl_typesupport",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_typesupport.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/rosidl_typesupport",
-        # sha256 = "be72eb2113afa712286dc9e983d257174b544803af1e34f7d6338766cfeefd63",
-        # strip_prefix = "rosidl_typesupport-1.0.2",
-        # urls = ["https://github.com/ros2/rosidl_typesupport/archive/1.0.2.tar.gz"],
+        remote = "https://github.com/mvukov/rosidl_typesupport.git",
+        commit = "6a5e55ff8e1fbdd72a55060ec1ccedbef8f78f96",
     )
 
     maybe(
