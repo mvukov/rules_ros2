@@ -224,3 +224,4 @@ def ros2_repositories():
         patches=["@com_github_mvukov_rules_ros2//repositories/patches:rmw_cyclonedds-fix-typesupport-conditions-bug.patch"],
         urls = ["https://github.com/ros2/rmw_cyclonedds/archive/0.7.6.tar.gz"],
     )
+    
