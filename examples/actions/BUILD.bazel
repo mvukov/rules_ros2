@@ -1,0 +1,39 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:rosidl.bzl",
+    "cpp_ros_idl_library",
+    "ros_idl_library",
+)
+
+ros_idl_library(
+    name = "fibonacci_msgs",
+    srcs = ["Fibonacci.action"],
+    deps = ["@ros2_rcl_interfaces//:action_msgs"],
+)
+
+cpp_ros_idl_library(
+    name = "cpp_fibonacci_msgs",
+    deps = [":fibonacci_msgs"],
+)
+
+cc_binary(
+    name = "server",
+    srcs = ["server.cc"],
+    copts = ["-std=c++14"],
+    deps = [
+        ":cpp_fibonacci_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rclcpp//:rclcpp_action",
+    ],
+)
+
+cc_binary(
+    name = "client",
+    srcs = ["client.cc"],
+    copts = ["-std=c++14"],
+    deps = [
+        ":cpp_fibonacci_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rclcpp//:rclcpp_action",
+    ],
+)
