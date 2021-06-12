@@ -224,3 +224,12 @@ def ros2_repositories():
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_cyclonedds-fix-typesupport-conditions-bug.patch"],
         urls = ["https://github.com/ros2/rmw_cyclonedds/archive/0.7.6.tar.gz"],
     )
+
+    maybe(
+        http_archive,
+        name = "ros2_unique_identifier_msgs",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:unique_identifier_msgs.BUILD.bazel",
+        sha256 = "aa0f5a440cface1dd85cf05d97cadb812b2796973882d02a7e795ae70b64b9a0",
+        strip_prefix = "unique_identifier_msgs-2.1.3",
+        urls = ["https://github.com/ros2/unique_identifier_msgs/archive/2.1.3.tar.gz"],
+    )

@@ -57,12 +57,15 @@ def to_snake_case(not_snake_case):
     Returns:
       A snake-case string.
     """
+    if not_snake_case.isupper():
+        return not_snake_case.lower()
+
     final = ""
-    for i in range(len(not_snake_case)):
+    size = len(not_snake_case)
+    for i in range(size):
         item = not_snake_case[i]
-        previous_char_was_uppercase = i > 1 and not_snake_case[i - 1].isupper()
         next_char_will_be_underscored = (
-            i < len(not_snake_case) - 1 and (
+            i < size - 1 and (
                 not_snake_case[i + 1] == "_" or
                 not_snake_case[i + 1] == " " or
                 not_snake_case[i + 1].isupper()
@@ -74,7 +77,7 @@ def to_snake_case(not_snake_case):
         elif (item == " " or item == "_"):
             final += "_"
         elif item.isupper():
-            if previous_char_was_uppercase:
+            if i > 1 and not_snake_case[i - 1].isupper():
                 final += item.lower()
             else:
                 final += "_" + item.lower()

@@ -1,0 +1,13 @@
+""" Builds unique_identifier_msgs.
+"""
+
+load(
+    "@com_github_mvukov_rules_ros2//ros2:rosidl.bzl",
+    "ros_idl_library",
+)
+
+ros_idl_library(
+    name = "unique_identifier_msgs",
+    srcs = glob(["msg/*.msg"]),
+    visibility = ["//visibility:public"],
+)

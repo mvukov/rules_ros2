@@ -23,6 +23,7 @@ cc_library(
     includes = ["rcl/include"],
     srcs = glob(["rcl/src/rcl/*.c", "rcl/src/rcl/*.h"]),
     local_defines = ["ROS_PACKAGE_NAME=\\\"rcl\\\""],
+    copts = ["-std=c11"],
     deps = [
         ":rcl_yaml_param_parser",
         "@ros2_rcl_interfaces//:c_rcl_interfaces",
@@ -33,5 +34,24 @@ cc_library(
         "@ros2_tracing//:tracetools",
     ],
     visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "rcl_action",
+    hdrs = glob(["rcl_action/include/**/*.h"]),
+    includes = ["rcl_action/include"],
+    srcs = glob([
+        "rcl_action/src/rcl_action/*.c",
+        "rcl_action/src/rcl_action/*.h",
+    ]),
+    local_defines = ["ROS_PACKAGE_NAME=\\\"rcl_action\\\""],
     copts = ["-std=c11"],
+    deps = [
+        ":rcl",
+        "@ros2_rcl_interfaces//:c_action_msgs",
+        "@ros2_rcutils//:rcutils",
+        "@ros2_rmw//:rmw",
+        "@ros2_rosidl//:rosidl_runtime_c",
+    ],
+    visibility = ["//visibility:public"],
 )

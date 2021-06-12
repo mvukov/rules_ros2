@@ -9,6 +9,16 @@ load(
 )
 
 ros_idl_library(
+    name = "action_msgs",
+    srcs = glob(["action_msgs/msg/*.msg", "action_msgs/srv/*.srv"]),
+    deps = [
+        ":builtin_interfaces",
+        "@ros2_unique_identifier_msgs//:unique_identifier_msgs",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+ros_idl_library(
     name = "builtin_interfaces",
     srcs = glob(["builtin_interfaces/msg/*.msg"]),
     visibility = ["//visibility:public"],
@@ -36,6 +46,12 @@ ros_idl_library(
 )
 
 c_ros_idl_library(
+    name = "c_action_msgs",
+    deps = [":action_msgs"],
+    visibility = ["//visibility:public"],
+)
+
+c_ros_idl_library(
     name = "c_builtin_interfaces",
     deps = [":builtin_interfaces"],
     visibility = ["//visibility:public"],
@@ -44,6 +60,12 @@ c_ros_idl_library(
 c_ros_idl_library(
     name = "c_rcl_interfaces",
     deps = [":rcl_interfaces"],
+    visibility = ["//visibility:public"],
+)
+
+cpp_ros_idl_library(
+    name = "cpp_action_msgs",
+    deps = [":action_msgs"],
     visibility = ["//visibility:public"],
 )
 

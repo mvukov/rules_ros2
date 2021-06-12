@@ -85,3 +85,17 @@ cc_library(
     copts = ["-std=c++14"],
     visibility = ["//visibility:public"],
 )
+
+cc_library(
+    name = "rclcpp_action",
+    hdrs = glob(["rclcpp_action/include/**/*.hpp"]),
+    includes = ["rclcpp_action/include"],
+    srcs = glob(["rclcpp_action/src/*.cpp"]),
+    deps = [
+        ":rclcpp",
+        "@ros2_rcl//:rcl_action",
+        "@ros2_rcl_interfaces//:cpp_action_msgs",
+    ],
+    copts = ["-std=c++14"],
+    visibility = ["//visibility:public"],
+)
