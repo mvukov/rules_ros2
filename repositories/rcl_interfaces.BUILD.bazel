@@ -3,12 +3,12 @@
 
 load(
     "@com_github_mvukov_rules_ros2//ros2:rosidl.bzl",
-    "c_ros_idl_library",
-    "cpp_ros_idl_library",
-    "ros_idl_library",
+    "c_ros2_interface_library",
+    "cpp_ros2_interface_library",
+    "ros2_interface_library",
 )
 
-ros_idl_library(
+ros2_interface_library(
     name = "action_msgs",
     srcs = glob(["action_msgs/msg/*.msg", "action_msgs/srv/*.srv"]),
     deps = [
@@ -18,76 +18,76 @@ ros_idl_library(
     visibility = ["//visibility:public"],
 )
 
-ros_idl_library(
+ros2_interface_library(
     name = "builtin_interfaces",
     srcs = glob(["builtin_interfaces/msg/*.msg"]),
     visibility = ["//visibility:public"],
 )
 
-ros_idl_library(
+ros2_interface_library(
     name = "rcl_interfaces",
     srcs = glob(["rcl_interfaces/msg/*.msg", "rcl_interfaces/srv/*.srv"]),
     deps = [":builtin_interfaces"],
     visibility = ["//visibility:public"],
 )
 
-ros_idl_library(
+ros2_interface_library(
     name = "rosgraph_msgs",
     srcs = glob(["rosgraph_msgs/msg/*.msg"]),
     deps = [":builtin_interfaces"],
     visibility = ["//visibility:public"],
 )
 
-ros_idl_library(
+ros2_interface_library(
     name = "statistics_msgs",
     srcs = glob(["statistics_msgs/msg/*.msg"]),
     deps = [":builtin_interfaces"],
     visibility = ["//visibility:public"],
 )
 
-c_ros_idl_library(
+c_ros2_interface_library(
     name = "c_action_msgs",
     deps = [":action_msgs"],
     visibility = ["//visibility:public"],
 )
 
-c_ros_idl_library(
+c_ros2_interface_library(
     name = "c_builtin_interfaces",
     deps = [":builtin_interfaces"],
     visibility = ["//visibility:public"],
 )
 
-c_ros_idl_library(
+c_ros2_interface_library(
     name = "c_rcl_interfaces",
     deps = [":rcl_interfaces"],
     visibility = ["//visibility:public"],
 )
 
-cpp_ros_idl_library(
+cpp_ros2_interface_library(
     name = "cpp_action_msgs",
     deps = [":action_msgs"],
     visibility = ["//visibility:public"],
 )
 
-cpp_ros_idl_library(
+cpp_ros2_interface_library(
     name = "cpp_builtin_interfaces",
     deps = [":builtin_interfaces"],
     visibility = ["//visibility:public"],
 )
 
-cpp_ros_idl_library(
+cpp_ros2_interface_library(
     name = "cpp_rcl_interfaces",
     deps = [":rcl_interfaces"],
     visibility = ["//visibility:public"],
 )
 
-cpp_ros_idl_library(
+cpp_ros2_interface_library(
     name = "cpp_rosgraph_msgs",
     deps = [":rosgraph_msgs"],
     visibility = ["//visibility:public"],
 )
 
-cpp_ros_idl_library(
+cpp_ros2_interface_library(
     name = "cpp_statistics_msgs",
     deps = [":statistics_msgs"],
     visibility = ["//visibility:public"],

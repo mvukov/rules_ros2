@@ -17,34 +17,40 @@
 load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
-RosIdlInfo = provider("Provides info for IDL code generation.", fields = [
-    "info",
-    "deps",
-])
+Ros2InterfaceInfo = provider(
+    "Provides info for interface code generation.",
+    fields = [
+        "info",
+        "deps",
+    ],
+)
 
-def _ros_idl_library_impl(ctx):
+def _ros2_interface_library_impl(ctx):
     return [
         DefaultInfo(files = depset(ctx.files.srcs)),
-        RosIdlInfo(
+        Ros2InterfaceInfo(
             info = struct(
                 srcs = ctx.files.srcs,
             ),
             deps = depset(
-                direct = [dep[RosIdlInfo].info for dep in ctx.attr.deps],
-                transitive = [dep[RosIdlInfo].deps for dep in ctx.attr.deps],
+                direct = [dep[Ros2InterfaceInfo].info for dep in ctx.attr.deps],
+                transitive = [
+                    dep[Ros2InterfaceInfo].deps
+                    for dep in ctx.attr.deps
+                ],
             ),
         ),
     ]
 
-ros_idl_library = rule(
+ros2_interface_library = rule(
     attrs = {
         "srcs": attr.label_list(
             allow_files = [".action", ".msg", ".srv"],
             mandatory = True,
         ),
-        "deps": attr.label_list(providers = [RosIdlInfo]),
+        "deps": attr.label_list(providers = [Ros2InterfaceInfo]),
     },
-    implementation = _ros_idl_library_impl,
+    implementation = _ros2_interface_library_impl,
 )
 
 def to_snake_case(not_snake_case):
@@ -233,7 +239,7 @@ _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING = [
 
 def _c_generator_aspect_impl(target, ctx):
     package_name = target.label.name
-    srcs = target[RosIdlInfo].info.srcs
+    srcs = target[Ros2InterfaceInfo].info.srcs
     relative_dir = package_name
 
     idl_files, idl_tuples, output_dir = _run_adapter(
@@ -372,13 +378,13 @@ c_generator = rule(
         "deps": attr.label_list(
             mandatory = True,
             aspects = [c_generator_aspect],
-            providers = [RosIdlInfo],
+            providers = [Ros2InterfaceInfo],
         ),
     },
     implementation = _c_generator_impl,
 )
 
-def c_ros_idl_library(name, deps, visibility = None):
+def c_ros2_interface_library(name, deps, visibility = None):
     name_c = "{}_c".format(name)
     c_generator(
         name = name_c,
@@ -419,7 +425,7 @@ _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING = [
 
 def _cpp_generator_aspect_impl(target, ctx):
     package_name = target.label.name
-    srcs = target[RosIdlInfo].info.srcs
+    srcs = target[Ros2InterfaceInfo].info.srcs
     relative_dir = package_name
 
     idl_files, idl_tuples, output_dir = _run_adapter(
@@ -531,13 +537,13 @@ cpp_generator = rule(
         "deps": attr.label_list(
             mandatory = True,
             aspects = [cpp_generator_aspect],
-            providers = [RosIdlInfo],
+            providers = [Ros2InterfaceInfo],
         ),
     },
     implementation = _cpp_generator_impl,
 )
 
-def cpp_ros_idl_library(name, deps, visibility = None):
+def cpp_ros2_interface_library(name, deps, visibility = None):
     name_cpp = "{}_cpp".format(name)
     cpp_generator(
         name = name_cpp,

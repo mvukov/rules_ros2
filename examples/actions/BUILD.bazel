@@ -1,17 +1,17 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary")
 load(
     "@com_github_mvukov_rules_ros2//ros2:rosidl.bzl",
-    "cpp_ros_idl_library",
-    "ros_idl_library",
+    "cpp_ros2_interface_library",
+    "ros2_interface_library",
 )
 
-ros_idl_library(
+ros2_interface_library(
     name = "fibonacci_msgs",
     srcs = ["Fibonacci.action"],
     deps = ["@ros2_rcl_interfaces//:action_msgs"],
 )
 
-cpp_ros_idl_library(
+cpp_ros2_interface_library(
     name = "cpp_fibonacci_msgs",
     deps = [":fibonacci_msgs"],
 )
