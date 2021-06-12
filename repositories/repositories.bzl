@@ -221,7 +221,6 @@ def ros2_repositories():
         sha256 = "5995d8ae3613126ee5b68db68d0c1c4a6caa8eec3fb0a269921a16fa1a810af6",
         strip_prefix = "rmw_cyclonedds-0.7.6",
         patch_args = ["-p1"],
-        patches=["@com_github_mvukov_rules_ros2//repositories/patches:rmw_cyclonedds-fix-typesupport-conditions-bug.patch"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_cyclonedds-fix-typesupport-conditions-bug.patch"],
         urls = ["https://github.com/ros2/rmw_cyclonedds/archive/0.7.6.tar.gz"],
     )
-    
