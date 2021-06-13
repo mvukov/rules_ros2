@@ -153,7 +153,8 @@ def _run_generator(
         generator_templates,
         output_mapping,
         visibility_control_template = None,
-        extra_generator_args = None):
+        extra_generator_args = None,
+        extra_generated_outputs = None):
     generator_templates = generator_templates[DefaultInfo].files.to_list()
 
     generator_arguments = struct(
@@ -191,6 +192,12 @@ def _run_generator(
             generator_outputs[relative_file] = ctx.actions.declare_file(
                 relative_file,
             )
+
+    extra_generated_outputs = extra_generated_outputs or []
+    for extra_output in extra_generated_outputs:
+        relative_file = "{}/{}".format(relative_dir, extra_output)
+        generator_outputs[relative_file] = ctx.actions.declare_file(
+            relative_file)
 
     ctx.actions.run(
         inputs = idl_files + generator_templates + [generator_arguments_file],
@@ -356,6 +363,7 @@ c_generator_aspect = aspect(
             allow_single_file = True,
         ),
     },
+    provides = [CGeneratorAspectInfo],
 )
 
 def _generator_impl(ctx, aspect_info):
@@ -527,6 +535,7 @@ cpp_generator_aspect = aspect(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_generator_cpp_templates"),
         ),
     },
+    provides = [CppGeneratorAspectInfo],
 )
 
 def _cpp_generator_impl(ctx):
@@ -561,4 +570,103 @@ def cpp_ros2_interface_library(name, deps, visibility = None):
             "@ros2_rosidl_typesupport//:rosidl_typesupport_cpp",
         ],
         visibility = visibility,
+    )
+
+PyGeneratorAspectInfo = provider("TBD", fields = [
+    "output_files",
+])
+
+_INTERFACE_GENERATOR_PY_OUTPUT_MAPPING = [
+    "_%s.py",
+    "_%s_s.c",
+]
+
+def _py_generator_aspect_impl(target, ctx):
+    package_name = target.label.name
+    srcs = target[Ros2InterfaceInfo].info.srcs
+    relative_dir = package_name
+
+    idl_files, idl_tuples, output_dir = _run_adapter(
+        ctx,
+        package_name,
+        relative_dir,
+        srcs,
+    )
+
+    extra_generated_outputs = [
+        "_{}_s.ep.rosidl_typesupport_c.c".format(package_name),
+    ]
+
+    for ext in ["action", "msg", "srv"]:
+        if any([f.extension == ext for f in srcs]):
+            extra_generated_outputs.append("{}/__init__.py".format(ext))
+
+    interface_outputs = _run_generator(
+        ctx,
+        srcs,
+        package_name,
+        idl_files,
+        idl_tuples,
+        relative_dir,
+        output_dir,
+        ctx.executable._py_interface_generator,
+        ctx.attr._py_interface_templates,
+        _INTERFACE_GENERATOR_PY_OUTPUT_MAPPING,
+        extra_generator_args = [
+            "--typesupport-impls=rosidl_typesupport_c",
+        ],
+        extra_generated_outputs = extra_generated_outputs,
+    )
+
+    output_files = dicts.add(
+        interface_outputs, target[CGeneratorAspectInfo].output_files)
+    for dep in ctx.rule.attr.deps:
+        output_files.update(dep[PyGeneratorAspectInfo].output_files)
+
+    return [
+        PyGeneratorAspectInfo(
+            output_files = output_files,
+        ),
+    ]
+
+py_generator_aspect = aspect(
+    implementation = _py_generator_aspect_impl,
+    attr_aspects = ["deps"],
+    attrs = {
+        "_adapter": attr.label(
+            default = Label("@ros2_rosidl//:rosidl_adapter_app"),
+            executable = True,
+            cfg = "exec",
+        ),
+        "_py_interface_generator": attr.label(
+            default = Label("@ros2_rosidl_python//:rosidl_generator_py_app"),
+            executable = True,
+            cfg = "exec",
+        ),
+        "_py_interface_templates": attr.label(
+            default = Label("@ros2_rosidl_python//:rosidl_generator_py_templates"),
+        ),
+    },
+    provides = [PyGeneratorAspectInfo],
+    required_aspect_providers = [CGeneratorAspectInfo],
+)
+
+def _py_generator_impl(ctx):
+    return _generator_impl(ctx, PyGeneratorAspectInfo)
+
+py_generator = rule(
+    attrs = {
+        "deps": attr.label_list(
+            mandatory = True,
+            aspects = [c_generator_aspect, py_generator_aspect],
+            providers = [Ros2InterfaceInfo],
+        ),
+    },
+    implementation = _py_generator_impl,
+)
+
+def py_ros2_interface_library(name, deps, visibility = None):
+    py_generator(
+        name = name,
+        deps = deps,
     )

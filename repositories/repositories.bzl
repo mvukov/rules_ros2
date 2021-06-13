@@ -233,3 +233,17 @@ def ros2_repositories():
         strip_prefix = "unique_identifier_msgs-2.1.3",
         urls = ["https://github.com/ros2/unique_identifier_msgs/archive/2.1.3.tar.gz"],
     )
+
+    maybe(
+        native.new_local_repository,
+        name = "ros2_rosidl_python",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_python.BUILD.bazel",
+        path = "../ros2_foxy/src/ros2/rosidl_python",
+    )
+
+    maybe(
+        native.new_local_repository,
+        name = "ros2_rpyutils",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rpyutils.BUILD.bazel",
+        path = "../ros2_foxy/src/ros2/rpyutils",
+    )

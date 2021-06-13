@@ -1,0 +1,8 @@
+""" Builds rpyutils.
+"""
+
+py_library(
+    name = "rpyutils",
+    srcs = glob(["rpyutils/*.py"]),
+    visibility = ["//visibility:public"],
+)
