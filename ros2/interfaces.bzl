@@ -53,7 +53,7 @@ ros2_interface_library = rule(
     implementation = _ros2_interface_library_impl,
 )
 
-def to_snake_case(value):
+def to_snake_case(not_snake_case):
     """ Converts camel-case to snake-case.
 
     Based on convert_camel_case_to_lower_case_underscore from rosidl_cmake.
@@ -65,11 +65,9 @@ def to_snake_case(value):
       A snake-case string.
     """
     result = ""
-    value_padded = ' ' + value + ' '
-    for i in range(len(value)):
-        prev_char = value_padded[i]
-        char = value_padded[i + 1]
-        next_char = value_padded[i + 2]
+    not_snake_case_padded = ' ' + not_snake_case + ' '
+    for i in range(len(not_snake_case)):
+        prev_char, char, next_char = not_snake_case_padded[i:i+3].elems()
         # insert an underscore before any upper case letter
         # which is not followed by another upper case letter
         if char.isupper() and next_char.islower() and prev_char != ' ':
