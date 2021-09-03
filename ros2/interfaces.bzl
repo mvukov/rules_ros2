@@ -65,17 +65,17 @@ def to_snake_case(not_snake_case):
       A snake-case string.
     """
     result = ""
-    not_snake_case_padded = ' ' + not_snake_case + ' '
+    not_snake_case_padded = " " + not_snake_case + " "
     for i in range(len(not_snake_case)):
-        prev_char, char, next_char = not_snake_case_padded[i:i+3].elems()
-        # insert an underscore before any upper case letter
-        # which is not followed by another upper case letter
-        if char.isupper() and next_char.islower() and prev_char != ' ':
-            result += '_'
-        # insert an underscore before any upper case letter
-        # which is preseded by a lower case letter or number
+        prev_char, char, next_char = not_snake_case_padded[i:i + 3].elems()
+        if char.isupper() and next_char.islower() and prev_char != " ":
+            # Insert an underscore before any upper case letter which is not
+            # followed by another upper case letter.
+            result += "_"
         elif char.isupper() and (prev_char.islower() or prev_char.isdigit()):
-            result += '_'
+            # Insert an underscore before any upper case letter which is
+            # preseded by a lower case letter or number.
+            result += "_"
         result += char.lower()
 
     return result
