@@ -56,42 +56,29 @@ ros2_interface_library = rule(
 def to_snake_case(not_snake_case):
     """ Converts camel-case to snake-case.
 
-    Based on https://stackoverflow.com/a/19940888.
+    Based on convert_camel_case_to_lower_case_underscore from rosidl_cmake.
+    Unfortunately regex doesn't exist in Bazel.
 
     Args:
       not_snake_case: a camel-case string.
     Returns:
       A snake-case string.
     """
-    if not_snake_case.isupper():
-        return not_snake_case.lower()
+    result = ""
+    not_snake_case_padded = ' ' + not_snake_case + ' '
+    for i in range(len(not_snake_case)):
+        prev_char, char, next_char = not_snake_case_padded[i:i+3].elems()
+        # insert an underscore before any upper case letter
+        # which is not followed by another upper case letter
+        if char.isupper() and next_char.islower() and prev_char != ' ':
+            result += '_'
+        # insert an underscore before any upper case letter
+        # which is preseded by a lower case letter or number
+        elif char.isupper() and (prev_char.islower() or prev_char.isdigit()):
+            result += '_'
+        result += char.lower()
 
-    final = ""
-    size = len(not_snake_case)
-    for i in range(size):
-        item = not_snake_case[i]
-        next_char_will_be_underscored = (
-            i < size - 1 and (
-                not_snake_case[i + 1] == "_" or
-                not_snake_case[i + 1] == " " or
-                not_snake_case[i + 1].isupper()
-            )
-        )
-
-        if (item == " " or item == "_") and next_char_will_be_underscored:
-            continue
-        elif (item == " " or item == "_"):
-            final += "_"
-        elif item.isupper():
-            if i > 1 and not_snake_case[i - 1].isupper():
-                final += item.lower()
-            else:
-                final += "_" + item.lower()
-        else:
-            final += item
-    if final[0] == "_":
-        final = final[1:]
-    return final
+    return result
 
 def _get_stem(path):
     return path.basename[:-len(path.extension) - 1]
