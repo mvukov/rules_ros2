@@ -26,5 +26,6 @@ ros2_cpp_binary(
         "@ros2_rosidl//:rosidl_runtime_c",
         "@ros2_rosidl//:rosidl_typesupport_introspection_c",
         "@ros2_rosidl//:rosidl_typesupport_introspection_cpp",
+        "@ros2_tracing//:tracetools",
     ],
 )
