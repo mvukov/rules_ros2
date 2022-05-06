@@ -56,22 +56,6 @@ def ros2_repositories():
         urls = ["https://github.com/ros2/rmw/archive/6.1.0.tar.gz"],
     )
 
-    # maybe(
-    #     native.new_local_repository,
-    #     name = "ros2_rcpputils",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel",
-    #     path = "../ros2_foxy/src/ros2/rcpputils",
-    # )
-
-    # foxy branch.
-    # maybe(
-    #     new_git_repository,
-    #     name = "ros2_rcpputils",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel",
-    #     remote = "https://github.com/mvukov/rcpputils.git",
-    #     commit = "190fe233f9a46de715232fb07d195e5b43b21afe",
-    # )
-
     maybe(
         http_archive,
         name = "ros2_rcpputils",
@@ -81,28 +65,14 @@ def ros2_repositories():
         urls = ["https://github.com/ros2/rcpputils/archive/2.4.0.tar.gz"],
     )
 
-    # maybe(
-    #     native.new_local_repository,
-    #     name = "ros2_rmw_implementation",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel",
-    #     path = "../ros2_foxy/src/ros2/rmw_implementation",
-    # )
-
-    # foxy branch.
-    # maybe(
-    #     new_git_repository,
-    #     name = "ros2_rmw_implementation",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel",
-    #     remote = "https://github.com/mvukov/rmw_implementation.git",
-    #     commit = "026462a1aac90352c67ba38b62652129144c821b",
-    # )
-
     maybe(
         http_archive,
         name = "ros2_rmw_implementation",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel",
         sha256 = "b3cb9755b00cd60839dc78711ef14de163234a72bd8cb679812c45ca3608e40b",
         strip_prefix = "rmw_implementation-2.8.1",
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_implementation-2.8.1.patch"],
+        patch_args = ["-p1"],
         url = "https://github.com/ros2/rmw_implementation/archive/2.8.1.tar.gz",
     )
 
