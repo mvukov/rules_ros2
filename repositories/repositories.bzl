@@ -37,29 +37,15 @@ def ros2_repositories():
     )
 
     maybe(
-        native.new_local_repository,
+        http_archive,
         name = "ros2_rosidl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel",
-        path = "../rosidl",
+        sha256 = "f431c394d28d926354c271e48b7d45667363309ae63c3c1bcb6275695fbc50b8",
+        strip_prefix = "rosidl-3.1.3",
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosidl-3.1.3.patch"],
+        patch_args = ["-p1"],
+        urls = ["https://github.com/ros2/rosidl/archive/3.1.3.tar.gz"],
     )
-
-    # foxy branch.
-    # maybe(
-    #     new_git_repository,
-    #     name = "ros2_rosidl",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel",
-    #     remote = "https://github.com/mvukov/rosidl.git",
-    #     commit = "611c16181cfa832d2433e77c612bd75e303cca4e",
-    # )
-
-    # maybe(
-    #     http_archive,
-    #     name = "ros2_rosidl",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel",
-    #     sha256 = "f431c394d28d926354c271e48b7d45667363309ae63c3c1bcb6275695fbc50b8",
-    #     strip_prefix = "rosidl-3.1.3",
-    #     urls = ["https://github.com/ros2/rosidl/archive/3.1.3.tar.gz"],
-    # )
 
     maybe(
         http_archive,
