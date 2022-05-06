@@ -151,19 +151,14 @@ def ros2_repositories():
         urls = ["https://github.com/ros2/rclcpp/archive/16.0.1.tar.gz"],
     )
 
-    # maybe(
-    #     native.new_local_repository,
-    #     name = "ros2_rosidl_typesupport",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_typesupport.BUILD.bazel",
-    #     path = "../ros2_foxy/src/ros2/rosidl_typesupport",
-    # )
-
-    # foxy branch.
     maybe(
         http_archive,
         name = "ros2_rosidl_typesupport",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_typesupport.BUILD.bazel",
+        sha256 = "b6205ff1fc5872ed88a8645ae660f6e4158ce50a385c0b9c729674f691bc006e",
         strip_prefix = "rosidl_typesupport-2.0.0",
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosidl_typesupport-2.0.0.patch"],
+        patch_args = ["-p1"],
         urls = ["https://github.com/ros2/rosidl_typesupport/archive/2.0.0.tar.gz"],
     )
 
