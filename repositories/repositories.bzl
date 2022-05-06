@@ -182,9 +182,9 @@ def ros2_repositories():
         http_archive,
         name = "cyclonedds",
         build_file = "@com_github_mvukov_rules_ros2//repositories:cyclonedds.BUILD.bazel",
-        sha256 = "b4488c641f914e8c51827dc50151edc1ffd915a53ed0f61c25f74d249267627d",
-        strip_prefix = "cyclonedds-457a07132d394e6461ca23a5c27ddaefbb8ab868",
-        urls = ["https://github.com/eclipse-cyclonedds/cyclonedds/archive/457a07132d394e6461ca23a5c27ddaefbb8ab868.tar.gz"],
+        sha256 = "d44cbbff17a5716850edfff1d1dd51f71c0e525cdf92b4ae71f058b7547ca734",
+        strip_prefix = "cyclonedds-0.9.0",
+        urls = ["https://github.com/eclipse-cyclonedds/cyclonedds/archive/0.9.0.tar.gz"],
     )
 
     maybe(
