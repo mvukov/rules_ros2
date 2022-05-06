@@ -12,5 +12,6 @@ cc_library(
         "-w",
     ],
     includes = ["include"],
+    copts = ["-std=c++17", "-w"],
     visibility = ["//visibility:public"],
 )

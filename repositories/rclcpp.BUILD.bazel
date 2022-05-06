@@ -108,4 +108,6 @@ cc_library(
         "@ros2_rcl//:rcl_action",
         "@ros2_rcl_interfaces//:cpp_action_msgs",
     ],
+    copts = ["-std=c++17"],
+    visibility = ["//visibility:public"],
 )

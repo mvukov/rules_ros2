@@ -176,7 +176,7 @@ cc_library(
         "rosidl_typesupport_introspection_cpp/include/**/*.hpp",
         "rosidl_typesupport_introspection_cpp/include/**/*.h",
     ]),
-    copts = ["-std=c++14"],
+    copts = ["-std=c++17"],
     includes = ["rosidl_typesupport_introspection_cpp/include"],
     visibility = ["//visibility:public"],
     deps = [

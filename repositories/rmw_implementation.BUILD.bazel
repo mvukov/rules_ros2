@@ -10,7 +10,7 @@ cc_library(
         "rmw_implementation/src/functions.hpp",
         "rmw_implementation/src/visibility_control.h",
     ],
-    copts = ["-std=c++14"],
+    copts = ["-std=c++17"],
     data = [
         "@ros2_rmw_cyclonedds//:rmw_cyclonedds",
     ],
