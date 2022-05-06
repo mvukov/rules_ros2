@@ -10,5 +10,6 @@ cc_library(
     hdrs = glob(["include/**/*.h"]),
     copts = CPP_COPTS + ["-w"],
     includes = ["include"],
+    copts = ["-std=c++17", "-w"],
     visibility = ["//visibility:public"],
 )

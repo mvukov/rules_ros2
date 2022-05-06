@@ -42,6 +42,7 @@ ros2_cpp_library(
     hdrs = [
         "tracetools/include/tracetools/utils.hpp",
     ],
+    copts = ["-std=c++17"],
     includes = ["tracetools/include/"],
     visibility = ["//visibility:public"],
     deps = [":tracetools_c"],

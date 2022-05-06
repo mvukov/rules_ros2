@@ -28,6 +28,7 @@ ros2_cpp_library(
         "rmw_dds_common/include/**/*.h",
         "rmw_dds_common/include/**/*.hpp",
     ]),
+    copts = ["-std=c++17"],
     includes = ["rmw_dds_common/include"],
     visibility = ["//visibility:public"],
     deps = [

@@ -877,6 +877,9 @@ def py_ros2_interface_library(name, deps, **kwargs):
     )
     py_library(
         name = name,
+        srcs = [name_cpp],
+        includes = [name_cpp],
+        copts = ["-std=c++17"],
         deps = [
             name_py,
             "@ros2_rosidl//:rosidl_parser",

@@ -1,20 +1,15 @@
 """ Builds spdlog.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "CPP_COPTS")
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
     name = "spdlog",
-    srcs = glob(
-        ["src/**/*.cpp"],
-        exclude = ["src/fmt.cpp"],
-    ) + ["include/spdlog/fmt/fmt.h"],
-    hdrs = glob(
-        ["include/**/*.h"],
-        exclude = ["include/spdlog/fmt/*.h"],
-    ),
-    copts = CPP_COPTS + ["-w"],
+    srcs = glob(["src/**/*.cpp"], exclude = ["src/fmt.cpp"]) + ["include/spdlog/fmt/fmt.h"],
+    hdrs = glob(["include/**/*.h"], exclude = ["include/spdlog/fmt/*.h"]),
+    includes = ["include"],
+    copts = ["-std=c++17", "-w"],
+    linkopts = ["-lpthread"],
     defines = [
         "SPDLOG_COMPILED_LIB",
         "SPDLOG_FMT_EXTERNAL",
@@ -22,5 +17,7 @@ cc_library(
     includes = ["include"],
     linkopts = ["-lpthread"],
     visibility = ["//visibility:public"],
-    deps = ["@fmt"],
+    deps = [
+        "@fmt",
+    ],
 )

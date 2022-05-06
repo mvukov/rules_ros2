@@ -11,7 +11,7 @@ ros2_cpp_binary(
         "rmw_cyclonedds_cpp/src/*.cpp",
         "rmw_cyclonedds_cpp/src/*.hpp",
     ]),
-    copts = ["-fvisibility=hidden"],
+    copts = ["-std=c++17", "-fvisibility=hidden"],
     includes = ["rmw_cyclonedds_cpp/include"],
     linkopts = ["-fvisibility=hidden"],
     linkshared = True,

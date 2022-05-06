@@ -7,6 +7,7 @@ ros2_cpp_library(
     name = "libstatistics_collector",
     srcs = glob(["src/**/*.cpp"]),
     hdrs = glob(["include/**/*.hpp"]),
+    copts = ["-std=c++17"],
     includes = ["include"],
     visibility = ["//visibility:public"],
     deps = [

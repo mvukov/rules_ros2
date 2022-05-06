@@ -32,6 +32,8 @@ ros2_cpp_library(
         "@ros2_rcutils//:rcutils",
         "@ros2_rosidl//:rosidl_runtime_c",
     ],
+    visibility = ["//visibility:public"],
+    copts = ["-std=c++17"],
 )
 
 ros2_cpp_library(
@@ -44,6 +46,7 @@ ros2_cpp_library(
         "rosidl_typesupport_cpp/include/**/*.h",
         "rosidl_typesupport_cpp/include/**/*.hpp",
     ]),
+    copts = ["-std=c++17"],
     includes = ["rosidl_typesupport_cpp/include"],
     visibility = ["//visibility:public"],
     deps = [

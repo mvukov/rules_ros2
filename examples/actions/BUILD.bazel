@@ -23,6 +23,7 @@ cpp_ros2_interface_library(
 ros2_cpp_binary(
     name = "server",
     srcs = ["server.cc"],
+    copts = ["-std=c++17"],
     deps = [
         ":cpp_fibonacci_msgs",
         "@ros2_rclcpp//:rclcpp",
@@ -47,6 +48,7 @@ py_binary(
 ros2_cpp_binary(
     name = "client",
     srcs = ["client.cc"],
+    copts = ["-std=c++17"],
     deps = [
         ":cpp_fibonacci_msgs",
         "@ros2_rclcpp//:rclcpp",
