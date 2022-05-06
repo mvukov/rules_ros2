@@ -93,7 +93,7 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "fmt",
+        name = "fmt-7.1.3",
         build_file = "@com_github_mvukov_rules_ros2//repositories:fmt.BUILD.bazel",
         sha256 = "5cae7072042b3043e12d53d50ef404bbb76949dad1de368d7f993a15c8c05ecc",
         strip_prefix = "fmt-7.1.3",
@@ -107,6 +107,7 @@ def ros2_repositories():
         sha256 = "944d0bd7c763ac721398dca2bb0f3b5ed16f67cef36810ede5061f35a543b4b8",
         strip_prefix = "spdlog-1.8.5",
         url = "https://github.com/gabime/spdlog/archive/v1.8.5.tar.gz",
+        repo_mapping = {"@fmt" : "@fmt-7.1.3"},
     )
 
     maybe(
@@ -120,11 +121,11 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "libyaml",
+        name = "libyaml-0.2.5",
         build_file = "@com_github_mvukov_rules_ros2//repositories:libyaml.BUILD.bazel",
-        sha256 = "2c103fc473e904c6fe7580277f1fa16b6d716e54d5e3f32a8913c4850ae03b3f",
-        strip_prefix = "libyaml-acd6f6f014c25e46363e718381e0b35205df2d83",
-        urls = ["https://github.com/yaml/libyaml/archive/acd6f6f014c25e46363e718381e0b35205df2d83.tar.gz"],
+        sha256 = "fa240dbf262be053f3898006d502d514936c818e422afdcf33921c63bed9bf2e",
+        strip_prefix = "libyaml-0.2.5",
+        urls = ["https://github.com/yaml/libyaml/archive/0.2.5.tar.gz"],
     )
 
     maybe(
@@ -134,6 +135,7 @@ def ros2_repositories():
         sha256 = "f56b714081c866af2e83133841fabc301f3c91190d1abd3ec2a2835712886080",
         strip_prefix = "rcl-1.1.11",
         urls = ["https://github.com/ros2/rcl/archive/1.1.11.tar.gz"],
+        repo_mapping = {"@libyaml" : "@libyaml-0.2.5"},
     )
 
     maybe(
