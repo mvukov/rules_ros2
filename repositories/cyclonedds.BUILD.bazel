@@ -17,7 +17,7 @@ expand_template(
         "#cmakedefine DDS_HAS_DEADLINE_MISSED 1": "#define DDS_HAS_DEADLINE_MISSED 1",
         "#cmakedefine DDS_HAS_NETWORK_PARTITIONS 1": "#define DDS_HAS_NETWORK_PARTITIONS 1",
         "#cmakedefine DDS_HAS_SSM 1": "#define DDS_HAS_SSM 1",
-        "#cmakedefine DDS_HAS_SSL 1": "#define DDS_HAS_SSL 1",
+        "#cmakedefine DDS_HAS_SSL 1": "#undef DDS_HAS_SSL",
         "#cmakedefine DDS_HAS_TYPE_DISCOVERY 1": "#define DDS_HAS_TYPE_DISCOVERY 1",
         "#cmakedefine DDS_HAS_TOPIC_DISCOVERY 1": "#define DDS_HAS_TOPIC_DISCOVERY 1",
         "#cmakedefine DDS_HAS_SHM 1": "#undef DDS_HAS_SHM",
@@ -50,9 +50,9 @@ expand_template(
     name = "version_h",
     out = "include/dds/version.h",
     substitutions = {
-        "@CycloneDDS_VERSION@": "0.7.0",
+        "@CycloneDDS_VERSION@": "0.9.0",
         "@CycloneDDS_VERSION_MAJOR@": "0",
-        "@CycloneDDS_VERSION_MINOR@": "7",
+        "@CycloneDDS_VERSION_MINOR@": "9",
         "@CycloneDDS_VERSION_PATCH@": "0",
         "@PROJECT_NAME_CAPS@": "CYCLONEDDS",
         "@PROJECT_NAME_SMALL@": "cyclonedds",
@@ -270,6 +270,8 @@ _DDSI_SRCS = [
     "ddsi_serdata_pserop.c",
     "ddsi_serdata_plist.c",
     "ddsi_sertopic.c",
+    "ddsi_sertype_pserop.c",
+    "ddsi_sertype_plist.c",
     "ddsi_statistics.c",
     "ddsi_iid.c",
     "ddsi_tkmap.c",
@@ -311,6 +313,18 @@ _DDSI_SRCS = [
     "sysdeps.c",
     # ENABLE_LIFESPAN
     "ddsi_lifespan.c",
+    "ddsi_xt_typeinfo.c",
+    "ddsi_xt_typelookup.c",
+    "ddsi_typelib.c",
+    "ddsi_xt_typemap.c",
+    "ddsi_sertype.c",  # Manually added!
+    "ddsi_typewrap.c",  # Manually added!
+    "ddsi_sertype_default.c",  # Manually added!
+    "ddsi_config.c",  # Manually added!
+    "ddsi_typelookup.c",  # Manually added!
+    "ddsi_vnet.c",  # Manually added!
+    "ddsi_wraddrset.c",  # Manually added!
+    "ddsi_list_genptr.c",
 ]
 
 _DDSI_PRIVATE_HDRS = [
@@ -401,6 +415,7 @@ _DDSI_PRIVATE_HDRS = [
     "ddsi_lifespan.h",
     "ddsi_config.h",
     "ddsi_config_impl.h",
+    "ddsi_xt_impl.h",
 ]
 
 _DDSC_SRCS = [
@@ -433,6 +448,8 @@ _DDSC_SRCS = [
     "dds_whc.c",
     "dds_whc_builtintopic.c",
     "dds_serdata_builtintopic.c",
+    "dds_sertype_builtintopic.c",
+    "dds_loan.c",
 ]
 
 _DDSC_PUBLIC_HDRS = [
