@@ -77,6 +77,7 @@ py_binary(
     main = _ROSIDL_TYPESUPPORT_GENERATOR_C_APP_PY,
     visibility = ["//visibility:public"],
     deps = [":rosidl_typesupport_generator_c_lib"],
+    legacy_create_init=False,
 )
 
 filegroup(
@@ -114,6 +115,7 @@ py_binary(
     main = _ROSIDL_TYPESUPPORT_GENERATOR_CPP_APP_PY,
     visibility = ["//visibility:public"],
     deps = [":rosidl_typesupport_generator_cpp_lib"],
+    legacy_create_init=False,
 )
 
 filegroup(
