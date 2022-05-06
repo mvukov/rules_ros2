@@ -109,3 +109,18 @@ ros2_cpp_library(
     copts = ["-std=c++17"],
     visibility = ["//visibility:public"],
 )
+
+cc_library(
+    name = "rclcpp_lifecycle",
+    hdrs = glob(["rclcpp_lifecycle/include/**/*.hpp", "rclcpp_lifecycle/include/**/*.h", "rclcpp_lifecycle/src/*.hpp"]),
+    includes = ["rclcpp_lifecycle/include"],
+    srcs = glob(["rclcpp_lifecycle/src/**/*.cpp"]),
+    deps = [
+        ":rclcpp",
+        "@ros2_rcl//:rcl_lifecycle",
+        "@ros2_rcl_interfaces//:cpp_lifecycle_msgs",
+        "@ros2_rcl_interfaces//:c_lifecycle_msgs",
+    ],
+    copts = ["-std=c++17"],
+    visibility = ["//visibility:public"],
+)
