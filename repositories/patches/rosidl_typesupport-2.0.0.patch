@@ -1,0 +1,39 @@
+diff --git a/rosidl_typesupport_c/resource/msg__type_support.cpp.em b/rosidl_typesupport_c/resource/msg__type_support.cpp.em
+index bd2e929..04dc10d 100644
+--- a/rosidl_typesupport_c/resource/msg__type_support.cpp.em
++++ b/rosidl_typesupport_c/resource/msg__type_support.cpp.em
+@@ -6,7 +6,7 @@ include_parts = [package_name] + list(interface_path.parents[0].parts) + [
+ include_base = '/'.join(include_parts)
+ 
+ header_files = [
+-    'cstddef',
++    'stddef.h',
+     'rosidl_runtime_c/message_type_support_struct.h',
+     include_base + '__struct.h',
+     include_base + '__type_support.h',
+diff --git a/rosidl_typesupport_c/resource/srv__type_support.cpp.em b/rosidl_typesupport_c/resource/srv__type_support.cpp.em
+index 17ee3f3..84a3618 100644
+--- a/rosidl_typesupport_c/resource/srv__type_support.cpp.em
++++ b/rosidl_typesupport_c/resource/srv__type_support.cpp.em
+@@ -22,7 +22,7 @@ include_parts = [package_name] + list(interface_path.parents[0].parts) + [
+ include_base = '/'.join(include_parts)
+ 
+ header_files = [
+-    'cstddef',
++    'stddef.h',
+     'rosidl_runtime_c/service_type_support_struct.h',
+     include_base + '__type_support.h',
+ ]
+diff --git a/rosidl_typesupport_c/rosidl_typesupport_c/__init__.py b/rosidl_typesupport_c/rosidl_typesupport_c/__init__.py
+index 0839df4..31a5b96 100644
+--- a/rosidl_typesupport_c/rosidl_typesupport_c/__init__.py
++++ b/rosidl_typesupport_c/rosidl_typesupport_c/__init__.py
+@@ -23,7 +23,7 @@ def generate_c(generator_arguments_file, type_supports):
+     :param type_support: List of type supports to be used
+     """
+     mapping = {
+-        'idl__type_support.cpp.em': '%s__type_support.cpp',
++        'idl__type_support.cpp.em': '%s__type_support.c',
+     }
+     return generate_files(
+         generator_arguments_file, mapping,
