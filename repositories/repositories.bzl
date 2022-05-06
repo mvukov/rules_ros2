@@ -211,7 +211,7 @@ def ros2_repositories():
         http_archive,
         name = "ros2_unique_identifier_msgs",
         build_file = "@com_github_mvukov_rules_ros2//repositories:unique_identifier_msgs.BUILD.bazel",
-        sha256 = "aa0f5a440cface1dd85cf05d97cadb812b2796973882d02a7e795ae70b64b9a0",
+        sha256 = "ccedcb7c2b6d927fc4f654cceab299a8cb55082953867754795c6ea2ccdd68a9",
         strip_prefix = "unique_identifier_msgs-2.2.1",
         urls = ["https://github.com/ros2/unique_identifier_msgs/archive/2.2.1.tar.gz"],
     )
