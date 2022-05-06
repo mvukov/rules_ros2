@@ -15,6 +15,7 @@ ros2_c_library(
     deps = [
         "@libyaml//:yaml",
         "@ros2_rcutils//:rcutils",
+        "@ros2_rmw//:rmw",
     ],
 )
 
