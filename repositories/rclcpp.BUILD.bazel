@@ -91,6 +91,8 @@ ros2_cpp_library(
         "@ros2_rosidl_typesupport//:rosidl_typesupport_cpp",
         "@ros2_tracing//:tracetools",
     ],
+    copts = ["-std=c++17"],
+    visibility = ["//visibility:public"],
 )
 
 ros2_cpp_library(
