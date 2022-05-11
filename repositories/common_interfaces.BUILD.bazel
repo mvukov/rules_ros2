@@ -19,3 +19,29 @@ cpp_ros2_interface_library(
     deps = [":std_msgs"],
     visibility = ["//visibility:public"],
 )
+
+ros2_interface_library(
+    name = "geometry_msgs",
+    srcs = glob(["geometry_msgs/msg/*.msg"]),
+    deps = [":std_msgs"],
+    visibility = ["//visibility:public"],
+)
+
+cpp_ros2_interface_library(
+    name = "cpp_geometry_msgs",
+    deps = [":geometry_msgs"],
+    visibility = ["//visibility:public"],
+)
+
+ros2_interface_library(
+    name = "nav_msgs",
+    srcs = glob(["nav_msgs/msg/*.msg", "nav_msgs/srv/*.srv"]),
+    deps = [":geometry_msgs", ":std_msgs"],
+    visibility = ["//visibility:public"],
+)
+
+cpp_ros2_interface_library(
+    name = "cpp_nav_msgs",
+    deps = [":nav_msgs"],
+    visibility = ["//visibility:public"],
+)
