@@ -45,3 +45,16 @@ cpp_ros2_interface_library(
     deps = [":nav_msgs"],
     visibility = ["//visibility:public"],
 )
+
+ros2_interface_library(
+    name = "sensor_msgs",
+    srcs = glob(["sensor_msgs/msg/*.msg", "sensor_msgs/srv/*.srv"]),
+    deps = [":geometry_msgs", ":std_msgs"],
+    visibility = ["//visibility:public"],
+)
+
+cpp_ros2_interface_library(
+    name = "cpp_sensor_msgs",
+    deps = [":sensor_msgs"],
+    visibility = ["//visibility:public"],
+)
