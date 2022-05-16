@@ -81,6 +81,24 @@ def ros2_repositories():
 
     ros2_repositories_impl()
 
+    maybe(
+        http_archive,
+        name = "iceoryx",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:iceoryx.BUILD.bzl",
+        sha256 = "99871bcaa8da4361d1baae9cf1507683058de8572ac3080edc41e590ffba06c0",
+        strip_prefix = "iceoryx-2.0.2",
+        urls = ["https://github.com/eclipse-iceoryx/iceoryx/archive/v2.0.2.tar.gz"],
+    )
+
+    # feature/bazel branch
+    maybe(
+        new_git_repository,
+        name = "ros2_rclpy",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel",
+        remote = "https://github.com/mvukov/rclpy.git",
+        commit = "677e67f4a50469591e436f9919ceae0bd870f9eb",
+    )
+
     # ros2-devel branch
     maybe(
         http_archive,
