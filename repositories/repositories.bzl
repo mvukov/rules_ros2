@@ -233,3 +233,11 @@ def ros2_repositories():
         strip_prefix = "unique_identifier_msgs-2.1.3",
         urls = ["https://github.com/ros2/unique_identifier_msgs/archive/2.1.3.tar.gz"],
     )
+
+    maybe(
+        new_git_repository,
+        name = "ros2_gps_msgs",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:gpsfix_msgs.BUILD.bazel",
+        remote = "https://github.com/swri-robotics/gps_umd.git",
+        branch = "ros2_devel",
+    )
