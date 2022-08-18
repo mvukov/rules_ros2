@@ -1,4 +1,4 @@
-""" Buildfile for GPSFix msgs
+""" Builds gps_umd.
 """
 
 load(
@@ -7,21 +7,15 @@ load(
     "ros2_interface_library",
 )
 
-filegroup (
-    name = "gps_msgs_fg",
-    srcs = glob(["gps_msgs/msgs/*.msg"]),
-    visibility = ["//visibility:public"],
-)
-
 ros2_interface_library(
-    name = "gps_fix_msgs",
+    name = "gps_msgs",
     srcs = glob(["gps_msgs/msg/*.msg"]),
     deps = ["@ros2_common_interfaces//:std_msgs"],
     visibility = ["//visibility:public"],
 )
 
 cpp_ros2_interface_library(
-    name = "cpp_gps_fix_msgs",
-    deps = [":gps_fix_msgs",],
+    name = "cpp_gps_msgs",
+    deps = [":gps_msgs",],
     visibility = ["//visibility:public"],
 )
