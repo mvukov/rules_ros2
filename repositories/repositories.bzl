@@ -233,3 +233,13 @@ def ros2_repositories():
         strip_prefix = "unique_identifier_msgs-2.1.3",
         urls = ["https://github.com/ros2/unique_identifier_msgs/archive/2.1.3.tar.gz"],
     )
+
+    # ros2-devel branch
+    maybe(
+        http_archive,
+        name = "ros2_gps_umd",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:gps_umd.BUILD.bazel",  
+        sha256 = "64a96f93053d0d59e8fcccceab5408a7d666dd813d4c12df139ef24d916f49ab",
+        strip_prefix = "gps_umd-fc782811804fafb12ee479a48a2aa2e9ee942e2d",
+        urls = ["https://github.com/swri-robotics/gps_umd/archive/fc782811804fafb12ee479a48a2aa2e9ee942e2d.tar.gz"],
+    )
