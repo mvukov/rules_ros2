@@ -83,18 +83,18 @@ def to_snake_case(not_snake_case):
 def _get_stem(path):
     return path.basename[:-len(path.extension) - 1]
 
-def _run_adapter(ctx, package_name, relative_dir, srcs):
+def _run_adapter(ctx, package_name, srcs):
     adapter_arguments = struct(
         package_name = package_name,
         non_idl_tuples = [":{}".format(src.path) for src in srcs],
     )
 
     adapter_arguments_file = ctx.actions.declare_file(
-        "{}/rosidl_adapter_args.json".format(relative_dir),
+        "{}/rosidl_adapter_args.json".format(package_name),
     )
     ctx.actions.write(adapter_arguments_file, adapter_arguments.to_json())
     adapter_map = ctx.actions.declare_file(
-        "{}/rosidl_adapter_map.idls".format(relative_dir),
+        "{}/rosidl_adapter_map.idls".format(package_name),
     )
     output_dir = adapter_map.dirname
 
@@ -104,7 +104,7 @@ def _run_adapter(ctx, package_name, relative_dir, srcs):
         extension = src.extension
         stem = _get_stem(src)
         idl_files.append(ctx.actions.declare_file(
-            "{}/{}/{}.idl".format(relative_dir, extension, stem),
+            "{}/{}/{}.idl".format(package_name, extension, stem),
         ))
         idl_tuples.append(
             "{}:{}/{}.idl".format(output_dir, extension, stem),
@@ -134,7 +134,6 @@ def _run_generator(
         package_name,
         idl_files,
         idl_tuples,
-        relative_dir,
         output_dir,
         generator,
         generator_templates,
@@ -151,7 +150,7 @@ def _run_generator(
         target_dependencies = [],  # TODO(mvukov) Do we need this?
     )
     generator_arguments_file = ctx.actions.declare_file(
-        "{}/{}_args.json".format(relative_dir, generator.basename),
+        "{}/{}_args.json".format(package_name, generator.basename),
     )
     ctx.actions.write(generator_arguments_file, generator_arguments.to_json())
 
@@ -171,7 +170,7 @@ def _run_generator(
         snake_case_stem = to_snake_case(stem)
         for t in output_mapping:
             relative_file = "{}/{}/{}".format(
-                relative_dir,
+                package_name,
                 extension,
                 t % snake_case_stem,
             )
@@ -189,7 +188,7 @@ def _run_generator(
     if visibility_control_template:
         visibility_control_basename = _get_stem(visibility_control_template)
         relative_file = "{}/msg/{}".format(
-            relative_dir,
+            package_name,
             visibility_control_basename,
         )
         visibility_control_h = ctx.actions.declare_file(relative_file)
@@ -227,12 +226,10 @@ _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING = [
 def _c_generator_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
-    relative_dir = package_name
 
     idl_files, idl_tuples, output_dir = _run_adapter(
         ctx,
         package_name,
-        relative_dir,
         srcs,
     )
 
@@ -242,7 +239,6 @@ def _c_generator_aspect_impl(target, ctx):
         package_name,
         idl_files,
         idl_tuples,
-        relative_dir,
         output_dir,
         ctx.executable._interface_generator,
         ctx.attr._interface_templates,
@@ -256,7 +252,6 @@ def _c_generator_aspect_impl(target, ctx):
         package_name,
         idl_files,
         idl_tuples,
-        relative_dir,
         output_dir,
         ctx.executable._typesupport_generator,
         ctx.attr._typesupport_templates,
@@ -275,7 +270,6 @@ def _c_generator_aspect_impl(target, ctx):
         package_name,
         idl_files,
         idl_tuples,
-        relative_dir,
         output_dir,
         ctx.executable._typesupport_introspection_generator,
         ctx.attr._typesupport_introspection_templates,
@@ -413,12 +407,10 @@ _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING = [
 def _cpp_generator_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
-    relative_dir = package_name
 
     idl_files, idl_tuples, output_dir = _run_adapter(
         ctx,
         package_name,
-        relative_dir,
         srcs,
     )
 
@@ -428,7 +420,6 @@ def _cpp_generator_aspect_impl(target, ctx):
         package_name,
         idl_files,
         idl_tuples,
-        relative_dir,
         output_dir,
         ctx.executable._interface_generator,
         ctx.attr._interface_templates,
@@ -441,7 +432,6 @@ def _cpp_generator_aspect_impl(target, ctx):
         package_name,
         idl_files,
         idl_tuples,
-        relative_dir,
         output_dir,
         ctx.executable._typesupport_generator,
         ctx.attr._typesupport_templates,
@@ -459,7 +449,6 @@ def _cpp_generator_aspect_impl(target, ctx):
         package_name,
         idl_files,
         idl_tuples,
-        relative_dir,
         output_dir,
         ctx.executable._typesupport_introspection_generator,
         ctx.attr._typesupport_introspection_templates,
