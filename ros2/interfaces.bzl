@@ -53,7 +53,7 @@ ros2_interface_library = rule(
     implementation = _ros2_interface_library_impl,
 )
 
-def to_snake_case(not_snake_case):
+def _to_snake_case(not_snake_case):
     """ Converts camel-case to snake-case.
 
     Based on convert_camel_case_to_lower_case_underscore from rosidl_cmake.
@@ -166,7 +166,7 @@ def _run_generator(
     for src in srcs:
         extension = src.extension
         stem = _get_stem(src)
-        snake_case_stem = to_snake_case(stem)
+        snake_case_stem = _to_snake_case(stem)
         for t in output_mapping:
             relative_file = "{}/{}/{}".format(
                 package_name,
