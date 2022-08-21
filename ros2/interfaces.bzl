@@ -128,6 +128,9 @@ def _run_adapter(ctx, package_name, srcs):
 
     return idl_files, idl_tuples
 
+def _get_parent_dir(path):
+    return "/".join(path.split("/")[:-1])
+
 def _run_generator(
         ctx,
         srcs,
@@ -144,10 +147,11 @@ def _run_generator(
     generator_arguments_file = ctx.actions.declare_file(
         "{}/{}_args.json".format(package_name, generator.basename),
     )
+    output_dir = generator_arguments_file.dirname
     generator_arguments = struct(
         package_name = package_name,
         idl_tuples = idl_tuples,
-        output_dir = generator_arguments_file.dirname,
+        output_dir = output_dir,
         template_dir = generator_templates[0].dirname,
         target_dependencies = [],  # TODO(mvukov) Do we need this?
     )
@@ -162,7 +166,7 @@ def _run_generator(
         for arg in extra_generator_args:
             generator_cmd_args.add(arg)
 
-    generator_outputs = {}
+    generator_outputs = []
     for src in srcs:
         extension = src.extension
         stem = _get_stem(src)
@@ -173,13 +177,11 @@ def _run_generator(
                 extension,
                 t % snake_case_stem,
             )
-            generator_outputs[relative_file] = ctx.actions.declare_file(
-                relative_file,
-            )
+            generator_outputs.append(ctx.actions.declare_file(relative_file))
 
     ctx.actions.run(
         inputs = idl_files + generator_templates + [generator_arguments_file],
-        outputs = generator_outputs.values(),
+        outputs = generator_outputs,
         executable = generator,
         arguments = [generator_cmd_args],
     )
@@ -191,7 +193,7 @@ def _run_generator(
             visibility_control_basename,
         )
         visibility_control_h = ctx.actions.declare_file(relative_file)
-        generator_outputs[relative_file] = visibility_control_h
+        generator_outputs.append(visibility_control_h)
         ctx.actions.expand_template(
             template = visibility_control_template,
             output = visibility_control_h,
@@ -201,11 +203,8 @@ def _run_generator(
             },
         )
 
-    return generator_outputs
-
-CGeneratorAspectInfo = provider("TBD", fields = [
-    "output_files",
-])
+    cc_include_dir = _get_parent_dir(output_dir)
+    return generator_outputs, cc_include_dir
 
 _INTERFACE_GENERATOR_C_OUTPUT_MAPPING = [
     "%s.h",
@@ -222,6 +221,12 @@ _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING = [
     "detail/%s__type_support.c",
 ]
 
+def _get_hdrs(files):
+    return [f for f in files if f.path.endswith(".h") or f.path.endswith(".hpp")]
+
+def _get_srcs(files):
+    return [f for f in files if f.path.endswith(".c") or f.path.endswith(".cpp")]
+
 def _c_generator_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
@@ -232,7 +237,7 @@ def _c_generator_aspect_impl(target, ctx):
         srcs,
     )
 
-    interface_outputs = _run_generator(
+    interface_outputs, cc_include_dir = _run_generator(
         ctx,
         srcs,
         package_name,
@@ -244,7 +249,7 @@ def _c_generator_aspect_impl(target, ctx):
         visibility_control_template = ctx.file._interface_visibility_control_template,
     )
 
-    typesupport_outputs = _run_generator(
+    typesupport_outputs, _ = _run_generator(
         ctx,
         srcs,
         package_name,
@@ -261,7 +266,7 @@ def _c_generator_aspect_impl(target, ctx):
         ],
     )
 
-    typesupport_introspection_outputs = _run_generator(
+    typesupport_introspection_outputs, _ = _run_generator(
         ctx,
         srcs,
         package_name,
@@ -273,19 +278,22 @@ def _c_generator_aspect_impl(target, ctx):
         visibility_control_template = ctx.file._typesupport_introspection_visibility_control_template,
     )
 
-    output_files = dicts.add(
-        interface_outputs,
-        typesupport_outputs,
-        typesupport_introspection_outputs,
-    )
-    for dep in ctx.rule.attr.deps:
-        output_files.update(dep[CGeneratorAspectInfo].output_files)
+    # compilation_context_2, compilation_outputs = cc_common.compile()
 
-    return [
-        CGeneratorAspectInfo(
-            output_files = output_files,
-        ),
-    ]
+    all_outputs = interface_outputs + typesupport_outputs + typesupport_introspection_outputs
+    compilation_context = cc_common.create_compilation_context(
+        headers = depset(_get_hdrs(all_outputs)),
+        system_includes = depset([cc_include_dir]),
+    )
+    cc_info = cc_common.merge_cc_infos(
+        direct_cc_infos = [
+            CcInfo(compilation_context = compilation_context),
+        ] + [
+            dep[CcInfo]
+            for dep in ctx.rule.attr.deps
+        ],
+    )
+    return [cc_info]
 
 c_generator_aspect = aspect(
     implementation = _c_generator_aspect_impl,
@@ -335,20 +343,14 @@ c_generator_aspect = aspect(
     },
 )
 
-def _generator_impl(ctx, aspect_info):
-    relative_dir = ctx.attr.name
-    output_files = []
-    for dep in ctx.attr.deps:
-        for f_relative, f in dep[aspect_info].output_files.items():
-            f_symlink = ctx.actions.declare_file(
-                "{}/{}".format(relative_dir, f_relative),
-            )
-            ctx.actions.symlink(output = f_symlink, target_file = f)
-            output_files.append(f_symlink)
-    return [DefaultInfo(files = depset(output_files))]
+def _generator_impl(ctx):
+    cc_info = cc_common.merge_cc_infos(
+        direct_cc_infos = [dep[CcInfo] for dep in ctx.attr.deps],
+    )
+    return [cc_info]
 
 def _c_generator_impl(ctx):
-    return _generator_impl(ctx, CGeneratorAspectInfo)
+    return _generator_impl(ctx)
 
 c_generator = rule(
     attrs = {
@@ -361,7 +363,7 @@ c_generator = rule(
     implementation = _c_generator_impl,
 )
 
-def c_ros2_interface_library(name, deps, visibility = None):
+def c_ros2_interface_library(name, deps, **kwargs):
     name_c = "{}_c".format(name)
     c_generator(
         name = name_c,
@@ -369,20 +371,15 @@ def c_ros2_interface_library(name, deps, visibility = None):
     )
     cc_library(
         name = name,
-        srcs = [name_c],
-        includes = [name_c],
         deps = [
+            name_c,
             "@ros2_rosidl//:rosidl_runtime_c",
             "@ros2_rosidl//:rosidl_typesupport_introspection_c",
             "@ros2_rosidl_typesupport//:rosidl_typesupport_c",
         ],
-        visibility = visibility,
         copts = ["-std=c11"],
+        **kwargs
     )
-
-CppGeneratorAspectInfo = provider("TBD", fields = [
-    "output_files",
-])
 
 _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING = [
     "%s.hpp",
@@ -410,7 +407,7 @@ def _cpp_generator_aspect_impl(target, ctx):
         srcs,
     )
 
-    interface_outputs = _run_generator(
+    interface_outputs, cc_include_dir = _run_generator(
         ctx,
         srcs,
         package_name,
@@ -421,7 +418,7 @@ def _cpp_generator_aspect_impl(target, ctx):
         _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING,
     )
 
-    typesupport_outputs = _run_generator(
+    typesupport_outputs, _ = _run_generator(
         ctx,
         srcs,
         package_name,
@@ -437,7 +434,7 @@ def _cpp_generator_aspect_impl(target, ctx):
         ],
     )
 
-    typesupport_introspection_outputs = _run_generator(
+    typesupport_introspection_outputs, _ = _run_generator(
         ctx,
         srcs,
         package_name,
@@ -448,19 +445,20 @@ def _cpp_generator_aspect_impl(target, ctx):
         _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING,
     )
 
-    output_files = dicts.add(
-        interface_outputs,
-        typesupport_outputs,
-        typesupport_introspection_outputs,
+    all_outputs = interface_outputs + typesupport_outputs + typesupport_introspection_outputs
+    compilation_context = cc_common.create_compilation_context(
+        headers = depset(_get_hdrs(all_outputs)),
+        system_includes = depset([cc_include_dir]),
     )
-    for dep in ctx.rule.attr.deps:
-        output_files.update(dep[CppGeneratorAspectInfo].output_files)
-
-    return [
-        CppGeneratorAspectInfo(
-            output_files = output_files,
-        ),
-    ]
+    cc_info = cc_common.merge_cc_infos(
+        direct_cc_infos = [
+            CcInfo(compilation_context = compilation_context),
+        ] + [
+            dep[CcInfo]
+            for dep in ctx.rule.attr.deps
+        ],
+    )
+    return [cc_info]
 
 cpp_generator_aspect = aspect(
     implementation = _cpp_generator_aspect_impl,
@@ -499,7 +497,7 @@ cpp_generator_aspect = aspect(
 )
 
 def _cpp_generator_impl(ctx):
-    return _generator_impl(ctx, CppGeneratorAspectInfo)
+    return _generator_impl(ctx)
 
 cpp_generator = rule(
     attrs = {
@@ -512,7 +510,7 @@ cpp_generator = rule(
     implementation = _cpp_generator_impl,
 )
 
-def cpp_ros2_interface_library(name, deps, visibility = None):
+def cpp_ros2_interface_library(name, deps, **kwargs):
     name_cpp = "{}_cpp".format(name)
     cpp_generator(
         name = name_cpp,
@@ -520,14 +518,13 @@ def cpp_ros2_interface_library(name, deps, visibility = None):
     )
     cc_library(
         name = name,
-        srcs = [name_cpp],
-        includes = [name_cpp],
         copts = ["-std=c++14"],
         deps = [
+            name_cpp,
             "@ros2_rosidl//:rosidl_runtime_cpp",
             "@ros2_rosidl//:rosidl_typesupport_introspection_c",
             "@ros2_rosidl//:rosidl_typesupport_introspection_cpp",
             "@ros2_rosidl_typesupport//:rosidl_typesupport_cpp",
         ],
-        visibility = visibility,
+        **kwargs
     )
