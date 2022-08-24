@@ -16,6 +16,7 @@
 
 load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 Ros2InterfaceInfo = provider(
     "Provides info for interface code generation.",
@@ -206,6 +207,10 @@ def _run_generator(
     cc_include_dir = _get_parent_dir(output_dir)
     return generator_outputs, cc_include_dir
 
+CGeneratorAspectInfo = provider("TBD", fields = [
+    "cc_info",
+])
+
 _INTERFACE_GENERATOR_C_OUTPUT_MAPPING = [
     "%s.h",
     "detail/%s__functions.c",
@@ -222,10 +227,80 @@ _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING = [
 ]
 
 def _get_hdrs(files):
-    return [f for f in files if f.path.endswith(".h") or f.path.endswith(".hpp")]
+    return [
+        f for f in files
+        if f.path.endswith(".h") or f.path.endswith(".hpp")
+    ]
 
 def _get_srcs(files):
-    return [f for f in files if f.path.endswith(".c") or f.path.endswith(".cpp")]
+    return [
+        f for f in files
+        if f.path.endswith(".c") or f.path.endswith(".cpp")
+    ]
+
+def _get_compilation_contexts_from_deps(deps):
+    return [dep[CcInfo].compilation_context for dep in deps]
+
+def _get_compilation_contexts_from_aspect_info_deps(deps, aspect_info):
+    return [dep[aspect_info].cc_info.compilation_context for dep in deps]
+
+def _get_linking_contexts_from_deps(deps):
+    return [dep[CcInfo].linking_context for dep in deps]
+
+def _get_linking_contexts_from_aspect_info_deps(deps, aspect_info):
+    return [dep[aspect_info].cc_info.linking_context for dep in deps]
+
+def _compile_cc_generated_code(
+    ctx,
+    lang,
+    aspect_info,
+    package_name,
+    srcs,
+    hdrs,
+    cc_include_dir
+):
+    cc_toolchain = find_cpp_toolchain(ctx)
+    feature_configuration = cc_common.configure_features(
+        ctx = ctx,
+        cc_toolchain = cc_toolchain,
+        requested_features = ctx.features,
+        unsupported_features = ctx.disabled_features,
+    )
+    compilation_contexts = (
+        _get_compilation_contexts_from_aspect_info_deps(
+            ctx.rule.attr.deps, aspect_info) +
+        _get_compilation_contexts_from_deps(ctx.attr._cc_deps)
+    )
+    compilation_context, compilation_outputs = cc_common.compile(
+        actions = ctx.actions,
+        name = package_name + "_" + lang,
+        cc_toolchain = cc_toolchain,
+        feature_configuration = feature_configuration,
+        user_compile_flags = ctx.attr._copts,
+        system_includes = [cc_include_dir],
+        srcs = srcs,
+        public_hdrs = hdrs,
+        compilation_contexts = compilation_contexts,
+    )
+
+    linking_contexts = (
+        _get_linking_contexts_from_aspect_info_deps(
+            ctx.rule.attr.deps, aspect_info) +
+        _get_linking_contexts_from_deps(ctx.attr._cc_deps)
+    )
+    linking_context, linking_outputs = cc_common.create_linking_context_from_compilation_outputs(
+        actions = ctx.actions,
+        name = package_name + "_" + lang,
+        compilation_outputs = compilation_outputs,
+        cc_toolchain = cc_toolchain,
+        feature_configuration = feature_configuration,
+        linking_contexts = linking_contexts,
+    )
+
+    return CcInfo(
+        compilation_context = compilation_context,
+        linking_context = linking_context,
+    )
 
 def _c_generator_aspect_impl(target, ctx):
     package_name = target.label.name
@@ -278,22 +353,23 @@ def _c_generator_aspect_impl(target, ctx):
         visibility_control_template = ctx.file._typesupport_introspection_visibility_control_template,
     )
 
-    # compilation_context_2, compilation_outputs = cc_common.compile()
-
     all_outputs = interface_outputs + typesupport_outputs + typesupport_introspection_outputs
-    compilation_context = cc_common.create_compilation_context(
-        headers = depset(_get_hdrs(all_outputs)),
-        system_includes = depset([cc_include_dir]),
+    hdrs = _get_hdrs(all_outputs)
+    srcs = _get_srcs(all_outputs)
+
+    cc_info = _compile_cc_generated_code(
+        ctx,
+        lang = "c",
+        aspect_info = CGeneratorAspectInfo,
+        package_name = package_name,
+        srcs = srcs,
+        hdrs = hdrs,
+        cc_include_dir = cc_include_dir,
     )
-    cc_info = cc_common.merge_cc_infos(
-        direct_cc_infos = [
-            CcInfo(compilation_context = compilation_context),
-        ] + [
-            dep[CcInfo]
-            for dep in ctx.rule.attr.deps
-        ],
-    )
-    return [cc_info]
+
+    return [
+        CGeneratorAspectInfo(cc_info = cc_info),
+    ]
 
 c_generator_aspect = aspect(
     implementation = _c_generator_aspect_impl,
@@ -340,17 +416,35 @@ c_generator_aspect = aspect(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_c/resource/rosidl_typesupport_introspection_c__visibility_control.h.in"),
             allow_single_file = True,
         ),
+        "_copts": attr.string_list(
+            default = [
+                "-std=c11",
+            ],
+        ),
+        "_cc_deps": attr.label_list(
+            default = [
+                Label("@ros2_rosidl//:rosidl_runtime_c"),
+                Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
+                Label("@ros2_rosidl_typesupport//:rosidl_typesupport_c"),
+            ],
+            providers = [CcInfo],
+        ),
+        "_cc_toolchain": attr.label(
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")
+        ),
     },
+    toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
+    fragments = ["cpp"],
 )
 
-def _generator_impl(ctx):
+def _generator_impl(ctx, aspect_info):
     cc_info = cc_common.merge_cc_infos(
-        direct_cc_infos = [dep[CcInfo] for dep in ctx.attr.deps],
+        direct_cc_infos = [dep[aspect_info].cc_info for dep in ctx.attr.deps],
     )
     return [cc_info]
 
 def _c_generator_impl(ctx):
-    return _generator_impl(ctx)
+    return _generator_impl(ctx, CGeneratorAspectInfo)
 
 c_generator = rule(
     attrs = {
@@ -364,22 +458,15 @@ c_generator = rule(
 )
 
 def c_ros2_interface_library(name, deps, **kwargs):
-    name_c = "{}_c".format(name)
     c_generator(
-        name = name_c,
-        deps = deps,
-    )
-    cc_library(
         name = name,
-        deps = [
-            name_c,
-            "@ros2_rosidl//:rosidl_runtime_c",
-            "@ros2_rosidl//:rosidl_typesupport_introspection_c",
-            "@ros2_rosidl_typesupport//:rosidl_typesupport_c",
-        ],
-        copts = ["-std=c11"],
+        deps = deps,
         **kwargs
     )
+
+CppGeneratorAspectInfo = provider("TBD", fields = [
+    "cc_info",
+])
 
 _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING = [
     "%s.hpp",
@@ -446,19 +533,22 @@ def _cpp_generator_aspect_impl(target, ctx):
     )
 
     all_outputs = interface_outputs + typesupport_outputs + typesupport_introspection_outputs
-    compilation_context = cc_common.create_compilation_context(
-        headers = depset(_get_hdrs(all_outputs)),
-        system_includes = depset([cc_include_dir]),
+    hdrs = _get_hdrs(all_outputs)
+    srcs = _get_srcs(all_outputs)
+
+    cc_info = _compile_cc_generated_code(
+        ctx,
+        lang = "cpp",
+        aspect_info = CppGeneratorAspectInfo,
+        package_name = package_name,
+        srcs = srcs,
+        hdrs = hdrs,
+        cc_include_dir = cc_include_dir,
     )
-    cc_info = cc_common.merge_cc_infos(
-        direct_cc_infos = [
-            CcInfo(compilation_context = compilation_context),
-        ] + [
-            dep[CcInfo]
-            for dep in ctx.rule.attr.deps
-        ],
-    )
-    return [cc_info]
+
+    return [
+        CppGeneratorAspectInfo(cc_info = cc_info),
+    ]
 
 cpp_generator_aspect = aspect(
     implementation = _cpp_generator_aspect_impl,
@@ -493,11 +583,30 @@ cpp_generator_aspect = aspect(
         "_typesupport_introspection_templates": attr.label(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_generator_cpp_templates"),
         ),
+        "_copts": attr.string_list(
+            default = [
+                "-std=c++14",
+            ],
+        ),
+        "_cc_deps": attr.label_list(
+            default = [
+                Label("@ros2_rosidl//:rosidl_runtime_cpp"),
+                Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
+                Label("@ros2_rosidl//:rosidl_typesupport_introspection_cpp"),
+                Label("@ros2_rosidl_typesupport//:rosidl_typesupport_cpp"),
+            ],
+            providers = [CcInfo],
+        ),
+        "_cc_toolchain": attr.label(
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")
+        ),
     },
+    toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
+    fragments = ["cpp"],
 )
 
 def _cpp_generator_impl(ctx):
-    return _generator_impl(ctx)
+    return _generator_impl(ctx, CppGeneratorAspectInfo)
 
 cpp_generator = rule(
     attrs = {
@@ -511,20 +620,8 @@ cpp_generator = rule(
 )
 
 def cpp_ros2_interface_library(name, deps, **kwargs):
-    name_cpp = "{}_cpp".format(name)
     cpp_generator(
-        name = name_cpp,
-        deps = deps,
-    )
-    cc_library(
         name = name,
-        copts = ["-std=c++14"],
-        deps = [
-            name_cpp,
-            "@ros2_rosidl//:rosidl_runtime_cpp",
-            "@ros2_rosidl//:rosidl_typesupport_introspection_c",
-            "@ros2_rosidl//:rosidl_typesupport_introspection_cpp",
-            "@ros2_rosidl_typesupport//:rosidl_typesupport_cpp",
-        ],
+        deps = deps,
         **kwargs
     )
