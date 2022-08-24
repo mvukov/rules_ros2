@@ -1,12 +1,6 @@
 load("@rules_foreign_cc//foreign_cc:cmake.bzl", "cmake")
 
 filegroup(
-    name = "iceoryx_hoofs_srcs",
-    srcs = glob(["iceoryx_hoofs/**"]),
-    visibility = ["//visibility:public"],
-)
-
-filegroup(
     name = "all_srcs",
     srcs = glob(["**"]),
     visibility = ["//visibility:public"],
@@ -40,4 +34,18 @@ cmake(
     working_directory = "iceoryx_meta",
     tags = ["requires-network"],
     deps = ["@acl//:acl"],
+)
+
+cc_binary(
+    name = "shared_memory_manager",
+    srcs = ["iceoryx_posh/source/roudi/application/roudi_main.cpp"],
+    deps = ["@iceoryx//:iceoryx"],
+    linkopts = [
+        "-lacl",
+        "-lpthread",
+        "-lrt",
+        "-latomic"
+    ],
+    linkstatic = True,
+    visibility = ["//visibility:public"],
 )
