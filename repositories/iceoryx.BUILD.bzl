@@ -20,6 +20,9 @@ cmake(
     ],
     cache_entries = {
         "CMAKE_BUILD_TYPE": "Release",
+        "BUILD_SHARED_LIBS": "OFF",
+        "CCACHE": "OFF",
+        "CMAKE_CXX_FLAGS": "-I$EXT_BUILD_DEPS/acl/include -L$EXT_BUILD_DEPS/acl/lib",
     },
     lib_source = ":all_srcs",
     out_static_libs = [
@@ -36,4 +39,5 @@ cmake(
     visibility = ["//visibility:public"],
     working_directory = "iceoryx_meta",
     tags = ["requires-network"],
+    deps = ["@acl//:acl"],
 )

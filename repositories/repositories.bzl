@@ -83,6 +83,15 @@ def ros2_repositories():
 
     maybe(
         http_archive,
+        name = "acl",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:acl.BUILD.bzl",
+        sha256 = "06be9865c6f418d851ff4494e12406568353b891ffe1f596b34693c387af26c7",
+        url = "https://de.freedif.org/savannah/acl/acl-2.2.53.tar.gz",
+        strip_prefix = "acl-2.2.53",
+    )
+
+    maybe(
+        http_archive,
         name = "iceoryx",
         build_file = "@com_github_mvukov_rules_ros2//repositories:iceoryx.BUILD.bzl",
         sha256 = "99871bcaa8da4361d1baae9cf1507683058de8572ac3080edc41e590ffba06c0",
