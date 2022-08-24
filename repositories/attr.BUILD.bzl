@@ -7,16 +7,14 @@ filegroup(
 )
 
 configure_make(
-    name = "acl",
+    name = "attr",
     args = [
         "-j4",
     ],
     configure_in_place = True,
-    lib_source = "@acl//:all_srcs",
-    out_static_libs = [
-        "libacl.a",
-    ],
+    lib_source = ":all_srcs",
+    out_static_libs = ["libattr.a"],
     out_include_dir = "include",
     visibility = ["//visibility:public"],
-    deps = ["@attr//:attr"]
+    targets = ["",  "install",  "install-dev", "install-lib"]
 )
