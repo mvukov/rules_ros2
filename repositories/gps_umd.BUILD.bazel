@@ -16,6 +16,6 @@ ros2_interface_library(
 
 cpp_ros2_interface_library(
     name = "cpp_gps_msgs",
-    deps = [":gps_msgs",],
+    deps = [":gps_msgs"],
     visibility = ["//visibility:public"],
 )

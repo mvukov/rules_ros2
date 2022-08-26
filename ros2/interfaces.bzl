@@ -14,8 +14,6 @@
 """ ROS2 IDL handling.
 """
 
-load("@bazel_skylib//lib:dicts.bzl", "dicts")
-load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 Ros2InterfaceInfo = provider(
@@ -228,13 +226,15 @@ _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING = [
 
 def _get_hdrs(files):
     return [
-        f for f in files
+        f
+        for f in files
         if f.path.endswith(".h") or f.path.endswith(".hpp")
     ]
 
 def _get_srcs(files):
     return [
-        f for f in files
+        f
+        for f in files
         if f.path.endswith(".c") or f.path.endswith(".cpp")
     ]
 
@@ -251,14 +251,13 @@ def _get_linking_contexts_from_aspect_info_deps(deps, aspect_info):
     return [dep[aspect_info].cc_info.linking_context for dep in deps]
 
 def _compile_cc_generated_code(
-    ctx,
-    lang,
-    aspect_info,
-    package_name,
-    srcs,
-    hdrs,
-    cc_include_dir
-):
+        ctx,
+        lang,
+        aspect_info,
+        package_name,
+        srcs,
+        hdrs,
+        cc_include_dir):
     cc_toolchain = find_cpp_toolchain(ctx)
     feature_configuration = cc_common.configure_features(
         ctx = ctx,
@@ -268,7 +267,9 @@ def _compile_cc_generated_code(
     )
     compilation_contexts = (
         _get_compilation_contexts_from_aspect_info_deps(
-            ctx.rule.attr.deps, aspect_info) +
+            ctx.rule.attr.deps,
+            aspect_info,
+        ) +
         _get_compilation_contexts_from_deps(ctx.attr._cc_deps)
     )
     compilation_context, compilation_outputs = cc_common.compile(
@@ -285,7 +286,9 @@ def _compile_cc_generated_code(
 
     linking_contexts = (
         _get_linking_contexts_from_aspect_info_deps(
-            ctx.rule.attr.deps, aspect_info) +
+            ctx.rule.attr.deps,
+            aspect_info,
+        ) +
         _get_linking_contexts_from_deps(ctx.attr._cc_deps)
     )
     linking_context, linking_outputs = cc_common.create_linking_context_from_compilation_outputs(
@@ -430,7 +433,7 @@ c_generator_aspect = aspect(
             providers = [CcInfo],
         ),
         "_cc_toolchain": attr.label(
-            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
@@ -598,7 +601,7 @@ cpp_generator_aspect = aspect(
             providers = [CcInfo],
         ),
         "_cc_toolchain": attr.label(
-            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
