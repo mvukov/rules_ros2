@@ -661,8 +661,6 @@ _INTERFACE_GENERATOR_PY_OUTPUT_MAPPING = [
 def _get_py_srcs(files):
     return [f for f in files if f.path.endswith(".py")]
 
-
-
 def _py_generator_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
