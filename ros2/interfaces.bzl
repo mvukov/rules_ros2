@@ -14,7 +14,6 @@
 """ ROS2 IDL handling.
 """
 
-load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 Ros2InterfaceInfo = provider(
@@ -183,8 +182,7 @@ def _run_generator(
     extra_generated_outputs = extra_generated_outputs or []
     for extra_output in extra_generated_outputs:
         relative_file = "{}/{}".format(package_name, extra_output)
-        generator_outputs[relative_file] = ctx.actions.declare_file(
-            relative_file)
+        generator_outputs.append(ctx.actions.declare_file(relative_file))
 
     ctx.actions.run(
         inputs = idl_files + generator_templates + [generator_arguments_file],
@@ -260,12 +258,13 @@ def _get_linking_contexts_from_aspect_info_deps(deps, aspect_info):
 
 def _compile_cc_generated_code(
         ctx,
-        lang,
+        name,
         aspect_info,
-        package_name,
         srcs,
         hdrs,
-        cc_include_dir):
+        deps,
+        cc_include_dir,
+        target = None):
     cc_toolchain = find_cpp_toolchain(ctx)
     feature_configuration = cc_common.configure_features(
         ctx = ctx,
@@ -273,16 +272,20 @@ def _compile_cc_generated_code(
         requested_features = ctx.features,
         unsupported_features = ctx.disabled_features,
     )
+    rule_deps = []
+    rule_deps.extend(ctx.rule.attr.deps)
+    if target != None:
+        rule_deps.append(target)
     compilation_contexts = (
         _get_compilation_contexts_from_aspect_info_deps(
-            ctx.rule.attr.deps,
+            rule_deps,
             aspect_info,
         ) +
-        _get_compilation_contexts_from_deps(ctx.attr._cc_deps)
+        _get_compilation_contexts_from_deps(deps)
     )
     compilation_context, compilation_outputs = cc_common.compile(
         actions = ctx.actions,
-        name = package_name + "_" + lang,
+        name = name,
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
         user_compile_flags = ctx.attr._copts,
@@ -294,24 +297,26 @@ def _compile_cc_generated_code(
 
     linking_contexts = (
         _get_linking_contexts_from_aspect_info_deps(
-            ctx.rule.attr.deps,
+            rule_deps,
             aspect_info,
         ) +
-        _get_linking_contexts_from_deps(ctx.attr._cc_deps)
+        _get_linking_contexts_from_deps(deps)
     )
     linking_context, linking_outputs = cc_common.create_linking_context_from_compilation_outputs(
         actions = ctx.actions,
-        name = package_name + "_" + lang,
+        name = name,
         compilation_outputs = compilation_outputs,
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
         linking_contexts = linking_contexts,
     )
 
-    return CcInfo(
+    cc_info = CcInfo(
         compilation_context = compilation_context,
         linking_context = linking_context,
     )
+
+    return cc_info, linking_outputs
 
 def _c_generator_aspect_impl(target, ctx):
     package_name = target.label.name
@@ -368,13 +373,13 @@ def _c_generator_aspect_impl(target, ctx):
     hdrs = _get_hdrs(all_outputs)
     srcs = _get_srcs(all_outputs)
 
-    cc_info = _compile_cc_generated_code(
+    cc_info, _ = _compile_cc_generated_code(
         ctx,
-        lang = "c",
+        name = package_name + "_c",
         aspect_info = CGeneratorAspectInfo,
-        package_name = package_name,
         srcs = srcs,
         hdrs = hdrs,
+        deps = ctx.attr._c_deps,
         cc_include_dir = cc_include_dir,
     )
 
@@ -432,7 +437,7 @@ c_generator_aspect = aspect(
                 "-std=c11",
             ],
         ),
-        "_cc_deps": attr.label_list(
+        "_c_deps": attr.label_list(
             default = [
                 Label("@ros2_rosidl//:rosidl_runtime_c"),
                 Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
@@ -449,14 +454,14 @@ c_generator_aspect = aspect(
     fragments = ["cpp"],
 )
 
-def _generator_impl(ctx, aspect_info):
+def _cc_generator_impl(ctx, aspect_info):
     cc_info = cc_common.merge_cc_infos(
         direct_cc_infos = [dep[aspect_info].cc_info for dep in ctx.attr.deps],
     )
     return [cc_info]
 
 def _c_generator_impl(ctx):
-    return _generator_impl(ctx, CGeneratorAspectInfo)
+    return _cc_generator_impl(ctx, CGeneratorAspectInfo)
 
 c_generator = rule(
     attrs = {
@@ -548,13 +553,13 @@ def _cpp_generator_aspect_impl(target, ctx):
     hdrs = _get_hdrs(all_outputs)
     srcs = _get_srcs(all_outputs)
 
-    cc_info = _compile_cc_generated_code(
+    cc_info, _ = _compile_cc_generated_code(
         ctx,
-        lang = "cpp",
+        name = package_name + "_cpp",
         aspect_info = CppGeneratorAspectInfo,
-        package_name = package_name,
         srcs = srcs,
         hdrs = hdrs,
+        deps = ctx.attr._cpp_deps,
         cc_include_dir = cc_include_dir,
     )
 
@@ -600,7 +605,7 @@ cpp_generator_aspect = aspect(
                 "-std=c++14",
             ],
         ),
-        "_cc_deps": attr.label_list(
+        "_cpp_deps": attr.label_list(
             default = [
                 Label("@ros2_rosidl//:rosidl_runtime_cpp"),
                 Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
@@ -619,7 +624,7 @@ cpp_generator_aspect = aspect(
 )
 
 def _cpp_generator_impl(ctx):
-    return _generator_impl(ctx, CppGeneratorAspectInfo)
+    return _cc_generator_impl(ctx, CppGeneratorAspectInfo)
 
 cpp_generator = rule(
     attrs = {
@@ -648,51 +653,82 @@ _INTERFACE_GENERATOR_PY_OUTPUT_MAPPING = [
     "_%s_s.c",
 ]
 
+def _get_py_srcs(files):
+    return [f for f in files if f.path.endswith(".py")]
+
+def _get_dynamic_libraries(linking_outputs):
+    outputs = []
+    lib = linking_outputs.library_to_link
+    if lib.resolved_symlink_dynamic_library != None:
+        outputs.append(lib.resolved_symlink_dynamic_library)
+    elif lib.dynamic_library != None:
+        outputs.append(lib.dynamic_library)
+
+    if lib.resolved_symlink_interface_library != None:
+        outputs.append(lib.resolved_symlink_interface_library)
+    elif lib.interface_library != None:
+        outputs.append(lib.interface_library)
+    return outputs
+
 def _py_generator_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
     relative_dir = package_name
 
-    idl_files, idl_tuples, output_dir = _run_adapter(
+    # Each src maps to _%s.py that imports the package Python extension.
+    # This import mechanism will likely need to be hacked.
+
+    idl_files, idl_tuples = _run_adapter(
         ctx,
         package_name,
-        relative_dir,
         srcs,
     )
 
+    type_support_impl = "rosidl_typesupport_c"
     extra_generated_outputs = [
-        "_{}_s.ep.rosidl_typesupport_c.c".format(package_name),
+        "_{}_s.ep.{}.c".format(package_name, type_support_impl),
     ]
 
     for ext in ["action", "msg", "srv"]:
         if any([f.extension == ext for f in srcs]):
             extra_generated_outputs.append("{}/__init__.py".format(ext))
 
-    interface_outputs = _run_generator(
+    interface_outputs, cc_include_dir = _run_generator(
         ctx,
         srcs,
         package_name,
         idl_files,
         idl_tuples,
-        relative_dir,
-        output_dir,
         ctx.executable._py_interface_generator,
         ctx.attr._py_interface_templates,
         _INTERFACE_GENERATOR_PY_OUTPUT_MAPPING,
         extra_generator_args = [
-            "--typesupport-impls=rosidl_typesupport_c",
+            "--typesupport-impls={}".format(type_support_impl),
         ],
         extra_generated_outputs = extra_generated_outputs,
     )
 
-    output_files = dicts.add(
-        interface_outputs, target[CGeneratorAspectInfo].output_files)
-    for dep in ctx.rule.attr.deps:
-        output_files.update(dep[PyGeneratorAspectInfo].output_files)
+    all_outputs = interface_outputs
+
+    cc_srcs = _get_srcs(all_outputs)
+    py_extension_name = "{}_s__{}".format(package_name, type_support_impl)
+    cc_info, linking_outputs = _compile_cc_generated_code(
+        ctx,
+        name = package_name + "/" + py_extension_name,
+        aspect_info = CGeneratorAspectInfo,
+        srcs = cc_srcs,
+        hdrs = [],
+        deps = ctx.attr._py_ext_c_deps,
+        cc_include_dir = cc_include_dir,
+        target = target,
+    )
+    dynamic_library_files = _get_dynamic_libraries(linking_outputs)
+
+    py_srcs = _get_py_srcs(all_outputs)
 
     return [
         PyGeneratorAspectInfo(
-            output_files = output_files,
+            output_files = py_srcs + dynamic_library_files,
         ),
     ]
 
@@ -713,13 +749,35 @@ py_generator_aspect = aspect(
         "_py_interface_templates": attr.label(
             default = Label("@ros2_rosidl_python//:rosidl_generator_py_templates"),
         ),
+        "_copts": attr.string_list(
+            default = [
+                "-std=c11",
+            ],
+        ),
+        "_py_ext_c_deps": attr.label_list(
+            default = [
+                Label("@local_config_python//:headers"),
+            ],
+            providers = [CcInfo],
+        ),
+        "_cc_toolchain": attr.label(
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
+        ),
     },
     provides = [PyGeneratorAspectInfo],
     required_aspect_providers = [CGeneratorAspectInfo],
+    toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
+    fragments = ["cpp"],
 )
 
 def _py_generator_impl(ctx):
-    return _generator_impl(ctx, PyGeneratorAspectInfo)
+    files = []
+    for dep in ctx.attr.deps:
+        files.extend(dep[PyGeneratorAspectInfo].output_files)
+
+    return [
+        DefaultInfo(files = depset(files)),
+    ]
 
 py_generator = rule(
     attrs = {
@@ -732,8 +790,9 @@ py_generator = rule(
     implementation = _py_generator_impl,
 )
 
-def py_ros2_interface_library(name, deps, visibility = None):
+def py_ros2_interface_library(name, deps, **kwargs):
     py_generator(
         name = name,
         deps = deps,
+        **kwargs
     )

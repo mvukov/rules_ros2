@@ -13,8 +13,9 @@ def ros2_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "778197e26c5fbeb07ac2a2c5ae405b30f6cb7ad1f5510ea6fdac03bded96cc6f",
-        urls = ["https://github.com/bazelbuild/rules_python/releases/download/0.2.0/rules_python-0.2.0.tar.gz"],
+        sha256 = "c03246c11efd49266e8e41e12931090b613e12a59e6f55ba2efd29a7cb8b4258",
+        strip_prefix = "rules_python-0.11.0",
+        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.11.0.tar.gz",
     )
 
     maybe(
