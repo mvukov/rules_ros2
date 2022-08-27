@@ -1,3 +1,5 @@
+build --incompatible_default_to_explicit_init_py
+
 build:opt -c opt
 build:opt --copt=-O3
 

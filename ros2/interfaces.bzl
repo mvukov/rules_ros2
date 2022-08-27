@@ -14,7 +14,9 @@
 """ ROS2 IDL handling.
 """
 
+load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
+load("@rules_python//python:defs.bzl", "py_library")
 
 Ros2InterfaceInfo = provider(
     "Provides info for interface code generation.",
@@ -645,7 +647,9 @@ def cpp_ros2_interface_library(name, deps, **kwargs):
     )
 
 PyGeneratorAspectInfo = provider("TBD", fields = [
-    "output_files",
+    "dynamic_libraries",
+    "transitive_sources",
+    "imports",
 ])
 
 _INTERFACE_GENERATOR_PY_OUTPUT_MAPPING = [
@@ -669,6 +673,17 @@ def _get_dynamic_libraries(linking_outputs):
     elif lib.interface_library != None:
         outputs.append(lib.interface_library)
     return outputs
+
+def _merge_py_generator_aspect_infos(py_infos):
+    return PyGeneratorAspectInfo(
+        dynamic_libraries = depset(
+            transitive = [info.dynamic_libraries for info in py_infos],
+        ),
+        transitive_sources = depset(
+            transitive = [info.transitive_sources for info in py_infos],
+        ),
+        imports = depset(transitive = [info.imports for info in py_infos]),
+    )
 
 def _py_generator_aspect_impl(target, ctx):
     package_name = target.label.name
@@ -726,10 +741,26 @@ def _py_generator_aspect_impl(target, ctx):
 
     py_srcs = _get_py_srcs(all_outputs)
 
+    relative_path_parts = paths.relativize(
+        cc_include_dir,
+        ctx.bin_dir.path,
+    ).split("/")
+    if relative_path_parts[0] == "external":
+        py_import_path = paths.join(*relative_path_parts[1:])
+    else:
+        py_import_path = paths.join(
+            ctx.workspace_name,
+            *relative_path_parts[0:]
+        )
+
+    py_info = PyGeneratorAspectInfo(
+        dynamic_libraries = depset(dynamic_library_files),
+        transitive_sources = depset(py_srcs),
+        imports = depset([py_import_path]),
+    )
+
     return [
-        PyGeneratorAspectInfo(
-            output_files = py_srcs + dynamic_library_files,
-        ),
+        py_info
     ]
 
 py_generator_aspect = aspect(
@@ -771,12 +802,24 @@ py_generator_aspect = aspect(
 )
 
 def _py_generator_impl(ctx):
-    files = []
-    for dep in ctx.attr.deps:
-        files.extend(dep[PyGeneratorAspectInfo].output_files)
+    py_info = _merge_py_generator_aspect_infos([
+        dep[PyGeneratorAspectInfo]
+        for dep in ctx.attr.deps
+    ])
 
     return [
-        DefaultInfo(files = depset(files)),
+        DefaultInfo(runfiles = ctx.runfiles(
+            transitive_files = depset(
+                transitive = [
+                    py_info.transitive_sources,
+                    py_info.dynamic_libraries,
+                ],
+            )
+        )),
+        PyInfo(
+            transitive_sources = py_info.transitive_sources,
+            imports = py_info.imports,
+        ),
     ]
 
 py_generator = rule(
@@ -791,8 +834,16 @@ py_generator = rule(
 )
 
 def py_ros2_interface_library(name, deps, **kwargs):
+    name_py = name + "_py"
     py_generator(
-        name = name,
+        name = name_py,
         deps = deps,
+    )
+    py_library(
+        name = name,
+        deps = [
+            name_py,
+            "@ros2_rosidl//:rosidl_parser",
+        ],
         **kwargs
     )

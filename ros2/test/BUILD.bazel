@@ -1,0 +1,10 @@
+""" Defines tests.
+"""
+
+py_test(
+    name = "py_idl_no_deps_tests",
+    srcs = ["py_idl_no_deps_tests.py"],
+    deps = [
+        "@ros2_rcl_interfaces//:py_builtin_interfaces",
+    ],
+)
