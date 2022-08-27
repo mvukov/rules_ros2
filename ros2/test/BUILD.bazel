@@ -1,6 +1,8 @@
 """ Defines tests.
 """
 
+load("@rules_python//python:defs.bzl", "py_test")
+
 py_test(
     name = "py_idl_no_deps_tests",
     srcs = ["py_idl_no_deps_tests.py"],

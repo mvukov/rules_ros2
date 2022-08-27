@@ -318,7 +318,7 @@ def _compile_cc_generated_code(
         linking_context = linking_context,
     )
 
-    return cc_info, linking_outputs
+    return cc_info, compilation_outputs
 
 def _c_generator_aspect_impl(target, ctx):
     package_name = target.label.name
@@ -647,6 +647,7 @@ def cpp_ros2_interface_library(name, deps, **kwargs):
     )
 
 PyGeneratorAspectInfo = provider("TBD", fields = [
+    "cc_info",
     "dynamic_libraries",
     "transitive_sources",
     "imports",
@@ -660,30 +661,7 @@ _INTERFACE_GENERATOR_PY_OUTPUT_MAPPING = [
 def _get_py_srcs(files):
     return [f for f in files if f.path.endswith(".py")]
 
-def _get_dynamic_libraries(linking_outputs):
-    outputs = []
-    lib = linking_outputs.library_to_link
-    if lib.resolved_symlink_dynamic_library != None:
-        outputs.append(lib.resolved_symlink_dynamic_library)
-    elif lib.dynamic_library != None:
-        outputs.append(lib.dynamic_library)
 
-    if lib.resolved_symlink_interface_library != None:
-        outputs.append(lib.resolved_symlink_interface_library)
-    elif lib.interface_library != None:
-        outputs.append(lib.interface_library)
-    return outputs
-
-def _merge_py_generator_aspect_infos(py_infos):
-    return PyGeneratorAspectInfo(
-        dynamic_libraries = depset(
-            transitive = [info.dynamic_libraries for info in py_infos],
-        ),
-        transitive_sources = depset(
-            transitive = [info.transitive_sources for info in py_infos],
-        ),
-        imports = depset(transitive = [info.imports for info in py_infos]),
-    )
 
 def _py_generator_aspect_impl(target, ctx):
     package_name = target.label.name
@@ -724,9 +702,9 @@ def _py_generator_aspect_impl(target, ctx):
 
     cc_srcs = _get_srcs(all_outputs)
     py_extension_name = "{}_s__{}".format(package_name, type_support_impl)
-    cc_info, linking_outputs = _compile_cc_generated_code(
+    cc_info, compilation_outputs = _compile_cc_generated_code(
         ctx,
-        name = package_name + "/" + py_extension_name,
+        name = package_name + "_py",
         aspect_info = CGeneratorAspectInfo,
         srcs = cc_srcs,
         hdrs = [],
@@ -734,9 +712,42 @@ def _py_generator_aspect_impl(target, ctx):
         cc_include_dir = cc_include_dir,
         target = target,
     )
-    dynamic_library_files = _get_dynamic_libraries(linking_outputs)
 
-    py_srcs = _get_py_srcs(all_outputs)
+    cc_toolchain = find_cpp_toolchain(ctx)
+    feature_configuration = cc_common.configure_features(
+        ctx = ctx,
+        cc_toolchain = cc_toolchain,
+        requested_features = ctx.features,
+        unsupported_features = ctx.disabled_features,
+    )
+
+    # This one is needed because Python extensions are linked: if an IDL target
+    # B depends on an IDL target A, then the Python extension of B depends
+    # on the one of A.
+    linking_contexts = _get_linking_contexts_from_aspect_info_deps(
+        ctx.rule.attr.deps,
+        PyGeneratorAspectInfo,
+    )
+    dynamic_library_name_stem = package_name + "/" + py_extension_name
+    linking_outputs = cc_common.link(
+        actions = ctx.actions,
+        feature_configuration = feature_configuration,
+        cc_toolchain = cc_toolchain,
+        compilation_outputs = compilation_outputs,
+        linking_contexts = [cc_info.linking_context] + linking_contexts,
+        name = dynamic_library_name_stem,
+        output_type = "dynamic_library",
+        # TODO(mvukov) More deps means larger libs. Try to set this to False.
+        # link_deps_statically = True,  # Default is True!
+    )
+    library_to_link = linking_outputs.library_to_link
+    dynamic_library = ctx.actions.declare_file(
+        dynamic_library_name_stem + ".so",
+    )
+    ctx.actions.symlink(
+        output = dynamic_library,
+        target_file = library_to_link.resolved_symlink_dynamic_library,
+    )
 
     relative_path_parts = paths.relativize(
         cc_include_dir,
@@ -751,13 +762,14 @@ def _py_generator_aspect_impl(target, ctx):
         )
 
     py_info = PyGeneratorAspectInfo(
-        dynamic_libraries = depset(dynamic_library_files),
-        transitive_sources = depset(py_srcs),
+        cc_info = cc_info,
+        dynamic_libraries = depset([dynamic_library]),
+        transitive_sources = depset(_get_py_srcs(all_outputs)),
         imports = depset([py_import_path]),
     )
 
     return [
-        py_info
+        py_info,
     ]
 
 py_generator_aspect = aspect(
@@ -798,6 +810,17 @@ py_generator_aspect = aspect(
     fragments = ["cpp"],
 )
 
+def _merge_py_generator_aspect_infos(py_infos):
+    return PyGeneratorAspectInfo(
+        dynamic_libraries = depset(
+            transitive = [info.dynamic_libraries for info in py_infos],
+        ),
+        transitive_sources = depset(
+            transitive = [info.transitive_sources for info in py_infos],
+        ),
+        imports = depset(transitive = [info.imports for info in py_infos]),
+    )
+
 def _py_generator_impl(ctx):
     py_info = _merge_py_generator_aspect_infos([
         dep[PyGeneratorAspectInfo]
@@ -811,7 +834,7 @@ def _py_generator_impl(ctx):
                     py_info.transitive_sources,
                     py_info.dynamic_libraries,
                 ],
-            )
+            ),
         )),
         PyInfo(
             transitive_sources = py_info.transitive_sources,
