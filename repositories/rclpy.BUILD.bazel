@@ -1,0 +1,138 @@
+""" Builds rclpy.
+"""
+
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+
+cc_library(
+    name = "rclpy_common",
+    srcs = glob([
+        "rclpy/src/rclpy_common/src/*.c",
+    ]),
+    hdrs = glob(["rclpy/src/rclpy_common/include/**/*.h"]),
+    includes = ["rclpy/src/rclpy_common/include"],
+    deps = [
+        "@local_config_python//:headers",
+        "@ros2_rcl//:rcl",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+copy_file(
+    name = "rclpy_qos_event_copy",
+    src = "rclpy/src/rclpy/_rclpy_qos_event.c",
+    out = "rclpy/src/rclpy/_rclpy_qos_event.h",
+)
+
+cc_binary(
+    name = "rclpy/rclpy/_rclpy.so",
+    srcs = [
+        "rclpy/src/rclpy/_rclpy.c",
+        "rclpy/src/rclpy/detail/execute_with_logging_mutex.cpp",
+        "rclpy/src/rclpy/detail/execute_with_logging_mutex.h",
+        "rclpy/src/rclpy/detail/logging_mutex.cpp",
+        "rclpy/src/rclpy/detail/logging_mutex.hpp",
+        "rclpy/src/rclpy/detail/thread_safe_logging_output_handler.cpp",
+        "rclpy/src/rclpy/detail/thread_safe_logging_output_handler.h",
+        ":rclpy_qos_event_copy",
+    ],
+    deps = [
+        ":rclpy_common",
+        "@local_config_python//:headers",
+        "@ros2_rcl//:rcl",
+        "@ros2_rcutils//:rcutils",
+    ],
+    linkshared = True,
+    visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "rclpy/rclpy/_rclpy_action.so",
+    srcs = ["rclpy/src/rclpy/_rclpy_action.c"],
+    deps = [
+        ":rclpy_common",
+        "@local_config_python//:headers",
+        "@ros2_rcl//:rcl",
+        "@ros2_rcl//:rcl_action",
+        "@ros2_rcutils//:rcutils",
+    ],
+    linkshared = True,
+    visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "rclpy/rclpy/_rclpy_logging.so",
+    srcs = [
+        "rclpy/src/rclpy/_rclpy_logging.c",
+    ],
+    deps = [
+        ":rclpy_common",
+        "@local_config_python//:headers",
+        "@ros2_rcl//:rcl",
+        "@ros2_rcutils//:rcutils",
+    ],
+    linkshared = True,
+    visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "rclpy/rclpy/_rclpy_signal_handler.so",
+    srcs = [
+        "rclpy/src/rclpy/_rclpy_signal_handler.c",
+    ],
+    deps = [
+        ":rclpy_common",
+        "@local_config_python//:headers",
+        "@ros2_rcl//:rcl",
+        "@ros2_rcutils//:rcutils",
+    ],
+    linkshared = True,
+    visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "rclpy/rclpy/_rclpy_pycapsule.so",
+    srcs = [
+        "rclpy/src/rclpy/_rclpy_pycapsule.c",
+    ],
+    deps = [
+        ":rclpy_common",
+        "@local_config_python//:headers",
+    ],
+    linkshared = True,
+    visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "rclpy/rclpy/_rclpy_handle.so",
+    srcs = [
+        "rclpy/src/rclpy/_rclpy_handle.c",
+    ],
+    deps = [
+        ":rclpy_common",
+        "@local_config_python//:headers",
+        "@ros2_rcutils//:rcutils",
+    ],
+    linkshared = True,
+
+)
+
+py_library(
+    name = "rclpy",
+    srcs = glob(["rclpy/rclpy/**/*.py"]),
+    imports = ["rclpy"],
+    deps = [
+        "@ros2_rcl_interfaces//:py_builtin_interfaces",
+        "@ros2_rcl_interfaces//:py_rcl_interfaces",
+        "@ros2_rcl_interfaces//:py_rosgraph_msgs",
+        "@ros2_rpyutils//:rpyutils",
+    ],
+    data = [
+        ":rclpy/rclpy/_rclpy.so",
+        ":rclpy/rclpy/_rclpy_action.so",
+        ":rclpy/rclpy/_rclpy_handle.so",
+        ":rclpy/rclpy/_rclpy_logging.so",
+        ":rclpy/rclpy/_rclpy_pycapsule.so",
+        ":rclpy/rclpy/_rclpy_signal_handler.so",
+    ],
+    visibility = ["//visibility:public"],
+)

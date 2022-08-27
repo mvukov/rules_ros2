@@ -19,3 +19,12 @@ cc_binary(
         "@ros2_rclcpp//:rclcpp",
     ],
 )
+
+py_binary(
+    name = "py_talker",
+    srcs = ["py_talker.py"],
+    deps = [
+        "@ros2_common_interfaces//:py_std_msgs",
+        "@ros2_rclpy//:rclpy",
+    ],
+)

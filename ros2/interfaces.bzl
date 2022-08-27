@@ -690,9 +690,6 @@ def _py_generator_aspect_impl(target, ctx):
     srcs = target[Ros2InterfaceInfo].info.srcs
     relative_dir = package_name
 
-    # Each src maps to _%s.py that imports the package Python extension.
-    # This import mechanism will likely need to be hacked.
-
     idl_files, idl_tuples = _run_adapter(
         ctx,
         package_name,

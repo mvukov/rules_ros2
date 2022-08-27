@@ -249,6 +249,13 @@ def ros2_repositories():
         path = "../ros2_foxy/src/ros2/rpyutils",
     )
 
+    maybe(
+        native.new_local_repository,
+        name = "ros2_rclpy",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel",
+        path = "../ros2_foxy/src/ros2/rclpy",
+    )
+
     # ros2-devel branch
     maybe(
         http_archive,

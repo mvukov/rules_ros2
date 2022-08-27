@@ -99,3 +99,15 @@ py_ros2_interface_library(
     deps = [":builtin_interfaces"],
     visibility = ["//visibility:public"],
 )
+
+py_ros2_interface_library(
+    name = "py_rcl_interfaces",
+    deps = [":rcl_interfaces"],
+    visibility = ["//visibility:public"],
+)
+
+py_ros2_interface_library(
+    name = "py_rosgraph_msgs",
+    deps = [":rosgraph_msgs"],
+    visibility = ["//visibility:public"],
+)
