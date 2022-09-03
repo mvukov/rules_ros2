@@ -13,7 +13,7 @@ And no, you don't have to install any ROS2 packages via `apt`.
 
 ## What works?
 
-At the moment it is only supported to build C++ nodes.
+At the moment it is only supported to build C++ and Python nodes.
 ROS2 package versions target ROS2 Foxy.
 In particular:
 
