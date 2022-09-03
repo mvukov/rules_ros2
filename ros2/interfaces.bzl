@@ -266,6 +266,7 @@ def _compile_cc_generated_code(
         hdrs,
         deps,
         cc_include_dir,
+        copts,
         target = None):
     cc_toolchain = find_cpp_toolchain(ctx)
     feature_configuration = cc_common.configure_features(
@@ -290,7 +291,7 @@ def _compile_cc_generated_code(
         name = name,
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
-        user_compile_flags = ctx.attr._copts,
+        user_compile_flags = copts,
         system_includes = [cc_include_dir],
         srcs = srcs,
         public_hdrs = hdrs,
@@ -383,6 +384,7 @@ def _c_generator_aspect_impl(target, ctx):
         hdrs = hdrs,
         deps = ctx.attr._c_deps,
         cc_include_dir = cc_include_dir,
+        copts = ctx.attr._c_copts,
     )
 
     return [
@@ -434,7 +436,7 @@ c_generator_aspect = aspect(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_c/resource/rosidl_typesupport_introspection_c__visibility_control.h.in"),
             allow_single_file = True,
         ),
-        "_copts": attr.string_list(
+        "_c_copts": attr.string_list(
             default = [
                 "-std=c11",
             ],
@@ -563,6 +565,7 @@ def _cpp_generator_aspect_impl(target, ctx):
         hdrs = hdrs,
         deps = ctx.attr._cpp_deps,
         cc_include_dir = cc_include_dir,
+        copts = ctx.attr._cpp_copts,
     )
 
     return [
@@ -602,7 +605,7 @@ cpp_generator_aspect = aspect(
         "_typesupport_introspection_templates": attr.label(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_generator_cpp_templates"),
         ),
-        "_copts": attr.string_list(
+        "_cpp_copts": attr.string_list(
             default = [
                 "-std=c++14",
             ],
@@ -708,6 +711,7 @@ def _py_generator_aspect_impl(target, ctx):
         hdrs = [],
         deps = ctx.attr._py_ext_c_deps,
         cc_include_dir = cc_include_dir,
+        copts = ctx.attr._py_ext_c_copts,
         target = target,
     )
 
@@ -809,7 +813,7 @@ py_generator_aspect = aspect(
         "_py_interface_templates": attr.label(
             default = Label("@ros2_rosidl_python//:rosidl_generator_py_templates"),
         ),
-        "_copts": attr.string_list(
+        "_py_ext_c_copts": attr.string_list(
             default = [
                 "-std=c11",
             ],
