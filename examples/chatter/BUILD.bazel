@@ -1,5 +1,6 @@
-load("@rules_python//python:defs.bzl", "py_binary")
+load("//ros2:launch.bzl", "ros2_launch")
 load("@rules_cc//cc:defs.bzl", "cc_binary")
+load("@rules_python//python:defs.bzl", "py_binary")
 
 cc_binary(
     name = "talker",
@@ -27,5 +28,14 @@ py_binary(
     deps = [
         "@ros2_common_interfaces//:py_std_msgs",
         "@ros2_rclpy//:rclpy",
+    ],
+)
+
+ros2_launch(
+    name = "launch",
+    launch_file = "launch.py",
+    nodes = [
+        ":listener",
+        ":talker",
     ],
 )

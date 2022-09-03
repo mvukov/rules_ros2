@@ -1,0 +1,8 @@
+""" Builds osrf_pycommon.
+"""
+
+py_library(
+    name = "osrf_pycommon",
+    srcs = glob(["osrf_pycommon/**/*.py"]),
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,29 @@
+""" Builds ros2cli.
+"""
+
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+
+py_library(
+    name = "ros2cli",
+    srcs = glob(["ros2cli/ros2cli/**/*.py"]),
+    imports = ["ros2cli"],
+    deps = [
+        "@ros2_rclpy//:rclpy",
+        requirement("netifaces"),
+        requirement("types-pkg-resources"),
+    ],
+    visibility = ["//visibility:public"],
+)
+
+py_library(
+    name = "ros2pkg",
+    srcs = glob(["ros2pkg/ros2pkg/**/*.py"]),
+    imports = ["ros2pkg"],
+    deps = [
+        "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
+        requirement("catkin_pkg"),
+        requirement("empy"),
+        requirement("types-pkg-resources"),
+    ],
+    visibility = ["//visibility:public"],
+)

@@ -1,16 +1,18 @@
 """ Fakes necessary interfaces of the original library.
 """
 
-from .packages import *
+
+class PackageNotFoundError(KeyError):
+    pass
 
 
-def get_resources(*_):
+def get_package_prefix(*_):
     """ Fix when needed.
     """
-    return dict()
+    return None
 
 
-def get_packages_with_prefixes(*_):
+def get_package_share_directory(*_):
     """ Fix when needed.
     """
     return None

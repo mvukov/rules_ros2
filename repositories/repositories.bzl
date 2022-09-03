@@ -285,3 +285,31 @@ def ros2_repositories():
         strip_prefix = "gps_umd-fc782811804fafb12ee479a48a2aa2e9ee942e2d",
         urls = ["https://github.com/swri-robotics/gps_umd/archive/fc782811804fafb12ee479a48a2aa2e9ee942e2d.tar.gz"],
     )
+
+    maybe(
+        native.new_local_repository,
+        name = "osrf_pycommon",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:osrf_pycommon.BUILD.bazel",
+        path = "../ros2_foxy/src/osrf/osrf_pycommon",
+    )
+
+    maybe(
+        native.new_local_repository,
+        name = "ros2_launch",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel",
+        path = "../ros2_foxy/src/ros2/launch",
+    )
+
+    maybe(
+        native.new_local_repository,
+        name = "ros2_launch_ros",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:launch_ros.BUILD.bazel",
+        path = "../ros2_foxy/src/ros2/launch_ros",
+    )
+
+    maybe(
+        native.new_local_repository,
+        name = "ros2cli",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel",
+        path = "../ros2_foxy/src/ros2/ros2cli",
+    )

@@ -1,0 +1,37 @@
+""" Builds launch.
+"""
+
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+
+py_library(
+    name = "launch",
+    srcs = glob(["launch/launch/**/*.py"]),
+    data = glob(["launch/share/**"]),
+    imports = ["launch"],
+    deps = [
+        "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
+        "@osrf_pycommon",
+        requirement("lark_parser"),
+    ],
+    visibility = ["//visibility:public"],
+)
+
+py_library(
+    name = "launch_xml",
+    srcs = glob(["launch_xml/launch_xml/**/*.py"]),
+    imports = ["launch_xml"],
+    deps = [
+        ":launch",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+py_library(
+    name = "launch_yaml",
+    srcs = glob(["launch_yaml/launch_yaml/**/*.py"]),
+    imports = ["launch_yaml"],
+    deps = [
+        ":launch",
+    ],
+    visibility = ["//visibility:public"],
+)

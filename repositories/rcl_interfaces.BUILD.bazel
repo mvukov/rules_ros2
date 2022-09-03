@@ -26,6 +26,19 @@ ros2_interface_library(
 )
 
 ros2_interface_library(
+    name = "composition_interfaces",
+    srcs = glob(["composition_interfaces/srv/*.srv"]),
+    deps = [":rcl_interfaces"],
+    visibility = ["//visibility:public"],
+)
+
+ros2_interface_library(
+    name = "lifecycle_msgs",
+    srcs = glob(["lifecycle_msgs/msg/*.msg", "lifecycle_msgs/srv/*.srv"]),
+    visibility = ["//visibility:public"],
+)
+
+ros2_interface_library(
     name = "rcl_interfaces",
     srcs = glob(["rcl_interfaces/msg/*.msg", "rcl_interfaces/srv/*.srv"]),
     deps = [":builtin_interfaces"],
@@ -97,6 +110,18 @@ cpp_ros2_interface_library(
 py_ros2_interface_library(
     name = "py_builtin_interfaces",
     deps = [":builtin_interfaces"],
+    visibility = ["//visibility:public"],
+)
+
+py_ros2_interface_library(
+    name = "py_composition_interfaces",
+    deps = [":composition_interfaces"],
+    visibility = ["//visibility:public"],
+)
+
+py_ros2_interface_library(
+    name = "py_lifecycle_msgs",
+    deps = [":lifecycle_msgs"],
     visibility = ["//visibility:public"],
 )
 

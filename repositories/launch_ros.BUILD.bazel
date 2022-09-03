@@ -1,0 +1,34 @@
+""" Builds launch_ros.
+"""
+
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+
+py_library(
+    name = "launch_ros",
+    srcs = glob(["launch_ros/launch_ros/**/*.py"]),
+    imports = ["launch_ros"],
+    deps = [
+        "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
+        "@osrf_pycommon",
+        "@ros2_launch//:launch",
+        "@ros2_rcl_interfaces//:py_composition_interfaces",
+        "@ros2_rcl_interfaces//:py_lifecycle_msgs",
+        "@ros2_rclpy//:rclpy",
+        requirement("pyyaml"),
+    ],
+    visibility = ["//visibility:public"],
+)
+
+py_library(
+    name = "ros2launch",
+    srcs = glob(["ros2launch/ros2launch/**/*.py"]),
+    imports = ["ros2launch"],
+    deps = [
+        ":launch_ros",
+        "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
+        "@ros2_launch//:launch",
+        "@ros2cli",
+        "@ros2cli//:ros2pkg",
+    ],
+    visibility = ["//visibility:public"],
+)

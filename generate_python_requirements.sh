@@ -10,6 +10,7 @@ if [[ -f requirements_lock.txt ]]; then
 fi
 
 _ARGS=(
+  --allow-unsafe
   --generate-hashes
   --output-file=requirements_lock.txt
   requirements.txt
