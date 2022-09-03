@@ -1,0 +1,9 @@
+""" Defines fake ament libraries.
+"""
+
+py_library(
+    name = "ament_index_python",
+    srcs = ["ament_index_python/__init__.py"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+)

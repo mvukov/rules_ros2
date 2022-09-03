@@ -760,12 +760,34 @@ def _py_generator_aspect_impl(target, ctx):
         )
 
     py_info = PyGeneratorAspectInfo(
-        cc_info = cc_info,
-        dynamic_libraries = depset([dynamic_library]),
-        transitive_sources = depset(_get_py_srcs(all_outputs)),
-        imports = depset([py_import_path]),
+        cc_info = cc_common.merge_cc_infos(
+            direct_cc_infos = [cc_info] + [
+                dep[PyGeneratorAspectInfo].cc_info
+                for dep in ctx.rule.attr.deps
+            ],
+        ),
+        dynamic_libraries = depset(
+            direct = [dynamic_library],
+            transitive = [
+                dep[PyGeneratorAspectInfo].dynamic_libraries
+                for dep in ctx.rule.attr.deps
+            ],
+        ),
+        transitive_sources = depset(
+            direct = _get_py_srcs(all_outputs),
+            transitive = [
+                dep[PyGeneratorAspectInfo].transitive_sources
+                for dep in ctx.rule.attr.deps
+            ],
+        ),
+        imports = depset(
+            direct = [py_import_path],
+            transitive = [
+                dep[PyGeneratorAspectInfo].imports
+                for dep in ctx.rule.attr.deps
+            ],
+        ),
     )
-
     return [
         py_info,
     ]
@@ -795,6 +817,7 @@ py_generator_aspect = aspect(
         "_py_ext_c_deps": attr.label_list(
             default = [
                 Label("@local_config_python//:headers"),
+                Label("@rules_ros2_pip_deps_numpy//:headers"),
             ],
             providers = [CcInfo],
         ),
@@ -852,7 +875,7 @@ py_generator = rule(
 )
 
 def py_ros2_interface_library(name, deps, **kwargs):
-    name_py = name + "_py"
+    name_py = name + "_py_generator"
     py_generator(
         name = name_py,
         deps = deps,

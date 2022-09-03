@@ -14,7 +14,6 @@ cc_library(
         "@local_config_python//:headers",
         "@ros2_rcl//:rcl",
     ],
-    visibility = ["//visibility:public"],
 )
 
 copy_file(
@@ -42,7 +41,6 @@ cc_binary(
         "@ros2_rcutils//:rcutils",
     ],
     linkshared = True,
-    visibility = ["//visibility:public"],
 )
 
 cc_binary(
@@ -56,7 +54,6 @@ cc_binary(
         "@ros2_rcutils//:rcutils",
     ],
     linkshared = True,
-    visibility = ["//visibility:public"],
 )
 
 cc_binary(
@@ -71,7 +68,6 @@ cc_binary(
         "@ros2_rcutils//:rcutils",
     ],
     linkshared = True,
-    visibility = ["//visibility:public"],
 )
 
 cc_binary(
@@ -86,7 +82,6 @@ cc_binary(
         "@ros2_rcutils//:rcutils",
     ],
     linkshared = True,
-    visibility = ["//visibility:public"],
 )
 
 cc_binary(
@@ -99,7 +94,6 @@ cc_binary(
         "@local_config_python//:headers",
     ],
     linkshared = True,
-    visibility = ["//visibility:public"],
 )
 
 cc_binary(
@@ -120,6 +114,7 @@ py_library(
     srcs = glob(["rclpy/rclpy/**/*.py"]),
     imports = ["rclpy"],
     deps = [
+        "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
         "@ros2_rcl_interfaces//:py_builtin_interfaces",
         "@ros2_rcl_interfaces//:py_rcl_interfaces",
         "@ros2_rcl_interfaces//:py_rosgraph_msgs",

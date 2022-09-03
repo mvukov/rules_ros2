@@ -18,7 +18,7 @@ from rclpy import node
 from std_msgs.msg import String
 
 
-class MinimalPublisher(rclpy.node.Node):
+class MinimalPublisher(node.Node):
 
     def __init__(self):
         super().__init__('minimal_publisher')
