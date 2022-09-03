@@ -235,25 +235,45 @@ def ros2_repositories():
         urls = ["https://github.com/ros2/unique_identifier_msgs/archive/2.1.3.tar.gz"],
     )
 
+    # maybe(
+    #     native.new_local_repository,
+    #     name = "ros2_rosidl_python",
+    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_python.BUILD.bazel",
+    #     path = "../ros2_foxy/src/ros2/rosidl_python",
+    # )
+
+    # feature/bazel branch
     maybe(
-        native.new_local_repository,
+        new_git_repository,
         name = "ros2_rosidl_python",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_python.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/rosidl_python",
+        remote = "https://github.com/mvukov/rosidl_python.git",
+        commit = "a772648eb135e08bfd2f48da15a86a7fea581622",
     )
 
     maybe(
-        native.new_local_repository,
+        http_archive,
         name = "ros2_rpyutils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rpyutils.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/rpyutils",
+        sha256 = "8b321fd04ffc65b7be2e8d6e4dde6e632bac291021dc5adc67077c9cac601243",
+        strip_prefix = "rpyutils-0.2.0",
+        urls = ["https://github.com/ros2/rpyutils/archive/0.2.0.tar.gz"],
     )
 
+    # maybe(
+    #     native.new_local_repository,
+    #     name = "ros2_rclpy",
+    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel",
+    #     path = "../ros2_foxy/src/ros2/rclpy",
+    # )
+
+    # feature/bazel branch
     maybe(
-        native.new_local_repository,
+        new_git_repository,
         name = "ros2_rclpy",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/rclpy",
+        remote = "https://github.com/mvukov/rclpy.git",
+        commit = "677e67f4a50469591e436f9919ceae0bd870f9eb",
     )
 
     # ros2-devel branch
