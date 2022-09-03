@@ -17,27 +17,23 @@ At the moment it is only supported to build C++ nodes.
 ROS2 package versions target ROS2 Foxy.
 In particular:
 
-- C/C++ code generation for interfaces (messages, services and actions) works.
-- rclcpp can be compiled.
+- C/C++/Python code generation for interfaces (messages, services and actions) works.
+- rclcpp and rclpy can be used.
 - Only CycloneDDS middleware can be interfaced at the moment.
 
 NOTE: Unlike ROS1 genmsg which refuses to generate code if the deps between
 interface targets are not set correctly, code generation for ROS2 seems to not
 care about this. If the deps are not correctly set, you'll only see failures
 during compilation of the generated code. It could be that I missed setting some
-flags to the (quite involved) code generation of ROS2 interfaces.
+flags to the code generation of ROS2 interfaces.
 
 Please take a look at the examples folder to get more info.
 
 ## What's next?
 
-The next step would be to work out code-generation of interfaces for Python.
-Compared to ROS1 this is quite more involved as in ROS2 Python interfaces have
-both C/C++ and Python code.
-That is the prerequisite to get ROS2 launch system working. Compared to ROS1
-where roslaunch is independent of rospy, in ROS2 launch_ros and rclpy are tighly coupled. So, no matter whether you only build C/C++ nodes, you also need to have substantial amount of Python stuff in your deployment.
+The next step is to work out the ROS2 launch mechanisms.
 
 The grand idea would be to get this repo at least to the level of
 [rules_ros](https://github.com/mvukov/rules_ros). In particular:
-- It has to be simple & convenient to assemble a deployment, i.e. a Bazel target with a launch mechanism and all relevant nodes.
-- It has to be simple & convenient to cross-compile a ROS2 deployment.
+- It has to be convenient to assemble a deployment, i.e. a Bazel target with a launch mechanism and all relevant nodes.
+- It has to be convenient to cross-compile a ROS2 deployment.

@@ -7,8 +7,15 @@ In a terminal run
 ```sh
 bazel run //examples/chatter:talker
 ```
+for rclcpp version or
 
-and in another one run
+```sh
+bazel run //examples/chatter:py_talker
+```
+for rclpy version.
+
+
+In another terminal run
 
 ```sh
 bazel run //examples/chatter:listener
