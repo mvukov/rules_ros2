@@ -1,6 +1,8 @@
 """ Defines fake ament libraries.
 """
 
+load("@rules_python//python:defs.bzl", "py_library")
+
 py_library(
     name = "ament_index_python",
     srcs = ["ament_index_python/__init__.py"],
