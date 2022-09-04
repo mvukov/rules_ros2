@@ -7,12 +7,8 @@ class PackageNotFoundError(KeyError):
 
 
 def get_package_prefix(*_):
-    """ Fix when needed.
-    """
-    return None
+    raise NotImplementedError
 
 
 def get_package_share_directory(*_):
-    """ Fix when needed.
-    """
-    return None
+    raise NotImplementedError

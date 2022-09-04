@@ -5,12 +5,8 @@ from .packages import *
 
 
 def get_resources(*_):
-    """ Fix when needed.
-    """
-    return dict()
+    raise NotImplementedError
 
 
 def get_packages_with_prefixes(*_):
-    """ Fix when needed.
-    """
-    return None
+    raise NotImplementedError
