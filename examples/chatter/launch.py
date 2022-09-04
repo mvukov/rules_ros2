@@ -20,9 +20,11 @@ import launch_ros.actions
 def generate_launch_description():
     """Launch a talker and a listener."""
     return launch.LaunchDescription([
-        launch_ros.actions.Node(executable='examples/chatter/talker',
-                                output='screen',
-                                name='talker'),
+        launch_ros.actions.Node(
+            # Provide the rootpath for the node.
+            executable='examples/chatter/talker',
+            output='screen',
+            name='talker'),
         launch_ros.actions.Node(executable='examples/chatter/listener',
                                 output='screen',
                                 name='listener'),

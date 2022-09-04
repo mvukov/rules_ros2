@@ -287,29 +287,44 @@ def ros2_repositories():
     )
 
     maybe(
-        native.new_local_repository,
+        http_archive,
         name = "osrf_pycommon",
         build_file = "@com_github_mvukov_rules_ros2//repositories:osrf_pycommon.BUILD.bazel",
-        path = "../ros2_foxy/src/osrf/osrf_pycommon",
+        sha256 = "429708204cc3c9389e90da637fc0ac797bc6653853599f0ac4b59091f41b6cb4",
+        strip_prefix = "osrf_pycommon-0.1.10",
+        urls = ["https://github.com/osrf/osrf_pycommon/archive/0.1.10.tar.gz"],
     )
 
+    # maybe(
+    #     native.new_local_repository,
+    #     name = "ros2_launch",
+    #     build_file = "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel",
+    #     path = "../ros2_foxy/src/ros2/launch",
+    # )
+
+    # feature/bazel branch
     maybe(
-        native.new_local_repository,
+        new_git_repository,
         name = "ros2_launch",
         build_file = "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/launch",
+        remote = "https://github.com/mvukov/launch.git",
+        commit = "e0268d0d6b60be01cfa639d2c0f77306eba51539",
     )
 
     maybe(
-        native.new_local_repository,
+        http_archive,
         name = "ros2_launch_ros",
         build_file = "@com_github_mvukov_rules_ros2//repositories:launch_ros.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/launch_ros",
+        sha256 = "752949dd63a63db0ab8ef0aca3b03a1e910ca327b958cc01cdcb487c161b2ed4",
+        strip_prefix = "launch_ros-0.11.2",
+        urls = ["https://github.com/ros2/launch_ros/archive/0.11.2.tar.gz"],
     )
 
     maybe(
-        native.new_local_repository,
+        http_archive,
         name = "ros2cli",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/ros2cli",
+        sha256 = "87ae40e5a83c705de30478065fe1d6e763942e9253792948972eedf56b184e1c",
+        strip_prefix = "ros2cli-0.9.9",
+        urls = ["https://github.com/ros2/ros2cli/archive/0.9.9.tar.gz"],
     )

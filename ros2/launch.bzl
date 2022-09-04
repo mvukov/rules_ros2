@@ -1,7 +1,7 @@
 """ Defines launch_ros-like ROS2 deployment.
 """
 
-load("//third_party:expand_template.bzl", "expand_template")
+load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
 load("@rules_python//python:defs.bzl", "py_binary")
 
 def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):
