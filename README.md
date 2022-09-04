@@ -28,7 +28,8 @@ care about this. If the deps are not correctly set, you'll only see failures
 during compilation of the generated code. It could be that I missed setting some
 flags to the code generation of ROS2 interfaces.
 
-Please take a look at the examples folder to get more info.
+Please take a look at the examples folder to get more info. Start with a simple
+[chatter](examples/chatter) example.
 
 ## What's next?
 

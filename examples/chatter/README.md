@@ -2,7 +2,13 @@
 
 Implements simple talker and lister nodes.
 
-In a terminal run
+To launch a sample deployment, run
+
+```sh
+bazel run //examples/chatter:launch
+```
+
+Alternatively, you can run nodes without the launch mechanism. In a terminal run
 
 ```sh
 bazel run //examples/chatter:talker
