@@ -8,10 +8,9 @@ To launch a sample deployment, run
 bazel run //examples/chatter:launch
 ```
 By running this command, Bazel will (re-)build all necessary code (ROS2, nodes,
-launch relevant, etc.) and run the target. This is basically one of the value
-propositions for using Bazel: you don't have to take care of (semi-)manually
-keeping e.g. nodes up-to-date. With correctly specified deps, Bazel takes care
-of this.
+launch relevant code, etc.) and run the target. This is basically one of the
+value propositions for using Bazel: you don't have to (semi-)manually keep
+e.g. nodes up-to-date. With correctly specified deps, Bazel takes care of this.
 
 Alternatively, you can run nodes without the launch mechanism. In a terminal run
 
