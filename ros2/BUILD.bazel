@@ -5,4 +5,6 @@ exports_files([
     "interfaces.bzl",
     "launch.bzl",
     "launch.py.tpl",
+    "test.bzl",
+    "test.py.tpl",
 ])

@@ -1,0 +1,17 @@
+""" Builds ros_testing.
+"""
+
+py_library(
+    name = "ros2test",
+    srcs = glob(["ros2test/ros2test/**/*.py"]),
+    imports = ["ros2test"],
+    deps = [
+        "@ros2_ament_cmake_ros//:domain_coordinator",
+        "@ros2_launch//:launch",
+        "@ros2_launch//:launch_testing",
+        "@ros2_launch_ros//:launch_ros",
+        "@ros2_launch_ros//:launch_testing_ros",
+        "@ros2cli",
+    ],
+    visibility = ["//visibility:public"],
+)

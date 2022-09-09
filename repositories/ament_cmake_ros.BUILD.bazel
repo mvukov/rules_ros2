@@ -1,0 +1,9 @@
+""" Builds ament_cmake_ros.
+"""
+
+py_library(
+    name = "domain_coordinator",
+    srcs = ["domain_coordinator/domain_coordinator/__init__.py"],
+    imports = ["domain_coordinator"],
+    visibility = ["//visibility:public"],
+)

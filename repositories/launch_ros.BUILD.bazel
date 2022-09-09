@@ -20,6 +20,18 @@ py_library(
 )
 
 py_library(
+    name = "launch_testing_ros",
+    srcs = glob(["launch_testing_ros/launch_testing_ros/**/*.py"]),
+    imports = ["launch_testing_ros"],
+    deps = [
+        ":launch_ros",
+        "@ros2_launch//:launch_testing",
+        "@ros2_rclpy//:rclpy",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+py_library(
     name = "ros2launch",
     srcs = glob(["ros2launch/ros2launch/**/*.py"]),
     imports = ["ros2launch"],

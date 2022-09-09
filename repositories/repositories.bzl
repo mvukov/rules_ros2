@@ -328,3 +328,17 @@ def ros2_repositories():
         strip_prefix = "ros2cli-0.9.9",
         urls = ["https://github.com/ros2/ros2cli/archive/0.9.9.tar.gz"],
     )
+
+    maybe(
+        native.new_local_repository,
+        name = "ros2_ros_testing",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel",
+        path = "../ros2_foxy/src/ros2/ros_testing",
+    )
+
+    maybe(
+        native.new_local_repository,
+        name = "ros2_ament_cmake_ros",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:ament_cmake_ros.BUILD.bazel",
+        path = "../ros2_foxy/src/ros2/ament_cmake_ros",
+    )

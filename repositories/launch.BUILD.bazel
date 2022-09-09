@@ -17,6 +17,18 @@ py_library(
 )
 
 py_library(
+    name = "launch_testing",
+    srcs = glob(["launch_testing/launch_testing/**/*.py"]),
+    imports = ["launch_testing"],
+    deps = [
+        ":launch",
+        "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
+        "@osrf_pycommon",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+py_library(
     name = "launch_xml",
     srcs = glob(["launch_xml/launch_xml/**/*.py"]),
     imports = ["launch_xml"],
