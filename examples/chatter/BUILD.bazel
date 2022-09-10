@@ -1,4 +1,5 @@
 load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
+load("@com_github_mvukov_rules_ros2//ros2:topic.bzl", "ros2_topic")
 load("@rules_cc//cc:defs.bzl", "cc_binary")
 load("@rules_python//python:defs.bzl", "py_binary")
 
@@ -37,5 +38,12 @@ ros2_launch(
     nodes = [
         ":listener",
         ":talker",
+    ],
+)
+
+ros2_topic(
+    name = "topic",
+    deps = [
+        "@ros2_common_interfaces//:py_std_msgs",
     ],
 )

@@ -1,0 +1,17 @@
+""" Builds rosidl_runtime_py.
+"""
+
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+
+py_library(
+    name = "rosidl_runtime_py",
+    srcs = glob(["rosidl_runtime_py/**/*.py"]),
+    imports = ["."],
+    deps = [
+        "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
+        "@ros2_rosidl//:rosidl_parser",
+        requirement("numpy"),
+        requirement("pyyaml"),
+    ],
+    visibility = ["//visibility:public"],
+)

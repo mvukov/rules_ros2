@@ -5,4 +5,17 @@ exports_files([
     "interfaces.bzl",
     "launch.bzl",
     "launch.py.tpl",
+    "ros2_topic.py",
+    "topic.bzl",
 ])
+
+py_binary(
+    name = "ros2_topic",
+    srcs = ["ros2_topic.py"],
+    deps = [
+        "@ros2cli//:ros2topic",
+        "@ros2cli",
+        "@ros2_rosidl//:rosidl_parser",
+        "@ros2_common_interfaces//:py_std_msgs",
+    ],
+)
