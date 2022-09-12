@@ -41,10 +41,9 @@ cc_binary(
     srcs = ["iceoryx_posh/source/roudi/application/roudi_main.cpp"],
     deps = ["@iceoryx//:iceoryx"],
     linkopts = [
-        "-lacl",
         "-lpthread",
         "-lrt",
-        "-latomic"
+        "-latomic",
     ],
     linkstatic = True,
     visibility = ["//visibility:public"],
