@@ -46,8 +46,10 @@ ros2_test(
     name = "tests",
     launch_file = "tests.py",
     nodes = [
-        ":listener",
         ":talker",
+    ],
+    deps = [
+        "@ros2_common_interfaces//:py_std_msgs",
     ],
 )
 
