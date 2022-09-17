@@ -12,14 +12,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import argparse
 import sys
 
+import ros2cli.cli
 import ros2cli.command
 import ros2cli.entry_points
-from ros2cli import cli
-
 import ros2topic.verb.bw
 import ros2topic.verb.delay
 import ros2topic.verb.echo
@@ -138,4 +136,4 @@ class TopicCommand(ros2cli.command.CommandExtension):
 
 
 extension = TopicCommand()
-sys.exit(cli.main(argv=sys.argv[1:], extension=extension))
+sys.exit(ros2cli.cli.main(argv=sys.argv[1:], extension=extension))

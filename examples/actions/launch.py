@@ -1,5 +1,4 @@
 """Launch a server and a client."""
-
 import launch
 import launch_ros.actions
 

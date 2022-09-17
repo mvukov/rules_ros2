@@ -11,14 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import threading
 import time
 
-from fibonacci_msgs.action import Fibonacci
-
 import rclpy
-from rclpy.action import ActionServer, CancelResponse, GoalResponse
+from fibonacci_msgs.action import Fibonacci
+from rclpy.action import ActionServer
+from rclpy.action import CancelResponse
+from rclpy.action import GoalResponse
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node

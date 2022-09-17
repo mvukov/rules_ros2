@@ -14,7 +14,7 @@ repos:
         files: &buildifier_external_files ^(.*/)?\w+\.BUILD.bazel$
         args: &buildifier_external_args
           - *buildifier_args
-          - "--type=build"
+          - --type=build
       - id: buildifier-lint
         args:
           - *buildifier_args
@@ -39,3 +39,13 @@ repos:
     hooks:
       - id: yapf
         args: [-i, --style, .style.yapf]
+  - repo: https://github.com/myint/autoflake.git
+    rev: v1.5.3
+    hooks:
+      - id: autoflake # removes unused imports
+        args: [--remove-all-unused-imports, --ignore-init-module-imports, --in-place]
+  - repo: https://github.com/asottile/reorder_python_imports
+    rev: v3.8.2
+    hooks:
+      - id: reorder-python-imports
+        args: [--py37-plus]
