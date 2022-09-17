@@ -16,8 +16,9 @@ And no, you don't have to install any ROS2 packages via `apt`.
 At the moment it is supported:
 
 - Building of C++ and Python nodes (rclcpp and rclpy work).
-- Defining ROS2 deployments with `ros2_launch` Bazel macro.
 - C/C++/Python code generation for interfaces (messages, services and actions).
+- Defining ROS2 deployments with `ros2_launch` Bazel macro.
+- Defining ROS2 tests with `ros2_test` Bazel macro.
 - Only CycloneDDS middleware can be interfaced at the moment.
 
 ROS2 package versions target ROS2 Foxy from mid 2021.
