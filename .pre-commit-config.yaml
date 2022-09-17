@@ -49,12 +49,12 @@ repos:
     hooks:
       - id: reorder-python-imports
         args: [--py37-plus]
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v14.0.6
+    hooks:
+    - id: clang-format
   - repo: https://github.com/cpplint/cpplint
     rev: 1.6.1
     hooks:
       - id: cpplint
         args: ["--filter=-build/c++11,-build/c++14"]
-  - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v14.0.6
-    hooks:
-    - id: clang-format
