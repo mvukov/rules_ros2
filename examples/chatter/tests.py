@@ -28,7 +28,7 @@ def generate_test_description():
     return (
         launch.LaunchDescription([
             talker_node,
-            # Start tests right away - no need to wait for anything
+            # Start tests right away - no need to wait for anything.
             launch_testing.actions.ReadyToTest(),
         ]),
         {
