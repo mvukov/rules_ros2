@@ -320,25 +320,27 @@ def ros2_repositories():
         urls = ["https://github.com/ros2/launch_ros/archive/0.11.2.tar.gz"],
     )
 
-    maybe(
-        native.new_local_repository,
-        name = "ros2cli",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/ros2cli",
-    )
-
     # maybe(
-    #     http_archive,
+    #     native.new_local_repository,
     #     name = "ros2cli",
     #     build_file = "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel",
-    #     sha256 = "87ae40e5a83c705de30478065fe1d6e763942e9253792948972eedf56b184e1c",
-    #     strip_prefix = "ros2cli-0.9.9",
-    #     urls = ["https://github.com/ros2/ros2cli/archive/0.9.9.tar.gz"],
+    #     path = "../ros2_foxy/src/ros2/ros2cli",
     # )
 
+    # feature/bazel branch
     maybe(
-        native.new_local_repository,
+        new_git_repository,
+        name = "ros2cli",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel",
+        remote = "https://github.com/mvukov/ros2cli.git",
+        commit = "087658b4ab3adedb1e8355af8f4d2c2e52d13c9b",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_rosidl_runtime_py",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_runtime_py.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/rosidl_runtime_py",
+        sha256 = "b171a9358ed30df2f702f64c4618872c22802287dbf7b6d27310bd6c8a550dcf",
+        strip_prefix = "rosidl_runtime_py-0.9.1",
+        urls = ["https://github.com/ros2/rosidl_runtime_py/archive/0.9.1.tar.gz"],
     )
