@@ -18,6 +18,12 @@ You can inspect the chatter topic with
 bazel run //examples/chatter:topic -- echo /topic
 ```
 
+You can run tests with
+
+```sh
+bazel test //examples/chatter:tests  # To get the logs run with `--test_output=all`.
+```
+
 Alternatively, you can run nodes without the launch mechanism. In a terminal run
 
 ```sh
