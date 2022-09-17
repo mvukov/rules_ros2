@@ -346,15 +346,19 @@ def ros2_repositories():
     )
 
     maybe(
-        native.new_local_repository,
+        http_archive,
         name = "ros2_ros_testing",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/ros_testing",
+        sha256 = "1def68962286e95dcbce54445f5589429d7d6fb44b580183356c3281b3670798",
+        strip_prefix = "ros_testing-0.2.1",
+        urls = ["https://github.com/ros2/ros_testing/archive/0.2.1.tar.gz"],
     )
 
     maybe(
-        native.new_local_repository,
+        http_archive,
         name = "ros2_ament_cmake_ros",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ament_cmake_ros.BUILD.bazel",
-        path = "../ros2_foxy/src/ros2/ament_cmake_ros",
+        sha256 = "6d7d8e4612e155953327d40a7c4d6c6c57ab02f6accfc21969bae679618a5560",
+        strip_prefix = "ament_cmake_ros-0.9.2",
+        urls = ["https://github.com/ros2/ament_cmake_ros/archive/0.9.2.tar.gz"],
     )
