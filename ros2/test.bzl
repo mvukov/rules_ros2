@@ -16,7 +16,7 @@ def ros2_test(name, nodes, launch_file, deps = None, data = None, **kwargs):
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
     if not nodes:
-        fail('A list of nodes must be given!')
+        fail("A list of nodes must be given!")
 
     substitutions = {
         "{launch_file}": "$(rootpath {})".format(launch_file),
