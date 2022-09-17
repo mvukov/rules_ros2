@@ -305,7 +305,7 @@ def _compile_cc_generated_code(
         ) +
         _get_linking_contexts_from_deps(deps)
     )
-    linking_context, linking_outputs = cc_common.create_linking_context_from_compilation_outputs(
+    linking_context, _ = cc_common.create_linking_context_from_compilation_outputs(
         actions = ctx.actions,
         name = name,
         compilation_outputs = compilation_outputs,
@@ -667,7 +667,6 @@ def _get_py_srcs(files):
 def _py_generator_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
-    relative_dir = package_name
 
     idl_files, idl_tuples = _run_adapter(
         ctx,
