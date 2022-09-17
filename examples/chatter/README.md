@@ -12,6 +12,12 @@ launch relevant code, etc.) and run the target. This is basically one of the
 value propositions for using Bazel: you don't have to (semi-)manually keep
 e.g. nodes up-to-date. With correctly specified deps, Bazel takes care of this.
 
+You can inspect the chatter topic with
+
+```sh
+bazel run //examples/chatter:topic -- echo /topic
+```
+
 Alternatively, you can run nodes without the launch mechanism. In a terminal run
 
 ```sh
