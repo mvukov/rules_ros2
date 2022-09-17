@@ -42,7 +42,7 @@ class MinimalActionClient : public rclcpp::Node {
   bool is_goal_done() const { return goal_done_; }
 
   void send_goal() {
-    using namespace std::placeholders;
+    using namespace std::placeholders;  // NOLINT
 
     timer_->cancel();
 

@@ -18,8 +18,6 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
-using namespace std::chrono_literals;
-
 /* This example creates a subclass of Node and uses a fancy C++11 lambda
  * function to shorten the callback syntax, at the expense of making the
  * code somewhat more difficult to understand at first glance. */
@@ -27,6 +25,8 @@ using namespace std::chrono_literals;
 class MinimalPublisher : public rclcpp::Node {
  public:
   MinimalPublisher() : Node("minimal_publisher"), count_(0) {
+    using namespace std::chrono_literals;  // NOLINT
+
     publisher_ = create_publisher<std_msgs::msg::String>("topic", 10);
     auto timer_callback = [this]() -> void {
       auto message = std_msgs::msg::String();

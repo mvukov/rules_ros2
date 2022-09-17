@@ -49,3 +49,8 @@ repos:
     hooks:
       - id: reorder-python-imports
         args: [--py37-plus]
+  - repo: https://github.com/cpplint/cpplint
+    rev: 1.6.1
+    hooks:
+      - id: cpplint
+        args: ["--filter=-build/c++11,-build/c++14"]

@@ -28,7 +28,7 @@ class MinimalActionServer : public rclcpp::Node {
   explicit MinimalActionServer(
       const rclcpp::NodeOptions& options = rclcpp::NodeOptions())
       : Node("minimal_action_server", options) {
-    using namespace std::placeholders;
+    using namespace std::placeholders;  // NOLINT
 
     action_server_ = rclcpp_action::create_server<Fibonacci>(
         get_node_base_interface(), get_node_clock_interface(),
@@ -97,7 +97,7 @@ class MinimalActionServer : public rclcpp::Node {
   }
 
   void handle_accepted(const std::shared_ptr<GoalHandleFibonacci> goal_handle) {
-    using namespace std::placeholders;
+    using namespace std::placeholders;  // NOLINT
     // this needs to return quickly to avoid blocking the executor, so spin up a
     // new thread
     std::thread{std::bind(&MinimalActionServer::execute, this, _1), goal_handle}
