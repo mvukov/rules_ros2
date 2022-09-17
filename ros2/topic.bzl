@@ -4,7 +4,7 @@
 load("@rules_python//python:defs.bzl", "py_binary")
 
 def ros2_topic(name, deps, **kwargs):
-    """ Defines tpic app for a set of deps.
+    """ Defines a ROS2 topic app for a set of deps.
 
     Args:
         name: A unique target name.
