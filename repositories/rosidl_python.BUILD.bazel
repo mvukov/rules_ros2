@@ -1,19 +1,20 @@
 """ Builds rosidl_python.
 """
 
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 
 py_library(
     name = "rosidl_generator_py_lib",
     srcs = glob(["rosidl_generator_py/rosidl_generator_py/*.py"]),
     imports = ["rosidl_generator_py"],
+    visibility = ["//visibility:public"],
     deps = [
         "@ros2_rosidl//:rosidl_cmake",
         "@ros2_rosidl//:rosidl_generator_c_lib",
         "@ros2_rosidl//:rosidl_parser",
         "@ros2_rpyutils//:rpyutils",
     ],
-    visibility = ["//visibility:public"],
 )
 
 _ROSIDL_GENERATOR_PYTHON_APP_PY = "rosidl_generator_py_app.py"
@@ -28,8 +29,8 @@ py_binary(
     name = "rosidl_generator_py_app",
     srcs = [_ROSIDL_GENERATOR_PYTHON_APP_PY],
     main = _ROSIDL_GENERATOR_PYTHON_APP_PY,
-    deps = [":rosidl_generator_py_lib"],
     visibility = ["//visibility:public"],
+    deps = [":rosidl_generator_py_lib"],
 )
 
 filegroup(

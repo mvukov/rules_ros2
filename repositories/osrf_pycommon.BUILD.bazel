@@ -1,6 +1,8 @@
 """ Builds osrf_pycommon.
 """
 
+load("@rules_python//python:defs.bzl", "py_library")
+
 py_library(
     name = "osrf_pycommon",
     srcs = glob(["osrf_pycommon/**/*.py"]),

@@ -1,29 +1,35 @@
 """ Builds rcl.
 """
 
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
 cc_library(
     name = "rcl_yaml_param_parser",
-    hdrs = glob(["rcl_yaml_param_parser/include/**/*.h"]),
-    includes = ["rcl_yaml_param_parser/include"],
     srcs = glob([
         "rcl_yaml_param_parser/src/*.c",
         "rcl_yaml_param_parser/src/impl/*.h",
     ]),
+    hdrs = glob(["rcl_yaml_param_parser/include/**/*.h"]),
+    copts = ["-std=c11"],
+    includes = ["rcl_yaml_param_parser/include"],
+    visibility = ["//visibility:public"],
     deps = [
         "@libyaml//:yaml",
         "@ros2_rcutils//:rcutils",
     ],
-    visibility = ["//visibility:public"],
-    copts = ["-std=c11"],
 )
 
 cc_library(
     name = "rcl",
+    srcs = glob([
+        "rcl/src/rcl/*.c",
+        "rcl/src/rcl/*.h",
+    ]),
     hdrs = glob(["rcl/include/**/*.h"]),
-    includes = ["rcl/include"],
-    srcs = glob(["rcl/src/rcl/*.c", "rcl/src/rcl/*.h"]),
-    local_defines = ["ROS_PACKAGE_NAME=\\\"rcl\\\""],
     copts = ["-std=c11"],
+    includes = ["rcl/include"],
+    local_defines = ["ROS_PACKAGE_NAME=\\\"rcl\\\""],
+    visibility = ["//visibility:public"],
     deps = [
         ":rcl_yaml_param_parser",
         "@ros2_rcl_interfaces//:c_rcl_interfaces",
@@ -33,19 +39,19 @@ cc_library(
         "@ros2_rosidl//:rosidl_runtime_c",
         "@ros2_tracing//:tracetools",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "rcl_action",
-    hdrs = glob(["rcl_action/include/**/*.h"]),
-    includes = ["rcl_action/include"],
     srcs = glob([
         "rcl_action/src/rcl_action/*.c",
         "rcl_action/src/rcl_action/*.h",
     ]),
-    local_defines = ["ROS_PACKAGE_NAME=\\\"rcl_action\\\""],
+    hdrs = glob(["rcl_action/include/**/*.h"]),
     copts = ["-std=c11"],
+    includes = ["rcl_action/include"],
+    local_defines = ["ROS_PACKAGE_NAME=\\\"rcl_action\\\""],
+    visibility = ["//visibility:public"],
     deps = [
         ":rcl",
         "@ros2_rcl_interfaces//:c_action_msgs",
@@ -53,5 +59,4 @@ cc_library(
         "@ros2_rmw//:rmw",
         "@ros2_rosidl//:rosidl_runtime_c",
     ],
-    visibility = ["//visibility:public"],
 )

@@ -1,6 +1,7 @@
 """ Builds launch.
 """
 
+load("@rules_python//python:defs.bzl", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 py_library(
@@ -8,42 +9,42 @@ py_library(
     srcs = glob(["launch/launch/**/*.py"]),
     data = glob(["launch/share/**"]),
     imports = ["launch"],
+    visibility = ["//visibility:public"],
     deps = [
         "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
         "@osrf_pycommon",
         requirement("lark_parser"),
     ],
-    visibility = ["//visibility:public"],
 )
 
 py_library(
     name = "launch_testing",
     srcs = glob(["launch_testing/launch_testing/**/*.py"]),
     imports = ["launch_testing"],
+    visibility = ["//visibility:public"],
     deps = [
         ":launch",
         "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
         "@osrf_pycommon",
     ],
-    visibility = ["//visibility:public"],
 )
 
 py_library(
     name = "launch_xml",
     srcs = glob(["launch_xml/launch_xml/**/*.py"]),
     imports = ["launch_xml"],
+    visibility = ["//visibility:public"],
     deps = [
         ":launch",
     ],
-    visibility = ["//visibility:public"],
 )
 
 py_library(
     name = "launch_yaml",
     srcs = glob(["launch_yaml/launch_yaml/**/*.py"]),
     imports = ["launch_yaml"],
+    visibility = ["//visibility:public"],
     deps = [
         ":launch",
     ],
-    visibility = ["//visibility:public"],
 )

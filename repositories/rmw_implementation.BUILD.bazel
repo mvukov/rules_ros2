@@ -1,6 +1,8 @@
 """ Builds rmw_implementation.
 """
 
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
 cc_library(
     name = "rmw_implementation",
     srcs = [
@@ -8,18 +10,18 @@ cc_library(
         "rmw_implementation/src/functions.hpp",
         "rmw_implementation/src/visibility_control.h",
     ],
+    copts = ["-std=c++14"],
+    data = [
+        "@ros2_rmw_cyclonedds//:rmw_cyclonedds",
+    ],
     includes = ["include"],
     local_defines = [
         "RMW_LIBRARY_PATH=\\\"external/ros2_rmw_cyclonedds/librmw_cyclonedds.so\\\"",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "@ros2_rcpputils//:rcpputils",
         "@ros2_rcutils//:rcutils",
         "@ros2_rmw//:rmw",
     ],
-    data = [
-        "@ros2_rmw_cyclonedds//:rmw_cyclonedds",
-    ],
-    visibility = ["//visibility:public"],
-    copts = ["-std=c++14"],
 )

@@ -1,6 +1,8 @@
 """ Builds rcutils.
 """
 
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("@rules_cc//cc:defs.bzl", "cc_library")
 load(
     "@com_github_mvukov_rules_ros2//repositories:logging_macros.bzl",
     "logging_macros",
@@ -12,8 +14,8 @@ _GENERATE_LOGGING_MACROS_PY = "@com_github_mvukov_rules_ros2//repositories:gener
 py_library(
     name = "logging_generator",
     srcs = ["rcutils/logging.py"],
-    deps = [requirement("empy")],
     visibility = ["//visibility:public"],
+    deps = [requirement("empy")],
 )
 
 py_binary(
@@ -28,27 +30,39 @@ py_binary(
 
 logging_macros(
     name = "logging_macros",
+    generator = ":generate_logging_macros",
     output = "include/rcutils/logging_macros.h",
     template = "resource/logging_macros.h.em",
-    generator = ":generate_logging_macros",
 )
 
 cc_library(
     name = "rcutils",
+    srcs = glob(
+        [
+            "src/*.c",
+            "src/*.h",
+        ],
+        exclude = ["src/time_*.c"],
+    ) + select(
+        {
+            "@platforms//os:linux": ["src/time_unix.c"],
+            "@platforms//os:macos": ["src/time_unix.c"],
+        },
+        no_match_error = "Only Linux and macOS are supported!",
+    ),
     hdrs = glob(["include/**/*.h"]) + [":logging_macros"],
+    copts = ["-std=c11"],
     includes = ["include"],
+    linkopts = select(
+        {
+            "@platforms//os:linux": ["-ldl"],
+            "@platforms//os:macos": ["-ldl"],
+        },
+        no_match_error = "Only Linux and macOS are supported!",
+    ),
     local_defines = select({
         "@platforms//os:linux": ["_GNU_SOURCE"],
         "//conditions:default": [],
     }),
-    srcs = glob(["src/*.c", "src/*.h"], exclude = ["src/time_*.c"]) + select({
-        "@platforms//os:linux": ["src/time_unix.c"],
-        "@platforms//os:macos": ["src/time_unix.c"],
-    }, no_match_error = "Only Linux and macOS are supported!"),
-    linkopts = select({
-        "@platforms//os:linux": ["-ldl"],
-        "@platforms//os:macos": ["-ldl"],
-    }, no_match_error = "Only Linux and macOS are supported!"),
     visibility = ["//visibility:public"],
-    copts = ["-std=c11"],
 )

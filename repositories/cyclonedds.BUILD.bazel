@@ -1,6 +1,7 @@
 """ Builds CycloneDDS.
 """
 
+load("@rules_cc//cc:defs.bzl", "cc_library")
 load(
     "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
     "expand_template",
@@ -8,18 +9,17 @@ load(
 
 expand_template(
     name = "features_h",
-    template = "src/features.h.in",
     out = "include/dds/features.h",
     substitutions = {
         "#cmakedefine DDS_HAS_SECURITY @DDS_HAS_SECURITY@": "/* #undef DDS_HAS_SECURITY */",
         "#cmakedefine DDS_HAS_LIFESPAN @DDS_HAS_LIFESPAN@": "#define DDS_HAS_LIFESPAN 1",
         "#cmakedefine DDS_HAS_DEADLINE_MISSED @DDS_HAS_DEADLINE_MISSED@": "#define DDS_HAS_DEADLINE_MISSED 1",
     },
+    template = "src/features.h.in",
 )
 
 expand_template(
     name = "version_h",
-    template = "src/ddsrt/include/dds/version.h.in",
     out = "include/dds/version.h",
     substitutions = {
         "@CycloneDDS_VERSION@": "0.7.0",
@@ -32,11 +32,11 @@ expand_template(
         "@CMAKE_HOST_SYSTEM_NAME@": "Linux",
         "@CMAKE_SYSTEM_NAME@": "Linux",
     },
+    template = "src/ddsrt/include/dds/version.h.in",
 )
 
 genrule(
     name = "export_h",
-    visibility = ["//visibility:private"],
     outs = [
         "include/dds/export.h",
     ],
@@ -84,6 +84,7 @@ genrule(
 #endif /* DDS_EXPORT_H */
 EOL
 """,
+    visibility = ["//visibility:private"],
 )
 
 # Got this from a CMake build on Ubuntu 20.04 for amd64 arch.
@@ -206,18 +207,18 @@ _DEFINES = [
 
 cc_library(
     name = "ddsrt",
+    srcs = _DDSRT_SRCS,
     hdrs = _DDSRT_HDRS + [":export_h"],
+    copts = ["-std=gnu99"],
+    defines = _DEFINES,
     includes = [
         "include",
         "src/ddsrt/include",
         "src/ddsrt/src/sockets/include",
         "src/ddsrt/src/threads/include",
     ],
-    srcs = _DDSRT_SRCS,
     linkopts = ["-lpthread"],
-    defines = _DEFINES,
     deps = [],
-    copts = ["-std=gnu99"],
 )
 
 _DDSI_SRCS = [
@@ -438,17 +439,6 @@ _DDSC_PRIVATE_HDRS = [
 
 cc_library(
     name = "ddsc",
-    hdrs = [
-        "src/core/ddsc/include/dds/{}".format(f)
-        for f in _DDSC_PUBLIC_HDRS
-    ] + [":features_h", ":version_h"],
-    includes = [
-        "src/core/ddsc/include",
-        "src/core/ddsc/src",
-        "src/core/ddsi/include",
-        "src/core/ddsi/src",
-    ],
-    defines = _DEFINES,
     srcs = [
         "src/core/ddsi/src/{}".format(f)
         for f in _DDSI_SRCS
@@ -462,7 +452,21 @@ cc_library(
         "src/core/ddsc/src/{}".format(f)
         for f in _DDSC_PRIVATE_HDRS
     ],
-    deps = [":ddsrt"],
-    visibility = ["//visibility:public"],
+    hdrs = [
+        "src/core/ddsc/include/dds/{}".format(f)
+        for f in _DDSC_PUBLIC_HDRS
+    ] + [
+        ":features_h",
+        ":version_h",
+    ],
     copts = ["-std=gnu99"],
+    defines = _DEFINES,
+    includes = [
+        "src/core/ddsc/include",
+        "src/core/ddsc/src",
+        "src/core/ddsi/include",
+        "src/core/ddsi/src",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [":ddsrt"],
 )

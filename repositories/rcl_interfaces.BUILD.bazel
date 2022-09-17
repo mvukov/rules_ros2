@@ -11,12 +11,15 @@ load(
 
 ros2_interface_library(
     name = "action_msgs",
-    srcs = glob(["action_msgs/msg/*.msg", "action_msgs/srv/*.srv"]),
+    srcs = glob([
+        "action_msgs/msg/*.msg",
+        "action_msgs/srv/*.srv",
+    ]),
+    visibility = ["//visibility:public"],
     deps = [
         ":builtin_interfaces",
         "@ros2_unique_identifier_msgs//:unique_identifier_msgs",
     ],
-    visibility = ["//visibility:public"],
 )
 
 ros2_interface_library(
@@ -28,117 +31,123 @@ ros2_interface_library(
 ros2_interface_library(
     name = "composition_interfaces",
     srcs = glob(["composition_interfaces/srv/*.srv"]),
-    deps = [":rcl_interfaces"],
     visibility = ["//visibility:public"],
+    deps = [":rcl_interfaces"],
 )
 
 ros2_interface_library(
     name = "lifecycle_msgs",
-    srcs = glob(["lifecycle_msgs/msg/*.msg", "lifecycle_msgs/srv/*.srv"]),
+    srcs = glob([
+        "lifecycle_msgs/msg/*.msg",
+        "lifecycle_msgs/srv/*.srv",
+    ]),
     visibility = ["//visibility:public"],
 )
 
 ros2_interface_library(
     name = "rcl_interfaces",
-    srcs = glob(["rcl_interfaces/msg/*.msg", "rcl_interfaces/srv/*.srv"]),
-    deps = [":builtin_interfaces"],
+    srcs = glob([
+        "rcl_interfaces/msg/*.msg",
+        "rcl_interfaces/srv/*.srv",
+    ]),
     visibility = ["//visibility:public"],
+    deps = [":builtin_interfaces"],
 )
 
 ros2_interface_library(
     name = "rosgraph_msgs",
     srcs = glob(["rosgraph_msgs/msg/*.msg"]),
-    deps = [":builtin_interfaces"],
     visibility = ["//visibility:public"],
+    deps = [":builtin_interfaces"],
 )
 
 ros2_interface_library(
     name = "statistics_msgs",
     srcs = glob(["statistics_msgs/msg/*.msg"]),
-    deps = [":builtin_interfaces"],
     visibility = ["//visibility:public"],
+    deps = [":builtin_interfaces"],
 )
 
 c_ros2_interface_library(
     name = "c_action_msgs",
-    deps = [":action_msgs"],
     visibility = ["//visibility:public"],
+    deps = [":action_msgs"],
 )
 
 c_ros2_interface_library(
     name = "c_builtin_interfaces",
-    deps = [":builtin_interfaces"],
     visibility = ["//visibility:public"],
+    deps = [":builtin_interfaces"],
 )
 
 c_ros2_interface_library(
     name = "c_rcl_interfaces",
-    deps = [":rcl_interfaces"],
     visibility = ["//visibility:public"],
+    deps = [":rcl_interfaces"],
 )
 
 cpp_ros2_interface_library(
     name = "cpp_action_msgs",
-    deps = [":action_msgs"],
     visibility = ["//visibility:public"],
+    deps = [":action_msgs"],
 )
 
 cpp_ros2_interface_library(
     name = "cpp_builtin_interfaces",
-    deps = [":builtin_interfaces"],
     visibility = ["//visibility:public"],
+    deps = [":builtin_interfaces"],
 )
 
 cpp_ros2_interface_library(
     name = "cpp_rcl_interfaces",
-    deps = [":rcl_interfaces"],
     visibility = ["//visibility:public"],
+    deps = [":rcl_interfaces"],
 )
 
 cpp_ros2_interface_library(
     name = "cpp_rosgraph_msgs",
-    deps = [":rosgraph_msgs"],
     visibility = ["//visibility:public"],
+    deps = [":rosgraph_msgs"],
 )
 
 cpp_ros2_interface_library(
     name = "cpp_statistics_msgs",
-    deps = [":statistics_msgs"],
     visibility = ["//visibility:public"],
+    deps = [":statistics_msgs"],
 )
 
 py_ros2_interface_library(
     name = "py_action_msgs",
-    deps = [":action_msgs"],
     visibility = ["//visibility:public"],
+    deps = [":action_msgs"],
 )
 
 py_ros2_interface_library(
     name = "py_builtin_interfaces",
-    deps = [":builtin_interfaces"],
     visibility = ["//visibility:public"],
+    deps = [":builtin_interfaces"],
 )
 
 py_ros2_interface_library(
     name = "py_composition_interfaces",
-    deps = [":composition_interfaces"],
     visibility = ["//visibility:public"],
+    deps = [":composition_interfaces"],
 )
 
 py_ros2_interface_library(
     name = "py_lifecycle_msgs",
-    deps = [":lifecycle_msgs"],
     visibility = ["//visibility:public"],
+    deps = [":lifecycle_msgs"],
 )
 
 py_ros2_interface_library(
     name = "py_rcl_interfaces",
-    deps = [":rcl_interfaces"],
     visibility = ["//visibility:public"],
+    deps = [":rcl_interfaces"],
 )
 
 py_ros2_interface_library(
     name = "py_rosgraph_msgs",
-    deps = [":rosgraph_msgs"],
     visibility = ["//visibility:public"],
+    deps = [":rosgraph_msgs"],
 )

@@ -1,12 +1,14 @@
 """ Builds launch_ros.
 """
 
+load("@rules_python//python:defs.bzl", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 py_library(
     name = "launch_ros",
     srcs = glob(["launch_ros/launch_ros/**/*.py"]),
     imports = ["launch_ros"],
+    visibility = ["//visibility:public"],
     deps = [
         "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
         "@osrf_pycommon",
@@ -16,25 +18,25 @@ py_library(
         "@ros2_rclpy//:rclpy",
         requirement("pyyaml"),
     ],
-    visibility = ["//visibility:public"],
 )
 
 py_library(
     name = "launch_testing_ros",
     srcs = glob(["launch_testing_ros/launch_testing_ros/**/*.py"]),
     imports = ["launch_testing_ros"],
+    visibility = ["//visibility:public"],
     deps = [
         ":launch_ros",
         "@ros2_launch//:launch_testing",
         "@ros2_rclpy//:rclpy",
     ],
-    visibility = ["//visibility:public"],
 )
 
 py_library(
     name = "ros2launch",
     srcs = glob(["ros2launch/ros2launch/**/*.py"]),
     imports = ["ros2launch"],
+    visibility = ["//visibility:public"],
     deps = [
         ":launch_ros",
         "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
@@ -42,5 +44,4 @@ py_library(
         "@ros2cli",
         "@ros2cli//:ros2pkg",
     ],
-    visibility = ["//visibility:public"],
 )

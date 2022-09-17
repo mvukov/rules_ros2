@@ -11,57 +11,69 @@ load(
 ros2_interface_library(
     name = "std_msgs",
     srcs = glob(["std_msgs/msg/*.msg"]),
-    deps = ["@ros2_rcl_interfaces//:builtin_interfaces"],
     visibility = ["//visibility:public"],
+    deps = ["@ros2_rcl_interfaces//:builtin_interfaces"],
 )
 
 cpp_ros2_interface_library(
     name = "cpp_std_msgs",
-    deps = [":std_msgs"],
     visibility = ["//visibility:public"],
+    deps = [":std_msgs"],
 )
 
 py_ros2_interface_library(
     name = "py_std_msgs",
-    deps = [":std_msgs"],
     visibility = ["//visibility:public"],
+    deps = [":std_msgs"],
 )
 
 ros2_interface_library(
     name = "geometry_msgs",
     srcs = glob(["geometry_msgs/msg/*.msg"]),
-    deps = [":std_msgs"],
     visibility = ["//visibility:public"],
+    deps = [":std_msgs"],
 )
 
 cpp_ros2_interface_library(
     name = "cpp_geometry_msgs",
-    deps = [":geometry_msgs"],
     visibility = ["//visibility:public"],
+    deps = [":geometry_msgs"],
 )
 
 ros2_interface_library(
     name = "nav_msgs",
-    srcs = glob(["nav_msgs/msg/*.msg", "nav_msgs/srv/*.srv"]),
-    deps = [":geometry_msgs", ":std_msgs"],
+    srcs = glob([
+        "nav_msgs/msg/*.msg",
+        "nav_msgs/srv/*.srv",
+    ]),
     visibility = ["//visibility:public"],
+    deps = [
+        ":geometry_msgs",
+        ":std_msgs",
+    ],
 )
 
 cpp_ros2_interface_library(
     name = "cpp_nav_msgs",
-    deps = [":nav_msgs"],
     visibility = ["//visibility:public"],
+    deps = [":nav_msgs"],
 )
 
 ros2_interface_library(
     name = "sensor_msgs",
-    srcs = glob(["sensor_msgs/msg/*.msg", "sensor_msgs/srv/*.srv"]),
-    deps = [":geometry_msgs", ":std_msgs"],
+    srcs = glob([
+        "sensor_msgs/msg/*.msg",
+        "sensor_msgs/srv/*.srv",
+    ]),
     visibility = ["//visibility:public"],
+    deps = [
+        ":geometry_msgs",
+        ":std_msgs",
+    ],
 )
 
 cpp_ros2_interface_library(
     name = "cpp_sensor_msgs",
-    deps = [":sensor_msgs"],
     visibility = ["//visibility:public"],
+    deps = [":sensor_msgs"],
 )

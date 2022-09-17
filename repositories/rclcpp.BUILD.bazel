@@ -1,6 +1,8 @@
 """ Builds rclcpp.
 """
 
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_cc//cc:defs.bzl", "cc_library")
 load(
     "@com_github_mvukov_rules_ros2//repositories:logging_macros.bzl",
     "logging_macros",
@@ -25,9 +27,9 @@ py_binary(
 
 logging_macros(
     name = "logging_macros",
+    generator = ":generate_logging_macros",
     output = "include/rclcpp/logging.hpp",
     template = "rclcpp/resource/logging.hpp.em",
-    generator = ":generate_logging_macros",
 )
 
 filegroup(
@@ -59,12 +61,20 @@ rclcpp_interfaces(
 
 cc_library(
     name = "rclcpp",
+    srcs = glob([
+        "rclcpp/src/**/*.cpp",
+        "rclcpp/src/**/*.hpp",
+    ]),
     hdrs = glob(["rclcpp/include/**/*.hpp"]) + [
         ":logging_macros",
         ":rclcpp_interfaces",
     ],
-    includes = ["include", "rclcpp/include"],
-    srcs = glob(["rclcpp/src/**/*.cpp", "rclcpp/src/**/*.hpp"]),
+    copts = ["-std=c++14"],
+    includes = [
+        "include",
+        "rclcpp/include",
+    ],
+    visibility = ["//visibility:public"],
     deps = [
         "@ros2_libstatistics_collector//:libstatistics_collector",
         "@ros2_rcl//:rcl",
@@ -82,20 +92,18 @@ cc_library(
         "@ros2_rosidl_typesupport//:rosidl_typesupport_cpp",
         "@ros2_tracing//:tracetools",
     ],
-    copts = ["-std=c++14"],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "rclcpp_action",
-    hdrs = glob(["rclcpp_action/include/**/*.hpp"]),
-    includes = ["rclcpp_action/include"],
     srcs = glob(["rclcpp_action/src/*.cpp"]),
+    hdrs = glob(["rclcpp_action/include/**/*.hpp"]),
+    copts = ["-std=c++14"],
+    includes = ["rclcpp_action/include"],
+    visibility = ["//visibility:public"],
     deps = [
         ":rclcpp",
         "@ros2_rcl//:rcl_action",
         "@ros2_rcl_interfaces//:cpp_action_msgs",
     ],
-    copts = ["-std=c++14"],
-    visibility = ["//visibility:public"],
 )

@@ -1,23 +1,25 @@
 """ Builds rmw.
 """
 
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
 cc_library(
     name = "rmw",
-    hdrs = glob(["rmw/include/**/*.h"]),
-    includes = ["rmw/include"],
     srcs = glob(["rmw/src/*.c"]),
+    hdrs = glob(["rmw/include/**/*.h"]),
+    copts = ["-std=c11"],
+    includes = ["rmw/include"],
+    visibility = ["//visibility:public"],
     deps = [
         "@ros2_rcutils//:rcutils",
         "@ros2_rosidl//:rosidl_runtime_c",
     ],
-    visibility = ["//visibility:public"],
-    copts = ["-std=c11"],
 )
 
 cc_library(
     name = "rmw_cpp",
     hdrs = glob(["rmw/include/**/*.hpp"]),
     includes = ["rmw/include"],
-    deps = [":rmw"],
     visibility = ["//visibility:public"],
+    deps = [":rmw"],
 )

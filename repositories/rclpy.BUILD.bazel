@@ -1,6 +1,8 @@
 """ Builds rclpy.
 """
 
+load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 
 cc_library(
@@ -34,18 +36,19 @@ cc_binary(
         "rclpy/src/rclpy/detail/thread_safe_logging_output_handler.h",
         ":rclpy_qos_event_copy",
     ],
+    linkshared = True,
     deps = [
         ":rclpy_common",
         "@local_config_python//:headers",
         "@ros2_rcl//:rcl",
         "@ros2_rcutils//:rcutils",
     ],
-    linkshared = True,
 )
 
 cc_binary(
     name = "rclpy/rclpy/_rclpy_action.so",
     srcs = ["rclpy/src/rclpy/_rclpy_action.c"],
+    linkshared = True,
     deps = [
         ":rclpy_common",
         "@local_config_python//:headers",
@@ -53,7 +56,6 @@ cc_binary(
         "@ros2_rcl//:rcl_action",
         "@ros2_rcutils//:rcutils",
     ],
-    linkshared = True,
 )
 
 cc_binary(
@@ -61,13 +63,13 @@ cc_binary(
     srcs = [
         "rclpy/src/rclpy/_rclpy_logging.c",
     ],
+    linkshared = True,
     deps = [
         ":rclpy_common",
         "@local_config_python//:headers",
         "@ros2_rcl//:rcl",
         "@ros2_rcutils//:rcutils",
     ],
-    linkshared = True,
 )
 
 cc_binary(
@@ -75,13 +77,13 @@ cc_binary(
     srcs = [
         "rclpy/src/rclpy/_rclpy_signal_handler.c",
     ],
+    linkshared = True,
     deps = [
         ":rclpy_common",
         "@local_config_python//:headers",
         "@ros2_rcl//:rcl",
         "@ros2_rcutils//:rcutils",
     ],
-    linkshared = True,
 )
 
 cc_binary(
@@ -89,11 +91,11 @@ cc_binary(
     srcs = [
         "rclpy/src/rclpy/_rclpy_pycapsule.c",
     ],
+    linkshared = True,
     deps = [
         ":rclpy_common",
         "@local_config_python//:headers",
     ],
-    linkshared = True,
 )
 
 cc_binary(
@@ -101,26 +103,17 @@ cc_binary(
     srcs = [
         "rclpy/src/rclpy/_rclpy_handle.c",
     ],
+    linkshared = True,
     deps = [
         ":rclpy_common",
         "@local_config_python//:headers",
         "@ros2_rcutils//:rcutils",
     ],
-    linkshared = True,
 )
 
 py_library(
     name = "rclpy",
     srcs = glob(["rclpy/rclpy/**/*.py"]),
-    imports = ["rclpy"],
-    deps = [
-        "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
-        "@ros2_rcl_interfaces//:py_action_msgs",
-        "@ros2_rcl_interfaces//:py_builtin_interfaces",
-        "@ros2_rcl_interfaces//:py_rcl_interfaces",
-        "@ros2_rcl_interfaces//:py_rosgraph_msgs",
-        "@ros2_rpyutils//:rpyutils",
-    ],
     data = [
         ":rclpy/rclpy/_rclpy.so",
         ":rclpy/rclpy/_rclpy_action.so",
@@ -129,5 +122,14 @@ py_library(
         ":rclpy/rclpy/_rclpy_pycapsule.so",
         ":rclpy/rclpy/_rclpy_signal_handler.so",
     ],
+    imports = ["rclpy"],
     visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
+        "@ros2_rcl_interfaces//:py_action_msgs",
+        "@ros2_rcl_interfaces//:py_builtin_interfaces",
+        "@ros2_rcl_interfaces//:py_rcl_interfaces",
+        "@ros2_rcl_interfaces//:py_rosgraph_msgs",
+        "@ros2_rpyutils//:rpyutils",
+    ],
 )

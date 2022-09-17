@@ -1,12 +1,14 @@
 """ Builds rcpputils.
 """
 
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
 cc_library(
     name = "rcpputils",
-    hdrs = glob(["include/**/*.hpp"]),
-    includes = ["include"],
     srcs = glob(["src/*.cpp"]),
-    deps = ["@ros2_rcutils//:rcutils"],
-    visibility = ["//visibility:public"],
+    hdrs = glob(["include/**/*.hpp"]),
     copts = ["-std=c++14"],
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+    deps = ["@ros2_rcutils//:rcutils"],
 )

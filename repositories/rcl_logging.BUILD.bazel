@@ -1,16 +1,18 @@
 """ Builds rcl_logging.
 """
 
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
 cc_library(
     name = "rcl_logging_spdlog",
-    hdrs = glob(["rcl_logging_spdlog/include/**/*.h"]),
-    includes = ["rcl_logging_spdlog/include"],
     srcs = glob(["rcl_logging_spdlog/src/*.cpp"]),
+    hdrs = glob(["rcl_logging_spdlog/include/**/*.h"]),
     copts = ["-std=c++14"],
+    includes = ["rcl_logging_spdlog/include"],
+    visibility = ["//visibility:public"],
     deps = [
         "@ros2_rcpputils//:rcpputils",
         "@ros2_rcutils//:rcutils",
-        "@spdlog//:spdlog",
+        "@spdlog",
     ],
-    visibility = ["//visibility:public"],
 )

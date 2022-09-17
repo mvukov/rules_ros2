@@ -1,64 +1,66 @@
 """ Builds rosidl_typesupport.
 """
 
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 
 cc_library(
     name = "rosidl_typesupport_c_c",
-    hdrs = glob(["rosidl_typesupport_c/include/**/*.h"]),
-    includes = ["rosidl_typesupport_c/include"],
     srcs = glob(["rosidl_typesupport_c/src/*.c"]),
-    visibility = ["//visibility:public"],
+    hdrs = glob(["rosidl_typesupport_c/include/**/*.h"]),
     copts = ["-std=c11"],
+    includes = ["rosidl_typesupport_c/include"],
+    visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "rosidl_typesupport_c",
-    hdrs = glob(["rosidl_typesupport_c/include/**/*.h"]),
-    includes = ["rosidl_typesupport_c/include"],
     srcs = glob([
         "rosidl_typesupport_c/src/*.cpp",
         "rosidl_typesupport_c/src/*.hpp",
     ]),
+    hdrs = glob(["rosidl_typesupport_c/include/**/*.h"]),
+    copts = ["-std=c++14"],
+    includes = ["rosidl_typesupport_c/include"],
+    visibility = ["//visibility:public"],
     deps = [
         ":rosidl_typesupport_c_c",
         "@ros2_rcpputils//:rcpputils",
         "@ros2_rcutils//:rcutils",
         "@ros2_rosidl//:rosidl_runtime_c",
     ],
-    visibility = ["//visibility:public"],
-    copts = ["-std=c++14"],
 )
 
 cc_library(
     name = "rosidl_typesupport_cpp",
-    hdrs = glob([
-        "rosidl_typesupport_cpp/include/**/*.h",
-        "rosidl_typesupport_cpp/include/**/*.hpp",
-    ]),
-    includes = ["rosidl_typesupport_cpp/include"],
     srcs = glob([
         "rosidl_typesupport_cpp/src/*.cpp",
         "rosidl_typesupport_cpp/src/*.hpp",
     ]),
+    hdrs = glob([
+        "rosidl_typesupport_cpp/include/**/*.h",
+        "rosidl_typesupport_cpp/include/**/*.hpp",
+    ]),
+    copts = ["-std=c++14"],
+    includes = ["rosidl_typesupport_cpp/include"],
+    visibility = ["//visibility:public"],
     deps = [
         ":rosidl_typesupport_c",
         "@ros2_rcpputils//:rcpputils",
         "@ros2_rosidl//:rosidl_runtime_c",
     ],
-    visibility = ["//visibility:public"],
-    copts = ["-std=c++14"],
 )
 
 py_library(
     name = "rosidl_typesupport_generator_c_lib",
     srcs = ["rosidl_typesupport_c/rosidl_typesupport_c/__init__.py"],
     imports = ["rosidl_typesupport_c"],
+    visibility = ["//visibility:public"],
     deps = [
         "@ros2_rosidl//:rosidl_cmake",
         "@ros2_rosidl//:rosidl_parser",
     ],
-    visibility = ["//visibility:public"],
 )
 
 _ROSIDL_TYPESUPPORT_GENERATOR_C_APP_PY = "rosidl_typesupport_generator_c_app.py"
@@ -73,8 +75,8 @@ py_binary(
     name = "rosidl_typesupport_generator_c_app",
     srcs = [_ROSIDL_TYPESUPPORT_GENERATOR_C_APP_PY],
     main = _ROSIDL_TYPESUPPORT_GENERATOR_C_APP_PY,
-    deps = [":rosidl_typesupport_generator_c_lib"],
     visibility = ["//visibility:public"],
+    deps = [":rosidl_typesupport_generator_c_lib"],
 )
 
 filegroup(
@@ -91,11 +93,11 @@ py_library(
     name = "rosidl_typesupport_generator_cpp_lib",
     srcs = ["rosidl_typesupport_cpp/rosidl_typesupport_cpp/__init__.py"],
     imports = ["rosidl_typesupport_cpp"],
+    visibility = ["//visibility:public"],
     deps = [
         "@ros2_rosidl//:rosidl_cmake",
         "@ros2_rosidl//:rosidl_parser",
     ],
-    visibility = ["//visibility:public"],
 )
 
 _ROSIDL_TYPESUPPORT_GENERATOR_CPP_APP_PY = "rosidl_typesupport_generator_cpp_app.py"
@@ -110,8 +112,8 @@ py_binary(
     name = "rosidl_typesupport_generator_cpp_app",
     srcs = [_ROSIDL_TYPESUPPORT_GENERATOR_CPP_APP_PY],
     main = _ROSIDL_TYPESUPPORT_GENERATOR_CPP_APP_PY,
-    deps = [":rosidl_typesupport_generator_cpp_lib"],
     visibility = ["//visibility:public"],
+    deps = [":rosidl_typesupport_generator_cpp_lib"],
 )
 
 filegroup(

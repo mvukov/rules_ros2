@@ -7,11 +7,21 @@ repos:
     rev: 5.1.0.1
     hooks:
       - id: buildifier
-        files: &bazel_files ^(.*/)?(\w+\.BUILD.bazel|BUILD\.bazel|BUILD|WORKSPACE)$|\.BUILD$|\.bzl$
-        args: &bazel_args ["--warnings=native-cc,native-py"]
+        args:
+          - &buildifier_args "--warnings=native-cc,native-py"
+      - id: buildifier
+        name: "buildifier (external build files)"
+        files: &buildifier_external_files ^(.*/)?\w+\.BUILD.bazel$
+        args: &buildifier_external_args
+          - *buildifier_args
+          - "--type=build"
       - id: buildifier-lint
-        files: *bazel_files
-        args: *bazel_args
+        args:
+          - *buildifier_args
+      - id: buildifier-lint
+        name: "buildifier-lint (external build files)"
+        files: *buildifier_external_files
+        args: *buildifier_external_args
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.3.0
     hooks:
