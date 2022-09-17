@@ -1,9 +1,9 @@
 """Configures repo dependencies.
 """
 
-load("//repositories:python.bzl", "python_configuration")
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 load("@rules_python//python:pip.bzl", "package_annotation", "pip_parse")
+load("//repositories:python.bzl", "python_configuration")
 
 ANNOTATIONS = {
     "numpy": package_annotation(
