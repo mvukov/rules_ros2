@@ -12,7 +12,7 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):
         nodes: A list of ROS2 nodes for the deployment.
         launch_file: A roslaunch-compatible launch file.
         deps: Additional Python deps that can be used by the launch file.
-        data: Additional data that can be used bu the launch file.
+        data: Additional data that can be used by the launch file.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
     if not nodes:

@@ -1,19 +1,19 @@
-""" Defines launch_ros-like ROS2 deployment.
+""" Defines ROS2 testing functionality.
 """
 
 load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
 load("@rules_python//python:defs.bzl", "py_test")
 
 def ros2_test(name, nodes, launch_file, deps = None, data = None, **kwargs):
-    """ Defines a ROS2 deployment.
+    """ Defines a ROS2 test.
 
     Args:
         name: A unique target name.
         nodes: A list of ROS2 nodes for the deployment.
         launch_file: A roslaunch-compatible launch file.
         deps: Additional Python deps that can be used by the launch file.
-        data: Additional data that can be used bu the launch file.
-        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
+        data: Additional data that can be used by the launch file.
+        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
     """
     if not nodes:
         fail("A list of nodes must be given!")
