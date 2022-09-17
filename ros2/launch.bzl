@@ -10,7 +10,7 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):
     Args:
         name: A unique target name.
         nodes: A list of ROS2 nodes for the deployment.
-        launch_file: A roslaunch-compatible launch file.
+        launch_file: A ros2launch-compatible launch file.
         deps: Additional Python deps that can be used by the launch file.
         data: Additional data that can be used by the launch file.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
