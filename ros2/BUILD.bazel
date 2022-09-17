@@ -10,14 +10,3 @@ exports_files([
     "ros2_topic.py",
     "topic.bzl",
 ])
-
-py_binary(
-    name = "ros2_topic",
-    srcs = ["ros2_topic.py"],
-    deps = [
-        "@ros2_common_interfaces//:py_std_msgs",
-        "@ros2_rosidl//:rosidl_parser",
-        "@ros2cli",
-        "@ros2cli//:ros2topic",
-    ],
-)
