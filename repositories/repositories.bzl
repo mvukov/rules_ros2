@@ -362,3 +362,12 @@ def ros2_repositories():
         strip_prefix = "ament_cmake_ros-0.9.2",
         urls = ["https://github.com/ros2/ament_cmake_ros/archive/0.9.2.tar.gz"],
     )
+
+    maybe(
+        http_archive,
+        name = "ros2",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
+        sha256 = "a2c04b6f8a92fbab31a20b067b7eb8baec45229695b2765e038b728bfd800a90",
+        strip_prefix = "ros2-release-foxy-20220208",
+        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-foxy-20220208.tar.gz"],
+    )

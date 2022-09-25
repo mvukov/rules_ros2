@@ -1,7 +1,10 @@
+aiofile
+aiohttp
 catkin_pkg
 empy
 lark-parser
 netifaces
 numpy
 pyyaml
+tqdm
 types-pkg-resources
