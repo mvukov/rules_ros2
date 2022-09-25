@@ -8,6 +8,8 @@ The code is developed and tested on Ubuntu 20.04 with Python 3.8.
 
 You will need to install Bazel, see [here](https://docs.bazel.build/versions/master/install.html).
 Besides Bazel, you will need a C++ compiler and a Python 3.8 interpreter.
+If you want to run ROS2 deployments in Docker containers, [install Docker](https://docs.docker.com/engine/install/ubuntu/)
+as well.
 
 And no, you don't have to install any ROS2 packages via `apt`.
 

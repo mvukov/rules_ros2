@@ -1,6 +1,6 @@
 """ Fakes necessary interfaces of the original library.
 """
-from .packages import *
+from .packages import *  # noqa
 
 
 def get_resource(*_):

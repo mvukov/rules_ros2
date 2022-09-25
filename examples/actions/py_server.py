@@ -76,8 +76,8 @@ class MinimalActionServer(Node):
 
         # Start executing the action
         for i in range(1, goal_handle.request.order):
-            # If goal is flagged as no longer active (ie. another goal was accepted),
-            # then stop executing
+            # If goal is flagged as no longer active (ie. another goal
+            # was accepted), then stop executing.
             if not goal_handle.is_active:
                 self.get_logger().info('Goal aborted')
                 return Fibonacci.Result()
@@ -116,7 +116,8 @@ def main():
 
     action_server = MinimalActionServer()
 
-    # We use a MultiThreadedExecutor to handle incoming goal requests concurrently
+    # We use a MultiThreadedExecutor to handle incoming goal requests
+    # concurrently.
     executor = MultiThreadedExecutor()
     rclpy.spin(action_server, executor=executor)
 
