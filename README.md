@@ -36,8 +36,8 @@ Please take a look at the examples folder to get more info. Start with a simple
 
 ## What's next?
 
-The next step is to work out the ROS2 testing functionality with Bazel as well
-as well as defining a rostopic-like app.
+One of the next steps is to work out a convenient way to update versions of
+ROS2 repos from https://github.com/ros2/ros2.
 
 The grand idea would be to get this repo at least to the level of
 [rules_ros](https://github.com/mvukov/rules_ros). In particular:
