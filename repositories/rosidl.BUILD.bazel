@@ -57,6 +57,7 @@ py_binary(
     main = _ROSIDL_ADAPTER_APP_PY,
     visibility = ["//visibility:public"],
     deps = [":rosidl_adapter_lib"],
+    legacy_create_init=False,
 )
 
 py_library(
@@ -104,6 +105,7 @@ py_binary(
     main = _ROSIDL_GENERATOR_C_APP_PY,
     visibility = ["//visibility:public"],
     deps = [":rosidl_generator_c_lib"],
+    legacy_create_init=False,
 )
 
 filegroup(
@@ -149,6 +151,7 @@ py_binary(
     main = _ROSIDL_GENERATOR_CPP_APP_PY,
     visibility = ["//visibility:public"],
     deps = [":rosidl_generator_cpp_lib"],
+    legacy_create_init=False,
 )
 
 filegroup(
@@ -207,6 +210,7 @@ py_binary(
     srcs = [_ROSIDL_TYPESUPPORT_INTROSPECTION_GENERATOR_C_PY],
     visibility = ["//visibility:public"],
     deps = [":rosidl_typesupport_introspection_generator_c_lib"],
+    legacy_create_init=False,
 )
 
 filegroup(
@@ -244,6 +248,7 @@ py_binary(
     srcs = [_ROSIDL_TYPESUPPORT_INTROSPECTION_GENERATOR_CPP_PY],
     visibility = ["//visibility:public"],
     deps = [":rosidl_typesupport_introspection_generator_cpp_lib"],
+    legacy_create_init=False,
 )
 
 filegroup(
