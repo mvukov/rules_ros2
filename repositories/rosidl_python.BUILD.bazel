@@ -3,6 +3,7 @@
 
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 py_library(
     name = "rosidl_generator_py_lib",
@@ -14,6 +15,7 @@ py_library(
         "@ros2_rosidl//:rosidl_generator_c_lib",
         "@ros2_rosidl//:rosidl_parser",
         "@ros2_rpyutils//:rpyutils",
+        requirement("numpy"),
     ],
 )
 
