@@ -68,13 +68,6 @@ ros2_interface_library(
     deps = [":builtin_interfaces"],
 )
 
-ros2_interface_library(
-    name = "lifecycle_msgs",
-    srcs = glob(["lifecycle_msgs/msg/*.msg",  "lifecycle_msgs/srv/*.srv"]),
-    deps = [":builtin_interfaces"],
-    visibility = ["//visibility:public"],
-)
-
 c_ros2_interface_library(
     name = "c_action_msgs",
     visibility = ["//visibility:public"],

@@ -25,4 +25,5 @@ cc_library(
         "@ros2_rcutils//:rcutils",
         "@spdlog",
     ],
+    visibility = ["//visibility:public"],
 )

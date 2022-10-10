@@ -43,7 +43,6 @@ expand_template(
         "#cmakedefine DDSRT_HAVE_INET_NTOP 1": "#define DDSRT_HAVE_INET_NTOP 1",
         "#cmakedefine DDSRT_HAVE_INET_PTON 1": "#define DDSRT_HAVE_INET_PTON 1",
     },
-    template = "src/features.h.in",
 )
 
 expand_template(
@@ -242,6 +241,7 @@ _DEFINES = [
 cc_library(
     name = "ddsrt",
     hdrs = _DDSRT_HDRS + [":export_h", "config_h"],
+    srcs = _DDSRT_SRCS,
     includes = [
         "include",
         "src/ddsrt/include",
@@ -509,13 +509,6 @@ cc_library(
     "src/core/ddsi/src/ddsi_cdrstream_write.part.c",
     "src/core/ddsi/src/ddsi_cdrstream_keys.part.c",
     ],
-    includes = [
-        "src/core/ddsc/include",
-        "src/core/ddsc/src",
-        "src/core/ddsi/include",
-        "src/core/ddsi/src",
-    ],
-    defines = _DEFINES,
     srcs = [
         "src/core/ddsi/src/{}".format(f)
         for f in _DDSI_SRCS
@@ -528,13 +521,6 @@ cc_library(
     ] + [
         "src/core/ddsc/src/{}".format(f)
         for f in _DDSC_PRIVATE_HDRS
-    ],
-    hdrs = [
-        "src/core/ddsc/include/dds/{}".format(f)
-        for f in _DDSC_PUBLIC_HDRS
-    ] + [
-        ":features_h",
-        ":version_h",
     ],
     copts = ["-std=gnu99"],
     defines = _DEFINES,

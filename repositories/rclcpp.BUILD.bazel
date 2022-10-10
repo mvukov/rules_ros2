@@ -69,6 +69,7 @@ ros2_cpp_library(
         ":logging_macros",
         ":rclcpp_interfaces",
     ],
+    copts = ["-std=c++17"],
     includes = [
         "include",
         "rclcpp/include",
@@ -91,14 +92,13 @@ ros2_cpp_library(
         "@ros2_rosidl_typesupport//:rosidl_typesupport_cpp",
         "@ros2_tracing//:tracetools",
     ],
-    copts = ["-std=c++17"],
-    visibility = ["//visibility:public"],
 )
 
 ros2_cpp_library(
     name = "rclcpp_action",
     srcs = glob(["rclcpp_action/src/*.cpp"]),
     hdrs = glob(["rclcpp_action/include/**/*.hpp"]),
+    copts = ["-std=c++17"],
     includes = ["rclcpp_action/include"],
     visibility = ["//visibility:public"],
     deps = [
@@ -106,8 +106,6 @@ ros2_cpp_library(
         "@ros2_rcl//:rcl_action",
         "@ros2_rcl_interfaces//:cpp_action_msgs",
     ],
-    copts = ["-std=c++17"],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
