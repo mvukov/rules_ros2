@@ -7,6 +7,7 @@ To launch a sample deployment, run
 ```sh
 bazel run //examples/chatter
 ```
+
 By running this command, Bazel will (re-)build all necessary code (ROS2, nodes,
 launch relevant code, etc.) and run the target. This is basically one of the
 value propositions for using Bazel: you don't have to (semi-)manually keep
@@ -39,13 +40,14 @@ Alternatively, you can run nodes without the launch mechanism. In a terminal run
 ```sh
 bazel run //examples/chatter:talker
 ```
+
 for rclcpp version or
 
 ```sh
 bazel run //examples/chatter:py_talker
 ```
-for rclpy version.
 
+for rclpy version.
 
 In another terminal run
 

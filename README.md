@@ -41,4 +41,5 @@ ROS2 repos from https://github.com/ros2/ros2.
 
 The grand idea would be to get this repo at least to the level of
 [rules_ros](https://github.com/mvukov/rules_ros). In particular:
+
 - It has to be convenient to cross-compile a ROS2 deployment.
