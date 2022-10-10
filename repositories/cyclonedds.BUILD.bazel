@@ -9,7 +9,6 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 
 expand_template(
     name = "features_h",
-    template = "src/ddsrt/include/dds/features.h.in",
     out = "include/dds/features.h",
     substitutions = {
         "#cmakedefine DDS_HAS_SECURITY 1": "#undef DDS_HAS_SECURITY",
@@ -21,12 +20,12 @@ expand_template(
         "#cmakedefine DDS_HAS_TYPE_DISCOVERY 1": "#define DDS_HAS_TYPE_DISCOVERY 1",
         "#cmakedefine DDS_HAS_TOPIC_DISCOVERY 1": "#define DDS_HAS_TOPIC_DISCOVERY 1",
         "#cmakedefine DDS_HAS_SHM 1": "#undef DDS_HAS_SHM",
-    }
+    },
+    template = "src/ddsrt/include/dds/features.h.in",
 )
 
 expand_template(
     name = "config_h",
-    template = "src/ddsrt/include/dds/config.h.in",
     out = "include/dds/config.h",
     substitutions = {
         "#cmakedefine DDSRT_WITH_LWIP 1": "#define DDSRT_WITH_LWIP 0",
@@ -43,6 +42,7 @@ expand_template(
         "#cmakedefine DDSRT_HAVE_INET_NTOP 1": "#define DDSRT_HAVE_INET_NTOP 1",
         "#cmakedefine DDSRT_HAVE_INET_PTON 1": "#define DDSRT_HAVE_INET_PTON 1",
     },
+    template = "src/ddsrt/include/dds/config.h.in",
 )
 
 expand_template(
@@ -179,7 +179,7 @@ _DDSRT_HDRS = [
     "src/ddsrt/include/dds/ddsrt/xmlparser.h",
     "src/ddsrt/include/dds/ddsrt/expand_vars.h",
     "src/ddsrt/include/dds/ddsrt/iovec.h",
-    "src/ddsrt/include/dds/ddsrt/sched.h"
+    "src/ddsrt/include/dds/ddsrt/sched.h",
 ]
 
 # Got this from a CMake build on Ubuntu 20.04 for amd64 arch.
@@ -240,7 +240,10 @@ _DEFINES = [
 cc_library(
     name = "ddsrt",
     srcs = _DDSRT_SRCS,
-    hdrs = _DDSRT_HDRS + [":export_h", "config_h"],
+    hdrs = _DDSRT_HDRS + [
+        ":export_h",
+        "config_h",
+    ],
     copts = ["-std=gnu99"],
     defines = _DEFINES,
     includes = [

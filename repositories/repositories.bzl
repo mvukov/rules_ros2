@@ -92,7 +92,7 @@ def ros2_repositories():
         sha256 = "944d0bd7c763ac721398dca2bb0f3b5ed16f67cef36810ede5061f35a543b4b8",
         strip_prefix = "spdlog-1.8.5",
         url = "https://github.com/gabime/spdlog/archive/v1.8.5.tar.gz",
-        repo_mapping = {"@fmt" : "@fmt-7.1.3"},
+        repo_mapping = {"@fmt": "@fmt-7.1.3"},
     )
 
     maybe(
@@ -120,7 +120,7 @@ def ros2_repositories():
         sha256 = "4c5a10e60f69da9a8dd5c449f4d6e5d240a618d0c06809ed3fc9568d7cbe2a1f",
         strip_prefix = "rcl-5.3.1",
         urls = ["https://github.com/ros2/rcl/archive/5.3.1.tar.gz"],
-        repo_mapping = {"@libyaml" : "@libyaml-0.2.5"},
+        repo_mapping = {"@libyaml": "@libyaml-0.2.5"},
     )
 
     maybe(

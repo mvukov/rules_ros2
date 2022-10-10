@@ -13,7 +13,7 @@ ros2_cpp_binary(
     ]),
     copts = [
         "-std=c++17",
-        "-fvisibility=hidden"
+        "-fvisibility=hidden",
     ],
     includes = ["rmw_cyclonedds_cpp/include"],
     linkopts = ["-fvisibility=hidden"],
