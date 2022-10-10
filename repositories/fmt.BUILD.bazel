@@ -8,10 +8,9 @@ cc_library(
     srcs = glob(["src/**/*.cc"]),
     hdrs = glob(["include/**/*.h"]),
     copts = [
-        "-std=c++14",
+        "-std=c++17",
         "-w",
     ],
     includes = ["include"],
-    copts = ["-std=c++17", "-w"],
     visibility = ["//visibility:public"],
 )

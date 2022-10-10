@@ -80,9 +80,8 @@ class MinimalActionClient : public rclcpp::Node {
   rclcpp::TimerBase::SharedPtr timer_;
   bool goal_done_;
 
-  void goal_response_callback(
-      std::shared_future<GoalHandleFibonacci::SharedPtr> future) {
-    auto goal_handle = future.get();
+  void goal_response_callback(const GoalHandleFibonacci::SharedPtr & goal_handle)
+  {
     if (!goal_handle) {
       RCLCPP_ERROR(get_logger(), "Goal was rejected by server");
     } else {

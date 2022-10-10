@@ -11,6 +11,4 @@ cc_library(
     includes = ["include"],
     visibility = ["//visibility:public"],
     deps = ["@ros2_rcutils//:rcutils"],
-    deps = ["@ros2_rcutils//:rcutils"],
-    visibility = ["//visibility:public"],
 )
