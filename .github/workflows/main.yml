@@ -1,0 +1,17 @@
+name: Testing
+
+on: [push, pull_request_target]
+
+jobs:
+  pre-commit:
+    name: Pre-commit checks
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+      - name: Run pre-commit checks
+        uses: pre-commit/action@v3.0.0
