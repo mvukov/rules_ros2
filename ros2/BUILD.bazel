@@ -1,9 +1,6 @@
 """ ROS2 common definitions.
 """
 
-load("@rules_python//python:defs.bzl", "py_binary")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
-
 exports_files([
     "interfaces.bzl",
     "launch.bzl",
@@ -13,18 +10,3 @@ exports_files([
     "test.py.tpl",
     "topic.bzl",
 ])
-
-py_binary(
-    name = "resolver",
-    srcs = ["resolver.py"],
-    args = [
-        "--repos=$(rootpath @ros2//:repos)",
-    ],
-    data = ["@ros2//:repos"],
-    deps = [
-        requirement("aiofile"),
-        requirement("aiohttp"),
-        requirement("pyyaml"),
-        requirement("tqdm"),
-    ],
-)

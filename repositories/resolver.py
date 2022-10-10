@@ -54,7 +54,7 @@ async def compute_sha_sum(file):
         stderr=asyncio.subprocess.PIPE)
     await sha256sum_process.wait()
     if sha256sum_process.returncode:
-        logger.error(f'Failed to calculate SHA256 sum for {output_file}!')
+        logging.error(f'Failed to calculate SHA256 sum for {file}!')
         return None
     stdout = await sha256sum_process.stdout.read()
     return stdout.decode('utf-8').split(' ')[0]
@@ -81,8 +81,7 @@ async def download_urls_and_compute_sha_sums(names_to_urls, outputs_dir):
         tasks = [
             asyncio.create_task(
                 download_url_and_compute_sha_sum(name, url, session))
-            for idx, (name, url) in enumerate(names_to_urls.items())
-            if idx < 10
+            for name, url in names_to_urls.items()
         ]
         names_and_data = [
             await f for f in tqdm.asyncio.tqdm.as_completed(
@@ -91,20 +90,43 @@ async def download_urls_and_compute_sha_sums(names_to_urls, outputs_dir):
         return dict(names_and_data)
 
 
+HTTP_ARCHIVE_TEMPLATE = """\
+maybe(
+    http_archive,
+{args}
+)
+"""
+
+
+def dump_http_archives(repos):
+    http_archives = []
+    for repo in repos:
+        http_archive_args = []
+        for key, value in repo.items():
+            http_archive_args.append(f'    {key} = "{value}",')
+        http_archives.append(
+            HTTP_ARCHIVE_TEMPLATE.format(args='\n'.join(http_archive_args)))
+    return '\n'.join(http_archives)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--repos', type=str)
+    parser.add_argument('--repo_mappings', type=str)
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO)
 
     with open(args.repos, 'r', encoding='utf-8') as stream:
         repos = yaml.load(stream, Loader=yaml.Loader)['repositories']
+    with open(args.repo_mappings, 'r', encoding='utf-8') as stream:
+        repo_mappings = yaml.load(stream, Loader=yaml.Loader)['repositories']
 
     all_repos_ok = all([info['type'] == 'git' for info in repos.values()])
     if not all_repos_ok:
         sys.exit('Type of all repositories must be `git`!')
 
+    requested_repos = repo_mappings.keys()
     names_to_urls = {}
     suffix_len = len('.git')
     for name, info in repos.items():
@@ -119,12 +141,19 @@ def main():
             sys.exit(f'{name}: URL must be github/gitlab hosted, got `{url}`!')
 
         project_name = name.split('/')[-1]
+        if project_name not in requested_repos:
+            continue
         names_to_urls[project_name] = archive_url
 
     names_to_sha_sums = asyncio.run(
         download_urls_and_compute_sha_sums(
             names_to_urls, pathlib.Path('/home/madwolf/dev/tmp/resolver')))
-    print(names_to_sha_sums)
+
+    for name, url in names_to_urls.items():
+        repo_mappings[name]['url'] = url
+    for name, sha_sum in names_to_sha_sums.items():
+        repo_mappings[name]['sha256sum'] = sha_sum
+    print(dump_http_archives(repo_mappings.values()))
 
 
 if __name__ == '__main__':

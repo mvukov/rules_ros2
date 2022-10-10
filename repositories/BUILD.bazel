@@ -1,3 +1,6 @@
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+
 exports_files([
     "deps.bzl",
     "logging_macros.bzl",
@@ -6,4 +9,24 @@ exports_files([
     "generate_rcutils_logging_macros.py",
     "rclcpp_interfaces.bzl",
     "repositories.bzl",
+    "ros2_repo_mappings.yaml",
 ])
+
+py_binary(
+    name = "resolver",
+    srcs = ["resolver.py"],
+    args = [
+        "--repos=$(rootpath @ros2//:repos)",
+        "--repo_mappings=$(rootpath :ros2_repo_mappings.yaml)",
+    ],
+    data = [
+        ":ros2_repo_mappings.yaml",
+        "@ros2//:repos",
+    ],
+    deps = [
+        requirement("aiofile"),
+        requirement("aiohttp"),
+        requirement("pyyaml"),
+        requirement("tqdm"),
+    ],
+)
