@@ -68,7 +68,6 @@ genrule(
         "include/dds/export.h",
     ],
     cmd = """cat > $@ << EOL
-
 #ifndef DDS_EXPORT_H
 #define DDS_EXPORT_H
 
@@ -240,8 +239,10 @@ _DEFINES = [
 
 cc_library(
     name = "ddsrt",
-    hdrs = _DDSRT_HDRS + [":export_h", "config_h"],
     srcs = _DDSRT_SRCS,
+    hdrs = _DDSRT_HDRS + [":export_h", "config_h"],
+    copts = ["-std=gnu99"],
+    defines = _DEFINES,
     includes = [
         "include",
         "src/ddsrt/include",
@@ -502,13 +503,6 @@ _DDSC_PRIVATE_HDRS = [
 
 cc_library(
     name = "ddsc",
-    hdrs = [
-        "src/core/ddsc/include/dds/{}".format(f)
-        for f in _DDSC_PUBLIC_HDRS
-    ] + [":features_h", ":version_h", ":config_h",
-    "src/core/ddsi/src/ddsi_cdrstream_write.part.c",
-    "src/core/ddsi/src/ddsi_cdrstream_keys.part.c",
-    ],
     srcs = [
         "src/core/ddsi/src/{}".format(f)
         for f in _DDSI_SRCS
@@ -521,6 +515,16 @@ cc_library(
     ] + [
         "src/core/ddsc/src/{}".format(f)
         for f in _DDSC_PRIVATE_HDRS
+    ],
+    hdrs = [
+        "src/core/ddsc/include/dds/{}".format(f)
+        for f in _DDSC_PUBLIC_HDRS
+    ] + [
+        ":features_h",
+        ":version_h",
+        ":config_h",
+        "src/core/ddsi/src/ddsi_cdrstream_write.part.c",
+        "src/core/ddsi/src/ddsi_cdrstream_keys.part.c",
     ],
     copts = ["-std=gnu99"],
     defines = _DEFINES,
