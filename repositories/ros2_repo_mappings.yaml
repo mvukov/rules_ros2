@@ -5,78 +5,78 @@ repositories:
   common_interfaces:
     name: ros2_common_interfaces
     build_file: "@com_github_mvukov_rules_ros2//repositories:common_interfaces.BUILD.bazel"
-  # cyclonedds:
-  #   name: cyclonedds
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:cyclonedds.BUILD.bazel"
+  cyclonedds:
+    name: cyclonedds
+    build_file: "@com_github_mvukov_rules_ros2//repositories:cyclonedds.BUILD.bazel"
   # launch:
   #   name: ros2_launch
   #   build_file: "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel"
-  # launch_ros:
-  #   name: ros2_launch_ros
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:launch_ros.BUILD.bazel"
-  # libstatistics_collector:
-  #   name: ros2_libstatistics_collector
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:libstatistics_collector.BUILD.bazel"
-  # osrf_pycommon:
-  #   name: osrf_pycommon
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:osrf_pycommon.BUILD.bazel"
-  # rcl:
-  #   name: ros2_rcl
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rcl.BUILD.bazel"
-  # rcl_interfaces:
-  #   name: ros2_rcl_interfaces
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rcl_interfaces.BUILD.bazel"
-  # rcl_logging:
-  #   name: ros2_rcl_logging
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rcl_logging.BUILD.bazel"
-  # rclcpp:
-  #   name: ros2_rclcpp
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel"
+  launch_ros:
+    name: ros2_launch_ros
+    build_file: "@com_github_mvukov_rules_ros2//repositories:launch_ros.BUILD.bazel"
+  libstatistics_collector:
+    name: ros2_libstatistics_collector
+    build_file: "@com_github_mvukov_rules_ros2//repositories:libstatistics_collector.BUILD.bazel"
+  osrf_pycommon:
+    name: osrf_pycommon
+    build_file: "@com_github_mvukov_rules_ros2//repositories:osrf_pycommon.BUILD.bazel"
+  rcl:
+    name: ros2_rcl
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rcl.BUILD.bazel"
+  rcl_interfaces:
+    name: ros2_rcl_interfaces
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rcl_interfaces.BUILD.bazel"
+  rcl_logging:
+    name: ros2_rcl_logging
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rcl_logging.BUILD.bazel"
+  rclcpp:
+    name: ros2_rclcpp
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel"
   # rclpy:
   #   name: ros2_rclpy
   #   build_file: "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel"
   # rcpputils:
   #   name: ros2_rcpputils
   #   build_file: "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel"
-  # rcutils:
-  #   name: ros2_rcutils
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rcutils.BUILD.bazel"
-  # rmw:
-  #   name: ros2_rmw
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rmw.BUILD.bazel"
+  rcutils:
+    name: ros2_rcutils
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rcutils.BUILD.bazel"
+  rmw:
+    name: ros2_rmw
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rmw.BUILD.bazel"
   # rmw_cyclonedds:
   #   name: ros2_rmw_cyclonedds
   #   build_file: "@com_github_mvukov_rules_ros2//repositories:rmw_cyclonedds.BUILD.bazel"
-  # rmw_dds_common:
-  #   name: ros2_rmw_dds_common
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rmw_dds_common.BUILD.bazel"
+  rmw_dds_common:
+    name: ros2_rmw_dds_common
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rmw_dds_common.BUILD.bazel"
   # rmw_implementation:
   #   name: ros2_rmw_implementation
   #   build_file: "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel"
-  # ros2_tracing:
-  #   name: ros2_tracing
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:ros2_tracing.BUILD.bazel"
+  ros2_tracing:
+    name: ros2_tracing
+    build_file: "@com_github_mvukov_rules_ros2//repositories:ros2_tracing.BUILD.bazel"
   # ros2cli:
   #   name: ros2cli
   #   build_file: "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel"
-  # ros_testing:
-  #   name: ros2_ros_testing
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel"
+  ros_testing:
+    name: ros2_ros_testing
+    build_file: "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel"
   # rosidl:
   #   name: ros2_rosidl
   #   build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel"
   # rosidl_python:
   #   name: ros2_rosidl_python
   #   build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl_python.BUILD.bazel"
-  # rosidl_runtime_py:
-  #   name: ros2_rosidl_runtime_py
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl_runtime_py.BUILD.bazel"
+  rosidl_runtime_py:
+    name: ros2_rosidl_runtime_py
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl_runtime_py.BUILD.bazel"
   # rosidl_typesupport:
   #   name: ros2_rosidl_typesupport
   #   build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl_typesupport.BUILD.bazel"
-  # rpyutils:
-  #   name: ros2_rpyutils
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rpyutils.BUILD.bazel"
-  # unique_identifier_msgs:
-  #   name: ros2_unique_identifier_msgs
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:unique_identifier_msgs.BUILD.bazel"
+  rpyutils:
+    name: ros2_rpyutils
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rpyutils.BUILD.bazel"
+  unique_identifier_msgs:
+    name: ros2_unique_identifier_msgs
+    build_file: "@com_github_mvukov_rules_ros2//repositories:unique_identifier_msgs.BUILD.bazel"
