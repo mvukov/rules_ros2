@@ -367,7 +367,7 @@ def ros2_repositories():
         http_archive,
         name = "ros2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
-        sha256 = "a2c04b6f8a92fbab31a20b067b7eb8baec45229695b2765e038b728bfd800a90",
-        strip_prefix = "ros2-release-foxy-20220208",
-        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-foxy-20220208.tar.gz"],
+        sha256 = "86039b6c4cd7953edaaf1ef96eafd9770dd7cd2750379d2507b62ca195bbe76e",
+        strip_prefix = "ros2-release-foxy-20220928",
+        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-foxy-20220928.tar.gz"],
     )

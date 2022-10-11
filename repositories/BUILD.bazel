@@ -10,6 +10,7 @@ exports_files([
     "rclcpp_interfaces.bzl",
     "repositories.bzl",
     "ros2_repo_mappings.yaml",
+    "ros2_repositories.bzl",
 ])
 
 py_binary(
@@ -18,9 +19,11 @@ py_binary(
     args = [
         "--repos=$(rootpath @ros2//:repos)",
         "--repo_mappings=$(rootpath :ros2_repo_mappings.yaml)",
+        "--output=$(rootpath :ros2_repositories.bzl)",
     ],
     data = [
         ":ros2_repo_mappings.yaml",
+        ":ros2_repositories.bzl",
         "@ros2//:repos",
     ],
     deps = [

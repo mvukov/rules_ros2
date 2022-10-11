@@ -14,8 +14,10 @@
 import argparse
 import asyncio
 import logging
+import os
 import pathlib
 import sys
+import tempfile
 import urllib
 
 import aiofile
@@ -91,10 +93,18 @@ async def download_urls_and_compute_sha_sums(names_to_urls, outputs_dir):
 
 
 HTTP_ARCHIVE_TEMPLATE = """\
-maybe(
-    http_archive,
+    maybe(
+        http_archive,
 {args}
-)
+    )
+"""
+
+BZL_TEMPLATE = """\
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+
+def ros2_repositories():
+{http_archives}
 """
 
 
@@ -103,16 +113,23 @@ def dump_http_archives(repos):
     for repo in repos:
         http_archive_args = []
         for key, value in repo.items():
-            http_archive_args.append(f'    {key} = "{value}",')
+            http_archive_args.append(' ' * 8 + f'{key} = "{value}",')
         http_archives.append(
             HTTP_ARCHIVE_TEMPLATE.format(args='\n'.join(http_archive_args)))
-    return '\n'.join(http_archives)
+    return BZL_TEMPLATE.format(http_archives='\n'.join(http_archives))
 
 
 def main():
+    if 'BUILD_WORKSPACE_DIRECTORY' not in os.environ:
+        sys.exit("""
+Please run this app as a Bazel target
+bazel run //repositories:resolver
+        """)
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--repos', type=str)
     parser.add_argument('--repo_mappings', type=str)
+    parser.add_argument('--output', type=str)
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO)
@@ -128,6 +145,7 @@ def main():
 
     requested_repos = repo_mappings.keys()
     names_to_urls = {}
+    names_to_versions = {}
     suffix_len = len('.git')
     for name, info in repos.items():
         url = info['url'][:-suffix_len]
@@ -144,16 +162,22 @@ def main():
         if project_name not in requested_repos:
             continue
         names_to_urls[project_name] = archive_url
+        names_to_versions[project_name] = version
 
-    names_to_sha_sums = asyncio.run(
-        download_urls_and_compute_sha_sums(
-            names_to_urls, pathlib.Path('/home/madwolf/dev/tmp/resolver')))
+    with tempfile.TemporaryDirectory() as tmp_dir_name:
+        names_to_sha_sums = asyncio.run(
+            download_urls_and_compute_sha_sums(names_to_urls,
+                                               pathlib.Path(tmp_dir_name)))
 
-    for name, url in names_to_urls.items():
-        repo_mappings[name]['url'] = url
     for name, sha_sum in names_to_sha_sums.items():
         repo_mappings[name]['sha256sum'] = sha_sum
-    print(dump_http_archives(repo_mappings.values()))
+    for name, version in names_to_versions.items():
+        repo_mappings[name]['strip_prefix'] = f'{name}-{version}'
+    for name, url in names_to_urls.items():
+        repo_mappings[name]['url'] = url
+
+    with open(args.output, 'w', encoding='utf-8') as stream:
+        stream.write(dump_http_archives(repo_mappings.values()))
 
 
 if __name__ == '__main__':
