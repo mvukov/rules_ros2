@@ -23,7 +23,7 @@ At the moment it is supported:
 - Defining ROS2 tests with `ros2_test` Bazel macro.
 - Only CycloneDDS middleware can be interfaced at the moment.
 
-ROS2 package versions target ROS2 Foxy from mid 2021.
+ROS2 packages are by default locked to versions from [release-foxy-20220928](https://github.com/ros2/ros2/releases/tag/release-foxy-20220928).
 
 NOTE: Unlike ROS1 genmsg which refuses to generate code if the deps between
 interface targets are not set correctly, code generation for ROS2 seems to not
@@ -35,9 +35,6 @@ Please take a look at the examples folder to get more info. Start with a simple
 [chatter](examples/chatter) example.
 
 ## What's next?
-
-One of the next steps is to work out a convenient way to update versions of
-ROS2 repos from https://github.com/ros2/ros2.
 
 The grand idea would be to get this repo at least to the level of
 [rules_ros](https://github.com/mvukov/rules_ros). In particular:
