@@ -32,9 +32,12 @@ repositories:
   rclcpp:
     name: ros2_rclcpp
     build_file: "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel"
-  # rclpy:
-  #   name: ros2_rclpy
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel"
+  rclpy:
+    name: ros2_rclpy
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:rclpy_fix_qos_event_h_import.patch"
   rcpputils:
     name: ros2_rcpputils
     build_file: "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel"

@@ -95,6 +95,17 @@ def ros2_repos():
 
     maybe(
         http_archive,
+        name = "ros2_rclpy",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rclpy_fix_qos_event_h_import.patch"],
+        sha256 = "8dec080c875a2515285c5699c58b9850b00da8d9d2568d793d2bb0c95b2780fa",
+        strip_prefix = "rclpy-1.0.10",
+        url = "https://github.com/ros2/rclpy/archive/refs/tags/1.0.10.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_rcpputils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel",
         patch_args = ["-p1"],

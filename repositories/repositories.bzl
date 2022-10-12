@@ -56,22 +56,6 @@ def ros2_repositories():
         urls = ["https://github.com/yaml/libyaml/archive/acd6f6f014c25e46363e718381e0b35205df2d83.tar.gz"],
     )
 
-    # maybe(
-    #     native.new_local_repository,
-    #     name = "ros2_rclpy",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel",
-    #     path = "../ros2_foxy/src/ros2/rclpy",
-    # )
-
-    # feature/bazel branch
-    maybe(
-        new_git_repository,
-        name = "ros2_rclpy",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel",
-        remote = "https://github.com/mvukov/rclpy.git",
-        commit = "677e67f4a50469591e436f9919ceae0bd870f9eb",
-    )
-
     # ros2-devel branch
     maybe(
         http_archive,
