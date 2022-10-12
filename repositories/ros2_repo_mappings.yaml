@@ -35,9 +35,12 @@ repositories:
   # rclpy:
   #   name: ros2_rclpy
   #   build_file: "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel"
-  # rcpputils:
-  #   name: ros2_rcpputils
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel"
+  rcpputils:
+    name: ros2_rcpputils
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:rcpputils_get_env_var_inline.patch"
   rcutils:
     name: ros2_rcutils
     build_file: "@com_github_mvukov_rules_ros2//repositories:rcutils.BUILD.bazel"
@@ -65,9 +68,12 @@ repositories:
   ros_testing:
     name: ros2_ros_testing
     build_file: "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel"
-  # rosidl:
-  #   name: ros2_rosidl
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel"
+  rosidl:
+    name: ros2_rosidl
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:rosidl_rm_unnecessary_asserts.patch"
   # rosidl_python:
   #   name: ros2_rosidl_python
   #   build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl_python.BUILD.bazel"

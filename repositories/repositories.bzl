@@ -31,38 +31,6 @@ def ros2_repositories():
 
     # maybe(
     #     native.new_local_repository,
-    #     name = "ros2_rosidl",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel",
-    #     path = "../ros2_foxy/src/ros2/rosidl",
-    # )
-
-    # foxy branch.
-    maybe(
-        new_git_repository,
-        name = "ros2_rosidl",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel",
-        remote = "https://github.com/mvukov/rosidl.git",
-        commit = "611c16181cfa832d2433e77c612bd75e303cca4e",
-    )
-
-    # maybe(
-    #     native.new_local_repository,
-    #     name = "ros2_rcpputils",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel",
-    #     path = "../ros2_foxy/src/ros2/rcpputils",
-    # )
-
-    # foxy branch.
-    maybe(
-        new_git_repository,
-        name = "ros2_rcpputils",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel",
-        remote = "https://github.com/mvukov/rcpputils.git",
-        commit = "190fe233f9a46de715232fb07d195e5b43b21afe",
-    )
-
-    # maybe(
-    #     native.new_local_repository,
     #     name = "ros2_rmw_implementation",
     #     build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel",
     #     path = "../ros2_foxy/src/ros2/rmw_implementation",

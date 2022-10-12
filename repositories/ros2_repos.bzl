@@ -95,6 +95,17 @@ def ros2_repos():
 
     maybe(
         http_archive,
+        name = "ros2_rcpputils",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rcpputils_get_env_var_inline.patch"],
+        sha256 = "778b39bb3589c16e3b6ece1ea4c3fb52898099ce712db4113d7d07d2d3e9833d",
+        strip_prefix = "rcpputils-1.3.2",
+        url = "https://github.com/ros2/rcpputils/archive/refs/tags/1.3.2.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_rcutils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcutils.BUILD.bazel",
         sha256 = "798f716adeee873223bcfc949943a162699fa02f142c73078a8384b1b732fca1",
@@ -147,6 +158,17 @@ def ros2_repos():
         sha256 = "1def68962286e95dcbce54445f5589429d7d6fb44b580183356c3281b3670798",
         strip_prefix = "ros_testing-0.2.1",
         url = "https://github.com/ros2/ros_testing/archive/refs/tags/0.2.1.tar.gz",
+    )
+
+    maybe(
+        http_archive,
+        name = "ros2_rosidl",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosidl_rm_unnecessary_asserts.patch"],
+        sha256 = "c2f18e29491efca9087bc3bbe57e9e587d22c1c9f7a4bf76d63b72880c2d981e",
+        strip_prefix = "rosidl-1.3.0",
+        url = "https://github.com/ros2/rosidl/archive/refs/tags/1.3.0.tar.gz",
     )
 
     maybe(
