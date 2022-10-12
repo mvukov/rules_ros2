@@ -29,22 +29,6 @@ def ros2_repositories():
         sha256 = "1c531376ac7e5a180e0237938a2536de0c54d93f5c278634818e0efc952dd56c",
     )
 
-    # maybe(
-    #     native.new_local_repository,
-    #     name = "ros2_rmw_implementation",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel",
-    #     path = "../ros2_foxy/src/ros2/rmw_implementation",
-    # )
-
-    # foxy branch.
-    maybe(
-        new_git_repository,
-        name = "ros2_rmw_implementation",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel",
-        remote = "https://github.com/mvukov/rmw_implementation.git",
-        commit = "026462a1aac90352c67ba38b62652129144c821b",
-    )
-
     maybe(
         http_archive,
         name = "fmt",

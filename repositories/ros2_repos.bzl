@@ -144,6 +144,17 @@ def ros2_repos():
 
     maybe(
         http_archive,
+        name = "ros2_rmw_implementation",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_implementation_library_path.patch"],
+        sha256 = "d22bb94ba7e72f63e06ff80913c77ad95267ad3da31088d27d0d0a6575bfe538",
+        strip_prefix = "rmw_implementation-1.0.3",
+        url = "https://github.com/ros2/rmw_implementation/archive/refs/tags/1.0.3.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_tracing",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2_tracing.BUILD.bazel",
         sha256 = "552f35e1dbdc30cdd5ddeeccf278f8fc50811f15f3d2eb98e25a28fadac0ae8f",

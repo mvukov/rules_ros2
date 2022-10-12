@@ -1,0 +1,41 @@
+diff --git a/rmw_implementation/src/functions.cpp b/rmw_implementation/src/functions.cpp
+index 41f164c..7407f77 100644
+--- a/rmw_implementation/src/functions.cpp
++++ b/rmw_implementation/src/functions.cpp
+@@ -46,35 +46,7 @@ static std::shared_ptr<rcpputils::SharedLibrary> g_rmw_lib = nullptr;
+ std::shared_ptr<rcpputils::SharedLibrary>
+ load_library()
+ {
+-  std::string env_var;
+-  try {
+-    env_var = rcpputils::get_env_var("RMW_IMPLEMENTATION");
+-  } catch (const std::exception & e) {
+-    RMW_SET_ERROR_MSG_WITH_FORMAT_STRING(
+-      "failed to fetch RMW_IMPLEMENTATION "
+-      "from environment due to %s", e.what());
+-    return nullptr;
+-  }
+-
+-  if (env_var.empty()) {
+-    env_var = STRINGIFY(DEFAULT_RMW_IMPLEMENTATION);
+-  }
+-
+-  std::string library_path;
+-  try {
+-    library_path = rcpputils::find_library_path(env_var);
+-  } catch (const std::exception & e) {
+-    RMW_SET_ERROR_MSG_WITH_FORMAT_STRING(
+-      "failed to find shared library due to %s", e.what());
+-    return nullptr;
+-  }
+-
+-  if (library_path.empty()) {
+-    RMW_SET_ERROR_MSG_WITH_FORMAT_STRING(
+-      "failed to find shared library '%s'",
+-      env_var.c_str());
+-    return nullptr;
+-  }
++  const std::string library_path = RMW_LIBRARY_PATH;
+ 
+   try {
+     return std::make_shared<rcpputils::SharedLibrary>(library_path.c_str());

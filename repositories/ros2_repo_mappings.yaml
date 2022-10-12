@@ -56,9 +56,12 @@ repositories:
   rmw_dds_common:
     name: ros2_rmw_dds_common
     build_file: "@com_github_mvukov_rules_ros2//repositories:rmw_dds_common.BUILD.bazel"
-  # rmw_implementation:
-  #   name: ros2_rmw_implementation
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel"
+  rmw_implementation:
+    name: ros2_rmw_implementation
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:rmw_implementation_library_path.patch"
   ros2_tracing:
     name: ros2_tracing
     build_file: "@com_github_mvukov_rules_ros2//repositories:ros2_tracing.BUILD.bazel"
