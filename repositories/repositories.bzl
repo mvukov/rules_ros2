@@ -4,6 +4,10 @@
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+load(
+    "@com_github_mvukov_rules_ros2//repositories:ros2_repos.bzl",
+    "ros2_repos",
+)
 
 def ros2_repositories():
     """Imports external/third-party repositories.
@@ -226,15 +230,6 @@ def ros2_repositories():
         urls = ["https://github.com/ros2/rmw_cyclonedds/archive/0.7.6.tar.gz"],
     )
 
-    maybe(
-        http_archive,
-        name = "ros2_unique_identifier_msgs",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:unique_identifier_msgs.BUILD.bazel",
-        sha256 = "aa0f5a440cface1dd85cf05d97cadb812b2796973882d02a7e795ae70b64b9a0",
-        strip_prefix = "unique_identifier_msgs-2.1.3",
-        urls = ["https://github.com/ros2/unique_identifier_msgs/archive/2.1.3.tar.gz"],
-    )
-
     # maybe(
     #     native.new_local_repository,
     #     name = "ros2_rosidl_python",
@@ -249,15 +244,6 @@ def ros2_repositories():
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_python.BUILD.bazel",
         remote = "https://github.com/mvukov/rosidl_python.git",
         commit = "a772648eb135e08bfd2f48da15a86a7fea581622",
-    )
-
-    maybe(
-        http_archive,
-        name = "ros2_rpyutils",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:rpyutils.BUILD.bazel",
-        sha256 = "8b321fd04ffc65b7be2e8d6e4dde6e632bac291021dc5adc67077c9cac601243",
-        strip_prefix = "rpyutils-0.2.0",
-        urls = ["https://github.com/ros2/rpyutils/archive/0.2.0.tar.gz"],
     )
 
     # maybe(
@@ -311,6 +297,7 @@ def ros2_repositories():
         commit = "e0268d0d6b60be01cfa639d2c0f77306eba51539",
     )
 
+    # tied to ros2_launch!
     maybe(
         http_archive,
         name = "ros2_launch_ros",
@@ -338,36 +325,11 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "ros2_rosidl_runtime_py",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_runtime_py.BUILD.bazel",
-        sha256 = "b171a9358ed30df2f702f64c4618872c22802287dbf7b6d27310bd6c8a550dcf",
-        strip_prefix = "rosidl_runtime_py-0.9.1",
-        urls = ["https://github.com/ros2/rosidl_runtime_py/archive/0.9.1.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
-        name = "ros2_ros_testing",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel",
-        sha256 = "1def68962286e95dcbce54445f5589429d7d6fb44b580183356c3281b3670798",
-        strip_prefix = "ros_testing-0.2.1",
-        urls = ["https://github.com/ros2/ros_testing/archive/0.2.1.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
-        name = "ros2_ament_cmake_ros",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:ament_cmake_ros.BUILD.bazel",
-        sha256 = "6d7d8e4612e155953327d40a7c4d6c6c57ab02f6accfc21969bae679618a5560",
-        strip_prefix = "ament_cmake_ros-0.9.2",
-        urls = ["https://github.com/ros2/ament_cmake_ros/archive/0.9.2.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
         name = "ros2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
         sha256 = "86039b6c4cd7953edaaf1ef96eafd9770dd7cd2750379d2507b62ca195bbe76e",
         strip_prefix = "ros2-release-foxy-20220928",
         urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-foxy-20220928.tar.gz"],
     )
+
+    ros2_repos()

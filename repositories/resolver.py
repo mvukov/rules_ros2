@@ -104,7 +104,7 @@ BZL_TEMPLATE = """\
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
-def ros2_repositories():
+def ros2_repos():
 {http_archives}
 """
 
@@ -171,7 +171,7 @@ bazel run //repositories:resolver
                                                pathlib.Path(tmp_dir_name)))
 
     for name, sha_sum in names_to_sha_sums.items():
-        repo_mappings[name]['sha256sum'] = sha_sum
+        repo_mappings[name]['sha256'] = sha_sum
     for name, version in names_to_versions.items():
         repo_mappings[name]['strip_prefix'] = f'{name}-{version}'
     for name, url in names_to_urls.items():
