@@ -120,17 +120,6 @@ def ros2_repositories():
         commit = "6a5e55ff8e1fbdd72a55060ec1ccedbef8f78f96",
     )
 
-    maybe(
-        http_archive,
-        name = "ros2_rmw_cyclonedds",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_cyclonedds.BUILD.bazel",
-        sha256 = "5995d8ae3613126ee5b68db68d0c1c4a6caa8eec3fb0a269921a16fa1a810af6",
-        strip_prefix = "rmw_cyclonedds-0.7.6",
-        patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_cyclonedds-fix-typesupport-conditions-bug.patch"],
-        urls = ["https://github.com/ros2/rmw_cyclonedds/archive/0.7.6.tar.gz"],
-    )
-
     # maybe(
     #     native.new_local_repository,
     #     name = "ros2_rosidl_python",

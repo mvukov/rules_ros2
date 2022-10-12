@@ -114,7 +114,13 @@ def dump_http_archives(repos):
     for repo in repos:
         http_archive_args = []
         for key, value in repo.items():
-            http_archive_args.append(' ' * 8 + f'{key} = "{value}",')
+            if isinstance(value, str):
+                http_archive_args.append(' ' * 8 + f'{key} = "{value}",')
+            elif isinstance(value, list):
+                value_str = ', '.join([f'"{v}"' for v in value])
+                http_archive_args.append(' ' * 8 + f'{key} = [{value_str}],')
+            else:
+                sys.exit(f'Cannot handle {value} for {key}!')
         http_archives.append(
             HTTP_ARCHIVE_TEMPLATE.format(args='\n'.join(http_archive_args)))
     return BZL_TEMPLATE.format(http_archives='\n'.join(http_archives))

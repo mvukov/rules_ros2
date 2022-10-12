@@ -113,6 +113,17 @@ def ros2_repos():
 
     maybe(
         http_archive,
+        name = "ros2_rmw_cyclonedds",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_cyclonedds.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_cyclonedds-fix-typesupport-conditions-bug.patch"],
+        sha256 = "1f2c42000c2e179834060170856be4cb04e6ab6dfbc301086218c49b56dc693f",
+        strip_prefix = "rmw_cyclonedds-0.7.11",
+        url = "https://github.com/ros2/rmw_cyclonedds/archive/refs/tags/0.7.11.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_rmw_dds_common",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_dds_common.BUILD.bazel",
         sha256 = "34e46de0e2858af57d996b5d17fbfd76b58b1c37b64321d2c6bafaf4198d64db",
