@@ -8,9 +8,12 @@ repositories:
   cyclonedds:
     name: cyclonedds
     build_file: "@com_github_mvukov_rules_ros2//repositories:cyclonedds.BUILD.bazel"
-  # launch:
-  #   name: ros2_launch
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel"
+  launch:
+    name: ros2_launch
+    build_file: "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:launch_fix_grammar_path.patch"
   launch_ros:
     name: ros2_launch_ros
     build_file: "@com_github_mvukov_rules_ros2//repositories:launch_ros.BUILD.bazel"

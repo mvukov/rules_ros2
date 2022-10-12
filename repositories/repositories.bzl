@@ -68,32 +68,6 @@ def ros2_repositories():
 
     # maybe(
     #     native.new_local_repository,
-    #     name = "ros2_launch",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel",
-    #     path = "../ros2_foxy/src/ros2/launch",
-    # )
-
-    # feature/bazel branch
-    maybe(
-        new_git_repository,
-        name = "ros2_launch",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel",
-        remote = "https://github.com/mvukov/launch.git",
-        commit = "e0268d0d6b60be01cfa639d2c0f77306eba51539",
-    )
-
-    # tied to ros2_launch!
-    maybe(
-        http_archive,
-        name = "ros2_launch_ros",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:launch_ros.BUILD.bazel",
-        sha256 = "752949dd63a63db0ab8ef0aca3b03a1e910ca327b958cc01cdcb487c161b2ed4",
-        strip_prefix = "launch_ros-0.11.2",
-        urls = ["https://github.com/ros2/launch_ros/archive/0.11.2.tar.gz"],
-    )
-
-    # maybe(
-    #     native.new_local_repository,
     #     name = "ros2cli",
     #     build_file = "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel",
     #     path = "../ros2_foxy/src/ros2/ros2cli",

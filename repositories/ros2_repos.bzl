@@ -32,6 +32,17 @@ def ros2_repos():
 
     maybe(
         http_archive,
+        name = "ros2_launch",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:launch_fix_grammar_path.patch"],
+        sha256 = "e2bbef86d7155c400d30902a4414cfa6214de272fa121a23c397a17042ee050c",
+        strip_prefix = "launch-0.10.9",
+        url = "https://github.com/ros2/launch/archive/refs/tags/0.10.9.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_launch_ros",
         build_file = "@com_github_mvukov_rules_ros2//repositories:launch_ros.BUILD.bazel",
         sha256 = "afd6f1b31a6bc985682cf2753ea96056e1132eeb0ac5d0f063ab60515f79a2ce",
