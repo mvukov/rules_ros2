@@ -1,0 +1,147 @@
+diff --git a/rosidl_generator_py/resource/_action.py.em b/rosidl_generator_py/resource/_action.py.em
+index 8b920c8..e13870b 100644
+--- a/rosidl_generator_py/resource/_action.py.em
++++ b/rosidl_generator_py/resource/_action.py.em
+@@ -39,34 +39,24 @@ class Metaclass_@(action.namespaced_type.name)(type):
+ 
+     @@classmethod
+     def __import_type_support__(cls):
+-        try:
+-            from rosidl_generator_py import import_type_support
+-            module = import_type_support('@(package_name)')
+-        except ImportError:
+-            import logging
+-            import traceback
+-            logger = logging.getLogger(
+-                '@('.'.join(action.namespaced_type.namespaced_name()))')
+-            logger.debug(
+-                'Failed to import needed modules for type support:\n' +
+-                traceback.format_exc())
+-        else:
+-            cls._TYPE_SUPPORT = module.type_support_action__@('__'.join(action.namespaced_type.namespaces[1:]))_@(action_name)
+-
+-            from action_msgs.msg import _goal_status_array
+-            if _goal_status_array.Metaclass_GoalStatusArray._TYPE_SUPPORT is None:
+-                _goal_status_array.Metaclass_GoalStatusArray.__import_type_support__()
+-            from action_msgs.srv import _cancel_goal
+-            if _cancel_goal.Metaclass_CancelGoal._TYPE_SUPPORT is None:
+-                _cancel_goal.Metaclass_CancelGoal.__import_type_support__()
+-
+-            from @('.'.join(action.namespaced_type.namespaces)) import @(module_name)
+-            if @(module_name).Metaclass_@(action.send_goal_service.namespaced_type.name)._TYPE_SUPPORT is None:
+-                @(module_name).Metaclass_@(action.send_goal_service.namespaced_type.name).__import_type_support__()
+-            if @(module_name).Metaclass_@(action.get_result_service.namespaced_type.name)._TYPE_SUPPORT is None:
+-                @(module_name).Metaclass_@(action.get_result_service.namespaced_type.name).__import_type_support__()
+-            if @(module_name).Metaclass_@(action.feedback_message.structure.namespaced_type.name)._TYPE_SUPPORT is None:
+-                @(module_name).Metaclass_@(action.feedback_message.structure.namespaced_type.name).__import_type_support__()
++        import @(package_name).@(package_name)_s__rosidl_typesupport_c as module
++
++        cls._TYPE_SUPPORT = module.type_support_action__@('__'.join(action.namespaced_type.namespaces[1:]))_@(action_name)
++
++        from action_msgs.msg import _goal_status_array
++        if _goal_status_array.Metaclass_GoalStatusArray._TYPE_SUPPORT is None:
++            _goal_status_array.Metaclass_GoalStatusArray.__import_type_support__()
++        from action_msgs.srv import _cancel_goal
++        if _cancel_goal.Metaclass_CancelGoal._TYPE_SUPPORT is None:
++            _cancel_goal.Metaclass_CancelGoal.__import_type_support__()
++
++        from @('.'.join(action.namespaced_type.namespaces)) import @(module_name)
++        if @(module_name).Metaclass_@(action.send_goal_service.namespaced_type.name)._TYPE_SUPPORT is None:
++            @(module_name).Metaclass_@(action.send_goal_service.namespaced_type.name).__import_type_support__()
++        if @(module_name).Metaclass_@(action.get_result_service.namespaced_type.name)._TYPE_SUPPORT is None:
++            @(module_name).Metaclass_@(action.get_result_service.namespaced_type.name).__import_type_support__()
++        if @(module_name).Metaclass_@(action.feedback_message.structure.namespaced_type.name)._TYPE_SUPPORT is None:
++            @(module_name).Metaclass_@(action.feedback_message.structure.namespaced_type.name).__import_type_support__()
+ 
+ 
+ class @(action.namespaced_type.name)(metaclass=Metaclass_@(action.namespaced_type.name)):
+diff --git a/rosidl_generator_py/resource/_msg.py.em b/rosidl_generator_py/resource/_msg.py.em
+index 1126d47..2161606 100644
+--- a/rosidl_generator_py/resource/_msg.py.em
++++ b/rosidl_generator_py/resource/_msg.py.em
+@@ -94,26 +94,16 @@ class Metaclass_@(message.structure.namespaced_type.name)(type):
+ 
+     @@classmethod
+     def __import_type_support__(cls):
+-        try:
+-            from rosidl_generator_py import import_type_support
+-            module = import_type_support('@(package_name)')
+-        except ImportError:
+-            import logging
+-            import traceback
+-            logger = logging.getLogger(
+-                '@('.'.join(message.structure.namespaced_type.namespaced_name()))')
+-            logger.debug(
+-                'Failed to import needed modules for type support:\n' +
+-                traceback.format_exc())
+-        else:
++        import @(package_name).@(package_name)_s__rosidl_typesupport_c as module
++
+ @{
+ suffix = '__'.join(message.structure.namespaced_type.namespaces[1:]) + '__' + convert_camel_case_to_lower_case_underscore(message.structure.namespaced_type.name)
+ }@
+-            cls._CREATE_ROS_MESSAGE = module.create_ros_message_msg__@(suffix)
+-            cls._CONVERT_FROM_PY = module.convert_from_py_msg__@(suffix)
+-            cls._CONVERT_TO_PY = module.convert_to_py_msg__@(suffix)
+-            cls._TYPE_SUPPORT = module.type_support_msg__@(suffix)
+-            cls._DESTROY_ROS_MESSAGE = module.destroy_ros_message_msg__@(suffix)
++        cls._CREATE_ROS_MESSAGE = module.create_ros_message_msg__@(suffix)
++        cls._CONVERT_FROM_PY = module.convert_from_py_msg__@(suffix)
++        cls._CONVERT_TO_PY = module.convert_to_py_msg__@(suffix)
++        cls._TYPE_SUPPORT = module.type_support_msg__@(suffix)
++        cls._DESTROY_ROS_MESSAGE = module.destroy_ros_message_msg__@(suffix)
+ @{
+ importable_typesupports = set()
+ for member in message.structure.members:
+@@ -134,9 +124,9 @@ for member in message.structure.members:
+ }@
+ @[for typename in sorted(importable_typesupports)]@
+ 
+-            from @('.'.join(typename[:-2])) import @(typename[-2])
+-            if @(typename[-1]).__class__._TYPE_SUPPORT is None:
+-                @(typename[-1]).__class__.__import_type_support__()
++        from @('.'.join(typename[:-2])) import @(typename[-2])
++        if @(typename[-1]).__class__._TYPE_SUPPORT is None:
++            @(typename[-1]).__class__.__import_type_support__()
+ @[end for]@
+ 
+     @@classmethod
+diff --git a/rosidl_generator_py/resource/_srv.py.em b/rosidl_generator_py/resource/_srv.py.em
+index 8f1e608..cbe0fe7 100644
+--- a/rosidl_generator_py/resource/_srv.py.em
++++ b/rosidl_generator_py/resource/_srv.py.em
+@@ -23,25 +23,15 @@ class Metaclass_@(service.namespaced_type.name)(type):
+ 
+     @@classmethod
+     def __import_type_support__(cls):
+-        try:
+-            from rosidl_generator_py import import_type_support
+-            module = import_type_support('@(package_name)')
+-        except ImportError:
+-            import logging
+-            import traceback
+-            logger = logging.getLogger(
+-                '@('.'.join(service.namespaced_type.namespaced_name()))')
+-            logger.debug(
+-                'Failed to import needed modules for type support:\n' +
+-                traceback.format_exc())
+-        else:
+-            cls._TYPE_SUPPORT = module.type_support_srv__@('__'.join(service.namespaced_type.namespaces[1:]))_@(service_name)
+-
+-            from @('.'.join(service.namespaced_type.namespaces)) import @(module_name)
+-            if @(module_name).Metaclass_@(service.request_message.structure.namespaced_type.name)._TYPE_SUPPORT is None:
+-                @(module_name).Metaclass_@(service.request_message.structure.namespaced_type.name).__import_type_support__()
+-            if @(module_name).Metaclass_@(service.response_message.structure.namespaced_type.name)._TYPE_SUPPORT is None:
+-                @(module_name).Metaclass_@(service.response_message.structure.namespaced_type.name).__import_type_support__()
++        import @(package_name).@(package_name)_s__rosidl_typesupport_c as module
++
++        cls._TYPE_SUPPORT = module.type_support_srv__@('__'.join(service.namespaced_type.namespaces[1:]))_@(service_name)
++
++        from @('.'.join(service.namespaced_type.namespaces)) import @(module_name)
++        if @(module_name).Metaclass_@(service.request_message.structure.namespaced_type.name)._TYPE_SUPPORT is None:
++            @(module_name).Metaclass_@(service.request_message.structure.namespaced_type.name).__import_type_support__()
++        if @(module_name).Metaclass_@(service.response_message.structure.namespaced_type.name)._TYPE_SUPPORT is None:
++            @(module_name).Metaclass_@(service.response_message.structure.namespaced_type.name).__import_type_support__()
+ 
+ 
+ class @(service.namespaced_type.name)(metaclass=Metaclass_@(service.namespaced_type.name)):

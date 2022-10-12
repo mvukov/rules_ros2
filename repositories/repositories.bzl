@@ -58,22 +58,6 @@ def ros2_repositories():
 
     # maybe(
     #     native.new_local_repository,
-    #     name = "ros2_rosidl_python",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_python.BUILD.bazel",
-    #     path = "../ros2_foxy/src/ros2/rosidl_python",
-    # )
-
-    # feature/bazel branch
-    maybe(
-        new_git_repository,
-        name = "ros2_rosidl_python",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_python.BUILD.bazel",
-        remote = "https://github.com/mvukov/rosidl_python.git",
-        commit = "a772648eb135e08bfd2f48da15a86a7fea581622",
-    )
-
-    # maybe(
-    #     native.new_local_repository,
     #     name = "ros2_rclpy",
     #     build_file = "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel",
     #     path = "../ros2_foxy/src/ros2/rclpy",

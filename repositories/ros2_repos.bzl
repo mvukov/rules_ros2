@@ -184,6 +184,17 @@ def ros2_repos():
 
     maybe(
         http_archive,
+        name = "ros2_rosidl_python",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_python.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosidl_python_fix_imports.patch"],
+        sha256 = "6ad02ebf9c1e050cb26e7a57d02b0aa1a454d8e6c0a8fa886ba5961836f5fb16",
+        strip_prefix = "rosidl_python-0.9.6",
+        url = "https://github.com/ros2/rosidl_python/archive/refs/tags/0.9.6.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_rosidl_runtime_py",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_runtime_py.BUILD.bazel",
         sha256 = "b171a9358ed30df2f702f64c4618872c22802287dbf7b6d27310bd6c8a550dcf",
