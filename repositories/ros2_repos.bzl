@@ -193,6 +193,17 @@ def ros2_repos():
 
     maybe(
         http_archive,
+        name = "ros2_rosidl_typesupport",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_typesupport.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosidl_typesupport_generate_true_c_code.patch"],
+        sha256 = "be72eb2113afa712286dc9e983d257174b544803af1e34f7d6338766cfeefd63",
+        strip_prefix = "rosidl_typesupport-1.0.2",
+        url = "https://github.com/ros2/rosidl_typesupport/archive/refs/tags/1.0.2.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_rpyutils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rpyutils.BUILD.bazel",
         sha256 = "8b321fd04ffc65b7be2e8d6e4dde6e632bac291021dc5adc67077c9cac601243",

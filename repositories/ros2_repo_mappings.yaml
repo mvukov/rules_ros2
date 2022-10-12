@@ -83,9 +83,12 @@ repositories:
   rosidl_runtime_py:
     name: ros2_rosidl_runtime_py
     build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl_runtime_py.BUILD.bazel"
-  # rosidl_typesupport:
-  #   name: ros2_rosidl_typesupport
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl_typesupport.BUILD.bazel"
+  rosidl_typesupport:
+    name: ros2_rosidl_typesupport
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl_typesupport.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:rosidl_typesupport_generate_true_c_code.patch"
   rpyutils:
     name: ros2_rpyutils
     build_file: "@com_github_mvukov_rules_ros2//repositories:rpyutils.BUILD.bazel"
