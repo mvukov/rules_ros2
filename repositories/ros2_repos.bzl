@@ -186,6 +186,17 @@ def ros2_repos():
 
     maybe(
         http_archive,
+        name = "ros2cli",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:ros2cli_fix_ros2_deamon_cmd.patch"],
+        sha256 = "eb3ab7c52ba8744825dcc067d352f12d5c44bf53e632a17bf0bbb77bc4d91833",
+        strip_prefix = "ros2cli-0.9.12",
+        url = "https://github.com/ros2/ros2cli/archive/refs/tags/0.9.12.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_ros_testing",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel",
         sha256 = "1def68962286e95dcbce54445f5589429d7d6fb44b580183356c3281b3670798",

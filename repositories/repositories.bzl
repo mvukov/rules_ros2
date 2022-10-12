@@ -66,22 +66,6 @@ def ros2_repositories():
         urls = ["https://github.com/swri-robotics/gps_umd/archive/fc782811804fafb12ee479a48a2aa2e9ee942e2d.tar.gz"],
     )
 
-    # maybe(
-    #     native.new_local_repository,
-    #     name = "ros2cli",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel",
-    #     path = "../ros2_foxy/src/ros2/ros2cli",
-    # )
-
-    # feature/bazel branch
-    maybe(
-        new_git_repository,
-        name = "ros2cli",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel",
-        remote = "https://github.com/mvukov/ros2cli.git",
-        commit = "087658b4ab3adedb1e8355af8f4d2c2e52d13c9b",
-    )
-
     maybe(
         http_archive,
         name = "ros2",

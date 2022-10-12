@@ -1,3 +1,4 @@
+# Maps names of ROS repositories to Bazel' http_archive arguments.
 repositories:
   ament_cmake_ros:
     name: ros2_ament_cmake_ros
@@ -71,9 +72,12 @@ repositories:
   ros2_tracing:
     name: ros2_tracing
     build_file: "@com_github_mvukov_rules_ros2//repositories:ros2_tracing.BUILD.bazel"
-  # ros2cli:
-  #   name: ros2cli
-  #   build_file: "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel"
+  ros2cli:
+    name: ros2cli
+    build_file: "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:ros2cli_fix_ros2_deamon_cmd.patch"
   ros_testing:
     name: ros2_ros_testing
     build_file: "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel"
