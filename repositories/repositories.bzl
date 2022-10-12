@@ -5,14 +5,12 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 load(
-    "@com_github_mvukov_rules_ros2//repositories:ros2_repos.bzl",
-    "ros2_repos",
+    "@com_github_mvukov_rules_ros2//repositories:ros2_repositories_impl.bzl",
+    "ros2_repositories_impl",
 )
 
 def ros2_repositories():
     """Imports external/third-party repositories.
-
-    At the moment ROS2 package versions target ROS2 Foxy.
     """
     maybe(
         http_archive,
@@ -75,4 +73,4 @@ def ros2_repositories():
         urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-foxy-20220928.tar.gz"],
     )
 
-    ros2_repos()
+    ros2_repositories_impl()

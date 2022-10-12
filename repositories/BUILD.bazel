@@ -9,8 +9,6 @@ exports_files([
     "generate_rcutils_logging_macros.py",
     "rclcpp_interfaces.bzl",
     "repositories.bzl",
-    "ros2_repo_mappings.yaml",
-    "ros2_repositories.bzl",
 ])
 
 py_binary(
@@ -19,11 +17,11 @@ py_binary(
     args = [
         "--repos=$(rootpath @ros2//:repos)",
         "--repo_mappings=$(rootpath :ros2_repo_mappings.yaml)",
-        "--output=$(rootpath :ros2_repos.bzl)",
+        "--output=$(rootpath :ros2_repositories_impl.bzl)",
     ],
     data = [
         ":ros2_repo_mappings.yaml",
-        ":ros2_repos.bzl",
+        ":ros2_repositories_impl.bzl",
         "@ros2//:repos",
     ],
     deps = [
