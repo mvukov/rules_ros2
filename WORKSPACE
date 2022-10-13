@@ -53,11 +53,17 @@ container_pull(
     repository = "mvukov/ros-deploy-base",
 )
 
-http_archive(
-    name = "io_bazel_stardoc",
-    sha256 = "aa814dae0ac400bbab2e8881f9915c6f47c49664bf087c409a15f90438d2c23e",
-    urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/stardoc/releases/download/0.5.1/stardoc-0.5.1.tar.gz",
-        "https://github.com/bazelbuild/stardoc/releases/download/0.5.1/stardoc-0.5.1.tar.gz",
-    ],
+load("@rules_python//python:pip.bzl", "pip_parse")
+
+pip_parse(
+    name = "rules_ros2_resolver_deps",
+    python_interpreter = PYTHON_INTERPRETER,
+    requirements_lock = "//repositories:resolver_requirements_lock.txt",
 )
+
+load(
+    "@rules_ros2_resolver_deps//:requirements.bzl",
+    install_rules_ros2_resolver_deps = "install_deps",
+)
+
+install_rules_ros2_resolver_deps()

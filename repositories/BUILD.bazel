@@ -1,5 +1,6 @@
 load("@rules_python//python:defs.bzl", "py_binary")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+load("@rules_ros2_resolver_deps//:requirements.bzl", "requirement")
 
 exports_files([
     "deps.bzl",
@@ -10,6 +11,12 @@ exports_files([
     "rclcpp_interfaces.bzl",
     "repositories.bzl",
 ])
+
+compile_pip_requirements(
+    name = "resolver_requirements",
+    requirements_in = ":resolver_requirements.txt",
+    requirements_txt = ":resolver_requirements_lock.txt",
+)
 
 py_binary(
     name = "resolver",
