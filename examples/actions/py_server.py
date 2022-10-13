@@ -118,11 +118,14 @@ def main():
 
     # We use a MultiThreadedExecutor to handle incoming goal requests
     # concurrently.
-    executor = MultiThreadedExecutor()
-    rclpy.spin(action_server, executor=executor)
-
-    action_server.destroy()
-    rclpy.shutdown()
+    try:
+        executor = MultiThreadedExecutor()
+        rclpy.spin(action_server, executor=executor)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        action_server.destroy()
+        rclpy.shutdown()
 
 
 if __name__ == '__main__':
