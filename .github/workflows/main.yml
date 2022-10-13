@@ -34,11 +34,11 @@ jobs:
       # previously built artifacts to minimize build time. The more precise you are with
       # hashFiles sources the less work bazel will have to do.
       - name: Mount bazel caches
-        uses: actions/cache@v3
+        uses: actions/cache@v3.0.11
         with:
           path: |
-            "~/.cache/bazel"
-            "~/.cache/bazel-repo"
+            ~/.cache/bazel
+            ~/.cache/bazel-repo
           key: bazel-cache-${{ hashFiles('**/BUILD.bazel', '**/*.BUILD.bazel', '**/*.bzl', 'WORKSPACE') }}
           restore-keys: bazel-cache-
       - name: bazel test //...
