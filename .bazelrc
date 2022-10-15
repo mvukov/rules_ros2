@@ -1,5 +1,13 @@
 build --incompatible_default_to_explicit_init_py
 
+build --sandbox_default_allow_network=false
+build --incompatible_strict_action_env
+build --nolegacy_external_runfiles
+build --heap_dump_on_oom
+build --noexperimental_check_output_files
+
+test --build_tests_only
+
 # Load any settings specific to the current user.
 # user.bazelrc should appear in .gitignore so that settings are not shared with team members
 # This needs to be last statement in this
