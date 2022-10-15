@@ -1,3 +1,5 @@
+[![CI](https://github.com/mvukov/rules_ros2/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/mvukov/rules_ros2/actions/workflows/main.yml)
+
 # Bazel rules for ROS2
 
 This repo aims to build ROS2 from scratch with Bazel.
