@@ -1,0 +1,30 @@
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+load("@rules_ros2_resolver_deps//:requirements.bzl", "requirement")
+
+compile_pip_requirements(
+    name = "requirements",
+    requirements_in = ":resolver_requirements.txt",
+    requirements_txt = ":resolver_requirements_lock.txt",
+)
+
+py_binary(
+    name = "resolver",
+    srcs = ["resolver.py"],
+    args = [
+        "--repos=$(rootpath @ros2//:repos)",
+        "--repo_mappings=$(rootpath //repositories:ros2_repo_mappings.yaml)",
+        "--output=$(rootpath //repositories:ros2_repositories_impl.bzl)",
+    ],
+    data = [
+        "//repositories:ros2_repo_mappings.yaml",
+        "//repositories:ros2_repositories_impl.bzl",
+        "@ros2//:repos",
+    ],
+    deps = [
+        requirement("aiofile"),
+        requirement("aiohttp"),
+        requirement("pyyaml"),
+        requirement("tqdm"),
+    ],
+)

@@ -58,7 +58,7 @@ load("@rules_python//python:pip.bzl", "pip_parse")
 pip_parse(
     name = "rules_ros2_resolver_deps",
     python_interpreter = PYTHON_INTERPRETER,
-    requirements_lock = "//repositories:resolver_requirements_lock.txt",
+    requirements_lock = "//repositories/private:resolver_requirements_lock.txt",
 )
 
 load(

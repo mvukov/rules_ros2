@@ -123,14 +123,15 @@ def dump_http_archives(repos):
                 sys.exit(f'Cannot handle {value} for {key}!')
         http_archives.append(
             HTTP_ARCHIVE_TEMPLATE.format(args='\n'.join(http_archive_args)))
-    return BZL_TEMPLATE.format(http_archives='\n'.join(http_archives))
+    return BZL_TEMPLATE.format(
+        http_archives='\n'.join(http_archives)).rstrip() + '\n'
 
 
 def main():
     if 'BUILD_WORKSPACE_DIRECTORY' not in os.environ:
         sys.exit("""
 Please run this app as a Bazel target
-bazel run //repositories:resolver
+bazel run //repositories/private:resolver
         """)
 
     parser = argparse.ArgumentParser()
