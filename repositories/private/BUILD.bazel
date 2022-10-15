@@ -6,6 +6,7 @@ compile_pip_requirements(
     name = "requirements",
     requirements_in = ":resolver_requirements.txt",
     requirements_txt = ":resolver_requirements_lock.txt",
+    tags = ["manual"],
 )
 
 py_binary(
