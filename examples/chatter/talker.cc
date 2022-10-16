@@ -25,7 +25,12 @@
 class MinimalPublisher : public rclcpp::Node {
  public:
   MinimalPublisher() : Node("minimal_publisher"), count_(0) {
-    using namespace std::chrono_literals;  // NOLINT
+    int callback_period_ms = 500;
+    declare_parameter("callback_period_ms");
+    try {
+      callback_period_ms = get_parameter("callback_period_ms").as_int();
+    } catch (const rclcpp::exceptions::ParameterNotDeclaredException&) {
+    }
 
     publisher_ = create_publisher<std_msgs::msg::String>("topic", 10);
     auto timer_callback = [this]() -> void {
@@ -34,7 +39,8 @@ class MinimalPublisher : public rclcpp::Node {
       RCLCPP_INFO(get_logger(), "Publishing: '%s'", message.data.c_str());
       publisher_->publish(message);
     };
-    timer_ = create_wall_timer(500ms, timer_callback);
+    timer_ = create_wall_timer(std::chrono::milliseconds(callback_period_ms),
+                               timer_callback);
   }
 
  private:

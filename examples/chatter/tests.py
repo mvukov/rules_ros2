@@ -22,7 +22,12 @@ import std_msgs.msg
 
 
 def generate_test_description():
-    talker_node = launch_ros.actions.Node(executable='examples/chatter/talker')
+    talker_node = launch_ros.actions.Node(executable='examples/chatter/talker',
+                                          parameters=[
+                                              {
+                                                  'callback_period_ms': 10
+                                              },
+                                          ])
 
     return (
         launch.LaunchDescription([
