@@ -2,10 +2,16 @@
 """
 
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_c_binary",
+    "ros2_c_library",
+    "ros2_cpp_binary",
+    "ros2_cpp_library",
+)
 load("@rules_python//python:defs.bzl", "py_library")
 
-cc_library(
+ros2_c_library(
     name = "rclpy_common",
     srcs = glob([
         "rclpy/src/rclpy_common/src/*.c",
@@ -18,25 +24,16 @@ cc_library(
     ],
 )
 
-copy_file(
-    name = "rclpy_qos_event_copy",
-    src = "rclpy/src/rclpy/_rclpy_qos_event.c",
-    out = "rclpy/src/rclpy/_rclpy_qos_event.h",
-)
-
-cc_binary(
-    name = "rclpy/rclpy/_rclpy.so",
+ros2_cpp_library(
+    name = "rclpy_cpp",
     srcs = [
-        "rclpy/src/rclpy/_rclpy.c",
         "rclpy/src/rclpy/detail/execute_with_logging_mutex.cpp",
         "rclpy/src/rclpy/detail/execute_with_logging_mutex.h",
         "rclpy/src/rclpy/detail/logging_mutex.cpp",
         "rclpy/src/rclpy/detail/logging_mutex.hpp",
         "rclpy/src/rclpy/detail/thread_safe_logging_output_handler.cpp",
         "rclpy/src/rclpy/detail/thread_safe_logging_output_handler.h",
-        ":rclpy_qos_event_copy",
     ],
-    linkshared = True,
     deps = [
         ":rclpy_common",
         "@local_config_python//:headers",
@@ -45,7 +42,29 @@ cc_binary(
     ],
 )
 
-cc_binary(
+copy_file(
+    name = "rclpy_qos_event_copy",
+    src = "rclpy/src/rclpy/_rclpy_qos_event.c",
+    out = "rclpy/src/rclpy/_rclpy_qos_event.h",
+)
+
+ros2_c_binary(
+    name = "rclpy/rclpy/_rclpy.so",
+    srcs = [
+        "rclpy/src/rclpy/_rclpy.c",
+        ":rclpy_qos_event_copy",
+    ],
+    linkshared = True,
+    deps = [
+        ":rclpy_common",
+        ":rclpy_cpp",
+        "@local_config_python//:headers",
+        "@ros2_rcl//:rcl",
+        "@ros2_rcutils//:rcutils",
+    ],
+)
+
+ros2_c_binary(
     name = "rclpy/rclpy/_rclpy_action.so",
     srcs = ["rclpy/src/rclpy/_rclpy_action.c"],
     linkshared = True,
@@ -58,7 +77,7 @@ cc_binary(
     ],
 )
 
-cc_binary(
+ros2_c_binary(
     name = "rclpy/rclpy/_rclpy_logging.so",
     srcs = [
         "rclpy/src/rclpy/_rclpy_logging.c",
@@ -72,7 +91,7 @@ cc_binary(
     ],
 )
 
-cc_binary(
+ros2_c_binary(
     name = "rclpy/rclpy/_rclpy_signal_handler.so",
     srcs = [
         "rclpy/src/rclpy/_rclpy_signal_handler.c",
@@ -86,7 +105,7 @@ cc_binary(
     ],
 )
 
-cc_binary(
+ros2_c_binary(
     name = "rclpy/rclpy/_rclpy_pycapsule.so",
     srcs = [
         "rclpy/src/rclpy/_rclpy_pycapsule.c",
@@ -98,7 +117,7 @@ cc_binary(
     ],
 )
 
-cc_binary(
+ros2_c_binary(
     name = "rclpy/rclpy/_rclpy_handle.so",
     srcs = [
         "rclpy/src/rclpy/_rclpy_handle.c",

@@ -1,16 +1,15 @@
 """ Builds rcl.
 """
 
-load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_c_library")
 
-cc_library(
+ros2_c_library(
     name = "rcl_yaml_param_parser",
     srcs = glob([
         "rcl_yaml_param_parser/src/*.c",
         "rcl_yaml_param_parser/src/impl/*.h",
     ]),
     hdrs = glob(["rcl_yaml_param_parser/include/**/*.h"]),
-    copts = ["-std=c11"],
     includes = ["rcl_yaml_param_parser/include"],
     visibility = ["//visibility:public"],
     deps = [
@@ -19,16 +18,14 @@ cc_library(
     ],
 )
 
-cc_library(
+ros2_c_library(
     name = "rcl",
     srcs = glob([
         "rcl/src/rcl/*.c",
         "rcl/src/rcl/*.h",
     ]),
     hdrs = glob(["rcl/include/**/*.h"]),
-    copts = ["-std=c11"],
     includes = ["rcl/include"],
-    local_defines = ["ROS_PACKAGE_NAME=\\\"rcl\\\""],
     visibility = ["//visibility:public"],
     deps = [
         ":rcl_yaml_param_parser",
@@ -41,16 +38,14 @@ cc_library(
     ],
 )
 
-cc_library(
+ros2_c_library(
     name = "rcl_action",
     srcs = glob([
         "rcl_action/src/rcl_action/*.c",
         "rcl_action/src/rcl_action/*.h",
     ]),
     hdrs = glob(["rcl_action/include/**/*.h"]),
-    copts = ["-std=c11"],
     includes = ["rcl_action/include"],
-    local_defines = ["ROS_PACKAGE_NAME=\\\"rcl_action\\\""],
     visibility = ["//visibility:public"],
     deps = [
         ":rcl",

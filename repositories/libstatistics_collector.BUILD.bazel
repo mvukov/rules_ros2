@@ -1,13 +1,12 @@
 """ Builds libstatistics_collector.
 """
 
-load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
 
-cc_library(
+ros2_cpp_library(
     name = "libstatistics_collector",
     srcs = glob(["src/**/*.cpp"]),
     hdrs = glob(["include/**/*.hpp"]),
-    copts = ["-std=c++14"],
     includes = ["include"],
     visibility = ["//visibility:public"],
     deps = [

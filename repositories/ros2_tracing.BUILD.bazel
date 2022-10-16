@@ -2,10 +2,14 @@
 """
 
 load(
+    "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_c_library",
+    "ros2_cpp_library",
+)
+load(
     "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
     "expand_template",
 )
-load("@rules_cc//cc:defs.bzl", "cc_library")
 
 expand_template(
     name = "config_h",
@@ -17,7 +21,7 @@ expand_template(
     template = "tracetools/include/tracetools/config.h.in",
 )
 
-cc_library(
+ros2_c_library(
     name = "tracetools_c",
     srcs = [
         "tracetools/src/tracetools.c",
@@ -27,11 +31,10 @@ cc_library(
         "tracetools/include/tracetools/visibility_control.hpp",
         ":config_h",
     ],
-    copts = ["-std=c11"],
     includes = ["tracetools/include/"],
 )
 
-cc_library(
+ros2_cpp_library(
     name = "tracetools",
     srcs = [
         "tracetools/src/utils.cpp",
@@ -39,7 +42,6 @@ cc_library(
     hdrs = [
         "tracetools/include/tracetools/utils.hpp",
     ],
-    copts = ["-std=c++14"],
     includes = ["tracetools/include/"],
     visibility = ["//visibility:public"],
     deps = [":tracetools_c"],

@@ -2,26 +2,28 @@
 """
 
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
-load("@rules_cc//cc:defs.bzl", "cc_library")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_c_library",
+    "ros2_cpp_library",
+)
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 
-cc_library(
+ros2_c_library(
     name = "rosidl_typesupport_c_c",
     srcs = glob(["rosidl_typesupport_c/src/*.c"]),
     hdrs = glob(["rosidl_typesupport_c/include/**/*.h"]),
-    copts = ["-std=c11"],
     includes = ["rosidl_typesupport_c/include"],
     visibility = ["//visibility:public"],
 )
 
-cc_library(
+ros2_cpp_library(
     name = "rosidl_typesupport_c",
     srcs = glob([
         "rosidl_typesupport_c/src/*.cpp",
         "rosidl_typesupport_c/src/*.hpp",
     ]),
     hdrs = glob(["rosidl_typesupport_c/include/**/*.h"]),
-    copts = ["-std=c++14"],
     includes = ["rosidl_typesupport_c/include"],
     visibility = ["//visibility:public"],
     deps = [
@@ -32,7 +34,7 @@ cc_library(
     ],
 )
 
-cc_library(
+ros2_cpp_library(
     name = "rosidl_typesupport_cpp",
     srcs = glob([
         "rosidl_typesupport_cpp/src/*.cpp",
@@ -42,7 +44,6 @@ cc_library(
         "rosidl_typesupport_cpp/include/**/*.h",
         "rosidl_typesupport_cpp/include/**/*.hpp",
     ]),
-    copts = ["-std=c++14"],
     includes = ["rosidl_typesupport_cpp/include"],
     visibility = ["//visibility:public"],
     deps = [

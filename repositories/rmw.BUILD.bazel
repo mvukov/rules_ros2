@@ -1,9 +1,13 @@
 """ Builds rmw.
 """
 
-load("@rules_cc//cc:defs.bzl", "cc_library")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_c_library",
+    "ros2_cpp_library",
+)
 
-cc_library(
+ros2_c_library(
     name = "rmw",
     srcs = glob(["rmw/src/*.c"]),
     hdrs = glob(["rmw/include/**/*.h"]),
@@ -16,7 +20,7 @@ cc_library(
     ],
 )
 
-cc_library(
+ros2_cpp_library(
     name = "rmw_cpp",
     hdrs = glob(["rmw/include/**/*.hpp"]),
     includes = ["rmw/include"],

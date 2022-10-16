@@ -5,7 +5,7 @@ load(
     "@com_github_mvukov_rules_ros2//repositories:logging_macros.bzl",
     "logging_macros",
 )
-load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_c_library")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
@@ -35,7 +35,7 @@ logging_macros(
     template = "resource/logging_macros.h.em",
 )
 
-cc_library(
+ros2_c_library(
     name = "rcutils",
     srcs = glob(
         [
@@ -51,7 +51,6 @@ cc_library(
         no_match_error = "Only Linux and macOS are supported!",
     ),
     hdrs = glob(["include/**/*.h"]) + [":logging_macros"],
-    copts = ["-std=c11"],
     includes = ["include"],
     linkopts = select(
         {

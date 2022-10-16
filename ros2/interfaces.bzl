@@ -15,6 +15,7 @@
 """
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "CPP_COPTS", "C_COPTS")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 load("@rules_python//python:defs.bzl", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
@@ -438,9 +439,7 @@ c_generator_aspect = aspect(
             allow_single_file = True,
         ),
         "_c_copts": attr.string_list(
-            default = [
-                "-std=c11",
-            ],
+            default = C_COPTS,
         ),
         "_c_deps": attr.label_list(
             default = [
@@ -607,9 +606,7 @@ cpp_generator_aspect = aspect(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_generator_cpp_templates"),
         ),
         "_cpp_copts": attr.string_list(
-            default = [
-                "-std=c++14",
-            ],
+            default = CPP_COPTS,
         ),
         "_cpp_deps": attr.label_list(
             default = [
@@ -814,9 +811,7 @@ py_generator_aspect = aspect(
             default = Label("@ros2_rosidl_python//:rosidl_generator_py_templates"),
         ),
         "_py_ext_c_copts": attr.string_list(
-            default = [
-                "-std=c11",
-            ],
+            default = C_COPTS,
         ),
         "_py_ext_c_deps": attr.label_list(
             default = [

@@ -2,22 +2,25 @@
 """
 
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
-load("@rules_cc//cc:defs.bzl", "cc_library")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_c_library",
+    "ros2_cpp_library",
+)
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
-cc_library(
+ros2_c_library(
     name = "rosidl_typesupport_interface",
     hdrs = glob(["rosidl_typesupport_interface/include/**/*.h"]),
     includes = ["rosidl_typesupport_interface/include"],
     visibility = ["//visibility:public"],
 )
 
-cc_library(
+ros2_c_library(
     name = "rosidl_runtime_c",
     srcs = glob(["rosidl_runtime_c/src/*.c"]),
     hdrs = glob(["rosidl_runtime_c/include/**/*.h"]),
-    copts = ["-std=c11"],
     includes = ["rosidl_runtime_c/include"],
     visibility = ["//visibility:public"],
     deps = [
@@ -118,7 +121,7 @@ exports_files(
     srcs = ["rosidl_generator_c/resource/rosidl_generator_c__visibility_control.h.in"],
 )
 
-cc_library(
+ros2_cpp_library(
     name = "rosidl_runtime_cpp",
     hdrs = glob(["rosidl_runtime_cpp/include/**/*.hpp"]),
     includes = ["rosidl_runtime_cpp/include"],
@@ -160,23 +163,21 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
-cc_library(
+ros2_c_library(
     name = "rosidl_typesupport_introspection_c",
     srcs = glob(["rosidl_typesupport_introspection_c/src/*.c"]),
     hdrs = glob(["rosidl_typesupport_introspection_c/include/**/*.h"]),
-    copts = ["-std=c11"],
     includes = ["rosidl_typesupport_introspection_c/include"],
     visibility = ["//visibility:public"],
 )
 
-cc_library(
+ros2_cpp_library(
     name = "rosidl_typesupport_introspection_cpp",
     srcs = glob(["rosidl_typesupport_introspection_cpp/src/*.cpp"]),
     hdrs = glob([
         "rosidl_typesupport_introspection_cpp/include/**/*.hpp",
         "rosidl_typesupport_introspection_cpp/include/**/*.h",
     ]),
-    copts = ["-std=c++14"],
     includes = ["rosidl_typesupport_introspection_cpp/include"],
     visibility = ["//visibility:public"],
     deps = [

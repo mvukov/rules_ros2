@@ -16,12 +16,13 @@ def _ros2_cc_target(target, lang, name, ros2_package_name, **kwargs):
     all_copts = all_copts + kwargs.pop("copts", [])
 
     ros2_package_name = ros2_package_name or name
-    local_defines = kwargs.pop("local_defines", [])
-    local_defines.append("ROS_PACKAGE_NAME=\\\"{}\\\"".format(ros2_package_name))
+    all_local_defines = ["ROS_PACKAGE_NAME=\\\"{}\\\"".format(ros2_package_name)]
+    all_local_defines = all_local_defines + kwargs.pop("local_defines", [])
+
     target(
         name = name,
         copts = all_copts,
-        local_defines = local_defines,
+        local_defines = all_local_defines,
         **kwargs
     )
 
@@ -51,8 +52,21 @@ def ros2_cpp_library(name, ros2_package_name = None, **kwargs):
     """
     _ros2_cc_target(cc_library, "cpp", name, ros2_package_name, **kwargs)
 
+def ros2_c_binary(name, ros2_package_name = None, **kwargs):
+    """ Defines a ROS2 C binary.
+
+    Adds common ROS2 C definitions on top of a cc_binary.
+
+    Args:
+        name: A unique target name.
+        ros2_package_name: If given, defines a ROS package name for the target.
+            Otherwise, the `name` is used as the package name.
+        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
+    """
+    _ros2_cc_target(cc_binary, "c", name, ros2_package_name, **kwargs)
+
 def ros2_cpp_binary(name, ros2_package_name = None, **kwargs):
-    """ Defines a ROS2 cc_binary.
+    """ Defines a ROS2 C++ binary.
 
     Adds common ROS2 C++ definitions on top of a cc_binary.
 
