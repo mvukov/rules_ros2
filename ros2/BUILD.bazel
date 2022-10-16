@@ -2,6 +2,7 @@
 """
 
 exports_files([
+    "cc_defs.bzl",
     "interfaces.bzl",
     "launch.bzl",
     "launch.py.tpl",
