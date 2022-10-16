@@ -44,6 +44,7 @@ ros2_launch(
 
 ros2_test(
     name = "tests",
+    size = "small",
     launch_file = "tests.py",
     nodes = [
         ":talker",

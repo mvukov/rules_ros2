@@ -10,6 +10,7 @@ load(
 
 py_test(
     name = "py_idl_no_deps_tests",
+    size = "small",
     srcs = ["py_idl_no_deps_tests.py"],
     deps = [
         "@ros2_rcl_interfaces//:py_builtin_interfaces",
@@ -18,6 +19,7 @@ py_test(
 
 py_test(
     name = "py_idl_with_deps_tests",
+    size = "small",
     srcs = ["py_idl_with_deps_tests.py"],
     deps = [
         "@ros2_common_interfaces//:py_std_msgs",
@@ -37,6 +39,7 @@ py_ros2_interface_library(
 
 py_test(
     name = "py_idl_action_tests",
+    size = "small",
     srcs = ["py_idl_action_tests.py"],
     deps = [
         ":py_test_action",
