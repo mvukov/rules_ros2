@@ -25,12 +25,8 @@
 class MinimalPublisher : public rclcpp::Node {
  public:
   MinimalPublisher() : Node("minimal_publisher"), count_(0) {
-    int callback_period_ms = 500;
-    declare_parameter("callback_period_ms");
-    try {
-      callback_period_ms = get_parameter("callback_period_ms").as_int();
-    } catch (const rclcpp::exceptions::ParameterNotDeclaredException&) {
-    }
+    declare_parameter("callback_period_ms", 500);
+    auto callback_period_ms = get_parameter("callback_period_ms").as_int();
 
     publisher_ = create_publisher<std_msgs::msg::String>("topic", 10);
     auto timer_callback = [this]() -> void {
