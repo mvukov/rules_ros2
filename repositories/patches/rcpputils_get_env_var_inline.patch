@@ -1,11 +1,11 @@
-diff --git a/include/rcpputils/get_env.hpp b/include/rcpputils/get_env.hpp
-index 341455e..528ff25 100644
---- a/include/rcpputils/get_env.hpp
-+++ b/include/rcpputils/get_env.hpp
-@@ -49,7 +49,7 @@ namespace rcpputils
-  * \return The value of the environment variable if it exists, or "".
-  * \throws std::runtime_error on error
-  */
+diff --git a/src/env.cpp b/src/env.cpp
+index 74764f0..6e06486 100644
+--- a/src/env.cpp
++++ b/src/env.cpp
+@@ -37,7 +37,7 @@
+ namespace rcpputils
+ {
+ 
 -std::string get_env_var(const char * env_var)
 +inline std::string get_env_var(const char * env_var)
  {

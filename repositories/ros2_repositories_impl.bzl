@@ -121,6 +121,8 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rcpputils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rcpputils_get_env_var_inline.patch"],
         sha256 = "3f7d220c9fd1c508e1c6bb09239a4e007506a8952a81164dc9027c94bff51ed8",
         strip_prefix = "rcpputils-2.4.0",
         urls = ["https://github.com/ros2/rcpputils/archive/2.4.0.tar.gz"],
@@ -148,10 +150,10 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rmw_cyclonedds",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_cyclonedds.BUILD.bazel",
-        sha256 = "34cfa12ea2653af166412224aac5d28010a0e1f74a3609e1bd4136a7a8cdc7c6",
-        strip_prefix = "rmw_cyclonedds-1.3.3",
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_cyclonedds-fix-typesupport-conditions-bug.patch"],
+        sha256 = "34cfa12ea2653af166412224aac5d28010a0e1f74a3609e1bd4136a7a8cdc7c6",
+        strip_prefix = "rmw_cyclonedds-1.3.3",
         urls = ["https://github.com/ros2/rmw_cyclonedds/archive/1.3.3.tar.gz"],
     )
 
@@ -168,10 +170,10 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rmw_implementation",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_implementation_library_path.patch"],
         sha256 = "b3cb9755b00cd60839dc78711ef14de163234a72bd8cb679812c45ca3608e40b",
         strip_prefix = "rmw_implementation-2.8.1",
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_implementation-2.8.1.patch"],
-        patch_args = ["-p1"],
         url = "https://github.com/ros2/rmw_implementation/archive/2.8.1.tar.gz",
     )
 
@@ -208,10 +210,10 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rosidl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosidl_rm_unnecessary_asserts.patch"],
         sha256 = "f431c394d28d926354c271e48b7d45667363309ae63c3c1bcb6275695fbc50b8",
         strip_prefix = "rosidl-3.1.3",
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosidl-3.1.3.patch"],
-        patch_args = ["-p1"],
         urls = ["https://github.com/ros2/rosidl/archive/3.1.3.tar.gz"],
     )
 
@@ -239,10 +241,10 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rosidl_typesupport",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_typesupport.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosidl_typesupport_generate_true_c_code.patch"],
         sha256 = "b6205ff1fc5872ed88a8645ae660f6e4158ce50a385c0b9c729674f691bc006e",
         strip_prefix = "rosidl_typesupport-2.0.0",
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosidl_typesupport-2.0.0.patch"],
-        patch_args = ["-p1"],
         urls = ["https://github.com/ros2/rosidl_typesupport/archive/2.0.0.tar.gz"],
     )
 
