@@ -3,7 +3,7 @@
 
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
 
-cc_library(
+ros2_cpp_library(
     name = "rcl_logging_interface",
     srcs = glob(["rcl_logging_interface/src/*.c"]),
     hdrs = glob(["rcl_logging_interface/include/**/*.h"]),
@@ -13,7 +13,7 @@ cc_library(
     ],
 )
 
-cc_library(
+ros2_cpp_library(
     name = "rcl_logging_spdlog",
     srcs = glob(["rcl_logging_spdlog/src/*.cpp"]),
     hdrs = glob(["rcl_logging_spdlog/include/**/*.h"]),

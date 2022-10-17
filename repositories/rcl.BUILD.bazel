@@ -57,7 +57,7 @@ ros2_c_library(
     ],
 )
 
-cc_library(
+ros2_c_library(
     name = "rcl_lifecycle",
     srcs = glob([
         "rcl_lifecycle/src/*.c",
