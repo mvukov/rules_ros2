@@ -108,15 +108,6 @@ def ros2_repositories():
         urls = ["https://github.com/eclipse-iceoryx/iceoryx/archive/v2.0.2.tar.gz"],
     )
 
-    # feature/bazel branch
-    maybe(
-        new_git_repository,
-        name = "ros2_rclpy",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel",
-        remote = "https://github.com/mvukov/rclpy.git",
-        commit = "677e67f4a50469591e436f9919ceae0bd870f9eb",
-    )
-
     # ros2-devel branch
     maybe(
         http_archive,
