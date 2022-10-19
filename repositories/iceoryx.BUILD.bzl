@@ -21,10 +21,10 @@ cmake(
     lib_source = ":all_srcs",
     out_static_libs = [
         "libiceoryx_binding_c.a",
-        "libiceoryx_posh.a",
-        "libiceoryx_posh_roudi.a",
-        "libiceoryx_posh_gateway.a",
         "libiceoryx_posh_config.a",
+        "libiceoryx_posh_roudi.a",
+        "libiceoryx_posh.a",
+        "libiceoryx_posh_gateway.a",
         "libiceoryx_hoofs.a",
         "libiceoryx_platform.a",
     ],
