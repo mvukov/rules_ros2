@@ -16,5 +16,5 @@ configure_make(
     out_static_libs = ["libattr.a"],
     out_include_dir = "include",
     visibility = ["//visibility:public"],
-    targets = ["",  "install",  "install-dev", "install-lib"]
+    targets = ["", "install", "install-dev", "install-lib"],
 )

@@ -29,9 +29,7 @@ load(
     "@rules_ros2_pip_deps//:requirements.bzl",
     install_rules_ros2_pip_deps = "install_deps",
 )
-
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
 
 http_archive(
     name = "rules_foreign_cc",
@@ -39,9 +37,11 @@ http_archive(
     strip_prefix = "rules_foreign_cc-0.8.0",
     url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.8.0.tar.gz",
 )
+
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
 
 rules_foreign_cc_dependencies()
+
 install_rules_ros2_pip_deps()
 
 # Below are internal deps.

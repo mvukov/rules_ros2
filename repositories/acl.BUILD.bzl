@@ -18,5 +18,5 @@ configure_make(
     ],
     out_include_dir = "include",
     visibility = ["//visibility:public"],
-    deps = ["@attr//:attr"]
+    deps = ["@attr//:attr"],
 )

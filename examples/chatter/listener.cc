@@ -28,8 +28,10 @@ class MinimalSubscriber : public rclcpp::Node {
                   std::chrono::system_clock::now().time_since_epoch())
                   .count();
           RCLCPP_INFO(get_logger(), "data length %lu", msg->data_length);
-          std::string str{msg->data.begin(), msg->data.begin() + msg->data_length};
-          RCLCPP_INFO(get_logger(), "I heard: '%s', delay %lu us", str.c_str(), current_timestamp - msg->timestamp);
+          std::string str{msg->data.begin(),
+                          msg->data.begin() + msg->data_length};
+          RCLCPP_INFO(get_logger(), "I heard: '%s', delay %lu us", str.c_str(),
+                      current_timestamp - msg->timestamp);
         });
   }
 
