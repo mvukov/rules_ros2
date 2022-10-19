@@ -47,4 +47,5 @@ cc_binary(
     ],
     linkstatic = True,
     visibility = ["//visibility:public"],
+    copts = ["-std=c++14"],
 )
