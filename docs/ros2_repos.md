@@ -1,4 +1,4 @@
-ROS2 repositories are defined using an official release from github.com/ros2/ros2.
+ROS2 repositories are defined using an official release from https://github.com/ros2/ros2.
 Such a release is captured in `repositories/repositories.bzl` file,
 see `http_archive` named `ros2`.
 The corresponding `ros2.BUILD.bazel` defines a simple filegroup with a YAML
