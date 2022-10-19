@@ -25,11 +25,11 @@ pip_parse(
     requirements_lock = "@com_github_mvukov_rules_ros2//:requirements_lock.txt",
 )
 
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load(
     "@rules_ros2_pip_deps//:requirements.bzl",
     install_rules_ros2_pip_deps = "install_deps",
 )
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "rules_foreign_cc",

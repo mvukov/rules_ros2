@@ -1,0 +1,246 @@
+diff --git a/examples/actions/client.cc b/examples/actions/client.cc
+index 2f73f10..552a736 100644
+--- a/examples/actions/client.cc
++++ b/examples/actions/client.cc
+@@ -80,8 +80,8 @@ class MinimalActionClient : public rclcpp::Node {
+   rclcpp::TimerBase::SharedPtr timer_;
+   bool goal_done_;
+
+-  void goal_response_callback(const GoalHandleFibonacci::SharedPtr & goal_handle)
+-  {
++  void goal_response_callback(
++      const GoalHandleFibonacci::SharedPtr& goal_handle) {
+     if (!goal_handle) {
+       RCLCPP_ERROR(get_logger(), "Goal was rejected by server");
+     } else {
+diff --git a/repositories/cyclonedds.BUILD.bazel b/repositories/cyclonedds.BUILD.bazel
+index 17dc74c..d52ef87 100644
+--- a/repositories/cyclonedds.BUILD.bazel
++++ b/repositories/cyclonedds.BUILD.bazel
+@@ -9,7 +9,6 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
+
+ expand_template(
+     name = "features_h",
+-    template = "src/ddsrt/include/dds/features.h.in",
+     out = "include/dds/features.h",
+     substitutions = {
+         "#cmakedefine DDS_HAS_SECURITY 1": "#undef DDS_HAS_SECURITY",
+@@ -21,12 +20,12 @@ expand_template(
+         "#cmakedefine DDS_HAS_TYPE_DISCOVERY 1": "#define DDS_HAS_TYPE_DISCOVERY 1",
+         "#cmakedefine DDS_HAS_TOPIC_DISCOVERY 1": "#define DDS_HAS_TOPIC_DISCOVERY 1",
+         "#cmakedefine DDS_HAS_SHM 1": "#undef DDS_HAS_SHM",
+-    }
++    },
++    template = "src/ddsrt/include/dds/features.h.in",
+ )
+
+ expand_template(
+     name = "config_h",
+-    template = "src/ddsrt/include/dds/config.h.in",
+     out = "include/dds/config.h",
+     substitutions = {
+         "#cmakedefine DDSRT_WITH_LWIP 1": "#define DDSRT_WITH_LWIP 0",
+@@ -43,6 +42,7 @@ expand_template(
+         "#cmakedefine DDSRT_HAVE_INET_NTOP 1": "#define DDSRT_HAVE_INET_NTOP 1",
+         "#cmakedefine DDSRT_HAVE_INET_PTON 1": "#define DDSRT_HAVE_INET_PTON 1",
+     },
++    template = "src/ddsrt/include/dds/config.h.in",
+ )
+
+ expand_template(
+@@ -179,7 +179,7 @@ _DDSRT_HDRS = [
+     "src/ddsrt/include/dds/ddsrt/xmlparser.h",
+     "src/ddsrt/include/dds/ddsrt/expand_vars.h",
+     "src/ddsrt/include/dds/ddsrt/iovec.h",
+-    "src/ddsrt/include/dds/ddsrt/sched.h"
++    "src/ddsrt/include/dds/ddsrt/sched.h",
+ ]
+
+ # Got this from a CMake build on Ubuntu 20.04 for amd64 arch.
+@@ -240,7 +240,10 @@ _DEFINES = [
+ cc_library(
+     name = "ddsrt",
+     srcs = _DDSRT_SRCS,
+-    hdrs = _DDSRT_HDRS + [":export_h", "config_h"],
++    hdrs = _DDSRT_HDRS + [
++        ":export_h",
++        "config_h",
++    ],
+     copts = ["-std=gnu99"],
+     defines = _DEFINES,
+     includes = [
+diff --git a/repositories/rcl.BUILD.bazel b/repositories/rcl.BUILD.bazel
+index 5f26eb4..677e217 100644
+--- a/repositories/rcl.BUILD.bazel
++++ b/repositories/rcl.BUILD.bazel
+@@ -64,21 +64,21 @@ cc_library(
+
+ cc_library(
+     name = "rcl_lifecycle",
+-    hdrs = glob(["rcl_lifecycle/include/**/*.h"]),
+-    includes = ["rcl_lifecycle/include"],
+     srcs = glob([
+         "rcl_lifecycle/src/*.c",
+         "rcl_lifecycle/src/*.h",
+     ]),
+-    local_defines = ["ROS_PACKAGE_NAME=\\\"rcl_lifecycle\\\""],
++    hdrs = glob(["rcl_lifecycle/include/**/*.h"]),
+     copts = ["-std=c11"],
++    includes = ["rcl_lifecycle/include"],
++    local_defines = ["ROS_PACKAGE_NAME=\\\"rcl_lifecycle\\\""],
++    visibility = ["//visibility:public"],
+     deps = [
+         ":rcl",
+         "@ros2_rcl_interfaces//:c_action_msgs",
++        "@ros2_rcl_interfaces//:c_lifecycle_msgs",
+         "@ros2_rcutils//:rcutils",
+         "@ros2_rmw//:rmw",
+         "@ros2_rosidl//:rosidl_runtime_c",
+-        "@ros2_rcl_interfaces//:c_lifecycle_msgs",
+     ],
+-    visibility = ["//visibility:public"],
+ )
+diff --git a/repositories/rcl_interfaces.BUILD.bazel b/repositories/rcl_interfaces.BUILD.bazel
+index 33138db..8bb27d9 100644
+--- a/repositories/rcl_interfaces.BUILD.bazel
++++ b/repositories/rcl_interfaces.BUILD.bazel
+@@ -88,8 +88,8 @@ c_ros2_interface_library(
+
+ c_ros2_interface_library(
+     name = "c_lifecycle_msgs",
+-    deps = [":lifecycle_msgs"],
+     visibility = ["//visibility:public"],
++    deps = [":lifecycle_msgs"],
+ )
+
+ cpp_ros2_interface_library(
+@@ -160,6 +160,6 @@ py_ros2_interface_library(
+
+ cpp_ros2_interface_library(
+     name = "cpp_lifecycle_msgs",
+-    deps = [":lifecycle_msgs"],
+     visibility = ["//visibility:public"],
++    deps = [":lifecycle_msgs"],
+ )
+diff --git a/repositories/rcl_logging.BUILD.bazel b/repositories/rcl_logging.BUILD.bazel
+index 6dac8e8..c157461 100644
+--- a/repositories/rcl_logging.BUILD.bazel
++++ b/repositories/rcl_logging.BUILD.bazel
+@@ -5,12 +5,12 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
+
+ cc_library(
+     name = "rcl_logging_interface",
++    srcs = glob(["rcl_logging_interface/src/*.c"]),
+     hdrs = glob(["rcl_logging_interface/include/**/*.h"]),
+     includes = ["rcl_logging_interface/include"],
+-    srcs = glob(["rcl_logging_interface/src/*.c"]),
+     deps = [
+         "@ros2_rcutils//:rcutils",
+-    ]
++    ],
+ )
+
+ cc_library(
+diff --git a/repositories/rclcpp.BUILD.bazel b/repositories/rclcpp.BUILD.bazel
+index f98044f..583eb25 100644
+--- a/repositories/rclcpp.BUILD.bazel
++++ b/repositories/rclcpp.BUILD.bazel
+@@ -110,15 +110,19 @@ cc_library(
+
+ cc_library(
+     name = "rclcpp_lifecycle",
+-    hdrs = glob(["rclcpp_lifecycle/include/**/*.hpp", "rclcpp_lifecycle/include/**/*.h", "rclcpp_lifecycle/src/*.hpp"]),
+-    includes = ["rclcpp_lifecycle/include"],
+     srcs = glob(["rclcpp_lifecycle/src/**/*.cpp"]),
++    hdrs = glob([
++        "rclcpp_lifecycle/include/**/*.hpp",
++        "rclcpp_lifecycle/include/**/*.h",
++        "rclcpp_lifecycle/src/*.hpp",
++    ]),
++    copts = ["-std=c++17"],
++    includes = ["rclcpp_lifecycle/include"],
++    visibility = ["//visibility:public"],
+     deps = [
+         ":rclcpp",
+         "@ros2_rcl//:rcl_lifecycle",
+-        "@ros2_rcl_interfaces//:cpp_lifecycle_msgs",
+         "@ros2_rcl_interfaces//:c_lifecycle_msgs",
++        "@ros2_rcl_interfaces//:cpp_lifecycle_msgs",
+     ],
+-    copts = ["-std=c++17"],
+-    visibility = ["//visibility:public"],
+ )
+diff --git a/repositories/repositories.bzl b/repositories/repositories.bzl
+index 587287c..2dbb7be 100644
+--- a/repositories/repositories.bzl
++++ b/repositories/repositories.bzl
+@@ -90,7 +90,7 @@ def ros2_repositories():
+         sha256 = "944d0bd7c763ac721398dca2bb0f3b5ed16f67cef36810ede5061f35a543b4b8",
+         strip_prefix = "spdlog-1.8.5",
+         url = "https://github.com/gabime/spdlog/archive/v1.8.5.tar.gz",
+-        repo_mapping = {"@fmt" : "@fmt-7.1.3"},
++        repo_mapping = {"@fmt": "@fmt-7.1.3"},
+     )
+
+     maybe(
+@@ -118,7 +118,7 @@ def ros2_repositories():
+         sha256 = "4c5a10e60f69da9a8dd5c449f4d6e5d240a618d0c06809ed3fc9568d7cbe2a1f",
+         strip_prefix = "rcl-5.3.1",
+         urls = ["https://github.com/ros2/rcl/archive/5.3.1.tar.gz"],
+-        repo_mapping = {"@libyaml" : "@libyaml-0.2.5"},
++        repo_mapping = {"@libyaml": "@libyaml-0.2.5"},
+     )
+
+     maybe(
+diff --git a/repositories/rmw.BUILD.bazel b/repositories/rmw.BUILD.bazel
+index 15bac4a..f4429d1 100644
+--- a/repositories/rmw.BUILD.bazel
++++ b/repositories/rmw.BUILD.bazel
+@@ -18,7 +18,10 @@ cc_library(
+
+ cc_library(
+     name = "rmw_cpp",
+-    hdrs = glob(["rmw/include/**/*.hpp", "rmw/include/**/*.h"]),
++    hdrs = glob([
++        "rmw/include/**/*.hpp",
++        "rmw/include/**/*.h",
++    ]),
+     includes = ["rmw/include"],
+     visibility = ["//visibility:public"],
+     deps = [":rmw"],
+diff --git a/repositories/rmw_cyclonedds.BUILD.bazel b/repositories/rmw_cyclonedds.BUILD.bazel
+index 86d8bd4..0c7b9a7 100644
+--- a/repositories/rmw_cyclonedds.BUILD.bazel
++++ b/repositories/rmw_cyclonedds.BUILD.bazel
+@@ -13,7 +13,7 @@ cc_binary(
+     ]),
+     copts = [
+         "-std=c++17",
+-        "-fvisibility=hidden"
++        "-fvisibility=hidden",
+     ],
+     includes = ["rmw_cyclonedds_cpp/include"],
+     linkopts = ["-fvisibility=hidden"],
+diff --git a/repositories/spdlog.BUILD.bazel b/repositories/spdlog.BUILD.bazel
+index cb728d1..39c5fe8 100644
+--- a/repositories/spdlog.BUILD.bazel
++++ b/repositories/spdlog.BUILD.bazel
+@@ -7,15 +7,15 @@ cc_library(
+     name = "spdlog",
+     srcs = glob(
+         ["src/**/*.cpp"],
+-        exclude = ["src/fmt.cpp"]
++        exclude = ["src/fmt.cpp"],
+     ) + ["include/spdlog/fmt/fmt.h"],
+     hdrs = glob(
+         ["include/**/*.h"],
+-        exclude = ["include/spdlog/fmt/*.h"]
++        exclude = ["include/spdlog/fmt/*.h"],
+     ),
+     copts = [
+         "-std=c++17",
+-        "-w"
++        "-w",
+     ],
+     defines = [
+         "SPDLOG_COMPILED_LIB",

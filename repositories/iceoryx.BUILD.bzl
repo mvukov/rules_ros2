@@ -1,3 +1,4 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
 load("@rules_foreign_cc//foreign_cc:cmake.bzl", "cmake")
 
 filegroup(
@@ -39,7 +40,7 @@ cmake(
 cc_binary(
     name = "shared_memory_manager",
     srcs = ["iceoryx_posh/source/roudi/application/roudi_main.cpp"],
-    deps = ["@iceoryx//:iceoryx"],
+    deps = [":iceoryx"],
     linkopts = [
         "-lpthread",
         "-lrt",
