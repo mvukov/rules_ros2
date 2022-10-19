@@ -54,3 +54,18 @@ In another terminal run
 ```sh
 bazel run //chatter:listener
 ```
+
+## Shared Memory Transport
+
+ROS2 supports using shared memory to speed up transport of message. First, run shared memory manager:
+
+```sh
+bazel run @iceoryx//:shared_memory_manager
+```
+
+Then, for each node started, specify the CycloneDDS config file:
+
+```sh
+export CYCLONEDDS_URI=file://<path to rules_ros2>/examples/configs/cyclonedds.xml
+bazel run //examples/chatter:<talker/listener>
+```

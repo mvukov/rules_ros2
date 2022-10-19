@@ -22,6 +22,7 @@ At the moment it is supported:
 - Defining ROS2 deployments with `ros2_launch` Bazel macro.
 - Defining ROS2 tests with `ros2_test` Bazel macro.
 - Only CycloneDDS middleware can be interfaced at the moment.
+- Zero copy transport via shared memory backend for CycloneDDS.
 
 ROS2 packages are by default locked to versions from [release-humble-20220523](https://github.com/ros2/ros2/releases/tag/release-humble-20220523).
 
