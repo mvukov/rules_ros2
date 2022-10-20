@@ -4,9 +4,9 @@
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load(
     "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "CPP_COPTS",
     "ros2_c_library",
     "ros2_cpp_library",
-    "CPP_COPTS",
 )
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
