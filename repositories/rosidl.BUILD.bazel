@@ -6,6 +6,7 @@ load(
     "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
     "ros2_c_library",
     "ros2_cpp_library",
+    "CPP_COPTS",
 )
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
@@ -178,7 +179,7 @@ ros2_cpp_library(
         "rosidl_typesupport_introspection_cpp/include/**/*.hpp",
         "rosidl_typesupport_introspection_cpp/include/**/*.h",
     ]),
-    copts = ["-std=c++17"],
+    copts = CPP_COPTS,
     includes = ["rosidl_typesupport_introspection_cpp/include"],
     visibility = ["//visibility:public"],
     deps = [

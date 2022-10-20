@@ -6,6 +6,7 @@ load(
     "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
     "ros2_c_library",
     "ros2_cpp_library",
+    "CPP_COPTS",
 )
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 
@@ -24,7 +25,7 @@ ros2_cpp_library(
         "rosidl_typesupport_c/src/*.hpp",
     ]),
     hdrs = glob(["rosidl_typesupport_c/include/**/*.h"]),
-    copts = ["-std=c++17"],
+    copts = CPP_COPTS,
     includes = ["rosidl_typesupport_c/include"],
     visibility = ["//visibility:public"],
     deps = [
@@ -45,7 +46,7 @@ ros2_cpp_library(
         "rosidl_typesupport_cpp/include/**/*.h",
         "rosidl_typesupport_cpp/include/**/*.hpp",
     ]),
-    copts = ["-std=c++17"],
+    copts = CPP_COPTS,
     includes = ["rosidl_typesupport_cpp/include"],
     visibility = ["//visibility:public"],
     deps = [

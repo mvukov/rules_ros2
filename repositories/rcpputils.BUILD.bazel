@@ -1,13 +1,13 @@
 """ Builds rcpputils.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library", "CPP_COPTS")
 
 ros2_cpp_library(
     name = "rcpputils",
     srcs = glob(["src/*.cpp"]),
     hdrs = glob(["include/**/*.hpp"]),
-    copts = ["-std=c++17"],
+    copts = CPP_COPTS,
     includes = ["include"],
     visibility = ["//visibility:public"],
     deps = ["@ros2_rcutils//:rcutils"],
