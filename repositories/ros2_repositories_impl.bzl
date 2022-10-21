@@ -72,9 +72,9 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rcl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcl.BUILD.bazel",
-        sha256 = "e0b6f1607104093fc3eced0ccaf9c4c0a91c8a05560596273a767dccc6ccf2f3",
-        strip_prefix = "rcl-1.1.14",
-        url = "https://github.com/ros2/rcl/archive/refs/tags/1.1.14.tar.gz",
+        sha256 = "4c5a10e60f69da9a8dd5c449f4d6e5d240a618d0c06809ed3fc9568d7cbe2a1f",
+        strip_prefix = "rcl-5.3.1",
+        urls = ["https://github.com/ros2/rcl/archive/5.3.1.tar.gz"],
     )
 
     maybe(
