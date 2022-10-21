@@ -4,13 +4,25 @@ load("//repositories:repositories.bzl", "ros2_repositories")
 
 ros2_repositories()
 
-load("//repositories:deps.bzl", "ros2_deps")
+load("//repositories:deps.bzl", "PIP_ANNOTATIONS", "ros2_deps")
 
-PYTHON_INTERPRETER = "python3.8"
+ros2_deps()
 
-ros2_deps(
-    python_interpreter = PYTHON_INTERPRETER,
-    python_requirements_lock = "//:requirements_lock.txt",
+load("@rules_python//python:repositories.bzl", "python_register_toolchains")
+
+python_register_toolchains(
+    name = "rules_ros2_python",
+    python_version = "3.8.13",
+)
+
+load("@rules_python//python:pip.bzl", "pip_parse")
+load("@rules_ros2_python//:defs.bzl", python_interpreter_target = "interpreter")
+
+pip_parse(
+    name = "rules_ros2_pip_deps",
+    annotations = PIP_ANNOTATIONS,
+    python_interpreter_target = python_interpreter_target,
+    requirements_lock = "@com_github_mvukov_rules_ros2//:requirements_lock.txt",
 )
 
 load(
@@ -57,7 +69,7 @@ load("@rules_python//python:pip.bzl", "pip_parse")
 
 pip_parse(
     name = "rules_ros2_resolver_deps",
-    python_interpreter = PYTHON_INTERPRETER,
+    python_interpreter_target = python_interpreter_target,
     requirements_lock = "//repositories/private:resolver_requirements_lock.txt",
 )
 

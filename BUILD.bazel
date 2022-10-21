@@ -7,3 +7,8 @@ compile_pip_requirements(
     requirements_txt = ":requirements_lock.txt",
     tags = ["manual"],
 )
+
+exports_files([
+    "requirements.txt",
+    "requirements_lock.txt",
+])
