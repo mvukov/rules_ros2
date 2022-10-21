@@ -25,7 +25,7 @@ At the moment it is supported:
 - Defining ROS2 tests with `ros2_test` Bazel macro.
 - Only CycloneDDS middleware can be interfaced at the moment.
 
-ROS2 packages are by default locked to versions from [release-foxy-20220928](https://github.com/ros2/ros2/releases/tag/release-foxy-20220928).
+ROS2 packages are by default locked to versions from [release-foxy-20221021](https://github.com/ros2/ros2/releases/tag/release-foxy-20221021).
 
 NOTE: Unlike ROS1 genmsg which refuses to generate code if the deps between
 interface targets are not set correctly, code generation for ROS2 seems to not
