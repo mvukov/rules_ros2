@@ -49,18 +49,9 @@ def ros2_repositories():
         http_archive,
         name = "libyaml",
         build_file = "@com_github_mvukov_rules_ros2//repositories:libyaml.BUILD.bazel",
-        sha256 = "fa240dbf262be053f3898006d502d514936c818e422afdcf33921c63bed9bf2e",
-        strip_prefix = "libyaml-0.2.5",
-        urls = ["https://github.com/yaml/libyaml/archive/0.2.5.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
-        name = "ros2_rcl",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:rcl.BUILD.bazel",
-        sha256 = "4c5a10e60f69da9a8dd5c449f4d6e5d240a618d0c06809ed3fc9568d7cbe2a1f",
-        strip_prefix = "rcl-5.3.1",
-        urls = ["https://github.com/ros2/rcl/archive/5.3.1.tar.gz"],
+        sha256 = "2c103fc473e904c6fe7580277f1fa16b6d716e54d5e3f32a8913c4850ae03b3f",
+        strip_prefix = "libyaml-acd6f6f014c25e46363e718381e0b35205df2d83",
+        urls = ["https://github.com/yaml/libyaml/archive/acd6f6f014c25e46363e718381e0b35205df2d83.tar.gz"],
     )
 
     maybe(
