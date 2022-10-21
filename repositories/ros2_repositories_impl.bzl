@@ -36,9 +36,9 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel",
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:launch_fix_grammar_path.patch"],
-        sha256 = "e2bbef86d7155c400d30902a4414cfa6214de272fa121a23c397a17042ee050c",
-        strip_prefix = "launch-0.10.9",
-        url = "https://github.com/ros2/launch/archive/refs/tags/0.10.9.tar.gz",
+        sha256 = "4f63d41cb3ed61c01f632346bdc7f0d5bd75a598b7c601e747214cdf947cd409",
+        strip_prefix = "launch-0.10.10",
+        url = "https://github.com/ros2/launch/archive/refs/tags/0.10.10.tar.gz",
     )
 
     maybe(
@@ -110,9 +110,9 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel",
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rclpy_fix_qos_event_h_import.patch"],
-        sha256 = "8dec080c875a2515285c5699c58b9850b00da8d9d2568d793d2bb0c95b2780fa",
-        strip_prefix = "rclpy-1.0.10",
-        url = "https://github.com/ros2/rclpy/archive/refs/tags/1.0.10.tar.gz",
+        sha256 = "27c82acd3b56580245e6925838e06f4ebee9d021cc3405b5fa0d0b9ba207d682",
+        strip_prefix = "rclpy-1.0.11",
+        url = "https://github.com/ros2/rclpy/archive/refs/tags/1.0.11.tar.gz",
     )
 
     maybe(
