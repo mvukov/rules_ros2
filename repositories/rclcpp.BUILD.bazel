@@ -9,7 +9,7 @@ load(
     "@com_github_mvukov_rules_ros2//repositories:rclcpp_interfaces.bzl",
     "rclcpp_interfaces",
 )
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "CPP_COPTS", "ros2_cpp_library")
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
 load("@rules_python//python:defs.bzl", "py_binary")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
@@ -69,7 +69,6 @@ ros2_cpp_library(
         ":logging_macros",
         ":rclcpp_interfaces",
     ],
-    copts = CPP_COPTS,
     includes = [
         "include",
         "rclcpp/include",
@@ -98,7 +97,6 @@ ros2_cpp_library(
     name = "rclcpp_action",
     srcs = glob(["rclcpp_action/src/*.cpp"]),
     hdrs = glob(["rclcpp_action/include/**/*.hpp"]),
-    copts = CPP_COPTS,
     includes = ["rclcpp_action/include"],
     visibility = ["//visibility:public"],
     deps = [
@@ -116,7 +114,6 @@ ros2_cpp_library(
         "rclcpp_lifecycle/include/**/*.h",
         "rclcpp_lifecycle/src/*.hpp",
     ]),
-    copts = CPP_COPTS,
     includes = ["rclcpp_lifecycle/include"],
     visibility = ["//visibility:public"],
     deps = [

@@ -1,7 +1,7 @@
 """ Builds rmw_implementation.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "CPP_COPTS", "ros2_cpp_library")
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
 
 ros2_cpp_library(
     name = "rmw_implementation",
@@ -10,7 +10,6 @@ ros2_cpp_library(
         "rmw_implementation/src/functions.hpp",
         "rmw_implementation/src/visibility_control.h",
     ],
-    copts = CPP_COPTS,
     data = [
         "@ros2_rmw_cyclonedds//:rmw_cyclonedds",
     ],

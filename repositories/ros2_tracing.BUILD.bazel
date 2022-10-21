@@ -3,7 +3,6 @@
 
 load(
     "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
-    "CPP_COPTS",
     "ros2_c_library",
     "ros2_cpp_library",
 )
@@ -43,7 +42,6 @@ ros2_cpp_library(
     hdrs = [
         "tracetools/include/tracetools/utils.hpp",
     ],
-    copts = CPP_COPTS,
     includes = ["tracetools/include/"],
     visibility = ["//visibility:public"],
     deps = [":tracetools_c"],

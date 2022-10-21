@@ -4,7 +4,6 @@
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load(
     "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
-    "CPP_COPTS",
     "ros2_c_library",
     "ros2_cpp_library",
 )
@@ -25,7 +24,6 @@ ros2_cpp_library(
         "rosidl_typesupport_c/src/*.hpp",
     ]),
     hdrs = glob(["rosidl_typesupport_c/include/**/*.h"]),
-    copts = CPP_COPTS,
     includes = ["rosidl_typesupport_c/include"],
     visibility = ["//visibility:public"],
     deps = [
@@ -46,7 +44,6 @@ ros2_cpp_library(
         "rosidl_typesupport_cpp/include/**/*.h",
         "rosidl_typesupport_cpp/include/**/*.hpp",
     ]),
-    copts = CPP_COPTS,
     includes = ["rosidl_typesupport_cpp/include"],
     visibility = ["//visibility:public"],
     deps = [
