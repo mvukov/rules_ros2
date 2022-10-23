@@ -19,6 +19,13 @@ jobs:
     name: Run tests
     runs-on: ubuntu-20.04
 
+    # Run bazel test in each workspace
+    strategy:
+      matrix:
+        folder:
+          - "."
+          - "examples"
+
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -45,4 +52,5 @@ jobs:
         env:
           # Bazelisk will download bazel to here, ensure it is cached between runs.
           XDG_CACHE_HOME: ~/.cache/bazel-repo
+        working-directory: ${{ matrix.folder }}
         run: bazel --bazelrc=$GITHUB_WORKSPACE/.github/workflows/ci.bazelrc --bazelrc=.bazelrc test //...
