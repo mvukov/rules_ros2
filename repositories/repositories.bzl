@@ -1,4 +1,4 @@
-"""Handles import of external/third-party repositories.
+"""Handles imports of external/third-party repositories.
 """
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")

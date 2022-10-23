@@ -55,15 +55,14 @@ class MinimalActionServer : public rclcpp::Node {
   }
 
   rclcpp_action::CancelResponse handle_cancel(
-      const std::shared_ptr<GoalHandleFibonacci> goal_handle) {
+      const std::shared_ptr<GoalHandleFibonacci> /*goal_handle*/) {
     RCLCPP_INFO(get_logger(), "Received request to cancel goal");
-    (void)goal_handle;
     return rclcpp_action::CancelResponse::ACCEPT;
   }
 
   void execute(const std::shared_ptr<GoalHandleFibonacci> goal_handle) {
     RCLCPP_INFO(get_logger(), "Executing goal");
-    rclcpp::Rate loop_rate(1);
+    rclcpp::Rate loop_rate(5);
     const auto goal = goal_handle->get_goal();
     auto feedback = std::make_shared<Fibonacci::Feedback>();
     auto& sequence = feedback->sequence;

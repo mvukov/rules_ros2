@@ -6,14 +6,12 @@ This repo aims to build ROS2 from scratch with Bazel.
 
 ## Prerequisites
 
-The code is developed and tested on Ubuntu 20.04 with Python 3.8.
-
 You will need to install Bazel, see [here](https://docs.bazel.build/versions/master/install.html).
 Besides Bazel, you will need a C++ compiler and a Python 3 interpreter.
-If you want to run ROS2 deployments in Docker containers, [install Docker](https://docs.docker.com/engine/install/ubuntu/)
-as well.
 
 And no, you don't have to install any ROS2 packages via `apt`.
+
+The code is developed and tested on Ubuntu 20.04 with Python 3.8.
 
 ## What works?
 
@@ -33,8 +31,7 @@ care about this. If the deps are not correctly set, you'll only see failures
 during compilation of the generated code. It could be that I missed setting some
 flags to the code generation of ROS2 interfaces.
 
-Please take a look at the examples folder to get more info. Start with a simple
-[chatter](examples/chatter) example.
+Please take a look at the examples folder to get more info.
 
 ## What's next?
 
