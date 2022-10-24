@@ -21,10 +21,10 @@ def generate_launch_description():
     return launch.LaunchDescription([
         launch_ros.actions.Node(
             # Provide the rootpath for the node.
-            executable='examples/chatter/talker',
+            executable='chatter/talker',
             output='screen',
             name='talker'),
-        launch_ros.actions.Node(executable='examples/chatter/listener',
+        launch_ros.actions.Node(executable='chatter/listener',
                                 output='screen',
                                 name='listener'),
     ])

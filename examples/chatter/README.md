@@ -5,7 +5,7 @@ Implements simple talker and lister nodes.
 To launch a sample deployment, run
 
 ```sh
-bazel run //examples/chatter
+bazel run //chatter
 ```
 
 By running this command, Bazel will (re-)build all necessary code (ROS2, nodes,
@@ -16,19 +16,19 @@ e.g. nodes up-to-date. With correctly specified deps, Bazel takes care of this.
 You can inspect the chatter topic with
 
 ```sh
-bazel run //examples/chatter:topic -- echo /topic
+bazel run //chatter:topic -- echo /topic
 ```
 
 You can run tests with
 
 ```sh
-bazel test //examples/chatter:tests  # To see the logs run with `--test_output=all`.
+bazel test //chatter:tests  # To see the logs run with `--test_output=all`.
 ```
 
 To run the sample deployment in a Docker container, run
 
 ```sh
-bazel run //examples/chatter:chatter_image
+bazel run //chatter:chatter_image
 ```
 
 The base docker image is defined in [this](https://github.com/mvukov/rules_ros/blob/main/docker/base/base.Dockerfile) Dockerfile.
@@ -38,13 +38,13 @@ container (compiled with `--config=opt`) is less than 50 MB (see [here](https://
 Alternatively, you can run nodes without the launch mechanism. In a terminal run
 
 ```sh
-bazel run //examples/chatter:talker
+bazel run //chatter:talker
 ```
 
 for rclcpp version or
 
 ```sh
-bazel run //examples/chatter:py_talker
+bazel run //chatter:py_talker
 ```
 
 for rclpy version.
@@ -52,5 +52,5 @@ for rclpy version.
 In another terminal run
 
 ```sh
-bazel run //examples/chatter:listener
+bazel run //chatter:listener
 ```

@@ -19,8 +19,8 @@ ros2_c_library(
     hdrs = glob(["rclpy/src/rclpy_common/include/**/*.h"]),
     includes = ["rclpy/src/rclpy_common/include"],
     deps = [
-        "@local_config_python//:headers",
         "@ros2_rcl//:rcl",
+        "@rules_ros2_python//:python_headers",
     ],
 )
 
@@ -36,9 +36,9 @@ ros2_cpp_library(
     ],
     deps = [
         ":rclpy_common",
-        "@local_config_python//:headers",
         "@ros2_rcl//:rcl",
         "@ros2_rcutils//:rcutils",
+        "@rules_ros2_python//:python_headers",
     ],
 )
 
@@ -58,9 +58,9 @@ ros2_c_binary(
     deps = [
         ":rclpy_common",
         ":rclpy_cpp",
-        "@local_config_python//:headers",
         "@ros2_rcl//:rcl",
         "@ros2_rcutils//:rcutils",
+        "@rules_ros2_python//:python_headers",
     ],
 )
 
@@ -70,10 +70,10 @@ ros2_c_binary(
     linkshared = True,
     deps = [
         ":rclpy_common",
-        "@local_config_python//:headers",
         "@ros2_rcl//:rcl",
         "@ros2_rcl//:rcl_action",
         "@ros2_rcutils//:rcutils",
+        "@rules_ros2_python//:python_headers",
     ],
 )
 
@@ -85,9 +85,9 @@ ros2_c_binary(
     linkshared = True,
     deps = [
         ":rclpy_common",
-        "@local_config_python//:headers",
         "@ros2_rcl//:rcl",
         "@ros2_rcutils//:rcutils",
+        "@rules_ros2_python//:python_headers",
     ],
 )
 
@@ -99,9 +99,9 @@ ros2_c_binary(
     linkshared = True,
     deps = [
         ":rclpy_common",
-        "@local_config_python//:headers",
         "@ros2_rcl//:rcl",
         "@ros2_rcutils//:rcutils",
+        "@rules_ros2_python//:python_headers",
     ],
 )
 
@@ -113,7 +113,7 @@ ros2_c_binary(
     linkshared = True,
     deps = [
         ":rclpy_common",
-        "@local_config_python//:headers",
+        "@rules_ros2_python//:python_headers",
     ],
 )
 
@@ -125,8 +125,8 @@ ros2_c_binary(
     linkshared = True,
     deps = [
         ":rclpy_common",
-        "@local_config_python//:headers",
         "@ros2_rcutils//:rcutils",
+        "@rules_ros2_python//:python_headers",
     ],
 )
 
