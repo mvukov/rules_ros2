@@ -12,7 +12,7 @@ local_repository(
 #     name = "com_github_mvukov_rules_ros2",
 #     # Here you can use e.g. sha256sum cli utility to compute the sha sum.
 #     sha256 = "<sha sum of the .tar.gz archive below>",
-#     strip_prefix = "com_github_mvukov_rules_ros2-<git commit SHA>",
+#     strip_prefix = "rules_ros2-<git commit SHA>",
 #     url = "https://github.com/mvukov/rules_ros2/archive/<git commit SHA>.tar.gz",
 # )
 
