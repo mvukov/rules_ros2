@@ -127,6 +127,8 @@ def _run_adapter(ctx, package_name, srcs):
         outputs = [adapter_map] + idl_files,
         executable = ctx.executable._adapter,
         arguments = [adapter_cmd_args],
+        mnemonic = "Ros2IdlAdapter",
+        progress_message = "Generating IDL files for %{label}",
     )
 
     return idl_files, idl_tuples
@@ -145,7 +147,9 @@ def _run_generator(
         output_mapping,
         visibility_control_template = None,
         extra_generator_args = None,
-        extra_generated_outputs = None):
+        extra_generated_outputs = None,
+        mnemonic = None,
+        progress_message = None):
     generator_templates = generator_templates[DefaultInfo].files.to_list()
 
     generator_arguments_file = ctx.actions.declare_file(
@@ -193,6 +197,8 @@ def _run_generator(
         outputs = generator_outputs,
         executable = generator,
         arguments = [generator_cmd_args],
+        mnemonic = mnemonic,
+        progress_message = progress_message,
     )
 
     if visibility_control_template:
@@ -343,6 +349,8 @@ def _c_generator_aspect_impl(target, ctx):
         ctx.attr._interface_templates,
         _INTERFACE_GENERATOR_C_OUTPUT_MAPPING,
         visibility_control_template = ctx.file._interface_visibility_control_template,
+        mnemonic = "Ros2IdlGeneratorC",
+        progress_message = "Generating C IDL interfaces for %{label}",
     )
 
     typesupport_outputs, _ = _run_generator(
@@ -360,6 +368,8 @@ def _c_generator_aspect_impl(target, ctx):
             # rosidl_typesupport_fastrtps_c.
             "--typesupports=rosidl_typesupport_introspection_c",
         ],
+        mnemonic = "Ros2IdlTypeSupportC",
+        progress_message = "Generating C type support for %{label}",
     )
 
     typesupport_introspection_outputs, _ = _run_generator(
@@ -372,6 +382,8 @@ def _c_generator_aspect_impl(target, ctx):
         ctx.attr._typesupport_introspection_templates,
         _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING,
         visibility_control_template = ctx.file._typesupport_introspection_visibility_control_template,
+        mnemonic = "Ros2IdlTypeSupportIntrospectionC",
+        progress_message = "Generating C type introspection support for %{label}",
     )
 
     all_outputs = interface_outputs + typesupport_outputs + typesupport_introspection_outputs
@@ -524,6 +536,8 @@ def _cpp_generator_aspect_impl(target, ctx):
         ctx.executable._interface_generator,
         ctx.attr._interface_templates,
         _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING,
+        mnemonic = "Ros2IdlGeneratorCpp",
+        progress_message = "Generating C++ IDL interfaces for %{label}",
     )
 
     typesupport_outputs, _ = _run_generator(
@@ -540,6 +554,8 @@ def _cpp_generator_aspect_impl(target, ctx):
             # rosidl_typesupport_fastrtps_cpp.
             "--typesupports=rosidl_typesupport_introspection_cpp",
         ],
+        mnemonic = "Ros2IdlTypeSupportCpp",
+        progress_message = "Generating C++ type support for %{label}",
     )
 
     typesupport_introspection_outputs, _ = _run_generator(
@@ -551,6 +567,8 @@ def _cpp_generator_aspect_impl(target, ctx):
         ctx.executable._typesupport_introspection_generator,
         ctx.attr._typesupport_introspection_templates,
         _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING,
+        mnemonic = "Ros2IdlTypeSupportIntrospectionCpp",
+        progress_message = "Generating C++ type introspection support for %{label}",
     )
 
     all_outputs = interface_outputs + typesupport_outputs + typesupport_introspection_outputs
@@ -694,6 +712,8 @@ def _py_generator_aspect_impl(target, ctx):
             "--typesupport-impls={}".format(type_support_impl),
         ],
         extra_generated_outputs = extra_generated_outputs,
+        mnemonic = "Ros2IdlGeneratorPy",
+        progress_message = "Generating Python IDL interfaces for %{label}",
     )
 
     all_outputs = interface_outputs

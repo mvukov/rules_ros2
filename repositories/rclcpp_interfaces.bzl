@@ -16,6 +16,8 @@ def _generate(ctx, interface_name, template, output):
         outputs = [output],
         executable = ctx.executable.generator,
         arguments = [generator_args],
+        mnemonic = "Ros2RclcppInterfaces",
+        progress_message = "Generating rclcpp interfaces for %{label}",
     )
 
 def _rclcpp_interfaces_impl(ctx):

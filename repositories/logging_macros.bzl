@@ -1,4 +1,4 @@
-""" Implements a rule to generate logging macros for rcutils.
+""" Implements a rule to generate logging macros.
 """
 
 def _logging_macros_impl(ctx):
@@ -12,6 +12,8 @@ def _logging_macros_impl(ctx):
         outputs = [output],
         executable = ctx.executable.generator,
         arguments = [args],
+        mnemonic = "Ros2LoggingMacros",
+        progress_message = "Generating logging macros for %{label}",
     )
     return [DefaultInfo(files = depset([output]))]
 
