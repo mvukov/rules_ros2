@@ -52,8 +52,8 @@ jobs:
           path: |
             ~/.cache/bazel
             ~/.cache/bazel-repo
-          key: v1-bazel-cache-${{ hashFiles('**/BUILD.bazel', '**/*.BUILD.bazel', '**/*.bzl', 'WORKSPACE') }}
-          restore-keys: v1-bazel-cache-
+          key: v2-bazel-cache-${{ hashFiles('**/BUILD.bazel', '**/*.BUILD.bazel', '**/*.bzl', 'WORKSPACE') }}
+          restore-keys: v2-bazel-cache-
       - name: bazel test //...
         env:
           # Bazelisk will download bazel to here, ensure it is cached between runs.
