@@ -54,6 +54,7 @@ ros2_interface_library = rule(
         "deps": attr.label_list(providers = [Ros2InterfaceInfo]),
     },
     implementation = _ros2_interface_library_impl,
+    provides = [Ros2InterfaceInfo],
 )
 
 def _to_snake_case(not_snake_case):
@@ -480,6 +481,7 @@ c_generator_aspect = aspect(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
+    required_providers = [Ros2InterfaceInfo],
     required_aspect_providers = [IdlAdapterAspectInfo],
     provides = [CGeneratorAspectInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
@@ -635,6 +637,7 @@ cpp_generator_aspect = aspect(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
+    required_providers = [Ros2InterfaceInfo],
     required_aspect_providers = [IdlAdapterAspectInfo],
     provides = [CppGeneratorAspectInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
@@ -823,11 +826,12 @@ py_generator_aspect = aspect(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
-    provides = [PyGeneratorAspectInfo],
+    required_providers = [Ros2InterfaceInfo],
     required_aspect_providers = [
         [IdlAdapterAspectInfo],
         [CGeneratorAspectInfo],
     ],
+    provides = [PyGeneratorAspectInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
     fragments = ["cpp"],
 )
