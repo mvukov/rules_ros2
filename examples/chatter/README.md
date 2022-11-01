@@ -57,7 +57,7 @@ bazel run //chatter:listener
 
 ## Shared Memory Transport
 
-ROS2 supports using shared memory to speed up transport of message. First, run shared memory manager:
+ROS2 supports using shared memory to speed up transport of messages. First, run shared memory manager:
 
 ```sh
 bazel run @iceoryx//:shared_memory_manager
