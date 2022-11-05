@@ -54,6 +54,7 @@ ros2_interface_library = rule(
         "deps": attr.label_list(providers = [Ros2InterfaceInfo]),
     },
     implementation = _ros2_interface_library_impl,
+    provides = [Ros2InterfaceInfo],
 )
 
 def _to_snake_case(not_snake_case):
@@ -127,9 +128,40 @@ def _run_adapter(ctx, package_name, srcs):
         outputs = [adapter_map] + idl_files,
         executable = ctx.executable._adapter,
         arguments = [adapter_cmd_args],
+        mnemonic = "Ros2IdlAdapter",
+        progress_message = "Generating IDL files for %{label}",
     )
 
     return idl_files, idl_tuples
+
+IdlAdapterAspectInfo = provider("TBD", fields = [
+    "idl_files",
+    "idl_tuples",
+])
+
+def _idl_adapter_aspect_impl(target, ctx):
+    package_name = target.label.name
+    srcs = target[Ros2InterfaceInfo].info.srcs
+    idl_files, idl_tuples = _run_adapter(ctx, package_name, srcs)
+    return [
+        IdlAdapterAspectInfo(
+            idl_files = idl_files,
+            idl_tuples = idl_tuples,
+        ),
+    ]
+
+idl_adapter_aspect = aspect(
+    implementation = _idl_adapter_aspect_impl,
+    attr_aspects = ["deps"],
+    attrs = {
+        "_adapter": attr.label(
+            default = Label("@ros2_rosidl//:rosidl_adapter_app"),
+            executable = True,
+            cfg = "exec",
+        ),
+    },
+    provides = [IdlAdapterAspectInfo],
+)
 
 def _get_parent_dir(path):
     return "/".join(path.split("/")[:-1])
@@ -138,14 +170,15 @@ def _run_generator(
         ctx,
         srcs,
         package_name,
-        idl_files,
-        idl_tuples,
+        adapter,
         generator,
         generator_templates,
         output_mapping,
         visibility_control_template = None,
         extra_generator_args = None,
-        extra_generated_outputs = None):
+        extra_generated_outputs = None,
+        mnemonic = None,
+        progress_message = None):
     generator_templates = generator_templates[DefaultInfo].files.to_list()
 
     generator_arguments_file = ctx.actions.declare_file(
@@ -154,7 +187,7 @@ def _run_generator(
     output_dir = generator_arguments_file.dirname
     generator_arguments = struct(
         package_name = package_name,
-        idl_tuples = idl_tuples,
+        idl_tuples = adapter.idl_tuples,
         output_dir = output_dir,
         template_dir = generator_templates[0].dirname,
         target_dependencies = [],  # TODO(mvukov) Do we need this?
@@ -189,10 +222,12 @@ def _run_generator(
         generator_outputs.append(ctx.actions.declare_file(relative_file))
 
     ctx.actions.run(
-        inputs = idl_files + generator_templates + [generator_arguments_file],
+        inputs = adapter.idl_files + generator_templates + [generator_arguments_file],
         outputs = generator_outputs,
         executable = generator,
         arguments = [generator_cmd_args],
+        mnemonic = mnemonic,
+        progress_message = progress_message,
     )
 
     if visibility_control_template:
@@ -326,31 +361,26 @@ def _compile_cc_generated_code(
 def _c_generator_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
-
-    idl_files, idl_tuples = _run_adapter(
-        ctx,
-        package_name,
-        srcs,
-    )
+    adapter = target[IdlAdapterAspectInfo]
 
     interface_outputs, cc_include_dir = _run_generator(
         ctx,
         srcs,
         package_name,
-        idl_files,
-        idl_tuples,
+        adapter,
         ctx.executable._interface_generator,
         ctx.attr._interface_templates,
         _INTERFACE_GENERATOR_C_OUTPUT_MAPPING,
         visibility_control_template = ctx.file._interface_visibility_control_template,
+        mnemonic = "Ros2IdlGeneratorC",
+        progress_message = "Generating C IDL interfaces for %{label}",
     )
 
     typesupport_outputs, _ = _run_generator(
         ctx,
         srcs,
         package_name,
-        idl_files,
-        idl_tuples,
+        adapter,
         ctx.executable._typesupport_generator,
         ctx.attr._typesupport_templates,
         _TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING,
@@ -360,18 +390,21 @@ def _c_generator_aspect_impl(target, ctx):
             # rosidl_typesupport_fastrtps_c.
             "--typesupports=rosidl_typesupport_introspection_c",
         ],
+        mnemonic = "Ros2IdlTypeSupportC",
+        progress_message = "Generating C type support for %{label}",
     )
 
     typesupport_introspection_outputs, _ = _run_generator(
         ctx,
         srcs,
         package_name,
-        idl_files,
-        idl_tuples,
+        adapter,
         ctx.executable._typesupport_introspection_generator,
         ctx.attr._typesupport_introspection_templates,
         _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING,
         visibility_control_template = ctx.file._typesupport_introspection_visibility_control_template,
+        mnemonic = "Ros2IdlTypeSupportIntrospectionC",
+        progress_message = "Generating C type introspection support for %{label}",
     )
 
     all_outputs = interface_outputs + typesupport_outputs + typesupport_introspection_outputs
@@ -397,11 +430,6 @@ c_generator_aspect = aspect(
     implementation = _c_generator_aspect_impl,
     attr_aspects = ["deps"],
     attrs = {
-        "_adapter": attr.label(
-            default = Label("@ros2_rosidl//:rosidl_adapter_app"),
-            executable = True,
-            cfg = "exec",
-        ),
         "_interface_generator": attr.label(
             default = Label("@ros2_rosidl//:rosidl_generator_c_app"),
             executable = True,
@@ -449,6 +477,8 @@ c_generator_aspect = aspect(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
+    required_providers = [Ros2InterfaceInfo],
+    required_aspect_providers = [IdlAdapterAspectInfo],
     provides = [CGeneratorAspectInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
     fragments = ["cpp"],
@@ -460,26 +490,19 @@ def _cc_generator_impl(ctx, aspect_info):
     )
     return [cc_info]
 
-def _c_generator_impl(ctx):
+def _c_ros2_interface_library_impl(ctx):
     return _cc_generator_impl(ctx, CGeneratorAspectInfo)
 
-c_generator = rule(
+c_ros2_interface_library = rule(
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
-            aspects = [c_generator_aspect],
+            aspects = [idl_adapter_aspect, c_generator_aspect],
             providers = [Ros2InterfaceInfo],
         ),
     },
-    implementation = _c_generator_impl,
+    implementation = _c_ros2_interface_library_impl,
 )
-
-def c_ros2_interface_library(name, deps, **kwargs):
-    c_generator(
-        name = name,
-        deps = deps,
-        **kwargs
-    )
 
 CppGeneratorAspectInfo = provider("TBD", fields = [
     "cc_info",
@@ -504,30 +527,25 @@ _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING = [
 def _cpp_generator_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
-
-    idl_files, idl_tuples = _run_adapter(
-        ctx,
-        package_name,
-        srcs,
-    )
+    adapter = target[IdlAdapterAspectInfo]
 
     interface_outputs, cc_include_dir = _run_generator(
         ctx,
         srcs,
         package_name,
-        idl_files,
-        idl_tuples,
+        adapter,
         ctx.executable._interface_generator,
         ctx.attr._interface_templates,
         _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING,
+        mnemonic = "Ros2IdlGeneratorCpp",
+        progress_message = "Generating C++ IDL interfaces for %{label}",
     )
 
     typesupport_outputs, _ = _run_generator(
         ctx,
         srcs,
         package_name,
-        idl_files,
-        idl_tuples,
+        adapter,
         ctx.executable._typesupport_generator,
         ctx.attr._typesupport_templates,
         _TYPESUPPORT_GENERATOR_CPP_OUTPUT_MAPPING,
@@ -536,17 +554,20 @@ def _cpp_generator_aspect_impl(target, ctx):
             # rosidl_typesupport_fastrtps_cpp.
             "--typesupports=rosidl_typesupport_introspection_cpp",
         ],
+        mnemonic = "Ros2IdlTypeSupportCpp",
+        progress_message = "Generating C++ type support for %{label}",
     )
 
     typesupport_introspection_outputs, _ = _run_generator(
         ctx,
         srcs,
         package_name,
-        idl_files,
-        idl_tuples,
+        adapter,
         ctx.executable._typesupport_introspection_generator,
         ctx.attr._typesupport_introspection_templates,
         _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING,
+        mnemonic = "Ros2IdlTypeSupportIntrospectionCpp",
+        progress_message = "Generating C++ type introspection support for %{label}",
     )
 
     all_outputs = interface_outputs + typesupport_outputs + typesupport_introspection_outputs
@@ -572,11 +593,6 @@ cpp_generator_aspect = aspect(
     implementation = _cpp_generator_aspect_impl,
     attr_aspects = ["deps"],
     attrs = {
-        "_adapter": attr.label(
-            default = Label("@ros2_rosidl//:rosidl_adapter_app"),
-            executable = True,
-            cfg = "exec",
-        ),
         "_interface_generator": attr.label(
             default = Label("@ros2_rosidl//:rosidl_generator_cpp_app"),
             executable = True,
@@ -617,31 +633,26 @@ cpp_generator_aspect = aspect(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
+    required_providers = [Ros2InterfaceInfo],
+    required_aspect_providers = [IdlAdapterAspectInfo],
     provides = [CppGeneratorAspectInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
     fragments = ["cpp"],
 )
 
-def _cpp_generator_impl(ctx):
+def _cpp_ros2_interface_library_impl(ctx):
     return _cc_generator_impl(ctx, CppGeneratorAspectInfo)
 
-cpp_generator = rule(
+cpp_ros2_interface_library = rule(
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
-            aspects = [cpp_generator_aspect],
+            aspects = [idl_adapter_aspect, cpp_generator_aspect],
             providers = [Ros2InterfaceInfo],
         ),
     },
-    implementation = _cpp_generator_impl,
+    implementation = _cpp_ros2_interface_library_impl,
 )
-
-def cpp_ros2_interface_library(name, deps, **kwargs):
-    cpp_generator(
-        name = name,
-        deps = deps,
-        **kwargs
-    )
 
 PyGeneratorAspectInfo = provider("TBD", fields = [
     "cc_info",
@@ -661,12 +672,7 @@ def _get_py_srcs(files):
 def _py_generator_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
-
-    idl_files, idl_tuples = _run_adapter(
-        ctx,
-        package_name,
-        srcs,
-    )
+    adapter = target[IdlAdapterAspectInfo]
 
     type_support_impl = "rosidl_typesupport_c"
     extra_generated_outputs = [
@@ -681,8 +687,7 @@ def _py_generator_aspect_impl(target, ctx):
         ctx,
         srcs,
         package_name,
-        idl_files,
-        idl_tuples,
+        adapter,
         ctx.executable._py_interface_generator,
         ctx.attr._py_interface_templates,
         _INTERFACE_GENERATOR_PY_OUTPUT_MAPPING,
@@ -690,6 +695,8 @@ def _py_generator_aspect_impl(target, ctx):
             "--typesupport-impls={}".format(type_support_impl),
         ],
         extra_generated_outputs = extra_generated_outputs,
+        mnemonic = "Ros2IdlGeneratorPy",
+        progress_message = "Generating Python IDL interfaces for %{label}",
     )
 
     all_outputs = interface_outputs
@@ -793,11 +800,6 @@ py_generator_aspect = aspect(
     implementation = _py_generator_aspect_impl,
     attr_aspects = ["deps"],
     attrs = {
-        "_adapter": attr.label(
-            default = Label("@ros2_rosidl//:rosidl_adapter_app"),
-            executable = True,
-            cfg = "exec",
-        ),
         "_py_interface_generator": attr.label(
             default = Label("@ros2_rosidl_python//:rosidl_generator_py_app"),
             executable = True,
@@ -820,8 +822,12 @@ py_generator_aspect = aspect(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
+    required_providers = [Ros2InterfaceInfo],
+    required_aspect_providers = [
+        [IdlAdapterAspectInfo],
+        [CGeneratorAspectInfo],
+    ],
     provides = [PyGeneratorAspectInfo],
-    required_aspect_providers = [CGeneratorAspectInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
     fragments = ["cpp"],
 )
@@ -862,7 +868,11 @@ py_generator = rule(
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
-            aspects = [c_generator_aspect, py_generator_aspect],
+            aspects = [
+                idl_adapter_aspect,
+                c_generator_aspect,
+                py_generator_aspect,
+            ],
             providers = [Ros2InterfaceInfo],
         ),
     },
@@ -874,6 +884,7 @@ def py_ros2_interface_library(name, deps, **kwargs):
     py_generator(
         name = name_py,
         deps = deps,
+        **kwargs
     )
     py_library(
         name = name,
