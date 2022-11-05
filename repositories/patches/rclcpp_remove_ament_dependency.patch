@@ -1,25 +1,50 @@
 diff --git a/rclcpp/src/rclcpp/typesupport_helpers.cpp b/rclcpp/src/rclcpp/typesupport_helpers.cpp
-index 7286c35b..4292ebcc 100644
+index 7286c35b..a981d656 100644
 --- a/rclcpp/src/rclcpp/typesupport_helpers.cpp
 +++ b/rclcpp/src/rclcpp/typesupport_helpers.cpp
 @@ -23,8 +23,6 @@
  #include <tuple>
  #include <utility>
-
+ 
 -#include "ament_index_cpp/get_package_prefix.hpp"
 -#include "ament_index_cpp/get_resources.hpp"
  #include "rcpputils/shared_library.hpp"
  #include "rcpputils/find_library.hpp"
  #include "rosidl_runtime_cpp/message_type_support_decl.hpp"
-@@ -49,11 +47,6 @@ std::string get_typesupport_library_path(
- #endif
-
-   std::string package_prefix;
+@@ -37,33 +35,10 @@ namespace
+ 
+ // Look for the library in the ament prefix paths.
+ std::string get_typesupport_library_path(
+-  const std::string & package_name, const std::string & typesupport_identifier)
++  const std::string & package_name, const std::string & /*typesupport_identifier*/)
+ {
+-  const char * dynamic_library_folder;
+-#ifdef _WIN32
+-  dynamic_library_folder = "/bin/";
+-#elif __APPLE__
+-  dynamic_library_folder = "/lib/";
+-#else
+-  dynamic_library_folder = "/lib/";
+-#endif
+-
+-  std::string package_prefix;
 -  try {
 -    package_prefix = ament_index_cpp::get_package_prefix(package_name);
 -  } catch (ament_index_cpp::PackageNotFoundError & e) {
 -    throw std::runtime_error(e.what());
 -  }
-
-   const std::string library_path = rcpputils::path_for_library(
-     package_prefix + dynamic_library_folder,
+-
+-  const std::string library_path = rcpputils::path_for_library(
+-    package_prefix + dynamic_library_folder,
+-    package_name + "__" + typesupport_identifier);
+-  if (library_path.empty()) {
+-    throw std::runtime_error(
+-            "Typesupport library for " + package_name + " does not exist in '" + package_prefix +
+-            "'.");
+-  }
+-  return library_path;
++  std::runtime_error("Typesupport library for " + package_name + " does not exist");
++  return {};
+ }
+ 
+ std::tuple<std::string, std::string, std::string>

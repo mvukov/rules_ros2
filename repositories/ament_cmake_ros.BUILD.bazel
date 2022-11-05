@@ -5,7 +5,7 @@ load("@rules_python//python:defs.bzl", "py_library")
 
 py_library(
     name = "domain_coordinator",
-    srcs = ["domain_coordinator/domain_coordinator/__init__.py"],
+    srcs = glob(["domain_coordinator/domain_coordinator/**/*.py"]),
     imports = ["domain_coordinator"],
     visibility = ["//visibility:public"],
 )

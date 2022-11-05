@@ -3,5 +3,6 @@ empy
 lark-parser
 netifaces
 numpy
+packaging
 pyyaml
 types-pkg-resources

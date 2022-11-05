@@ -56,3 +56,18 @@ ros2_c_library(
         "@ros2_rosidl//:rosidl_runtime_c",
     ],
 )
+
+ros2_c_library(
+    name = "rcl_lifecycle",
+    srcs = glob([
+        "rcl_lifecycle/src/*.c",
+        "rcl_lifecycle/src/*.h",
+    ]),
+    hdrs = glob(["rcl_lifecycle/include/rcl_lifecycle/*.h"]),
+    includes = ["rcl_lifecycle/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":rcl",
+        "@ros2_rcl_interfaces//:c_lifecycle_msgs",
+    ],
+)

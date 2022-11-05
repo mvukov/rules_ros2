@@ -86,6 +86,12 @@ c_ros2_interface_library(
     deps = [":rcl_interfaces"],
 )
 
+c_ros2_interface_library(
+    name = "c_lifecycle_msgs",
+    visibility = ["//visibility:public"],
+    deps = [":lifecycle_msgs"],
+)
+
 cpp_ros2_interface_library(
     name = "cpp_action_msgs",
     visibility = ["//visibility:public"],
