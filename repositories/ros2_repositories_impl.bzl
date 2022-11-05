@@ -117,8 +117,6 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rcpputils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel",
-        patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rcpputils_get_env_var_inline.patch"],
         sha256 = "3f7d220c9fd1c508e1c6bb09239a4e007506a8952a81164dc9027c94bff51ed8",
         strip_prefix = "rcpputils-2.4.0",
         url = "https://github.com/ros2/rcpputils/archive/refs/tags/2.4.0.tar.gz",
