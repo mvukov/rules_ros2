@@ -14,7 +14,9 @@ ros2_cpp_binary(
         "rclpy/src/rclpy/*.cpp",
         "rclpy/src/rclpy/*.hpp",
     ]),
-    includes = ["rclpy/src/"],
+    copts = ["-fvisibility=hidden"],
+    includes = ["rclpy/src"],
+    linkopts = ["-fvisibility=hidden"],
     linkshared = True,
     deps = [
         "@pybind11",
