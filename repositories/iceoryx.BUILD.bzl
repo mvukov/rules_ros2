@@ -29,24 +29,22 @@ cmake(
         "libiceoryx_hoofs.a",
         "libiceoryx_platform.a",
     ],
-    out_binaries = ["iox-roudi"],
     out_include_dir = "include/iceoryx/v2.0.2/",
     visibility = ["//visibility:public"],
+    linkopts = [
+        "-lpthread",
+        "-lrt",
+        "-latomic",
+        "-lacl",
+    ],
     working_directory = "iceoryx_meta",
     tags = ["requires-network"],
-    deps = ["@acl//:acl"],
 )
 
 cc_binary(
     name = "shared_memory_manager",
     srcs = ["iceoryx_posh/source/roudi/application/roudi_main.cpp"],
     deps = [":iceoryx"],
-    linkopts = [
-        "-lpthread",
-        "-lrt",
-        "-latomic",
-    ],
-    linkstatic = True,
     visibility = ["//visibility:public"],
     copts = ["-std=c++14"],
 )

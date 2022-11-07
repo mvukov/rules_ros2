@@ -13,10 +13,7 @@ ros2_cpp_binary(
     ]),
     copts = ["-fvisibility=hidden"],
     includes = ["rmw_cyclonedds_cpp/include"],
-    linkopts = [
-        "-fvisibility=hidden",
-        "-latomic",
-    ],
+    linkopts = ["-fvisibility=hidden"],
     linkshared = True,
     visibility = ["//visibility:public"],
     deps = [
