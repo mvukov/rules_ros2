@@ -257,3 +257,12 @@ def ros2_repositories_impl():
         strip_prefix = "unique_identifier_msgs-2.2.1",
         url = "https://github.com/ros2/unique_identifier_msgs/archive/refs/tags/2.2.1.tar.gz",
     )
+
+    maybe(
+        http_archive,
+        name = "iceoryx",
+        strip_prefix = "iceoryx-2.0.2",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:iceoryx.BUILD.bazel",
+        sha256 = "99871bcaa8da4361d1baae9cf1507683058de8572ac3080edc41e590ffba06c0",
+        url = "https://github.com/eclipse-iceoryx/iceoryx/archive/refs/tags/v2.0.2.tar.gz",
+    )
