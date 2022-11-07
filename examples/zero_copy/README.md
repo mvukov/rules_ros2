@@ -9,14 +9,14 @@ bazel run @iceoryx//:shared_memory_manager
 Then, for each node started, specify the CycloneDDS config file:
 
 ```sh
-export CYCLONEDDS_URI=file://<path to rules_ros2>/examples/configs/cyclonedds.xml
+export CYCLONEDDS_URI=file://<path to rules_ros2>/examples/zero_copy/configs/cyclonedds.xml
 bazel run //examples/chatter:talker
 ```
 
 In another terminal run
 
 ```sh
-bazel ruexport CYCLONEDDS_URI=file://<path to rules_ros2>/examples/configs/cyclonedds.xml
+bazel ruexport CYCLONEDDS_URI=file://<path to rules_ros2>/examples/zero_copy/configs/cyclonedds.xml
 bazel run //chatter:listener
 ```
 
