@@ -1,7 +1,17 @@
 """ Builds rcl_logging.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_c_library", "ros2_cpp_library")
+
+ros2_c_library(
+    name = "rcl_logging_interface",
+    srcs = glob(["rcl_logging_interface/src/*.c"]),
+    hdrs = glob(["rcl_logging_interface/include/**/*.h"]),
+    includes = ["rcl_logging_interface/include"],
+    deps = [
+        "@ros2_rcutils//:rcutils",
+    ],
+)
 
 ros2_cpp_library(
     name = "rcl_logging_spdlog",
@@ -10,6 +20,7 @@ ros2_cpp_library(
     includes = ["rcl_logging_spdlog/include"],
     visibility = ["//visibility:public"],
     deps = [
+        ":rcl_logging_interface",
         "@ros2_rcpputils//:rcpputils",
         "@ros2_rcutils//:rcutils",
         "@spdlog",

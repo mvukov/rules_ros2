@@ -87,10 +87,6 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
-exports_files([
-    "rosidl_typesupport_c/resource/rosidl_typesupport_c__visibility_control.h.in",
-])
-
 py_library(
     name = "rosidl_typesupport_generator_cpp_lib",
     srcs = ["rosidl_typesupport_cpp/rosidl_typesupport_cpp/__init__.py"],

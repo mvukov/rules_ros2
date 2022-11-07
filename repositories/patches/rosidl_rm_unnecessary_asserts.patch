@@ -1,5 +1,5 @@
 diff --git a/rosidl_adapter/rosidl_adapter/action/__init__.py b/rosidl_adapter/rosidl_adapter/action/__init__.py
-index d4b1280..94890e2 100644
+index 6e8719b..3f49661 100644
 --- a/rosidl_adapter/rosidl_adapter/action/__init__.py
 +++ b/rosidl_adapter/rosidl_adapter/action/__init__.py
 @@ -17,19 +17,16 @@ from rosidl_adapter.resource import expand_template
@@ -21,9 +21,9 @@ index d4b1280..94890e2 100644
 -    print(f'Writing output file: {abs_output_file}')
      data = {
          'pkg_name': package_name,
-         'relative_input_file': input_file,
+         'relative_input_file': input_file.as_posix(),
 diff --git a/rosidl_adapter/rosidl_adapter/msg/__init__.py b/rosidl_adapter/rosidl_adapter/msg/__init__.py
-index 1cd056a..41a75a4 100644
+index b02b7b5..4e26df1 100644
 --- a/rosidl_adapter/rosidl_adapter/msg/__init__.py
 +++ b/rosidl_adapter/rosidl_adapter/msg/__init__.py
 @@ -17,19 +17,16 @@ from rosidl_adapter.resource import expand_template
@@ -45,9 +45,9 @@ index 1cd056a..41a75a4 100644
 -    print(f'Writing output file: {abs_output_file}')
      data = {
          'pkg_name': package_name,
-         'relative_input_file': input_file,
+         'relative_input_file': input_file.as_posix(),
 diff --git a/rosidl_adapter/rosidl_adapter/srv/__init__.py b/rosidl_adapter/rosidl_adapter/srv/__init__.py
-index 41ae4e0..c179a8b 100644
+index c57b701..3a58171 100644
 --- a/rosidl_adapter/rosidl_adapter/srv/__init__.py
 +++ b/rosidl_adapter/rosidl_adapter/srv/__init__.py
 @@ -17,19 +17,16 @@ from rosidl_adapter.resource import expand_template
@@ -69,4 +69,4 @@ index 41ae4e0..c179a8b 100644
 -    print(f'Writing output file: {abs_output_file}')
      data = {
          'pkg_name': package_name,
-         'relative_input_file': input_file,
+         'relative_input_file': input_file.as_posix(),

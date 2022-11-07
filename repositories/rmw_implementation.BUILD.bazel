@@ -10,6 +10,7 @@ ros2_cpp_library(
         "rmw_implementation/src/functions.hpp",
         "rmw_implementation/src/visibility_control.h",
     ],
+    copts = ["-w"],
     data = [
         "@ros2_rmw_cyclonedds//:rmw_cyclonedds",
     ],

@@ -12,6 +12,7 @@ py_library(
     deps = [
         "@ros2_rclpy//:rclpy",
         requirement("netifaces"),
+        requirement("packaging"),
         requirement("types-pkg-resources"),
     ],
 )

@@ -4,129 +4,26 @@
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load(
     "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
-    "ros2_c_binary",
-    "ros2_c_library",
     "ros2_cpp_binary",
-    "ros2_cpp_library",
 )
 load("@rules_python//python:defs.bzl", "py_library")
 
-ros2_c_library(
-    name = "rclpy_common",
+ros2_cpp_binary(
+    name = "rclpy/rclpy/_rclpy_pybind11.so",
     srcs = glob([
-        "rclpy/src/rclpy_common/src/*.c",
+        "rclpy/src/rclpy/*.cpp",
+        "rclpy/src/rclpy/*.hpp",
     ]),
-    hdrs = glob(["rclpy/src/rclpy_common/include/**/*.h"]),
-    includes = ["rclpy/src/rclpy_common/include"],
-    deps = [
-        "@ros2_rcl//:rcl",
-        "@rules_ros2_python//:python_headers",
-    ],
-)
-
-ros2_cpp_library(
-    name = "rclpy_cpp",
-    srcs = [
-        "rclpy/src/rclpy/detail/execute_with_logging_mutex.cpp",
-        "rclpy/src/rclpy/detail/execute_with_logging_mutex.h",
-        "rclpy/src/rclpy/detail/logging_mutex.cpp",
-        "rclpy/src/rclpy/detail/logging_mutex.hpp",
-        "rclpy/src/rclpy/detail/thread_safe_logging_output_handler.cpp",
-        "rclpy/src/rclpy/detail/thread_safe_logging_output_handler.h",
-    ],
-    deps = [
-        ":rclpy_common",
-        "@ros2_rcl//:rcl",
-        "@ros2_rcutils//:rcutils",
-        "@rules_ros2_python//:python_headers",
-    ],
-)
-
-copy_file(
-    name = "rclpy_qos_event_copy",
-    src = "rclpy/src/rclpy/_rclpy_qos_event.c",
-    out = "rclpy/src/rclpy/_rclpy_qos_event.h",
-)
-
-ros2_c_binary(
-    name = "rclpy/rclpy/_rclpy.so",
-    srcs = [
-        "rclpy/src/rclpy/_rclpy.c",
-        ":rclpy_qos_event_copy",
-    ],
+    copts = ["-fvisibility=hidden"],
+    includes = ["rclpy/src"],
+    linkopts = ["-fvisibility=hidden"],
     linkshared = True,
     deps = [
-        ":rclpy_common",
-        ":rclpy_cpp",
-        "@ros2_rcl//:rcl",
-        "@ros2_rcutils//:rcutils",
-        "@rules_ros2_python//:python_headers",
-    ],
-)
-
-ros2_c_binary(
-    name = "rclpy/rclpy/_rclpy_action.so",
-    srcs = ["rclpy/src/rclpy/_rclpy_action.c"],
-    linkshared = True,
-    deps = [
-        ":rclpy_common",
+        "@pybind11",
         "@ros2_rcl//:rcl",
         "@ros2_rcl//:rcl_action",
-        "@ros2_rcutils//:rcutils",
-        "@rules_ros2_python//:python_headers",
-    ],
-)
-
-ros2_c_binary(
-    name = "rclpy/rclpy/_rclpy_logging.so",
-    srcs = [
-        "rclpy/src/rclpy/_rclpy_logging.c",
-    ],
-    linkshared = True,
-    deps = [
-        ":rclpy_common",
-        "@ros2_rcl//:rcl",
-        "@ros2_rcutils//:rcutils",
-        "@rules_ros2_python//:python_headers",
-    ],
-)
-
-ros2_c_binary(
-    name = "rclpy/rclpy/_rclpy_signal_handler.so",
-    srcs = [
-        "rclpy/src/rclpy/_rclpy_signal_handler.c",
-    ],
-    linkshared = True,
-    deps = [
-        ":rclpy_common",
-        "@ros2_rcl//:rcl",
-        "@ros2_rcutils//:rcutils",
-        "@rules_ros2_python//:python_headers",
-    ],
-)
-
-ros2_c_binary(
-    name = "rclpy/rclpy/_rclpy_pycapsule.so",
-    srcs = [
-        "rclpy/src/rclpy/_rclpy_pycapsule.c",
-    ],
-    linkshared = True,
-    deps = [
-        ":rclpy_common",
-        "@rules_ros2_python//:python_headers",
-    ],
-)
-
-ros2_c_binary(
-    name = "rclpy/rclpy/_rclpy_handle.so",
-    srcs = [
-        "rclpy/src/rclpy/_rclpy_handle.c",
-    ],
-    linkshared = True,
-    deps = [
-        ":rclpy_common",
-        "@ros2_rcutils//:rcutils",
-        "@rules_ros2_python//:python_headers",
+        "@ros2_rcl//:rcl_lifecycle",
+        "@ros2_rcl_interfaces//:c_lifecycle_msgs",
     ],
 )
 
@@ -134,12 +31,7 @@ py_library(
     name = "rclpy",
     srcs = glob(["rclpy/rclpy/**/*.py"]),
     data = [
-        ":rclpy/rclpy/_rclpy.so",
-        ":rclpy/rclpy/_rclpy_action.so",
-        ":rclpy/rclpy/_rclpy_handle.so",
-        ":rclpy/rclpy/_rclpy_logging.so",
-        ":rclpy/rclpy/_rclpy_pycapsule.so",
-        ":rclpy/rclpy/_rclpy_signal_handler.so",
+        ":rclpy/rclpy/_rclpy_pybind11.so",
     ],
     imports = ["rclpy"],
     visibility = ["//visibility:public"],

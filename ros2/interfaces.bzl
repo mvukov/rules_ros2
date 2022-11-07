@@ -384,7 +384,7 @@ def _c_generator_aspect_impl(target, ctx):
         ctx.executable._typesupport_generator,
         ctx.attr._typesupport_templates,
         _TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING,
-        visibility_control_template = ctx.file._typesupport_visibility_control_template,
+        visibility_control_template = ctx.file._typesupport_introspection_visibility_control_template,
         extra_generator_args = [
             # TODO(mvukov) There are also rosidl_typesupport_connext_c and
             # rosidl_typesupport_fastrtps_c.
@@ -449,10 +449,6 @@ c_generator_aspect = aspect(
         ),
         "_typesupport_templates": attr.label(
             default = Label("@ros2_rosidl_typesupport//:rosidl_typesupport_generator_c_templates"),
-        ),
-        "_typesupport_visibility_control_template": attr.label(
-            default = Label("@ros2_rosidl_typesupport//:rosidl_typesupport_c/resource/rosidl_typesupport_c__visibility_control.h.in"),
-            allow_single_file = True,
         ),
         "_typesupport_introspection_generator": attr.label(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_generator_c"),

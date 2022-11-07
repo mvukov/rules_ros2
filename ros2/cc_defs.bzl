@@ -4,7 +4,7 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 
 C_COPTS = ["-std=c11"]
-CPP_COPTS = ["-std=c++14"]
+CPP_COPTS = ["-std=c++17"]
 
 def _ros2_cc_target(target, lang, name, ros2_package_name, **kwargs):
     if lang == "c":
