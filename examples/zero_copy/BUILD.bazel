@@ -1,0 +1,57 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "cpp_ros2_interface_library",
+    "ros2_interface_library",
+    "py_ros2_interface_library",
+)
+load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
+
+ros2_interface_library(
+    name = "chatter_interface",
+    srcs = ["Chatter.msg"],
+    deps = [
+        "@ros2_common_interfaces//:std_msgs",
+        "@ros2_rcl_interfaces//:builtin_interfaces",
+    ],
+)
+
+cpp_ros2_interface_library(
+    name = "cpp_chatter_interface",
+    deps = [":chatter_interface"],
+)
+
+py_ros2_interface_library(
+    name = "py_chatter_interface",
+    deps = [":chatter_interface"],
+)
+
+ros2_cpp_binary(
+    name = "talker",
+    srcs = ["talker.cc"],
+    deps = [
+        ":cpp_chatter_interface",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "listener",
+    srcs = ["listener.cc"],
+    deps = [
+        ":cpp_chatter_interface",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_test(
+    name = "tests",
+    size = "small",
+    launch_file = "tests.py",
+    nodes = [
+        ":talker",
+    ],
+    deps = [
+        ":py_chatter_interface",
+    ],
+)

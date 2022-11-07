@@ -1,4 +1,4 @@
-// Copyright 2016 Open Source Robotics Foundation, Inc.
+// Copyright 2016-2022 Open Source Robotics Foundation, Inc., Milan Vukov, wayve.ai
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,14 +13,11 @@
 // limitations under the License.
 
 #include <chrono>
+#include <cstring>
 #include <memory>
 
+#include "chatter_interface/msg/chatter.hpp"
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
-
-/* This example creates a subclass of Node and uses a fancy C++11 lambda
- * function to shorten the callback syntax, at the expense of making the
- * code somewhat more difficult to understand at first glance. */
 
 class MinimalPublisher : public rclcpp::Node {
  public:
@@ -28,12 +25,21 @@ class MinimalPublisher : public rclcpp::Node {
     declare_parameter("callback_period_ms", 500);
     auto callback_period_ms = get_parameter("callback_period_ms").as_int();
 
-    publisher_ = create_publisher<std_msgs::msg::String>("topic", 10);
+    publisher_ = create_publisher<chatter_interface::msg::Chatter>("topic", 10);
     auto timer_callback = [this]() -> void {
-      auto message = std_msgs::msg::String();
-      message.data = "Hello, world! " + std::to_string(count_++);
-      RCLCPP_INFO(get_logger(), "Publishing: '%s'", message.data.c_str());
-      publisher_->publish(message);
+      auto message = publisher_->borrow_loaned_message();
+      std::string str = "Hello, world! " + std::to_string(count_++);
+      auto copy_size = str.size() < message.get().data.size()
+                           ? str.size()
+                           : message.get().data.size();
+      std::memcpy(message.get().data.begin(), str.c_str(), copy_size);
+      message.get().data_length = copy_size;
+      message.get().timestamp =
+          std::chrono::duration_cast<std::chrono::microseconds>(
+              std::chrono::system_clock::now().time_since_epoch())
+              .count();
+      RCLCPP_INFO(get_logger(), "Publishing: '%s'", str.c_str());
+      publisher_->publish(std::move(message));
     };
     timer_ = create_wall_timer(std::chrono::milliseconds(callback_period_ms),
                                timer_callback);
@@ -41,7 +47,7 @@ class MinimalPublisher : public rclcpp::Node {
 
  private:
   rclcpp::TimerBase::SharedPtr timer_;
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
+  rclcpp::Publisher<chatter_interface::msg::Chatter>::SharedPtr publisher_;
   size_t count_;
 };
 
