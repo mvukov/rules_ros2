@@ -20,6 +20,8 @@ bazel ruexport CYCLONEDDS_URI=file://<path to rules_ros2>/examples/zero_copy/con
 bazel run //chatter:listener
 ```
 
+You can see the delay for a 4 MB message is no different from a 4 bytes message.
+
 You can run tests with
 
 ```sh
