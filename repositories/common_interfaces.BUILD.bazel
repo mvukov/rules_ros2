@@ -7,6 +7,10 @@ load(
     "py_ros2_interface_library",
     "ros2_interface_library",
 )
+load(
+    "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_cpp_library",
+)
 
 ros2_interface_library(
     name = "std_msgs",
@@ -73,7 +77,37 @@ ros2_interface_library(
 )
 
 cpp_ros2_interface_library(
-    name = "cpp_sensor_msgs",
-    visibility = ["//visibility:public"],
+    name = "_cpp_sensor_msgs",
+    visibility = ["//visibility:private"],
     deps = [":sensor_msgs"],
+)
+
+ros2_cpp_library(
+    name = "cpp_sensor_msgs",
+    hdrs = glob([
+        "sensor_msgs/include/**/*.hpp",
+    ]),
+    strip_include_prefix = "sensor_msgs/include",
+    deps = [":_cpp_sensor_msgs"],
+    visibility = ["//visibility:public"],
+)
+
+ros2_interface_library(
+    name = "visualization_msgs",
+    srcs = glob([
+        "visualization_msgs/msg/*.msg",
+        "visualization_msgs/srv/*.srv",
+    ]),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":geometry_msgs",
+        ":std_msgs",
+        ":sensor_msgs",
+    ],
+)
+
+cpp_ros2_interface_library(
+    name = "cpp_visualization_msgs",
+    visibility = ["//visibility:public"],
+    deps = [":visualization_msgs"],
 )
