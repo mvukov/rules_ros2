@@ -180,7 +180,8 @@ bazel run //repositories/private:resolver
     for name, sha_sum in names_to_sha_sums.items():
         repo_mappings[name]['sha256'] = sha_sum
     for name, version in names_to_versions.items():
-        repo_mappings[name]['strip_prefix'] = f'{name}-{version}'
+        if 'strip_prefix' not in repo_mappings[name].keys():
+            repo_mappings[name]['strip_prefix'] = f'{name}-{version}'
     for name, url in names_to_urls.items():
         repo_mappings[name]['url'] = url
 
