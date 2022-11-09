@@ -5,6 +5,7 @@ load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 filegroup(
     name = "all_srcs",
+    # TODO(mvukov) Minimize srcs.
     srcs = glob(["**"]),
 )
 
@@ -16,7 +17,8 @@ cmake(
     ],
     cache_entries = {
         "CMAKE_BUILD_TYPE": "Release",
-        "BUILD_SHARED_LIBS": "ON",
+        "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
+        "BUILD_SHARED_LIBS": "OFF",
         # CycloneDDS specific options.
         "APPEND_PROJECT_NAME_TO_INCLUDEDIR": "OFF",
         "BUILD_DDSPERF": "OFF",
@@ -40,11 +42,7 @@ cmake(
     },
     generate_args = ["-GNinja"],
     lib_source = ":all_srcs",
-    linkopts = [
-        "-ldl",
-        "-lm",
-        "-lpthread",
-    ],
-    out_shared_libs = ["libddsc.so.0"],
+    linkopts = ["-lpthread"],
+    out_static_libs = ["libddsc.a"],
     visibility = ["//visibility:public"],
 )
