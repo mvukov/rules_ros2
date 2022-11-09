@@ -1,5 +1,5 @@
 diff --git a/rosidl_typesupport_c/resource/msg__type_support.cpp.em b/rosidl_typesupport_c/resource/msg__type_support.cpp.em
-index d09c4c6..d1b679d 100644
+index bd2e929..04dc10d 100644
 --- a/rosidl_typesupport_c/resource/msg__type_support.cpp.em
 +++ b/rosidl_typesupport_c/resource/msg__type_support.cpp.em
 @@ -6,7 +6,7 @@ include_parts = [package_name] + list(interface_path.parents[0].parts) + [
@@ -9,23 +9,23 @@ index d09c4c6..d1b679d 100644
 -    'cstddef',
 +    'stddef.h',
      'rosidl_runtime_c/message_type_support_struct.h',
-     package_name + '/msg/rosidl_typesupport_c__visibility_control.h',
      include_base + '__struct.h',
+     include_base + '__type_support.h',
 diff --git a/rosidl_typesupport_c/resource/srv__type_support.cpp.em b/rosidl_typesupport_c/resource/srv__type_support.cpp.em
-index b815f61..e49d715 100644
+index 17ee3f3..84a3618 100644
 --- a/rosidl_typesupport_c/resource/srv__type_support.cpp.em
 +++ b/rosidl_typesupport_c/resource/srv__type_support.cpp.em
-@@ -17,7 +17,7 @@ TEMPLATE(
+@@ -22,7 +22,7 @@ include_parts = [package_name] + list(interface_path.parents[0].parts) + [
+ include_base = '/'.join(include_parts)
  
- @{
  header_files = [
 -    'cstddef',
 +    'stddef.h',
      'rosidl_runtime_c/service_type_support_struct.h',
-     package_name + '/msg/rosidl_typesupport_c__visibility_control.h',
+     include_base + '__type_support.h',
  ]
 diff --git a/rosidl_typesupport_c/rosidl_typesupport_c/__init__.py b/rosidl_typesupport_c/rosidl_typesupport_c/__init__.py
-index 2ac977e..78ae023 100644
+index 0839df4..31a5b96 100644
 --- a/rosidl_typesupport_c/rosidl_typesupport_c/__init__.py
 +++ b/rosidl_typesupport_c/rosidl_typesupport_c/__init__.py
 @@ -23,7 +23,7 @@ def generate_c(generator_arguments_file, type_supports):
@@ -35,5 +35,5 @@ index 2ac977e..78ae023 100644
 -        'idl__type_support.cpp.em': '%s__type_support.cpp',
 +        'idl__type_support.cpp.em': '%s__type_support.c',
      }
-     generate_files(
+     return generate_files(
          generator_arguments_file, mapping,

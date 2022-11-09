@@ -22,7 +22,10 @@ ros2_c_library(
 
 ros2_cpp_library(
     name = "rmw_cpp",
-    hdrs = glob(["rmw/include/**/*.hpp"]),
+    hdrs = glob([
+        "rmw/include/**/*.hpp",
+        "rmw/include/**/*.h",
+    ]),
     includes = ["rmw/include"],
     visibility = ["//visibility:public"],
     deps = [":rmw"],

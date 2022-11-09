@@ -17,7 +17,8 @@ bazel run //repositories/private:resolver
 The whole idea is to avoid updating versions in the `_impl.bzl` file by hand, but
 to run the resolver binary instead. If you want to add extra info
 for a ROS2 repo that's already mapped or add another ROS2 repo,
-please update `repositories/ros2_repo_mappings.yaml`.
+please update `repositories/ros2_repo_mappings.yaml`. If you changed the config
+yaml file, please rerun the resolver app as shown above.
 
 Naturally, what if you want to override an auto-generated definition?
 Since all definitions use `maybe` Bazel macro, it is sufficient to define an

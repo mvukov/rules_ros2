@@ -11,20 +11,47 @@ expand_template(
     name = "features_h",
     out = "include/dds/features.h",
     substitutions = {
-        "#cmakedefine DDS_HAS_SECURITY @DDS_HAS_SECURITY@": "/* #undef DDS_HAS_SECURITY */",
-        "#cmakedefine DDS_HAS_LIFESPAN @DDS_HAS_LIFESPAN@": "#define DDS_HAS_LIFESPAN 1",
-        "#cmakedefine DDS_HAS_DEADLINE_MISSED @DDS_HAS_DEADLINE_MISSED@": "#define DDS_HAS_DEADLINE_MISSED 1",
+        "#cmakedefine DDS_HAS_SECURITY 1": "#undef DDS_HAS_SECURITY",
+        "#cmakedefine DDS_HAS_LIFESPAN 1": "#define DDS_HAS_LIFESPAN 1",
+        "#cmakedefine DDS_HAS_DEADLINE_MISSED 1": "#define DDS_HAS_DEADLINE_MISSED 1",
+        "#cmakedefine DDS_HAS_NETWORK_PARTITIONS 1": "#define DDS_HAS_NETWORK_PARTITIONS 1",
+        "#cmakedefine DDS_HAS_SSM 1": "#define DDS_HAS_SSM 1",
+        "#cmakedefine DDS_HAS_SSL 1": "#undef DDS_HAS_SSL",
+        "#cmakedefine DDS_HAS_TYPE_DISCOVERY 1": "#define DDS_HAS_TYPE_DISCOVERY 1",
+        "#cmakedefine DDS_HAS_TOPIC_DISCOVERY 1": "#define DDS_HAS_TOPIC_DISCOVERY 1",
+        "#cmakedefine DDS_HAS_SHM 1": "#undef DDS_HAS_SHM",
     },
-    template = "src/features.h.in",
+    template = "src/ddsrt/include/dds/features.h.in",
+)
+
+expand_template(
+    name = "config_h",
+    out = "include/dds/config.h",
+    substitutions = {
+        "#cmakedefine DDSRT_WITH_LWIP 1": "#define DDSRT_WITH_LWIP 0",
+        "#cmakedefine DDSRT_WITH_FREERTOS 1": "#define DDSRT_WITH_FREERTOS 0",
+        "#cmakedefine DDSRT_HAVE_DYNLIB 1": "#define DDSRT_HAVE_DYNLIB 1",
+        "#cmakedefine DDSRT_HAVE_FILESYSTEM 1": "#define DDSRT_HAVE_FILESYSTEM 1",
+        "#cmakedefine DDSRT_HAVE_NETSTAT 1": "#define DDSRT_HAVE_NETSTAT 1",
+        "#cmakedefine DDSRT_HAVE_RUSAGE 1": "#define DDSRT_HAVE_RUSAGE 1",
+        "#cmakedefine DDSRT_HAVE_IPV6 1": "#define DDSRT_HAVE_IPV6 1",
+        "#cmakedefine DDSRT_HAVE_DNS 1": "#define DDSRT_HAVE_DNS 1",
+        "#cmakedefine DDSRT_HAVE_GETADDRINFO 1": "#define DDSRT_HAVE_GETADDRINFO 1",
+        "#cmakedefine DDSRT_HAVE_GETHOSTBYNAME_R 1": "#define DDSRT_HAVE_GETHOSTBYNAME_R 1",
+        "#cmakedefine DDSRT_HAVE_GETHOSTNAME 1": "#define DDSRT_HAVE_GETHOSTNAME 1",
+        "#cmakedefine DDSRT_HAVE_INET_NTOP 1": "#define DDSRT_HAVE_INET_NTOP 1",
+        "#cmakedefine DDSRT_HAVE_INET_PTON 1": "#define DDSRT_HAVE_INET_PTON 1",
+    },
+    template = "src/ddsrt/include/dds/config.h.in",
 )
 
 expand_template(
     name = "version_h",
     out = "include/dds/version.h",
     substitutions = {
-        "@CycloneDDS_VERSION@": "0.7.0",
+        "@CycloneDDS_VERSION@": "0.9.0",
         "@CycloneDDS_VERSION_MAJOR@": "0",
-        "@CycloneDDS_VERSION_MINOR@": "7",
+        "@CycloneDDS_VERSION_MINOR@": "9",
         "@CycloneDDS_VERSION_PATCH@": "0",
         "@PROJECT_NAME_CAPS@": "CYCLONEDDS",
         "@PROJECT_NAME_SMALL@": "cyclonedds",
@@ -81,7 +108,15 @@ genrule(
 #  endif
 #endif
 
-#endif /* DDS_EXPORT_H */
+#ifndef DDS_INLINE_EXPORT
+#  if __MINGW32__ && (!defined(__clang__) || !defined(ddsc_EXPORTS))
+#    define DDS_INLINE_EXPORT
+#  else
+#    define DDS_INLINE_EXPORT DDS_EXPORT
+#  endif
+#endif
+
+#endif
 EOL
 """,
     visibility = ["//visibility:private"],
@@ -92,7 +127,6 @@ _DDSRT_HDRS = [
     "src/ddsrt/include/dds/ddsrt/avl.h",
     "src/ddsrt/include/dds/ddsrt/fibheap.h",
     "src/ddsrt/include/dds/ddsrt/hopscotch.h",
-    "src/ddsrt/include/dds/ddsrt/thread_pool.h",
     "src/ddsrt/include/dds/ddsrt/log.h",
     "src/ddsrt/include/dds/ddsrt/retcode.h",
     "src/ddsrt/include/dds/ddsrt/attributes.h",
@@ -126,7 +160,6 @@ _DDSRT_HDRS = [
     "src/ddsrt/include/dds/ddsrt/sync.h",
     "src/ddsrt/include/dds/ddsrt/sync/freertos.h",
     "src/ddsrt/include/dds/ddsrt/sync/posix.h",
-    "src/ddsrt/include/dds/ddsrt/sync/solaris2.6.h",
     "src/ddsrt/include/dds/ddsrt/sync/windows.h",
     "src/ddsrt/include/dds/ddsrt/threads.h",
     "src/ddsrt/include/dds/ddsrt/threads/freertos.h",
@@ -145,6 +178,8 @@ _DDSRT_HDRS = [
     "src/ddsrt/include/dds/ddsrt/bswap.h",
     "src/ddsrt/include/dds/ddsrt/xmlparser.h",
     "src/ddsrt/include/dds/ddsrt/expand_vars.h",
+    "src/ddsrt/include/dds/ddsrt/iovec.h",
+    "src/ddsrt/include/dds/ddsrt/sched.h",
 ]
 
 # Got this from a CMake build on Ubuntu 20.04 for amd64 arch.
@@ -161,7 +196,6 @@ _DDSRT_SRCS = [
     "src/ddsrt/src/expand_vars.c",
     "src/ddsrt/src/fibheap.c",
     "src/ddsrt/src/hopscotch.c",
-    "src/ddsrt/src/thread_pool.c",
     "src/ddsrt/src/xmlparser.c",
     "src/ddsrt/src/circlist.c",
     "src/ddsrt/src/atomics.c",
@@ -177,7 +211,6 @@ _DDSRT_SRCS = [
     "src/ddsrt/src/sockets/posix/gethostname.c",
     "src/ddsrt/src/sockets/posix/socket.c",
     "src/ddsrt/src/string.c",
-    "src/ddsrt/src/string/posix/strerror.c",
     "src/ddsrt/src/sync/posix/sync.c",
     "src/ddsrt/src/threads.c",
     "src/ddsrt/src/threads/posix/threads.c",
@@ -189,9 +222,8 @@ _DDSRT_SRCS = [
     "src/ddsrt/src/dynlib/posix/dynlib.c",
     "src/ddsrt/src/filesystem/posix/filesystem.c",
     # Moved from headers:
-    "src/ddsrt/src/sockets/include/dds/ddsrt/sockets_priv.h",
-    "src/ddsrt/src/threads/include/dds/ddsrt/threads_priv.h",
-    "src/ddsrt/src/time/include/dds/ddsrt/timeconv.h",
+    "src/ddsrt/src/threads_priv.h",
+    "src/ddsrt/src/sockets_priv.h",
 ]
 
 _DEFINES = [
@@ -208,14 +240,16 @@ _DEFINES = [
 cc_library(
     name = "ddsrt",
     srcs = _DDSRT_SRCS,
-    hdrs = _DDSRT_HDRS + [":export_h"],
+    hdrs = _DDSRT_HDRS + [
+        ":export_h",
+        "config_h",
+    ],
     copts = ["-std=gnu99"],
     defines = _DEFINES,
     includes = [
         "include",
         "src/ddsrt/include",
-        "src/ddsrt/src/sockets/include",
-        "src/ddsrt/src/threads/include",
+        "src/ddsrt/src",
     ],
     linkopts = ["-lpthread"],
     deps = [],
@@ -240,9 +274,8 @@ _DDSI_SRCS = [
     "ddsi_serdata_pserop.c",
     "ddsi_serdata_plist.c",
     "ddsi_sertopic.c",
-    "ddsi_sertopic_default.c",
-    "ddsi_sertopic_pserop.c",
-    "ddsi_sertopic_plist.c",
+    "ddsi_sertype_pserop.c",
+    "ddsi_sertype_plist.c",
     "ddsi_statistics.c",
     "ddsi_iid.c",
     "ddsi_tkmap.c",
@@ -261,7 +294,6 @@ _DDSI_SRCS = [
     "q_addrset.c",
     "q_bitset_inlines.c",
     "q_bswap.c",
-    "q_config.c",
     "q_ddsi_discovery.c",
     "q_debmon.c",
     "q_entity.c",
@@ -285,6 +317,18 @@ _DDSI_SRCS = [
     "sysdeps.c",
     # ENABLE_LIFESPAN
     "ddsi_lifespan.c",
+    "ddsi_xt_typeinfo.c",
+    "ddsi_xt_typelookup.c",
+    "ddsi_typelib.c",
+    "ddsi_xt_typemap.c",
+    "ddsi_sertype.c",  # Manually added!
+    "ddsi_typewrap.c",  # Manually added!
+    "ddsi_sertype_default.c",  # Manually added!
+    "ddsi_config.c",  # Manually added!
+    "ddsi_typelookup.c",  # Manually added!
+    "ddsi_vnet.c",  # Manually added!
+    "ddsi_wraddrset.c",  # Manually added!
+    "ddsi_list_genptr.c",
 ]
 
 _DDSI_PRIVATE_HDRS = [
@@ -327,10 +371,23 @@ _DDSI_PRIVATE_HDRS = [
     "ddsi_cfgelems.h",
     "ddsi_acknack.h",
     "ddsi_pmd.h",  # Manually added!
+    "ddsi_locator.h",  # Manually added!
+    "ddsi_typelookup.h",  # Manually added!
+    "ddsi_sertype.h",  # Manually added!
+    "ddsi_typelib.h",  # Manually added!
+    "ddsi_list_tmpl.h",  # Manually added!
+    "ddsi_typewrap.h",  # Manually added!
+    "ddsi_xt_typeinfo.h",  # Manually added!
+    "ddsi_xt_typemap.h",  # Manually added!
+    "ddsi_xt_typelookup.h",  # Manually added!
+    "ddsi_security_msg.h",  # Manually added!
+    "ddsi_list_genptr.h",  # Manually added!
+    "ddsi_shm_transport.h",  # Manually added!
+    "ddsi_wraddrset.h",  # Manually added!
+    "ddsi_vnet.h",  # Manually added!
     "q_addrset.h",
     "q_bitset.h",
     "q_bswap.h",
-    "q_config.h",
     "q_ddsi_discovery.h",
     "q_debmon.h",
     "q_entity.h",
@@ -360,6 +417,9 @@ _DDSI_PRIVATE_HDRS = [
     "sysdeps.h",
     # ENABLE_LIFESPAN
     "ddsi_lifespan.h",
+    "ddsi_config.h",
+    "ddsi_config_impl.h",
+    "ddsi_xt_impl.h",
 ]
 
 _DDSC_SRCS = [
@@ -392,7 +452,8 @@ _DDSC_SRCS = [
     "dds_whc.c",
     "dds_whc_builtintopic.c",
     "dds_serdata_builtintopic.c",
-    "dds_sertopic_builtintopic.c",
+    "dds_sertype_builtintopic.c",
+    "dds_loan.c",
 ]
 
 _DDSC_PUBLIC_HDRS = [
@@ -407,6 +468,10 @@ _DDSC_PUBLIC_HDRS = [
     "ddsc/dds_statistics.h",
     "ddsc/dds_rhc.h",
     "ddsc/dds_internal_api.h",
+    "ddsc/dds_basic_types.h",
+    "ddsc/dds_opcodes.h",
+    "ddsc/dds_loan_api.h",
+    "ddsc/dds_data_allocator.h",
 ]
 
 _DDSC_PRIVATE_HDRS = [
@@ -435,6 +500,8 @@ _DDSC_PRIVATE_HDRS = [
     "dds__whc_builtintopic.h",
     "dds__serdata_builtintopic.h",
     "dds__get_status.h",
+    "dds__loan.h",
+    "dds__data_allocator.h",
 ]
 
 cc_library(
@@ -458,6 +525,9 @@ cc_library(
     ] + [
         ":features_h",
         ":version_h",
+        ":config_h",
+        "src/core/ddsi/src/ddsi_cdrstream_write.part.c",
+        "src/core/ddsi/src/ddsi_cdrstream_keys.part.c",
     ],
     copts = ["-std=gnu99"],
     defines = _DEFINES,
