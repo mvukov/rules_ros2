@@ -17,7 +17,7 @@ ros2_cpp_binary(
     linkshared = True,
     visibility = ["//visibility:public"],
     deps = [
-        "@cyclonedds//:ddsc",
+        "@cyclonedds",
         "@ros2_rcpputils//:rcpputils",
         "@ros2_rcutils//:rcutils",
         "@ros2_rmw//:rmw",
