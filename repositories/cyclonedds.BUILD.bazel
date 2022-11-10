@@ -31,7 +31,7 @@ cmake(
         "ENABLE_LIFESPAN": "ON",
         "ENABLE_NETWORK_PARTITIONS": "ON",
         "ENABLE_SECURITY": "OFF",
-        "ENABLE_SHM": "OFF",
+        "ENABLE_SHM": "ON",
         "ENABLE_SOURCE_SPECIFIC_MULTICAST": "ON",
         "ENABLE_SSL": "OFF",  # TODO(mvukov) Here we could use openssl/boringssl.
         "ENABLE_TOPIC_DISCOVERY": "OFF",
@@ -39,10 +39,12 @@ cmake(
         "WERROR": "OFF",
         "WITH_FREERTOS": "OFF",
         "WITH_LWIP": "OFF",
+        "CMAKE_PREFIX_PATH": "$EXT_BUILD_DEPS/iceoryx",
     },
     generate_args = ["-GNinja"],
     lib_source = ":all_srcs",
     linkopts = ["-lpthread"],
     out_static_libs = ["libddsc.a"],
     visibility = ["//visibility:public"],
+    deps = ["@iceoryx"],
 )

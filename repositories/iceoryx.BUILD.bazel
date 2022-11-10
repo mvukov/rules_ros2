@@ -30,6 +30,7 @@ cmake(
         "libiceoryx_platform.a",
     ],
     out_include_dir = "include/iceoryx/v2.0.2/",
+    out_data_dirs = ["lib/cmake"],
     visibility = ["//visibility:public"],
     linkopts = [
         "-lpthread",
