@@ -1,4 +1,4 @@
-load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_python//python:defs.bzl", "py_binary", "py_test")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load("@rules_ros2_resolver_deps//:requirements.bzl", "requirement")
 
@@ -28,4 +28,12 @@ py_binary(
         requirement("pyyaml"),
         requirement("tqdm"),
     ],
+)
+
+py_test(
+    name = "tests",
+    srcs = ["ros2_repo_mappings_tests.py"],
+    data = ["//repositories:ros2_repo_mappings.yaml"],
+    main = "ros2_repo_mappings_tests.py",
+    deps = [requirement("pyyaml")],
 )
