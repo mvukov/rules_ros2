@@ -1,0 +1,5 @@
+# Defined for convenience.
+alias(
+    name = "ros2_param",
+    actual = "@com_github_mvukov_rules_ros2//ros2:ros2_param",
+)

@@ -2,7 +2,7 @@
 
 # Bazel rules for ROS2
 
-This repo aims to build ROS2 from scratch with Bazel.
+This repo provides functionality to build and use ROS2 with Bazel.
 
 ## Prerequisites
 
@@ -15,13 +15,16 @@ The code is developed and tested on Ubuntu 20.04 with Python 3.8.
 
 ## What works?
 
-At the moment it is supported:
+Available features:
 
 - Building of C++ and Python nodes (rclcpp and rclpy work).
 - C/C++/Python code generation for interfaces (messages, services and actions).
 - Defining ROS2 deployments with `ros2_launch` Bazel macro.
 - Defining ROS2 tests with `ros2_test` Bazel macro.
-- Only CycloneDDS middleware can be interfaced at the moment.
+- Only CycloneDDS middleware can be used at the moment.
+- Utilities:
+  - `ros2_param` for handling parameters
+  - `ros2_topic` for handling topics
 
 ROS2 packages are by default locked to versions from [release-humble-20220523](https://github.com/ros2/ros2/releases/tag/release-humble-20220523).
 
@@ -31,7 +34,7 @@ care about this. If the deps are not correctly set, you'll only see failures
 during compilation of the generated code. It could be that I missed setting some
 flags to the code generation of ROS2 interfaces.
 
-Please take a look at the examples folder to get more info.
+Please take a look at the [examples](examples) folder to get started.
 
 ## What's next?
 

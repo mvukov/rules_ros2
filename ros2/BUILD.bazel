@@ -1,6 +1,8 @@
 """ ROS2 common definitions.
 """
 
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+
 exports_files([
     "cc_defs.bzl",
     "interfaces.bzl",
@@ -11,3 +13,22 @@ exports_files([
     "test.py.tpl",
     "topic.bzl",
 ])
+
+py_library(
+    name = "ros2_cmd",
+    srcs = ["ros2_cmd.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2cli",
+    ],
+)
+
+py_binary(
+    name = "ros2_param",
+    srcs = ["ros2_param.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":ros2_cmd",
+        "@ros2cli//:ros2param",
+    ],
+)

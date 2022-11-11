@@ -42,3 +42,40 @@ py_library(
         requirement("pyyaml"),
     ],
 )
+
+py_library(
+    name = "ros2node",
+    srcs = glob(["ros2node/ros2node/**/*.py"]),
+    imports = ["ros2node"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":ros2cli",
+    ],
+)
+
+py_library(
+    name = "ros2service",
+    srcs = glob(["ros2service/ros2service/**/*.py"]),
+    imports = ["ros2service"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":ros2cli",
+        "@ros2_rclpy//:rclpy",
+        "@ros2_rosidl_runtime_py//:rosidl_runtime_py",
+        requirement("pyyaml"),
+    ],
+)
+
+py_library(
+    name = "ros2param",
+    srcs = glob(["ros2param/ros2param/**/*.py"]),
+    imports = ["ros2param"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":ros2cli",
+        ":ros2node",
+        ":ros2service",
+        "@ros2_rcl_interfaces//:py_rcl_interfaces",
+        "@ros2_rclpy//:rclpy",
+    ],
+)

@@ -19,6 +19,12 @@ You can inspect the chatter topic with
 bazel run //chatter:topic -- echo /topic
 ```
 
+and list the parameters with
+
+```sh
+bazel run //:ros2_param -- list
+```
+
 You can run tests with
 
 ```sh
