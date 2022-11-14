@@ -14,29 +14,25 @@
 import sys
 
 import ros2cli.cli
-import ros2topic.verb.bw
-import ros2topic.verb.delay
-import ros2topic.verb.echo
-import ros2topic.verb.find
-import ros2topic.verb.hz
-import ros2topic.verb.info
-import ros2topic.verb.list
-import ros2topic.verb.pub
-import ros2topic.verb.type
+import ros2param.verb.delete
+import ros2param.verb.describe
+import ros2param.verb.dump
+import ros2param.verb.get
+import ros2param.verb.list
+import ros2param.verb.load
+import ros2param.verb.set
 
 import ros2.ros2_cmd
 
 COMMAND_EXTENSIONS = {
-    'bw': ros2topic.verb.bw.BwVerb(),
-    'delay': ros2topic.verb.delay.DelayVerb(),
-    'echo': ros2topic.verb.echo.EchoVerb(),
-    'find': ros2topic.verb.find.FindVerb(),
-    'hz': ros2topic.verb.hz.HzVerb(),
-    'info': ros2topic.verb.info.InfoVerb(),
-    'list': ros2topic.verb.list.ListVerb(),
-    'pub': ros2topic.verb.pub.PubVerb(),
-    'type': ros2topic.verb.type.TypeVerb(),
+    'delete': ros2param.verb.delete.DeleteVerb(),
+    'describe': ros2param.verb.describe.DescribeVerb(),
+    'dump': ros2param.verb.dump.DumpVerb(),
+    'get': ros2param.verb.get.GetVerb(),
+    'list': ros2param.verb.list.ListVerb(),
+    'load': ros2param.verb.load.LoadVerb(),
+    'set': ros2param.verb.set.SetVerb(),
 }
 
 extension = ros2.ros2_cmd.Ros2CommandExtension(COMMAND_EXTENSIONS)
-sys.exit(ros2cli.cli.main(argv=sys.argv[1:], extension=extension))
+sys.exit(ros2cli.cli.main(extension=extension))
