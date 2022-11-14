@@ -1,4 +1,5 @@
-# Copyright 2019-2022 Apex.AI, Inc., Inc., Milan Vukov, wayve.ai
+# Copyright 2019 Apex.AI, Inc.
+# Copyright 2022 wayve.ai
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +15,11 @@
 import time
 import unittest
 
+import chatter_interface.msg
 import launch
 import launch_ros.actions
 import launch_testing.actions
 import rclpy
-from chatter_interface.msg import Chatter
 
 
 def generate_test_description():
@@ -63,7 +64,8 @@ class TestTalkerListenerLink(unittest.TestCase):
         # Expect the talker to publish strings on '/topic'.
         msgs_rx = []
 
-        sub = self.node.create_subscription(Chatter, 'topic',
+        sub = self.node.create_subscription(chatter_interface.msg.Chatter,
+                                            'topic',
                                             lambda msg: msgs_rx.append(msg), 10)
         try:
             # Wait until the talker transmits two messages over the ROS topic.
