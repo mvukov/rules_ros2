@@ -2,10 +2,16 @@ load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
 load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
     "cpp_ros2_interface_library",
-    "ros2_interface_library",
     "py_ros2_interface_library",
+    "ros2_interface_library",
 )
+load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
 load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
+load(
+    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "expand_template",
+)
+load("@rules_python//python:defs.bzl", "py_library")
 
 ros2_interface_library(
     name = "chatter_interface",
@@ -54,4 +60,32 @@ ros2_test(
     deps = [
         ":py_chatter_interface",
     ],
+)
+
+expand_template(
+    name = "roudi_py",
+    out = "roudi.py",
+    data = ["@iceoryx//:iox_roudi"],
+    substitutions = {
+        "{roudi_path}": "$(rootpath @iceoryx//:iox_roudi)",
+    },
+    template = "roudi.py.tpl",
+)
+
+py_library(
+    name = "roudi",
+    srcs = [":roudi_py"],
+    data = ["@iceoryx//:iox_roudi"],
+)
+
+ros2_launch(
+    name = "zero_copy",
+    data = ["cyclonedds.xml"],
+    launch_file = "zero_copy.py",
+    nodes = [
+        ":listener",
+        ":talker",
+        "@iceoryx//:iox_roudi",
+    ],
+    deps = [":roudi"],
 )
