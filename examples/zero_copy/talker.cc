@@ -37,7 +37,7 @@ class MinimalPublisher : public rclcpp::Node {
       message.get().data_length = copy_size;
       message.get().timestamp =
           std::chrono::duration_cast<std::chrono::microseconds>(
-              std::chrono::system_clock::now().time_since_epoch())
+              std::chrono::steady_clock::now().time_since_epoch())
               .count();
       message.get().count = count_;
       RCLCPP_INFO(get_logger(), "Publishing: '%s'", str.c_str());

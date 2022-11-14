@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <iostream>
 #include <limits>
 #include <memory>
 
@@ -28,16 +27,16 @@ class MinimalSubscriber : public rclcpp::Node {
           static uint64_t prev_count{std::numeric_limits<uint64_t>::max()};
           auto current_timestamp =
               std::chrono::duration_cast<std::chrono::microseconds>(
-                  std::chrono::system_clock::now().time_since_epoch())
+                  std::chrono::steady_clock::now().time_since_epoch())
                   .count();
           std::string str{msg->data.begin(),
                           msg->data.begin() + msg->data_length};
-          RCLCPP_INFO(get_logger(), "I heard: '%s', delay %lu us", str.c_str(),
-                      current_timestamp - msg->timestamp);
+          RCLCPP_INFO(get_logger(), "Delay %lu us, I heard: '%s'",
+                      current_timestamp - msg->timestamp, str.c_str());
           if ((prev_count != std::numeric_limits<uint64_t>::max()) &&
               (msg->count != prev_count + 1)) {
-                throw std::runtime_error("Message skipped");
-              }
+            throw std::runtime_error("Message skipped");
+          }
           prev_count = msg->count;
         });
   }

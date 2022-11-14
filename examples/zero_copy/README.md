@@ -1,6 +1,14 @@
 # A chatter example demonstrating shared memory backend for zero copy transport
 
-ROS2 supports using shared memory to speed up transport of messages. First, run shared memory manager:
+ROS2 supports using shared memory to speed up transport of messages.
+
+Before building, make sure you have `libacl1-dev` package installed on your system:
+
+```sh
+sudo apt-get install libacl1-dev
+```
+
+To run the example, start by running the shared memory manager:
 
 ```sh
 bazel run --compilation_mode opt @iceoryx//:shared_memory_manager
