@@ -3,21 +3,21 @@
 ROS2 supports using shared memory to speed up transport of messages. First, run shared memory manager:
 
 ```sh
-bazel run @iceoryx//:shared_memory_manager
+bazel run --compilation_mode opt @iceoryx//:shared_memory_manager
 ```
 
 Then, for each node started, specify the CycloneDDS config file:
 
 ```sh
-export CYCLONEDDS_URI=file://<path to rules_ros2>/examples/zero_copy/configs/cyclonedds.xml
-bazel run //examples/chatter:talker
+export CYCLONEDDS_URI=file://<path to rules_ros2>/examples/zero_copy/cyclonedds.xml
+bazel run --compilation_mode opt //examples/chatter:talker
 ```
 
 In another terminal run
 
 ```sh
-bazel ruexport CYCLONEDDS_URI=file://<path to rules_ros2>/examples/zero_copy/configs/cyclonedds.xml
-bazel run //chatter:listener
+export CYCLONEDDS_URI=file://<path to rules_ros2>/examples/zero_copy/cyclonedds.xml
+bazel run --compilation_mode opt //chatter:listener
 ```
 
 You can see the delay for a 4 MB message is no different from a 4 bytes message.
