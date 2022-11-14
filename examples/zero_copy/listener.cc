@@ -1,4 +1,5 @@
-// Copyright 2016-2022 Open Source Robotics Foundation, Inc., Milan Vukov, wayve.ai
+// Copyright 2016-2022 Open Source Robotics Foundation, Inc., Milan Vukov,
+// wayve.ai
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +14,7 @@
 // limitations under the License.
 
 #include <iostream>
+#include <limits>
 #include <memory>
 
 #include "chatter_interface/msg/chatter.hpp"
@@ -23,6 +25,7 @@ class MinimalSubscriber : public rclcpp::Node {
   MinimalSubscriber() : Node("minimal_subscriber") {
     subscription_ = create_subscription<chatter_interface::msg::Chatter>(
         "topic", 10, [this](chatter_interface::msg::Chatter::SharedPtr msg) {
+          static uint64_t prev_count{std::numeric_limits<uint64_t>::max()};
           auto current_timestamp =
               std::chrono::duration_cast<std::chrono::microseconds>(
                   std::chrono::system_clock::now().time_since_epoch())
@@ -31,6 +34,11 @@ class MinimalSubscriber : public rclcpp::Node {
                           msg->data.begin() + msg->data_length};
           RCLCPP_INFO(get_logger(), "I heard: '%s', delay %lu us", str.c_str(),
                       current_timestamp - msg->timestamp);
+          if ((prev_count != std::numeric_limits<uint64_t>::max()) &&
+              (msg->count != prev_count + 1)) {
+                throw std::runtime_error("Message skipped");
+              }
+          prev_count = msg->count;
         });
   }
 
