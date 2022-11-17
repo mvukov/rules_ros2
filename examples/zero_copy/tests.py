@@ -12,69 +12,48 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import time
 import unittest
 
-import chatter_interface.msg
-import launch
+import launch.actions
 import launch_ros.actions
 import launch_testing.actions
-import rclpy
+import launch_testing.asserts
+import zero_copy.roudi
 
 
 def generate_test_description():
-    talker_node = launch_ros.actions.Node(executable='zero_copy/talker',
-                                          parameters=[
-                                              {
-                                                  'callback_period_ms': 10
-                                              },
-                                          ])
+    talker_tests_node = launch_ros.actions.Node(
+        executable='zero_copy/talker_tests',
+        output='screen',
+    )
 
-    return (
-        launch.LaunchDescription([
-            talker_node,
-            # Start tests right away - no need to wait for anything.
-            launch_testing.actions.ReadyToTest(),
-        ]),
-        {
-            'talker': talker_node,
-        })
+    return (launch.LaunchDescription([
+        launch.actions.ExecuteProcess(
+            name='iceoryx_roudi',
+            cmd=[zero_copy.roudi.ROUDI_PATH],
+        ),
+        launch.actions.SetEnvironmentVariable(name='CYCLONEDDS_URI',
+                                              value='zero_copy/cyclonedds.xml'),
+        launch_ros.actions.Node(executable='zero_copy/talker',
+                                parameters=[
+                                    {
+                                        'callback_period_ms': 10
+                                    },
+                                ],
+                                arguments=['--ros-args', '--log-level',
+                                           'WARN']),
+        talker_tests_node,
+        launch_testing.actions.ReadyToTest(),
+    ]), {
+        'talker_tests': talker_tests_node,
+    })
 
 
-class TestTalkerListenerLink(unittest.TestCase):
+class TestTerminatingProcessStops(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        # Initialize the ROS context for the test node
-        rclpy.init()
-
-    @classmethod
-    def tearDownClass(cls):
-        # Shutdown the ROS context
-        rclpy.shutdown()
-
-    def setUp(self):
-        # Create a ROS node for tests
-        self.node = rclpy.create_node('test_talker_listener_link')
-
-    def tearDown(self):
-        self.node.destroy_node()
-
-    def test_talker_transmits(self, launch_service, talker, proc_output):
-        # Expect the talker to publish strings on '/topic'.
-        msgs_rx = []
-
-        sub = self.node.create_subscription(chatter_interface.msg.Chatter,
-                                            'topic',
-                                            lambda msg: msgs_rx.append(msg), 10)
-        try:
-            # Wait until the talker transmits two messages over the ROS topic.
-            end_time = time.time() + 10
-            while time.time() < end_time:
-                rclpy.spin_once(self.node, timeout_sec=0.1)
-                if len(msgs_rx) > 2:
-                    break
-
-            self.assertGreater(len(msgs_rx), 2)
-        finally:
-            self.node.destroy_subscription(sub)
+    def test_proc_terminates(self, proc_info, talker_tests):
+        proc_info.assertWaitForShutdown(process=talker_tests, timeout=5)
+        launch_testing.asserts.assertExitCodes(
+            proc_info,
+            allowable_exit_codes=[launch_testing.asserts.EXIT_OK],
+            process=talker_tests)

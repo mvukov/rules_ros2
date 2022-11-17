@@ -50,18 +50,6 @@ ros2_cpp_binary(
     ],
 )
 
-ros2_test(
-    name = "tests",
-    size = "small",
-    launch_file = "tests.py",
-    nodes = [
-        ":talker",
-    ],
-    deps = [
-        ":py_chatter_interface",
-    ],
-)
-
 expand_template(
     name = "roudi_py",
     out = "roudi.py",
@@ -88,4 +76,31 @@ ros2_launch(
         "@iceoryx//:iox_roudi",
     ],
     deps = [":roudi"],
+)
+
+ros2_cpp_binary(
+    name = "talker_tests",
+    testonly = True,
+    srcs = ["talker_tests.cc"],
+    deps = [
+        ":cpp_chatter_interface",
+        "@com_google_googletest//:gtest",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_test(
+    name = "tests",
+    size = "small",
+    data = ["cyclonedds.xml"],
+    launch_file = "tests.py",
+    nodes = [
+        ":talker",
+        ":talker_tests",
+        "@iceoryx//:iox_roudi",
+    ],
+    deps = [
+        ":py_chatter_interface",
+        ":roudi",
+    ],
 )

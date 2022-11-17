@@ -35,7 +35,7 @@ class MinimalSubscriber : public rclcpp::Node {
                       current_timestamp - msg->timestamp, str.c_str());
           if ((prev_count != std::numeric_limits<uint64_t>::max()) &&
               (msg->count != prev_count + 1)) {
-            throw std::runtime_error("Message skipped");
+            RCLCPP_WARN(get_logger(), "Some messages are missed!");
           }
           prev_count = msg->count;
         });

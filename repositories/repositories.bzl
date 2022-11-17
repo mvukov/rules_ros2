@@ -63,11 +63,20 @@ def ros2_repositories():
         urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.9.1.tar.gz"],
     )
 
-    http_archive(
+    maybe(
+        http_archive,
         name = "rules_foreign_cc",
         sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
         strip_prefix = "rules_foreign_cc-0.9.0",
         url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
+    )
+
+    maybe(
+        http_archive,
+        name = "com_google_googletest",
+        sha256 = "81964fe578e9bd7c94dfdb09c8e4d6e6759e19967e397dbea48d1c10e45d0df2",
+        strip_prefix = "googletest-release-1.12.1",
+        url = "https://github.com/google/googletest/archive/refs/tags/release-1.12.1.tar.gz",
     )
 
     maybe(
