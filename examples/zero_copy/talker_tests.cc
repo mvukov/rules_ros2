@@ -16,10 +16,13 @@
 #include <memory>
 
 #include "chatter_interface/msg/chatter.hpp"
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "rclcpp/rclcpp.hpp"
 
 namespace zero_copy::testing {
+
+using ::testing::Ge;
 
 class TalkerTester : public rclcpp::Node {
  public:
@@ -49,6 +52,7 @@ TEST(TestTalker, WhenTalkerPublishes_ExpectAtLeastTwoMsgsOnTopic) {
       break;
     }
   }
+  EXPECT_THAT(node->msg_count(), Ge(2));
 }
 
 }  // namespace zero_copy::testing

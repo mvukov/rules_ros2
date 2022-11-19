@@ -1,5 +1,6 @@
 # Copyright 2019 Apex.AI, Inc.
 # Copyright 2022 wayve.ai
+# Copyright 2022 Milan Vukov
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -47,9 +48,9 @@ def generate_test_description():
     })
 
 
-class TestTerminatingProcessStops(unittest.TestCase):
+class TestTalker(unittest.TestCase):
 
-    def test_proc_terminates(self, proc_info, talker_tests):
+    def test_talker_tests(self, proc_info, talker_tests):
         proc_info.assertWaitForShutdown(process=talker_tests, timeout=5)
         launch_testing.asserts.assertExitCodes(
             proc_info,
