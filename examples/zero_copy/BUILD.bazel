@@ -27,11 +27,6 @@ cpp_ros2_interface_library(
     deps = [":chatter_interface"],
 )
 
-py_ros2_interface_library(
-    name = "py_chatter_interface",
-    deps = [":chatter_interface"],
-)
-
 ros2_cpp_binary(
     name = "talker",
     srcs = ["talker.cc"],
@@ -101,8 +96,5 @@ ros2_test(
     ],
     # TODO(mvukov) Set up a CI job with SHM backend enabled.
     tags = ["manual"],
-    deps = [
-        ":py_chatter_interface",
-        ":roudi",
-    ],
+    deps = [":roudi"],
 )
