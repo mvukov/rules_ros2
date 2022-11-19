@@ -7,10 +7,11 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+# Depends on libacl. On Ubuntu install as `sudo apt-get install libacl1-dev`.
 cmake(
     name = "iceoryx",
     build_args = [
-        "--",  # <- pass options to the native tool
+        "--",  # <- Pass options to the native tool.
         "-j4",
     ],
     cache_entries = {

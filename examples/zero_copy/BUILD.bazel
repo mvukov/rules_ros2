@@ -99,6 +99,8 @@ ros2_test(
         ":talker_tests",
         "@iceoryx//:iox_roudi",
     ],
+    # TODO(mvukov) Set up a CI job with SHM backend enabled.
+    tags = ["manual"],
     deps = [
         ":py_chatter_interface",
         ":roudi",

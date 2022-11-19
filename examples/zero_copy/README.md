@@ -1,37 +1,27 @@
-# A chatter example demonstrating shared memory backend for zero copy transport
+# A pub/sub example demonstrating shared memory backend for zero-copy transport
 
 ROS2 supports using shared memory to speed up transport of messages.
 
-Before building, make sure you have `libacl1-dev` package installed on your system:
+Before building, make sure you have `libacl1-dev` package installed on your system.
+You can install this library (licensed under GPL/LPGL) on Ubuntu as
 
 ```sh
 sudo apt-get install libacl1-dev
 ```
 
-To run the example, start by running the shared memory manager:
+To run the example run
 
 ```sh
-bazel run --compilation_mode opt @iceoryx//:shared_memory_manager
+bazel run //zero_copy --@cyclonedds//:enable_shm=True
 ```
 
-Then, for each node started, specify the CycloneDDS config file:
+By tweaking the size of the data field in Chatter.msg file, you can observe that
+the delays for a e.g. a 4 MiB message and a 4 B message are similar.
+
+You can run the corresponding simple test target with
 
 ```sh
-export CYCLONEDDS_URI=file://<path to rules_ros2>/examples/zero_copy/cyclonedds.xml
-bazel run --compilation_mode opt //examples/chatter:talker
+bazel test //zero_copy:tests --@cyclonedds//:enable_shm=True  # To see the logs run with `--test_output=all`.
 ```
 
-In another terminal run
-
-```sh
-export CYCLONEDDS_URI=file://<path to rules_ros2>/examples/zero_copy/cyclonedds.xml
-bazel run --compilation_mode opt //chatter:listener
-```
-
-You can see the delay for a 4 MB message is no different from a 4 bytes message.
-
-You can run tests with
-
-```sh
-bazel test //chatter:tests  # To see the logs run with `--test_output=all`.
-```
+Tip: add line `build: --@cyclonedds//:enable_shm=True` to `.bazelrc`.

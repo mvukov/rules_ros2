@@ -1,4 +1,3 @@
-# Copyright 2019 Apex.AI, Inc.
 # Copyright 2022 wayve.ai
 # Copyright 2022 Milan Vukov
 #

@@ -1,4 +1,4 @@
-# Copyright 2018 Open Source Robotics Foundation, Inc.
+# Copyright 2022 Milan Vukov
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,12 +14,13 @@
 """Launch a talker and a listener."""
 import launch.actions
 import launch_ros.actions
-import zero_copy.roudi
+import zero_copy.roudi  # This is an auto-generated file, see BUILD.bazel file.
 
 
 def generate_launch_description():
     """Launch a talker and a listener."""
     return launch.LaunchDescription([
+        # roudi is a shared memory manager that also has to be started.
         launch.actions.ExecuteProcess(
             name='iceoryx_roudi',
             cmd=[zero_copy.roudi.ROUDI_PATH],
