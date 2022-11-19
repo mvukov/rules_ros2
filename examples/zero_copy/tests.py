@@ -35,11 +35,9 @@ def generate_test_description():
         launch.actions.SetEnvironmentVariable(name='CYCLONEDDS_URI',
                                               value='zero_copy/cyclonedds.xml'),
         launch_ros.actions.Node(executable='zero_copy/talker',
-                                parameters=[
-                                    {
-                                        'callback_period_ms': 10
-                                    },
-                                ],
+                                parameters=[{
+                                    'callback_period_ms': 10
+                                }],
                                 arguments=['--ros-args', '--log-level',
                                            'WARN']),
         talker_tests_node,

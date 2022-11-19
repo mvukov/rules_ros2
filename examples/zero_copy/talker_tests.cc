@@ -31,7 +31,7 @@ class TalkerTester : public rclcpp::Node {
         });
   }
 
-  auto msg_count() { return msg_count_; }
+  auto msg_count() const { return msg_count_; }
 
  private:
   rclcpp::Subscription<chatter_interface::msg::Chatter>::SharedPtr
