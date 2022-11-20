@@ -1,0 +1,15 @@
+""" Builds ament_index.
+"""
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "ament_index_cpp",
+    srcs = glob(["ament_index_cpp/src/*.cpp"]),
+    hdrs = glob([
+        "ament_index_cpp/include/ament_index_cpp/*.hpp",
+        "ament_index_cpp/include/ament_index_cpp/*.h",
+    ]),
+    includes = ["ament_index_cpp/include"],
+    visibility = ["//visibility:public"],
+)

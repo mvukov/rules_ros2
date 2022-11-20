@@ -3,6 +3,12 @@ repositories:
   ament_cmake_ros:
     name: ros2_ament_cmake_ros
     build_file: "@com_github_mvukov_rules_ros2//repositories:ament_cmake_ros.BUILD.bazel"
+  ament_index:
+    name: ros2_ament_index
+    build_file: "@com_github_mvukov_rules_ros2//repositories:ament_index.BUILD.bazel"
+  class_loader:
+    name: ros2_class_loader
+    build_file: "@com_github_mvukov_rules_ros2//repositories:class_loader.BUILD.bazel"
   common_interfaces:
     name: ros2_common_interfaces
     build_file: "@com_github_mvukov_rules_ros2//repositories:common_interfaces.BUILD.bazel"
@@ -21,6 +27,9 @@ repositories:
   osrf_pycommon:
     name: osrf_pycommon
     build_file: "@com_github_mvukov_rules_ros2//repositories:osrf_pycommon.BUILD.bazel"
+  pluginlib:
+    name: ros2_pluginlib
+    build_file: "@com_github_mvukov_rules_ros2//repositories:pluginlib.BUILD.bazel"
   rcl:
     name: ros2_rcl
     build_file: "@com_github_mvukov_rules_ros2//repositories:rcl.BUILD.bazel"
