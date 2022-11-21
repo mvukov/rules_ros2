@@ -1,7 +1,20 @@
 """ Builds CycloneDDS.
 """
 
+load("@bazel_skylib//lib:dicts.bzl", "dicts")
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+
+bool_flag(
+    name = "enable_shm",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "enable_shm_on",
+    flag_values = {":enable_shm": "True"},
+    visibility = ["//visibility:public"],
+)
 
 filegroup(
     name = "all_srcs",
@@ -9,40 +22,59 @@ filegroup(
     srcs = glob(["**"]),
 )
 
+cache_entries = {
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
+    "BUILD_SHARED_LIBS": "OFF",
+    # CycloneDDS specific options.
+    "APPEND_PROJECT_NAME_TO_INCLUDEDIR": "OFF",
+    "BUILD_DDSPERF": "OFF",
+    "BUILD_DOCS": "OFF",
+    "BUILD_EXAMPLES": "OFF",
+    "BUILD_IDLC": "OFF",
+    "BUILD_IDLC_TESTING": "OFF",
+    "BUILD_TESTING": "OFF",
+    "ENABLE_DEADLINE_MISSED": "ON",
+    "ENABLE_LIFESPAN": "ON",
+    "ENABLE_NETWORK_PARTITIONS": "ON",
+    "ENABLE_SECURITY": "OFF",
+    "ENABLE_SOURCE_SPECIFIC_MULTICAST": "ON",
+    "ENABLE_SSL": "OFF",  # TODO(mvukov) Here we could use openssl/boringssl.
+    "ENABLE_TOPIC_DISCOVERY": "OFF",
+    "ENABLE_TYPE_DISCOVERY": "OFF",
+    "WERROR": "OFF",
+    "WITH_FREERTOS": "OFF",
+    "WITH_LWIP": "OFF",
+}
+
 cmake(
     name = "cyclonedds",
     build_args = [
         "--",
         "-j4",
     ],
-    cache_entries = {
-        "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
-        "BUILD_SHARED_LIBS": "OFF",
-        # CycloneDDS specific options.
-        "APPEND_PROJECT_NAME_TO_INCLUDEDIR": "OFF",
-        "BUILD_DDSPERF": "OFF",
-        "BUILD_DOCS": "OFF",
-        "BUILD_EXAMPLES": "OFF",
-        "BUILD_IDLC": "OFF",
-        "BUILD_IDLC_TESTING": "OFF",
-        "BUILD_TESTING": "OFF",
-        "ENABLE_DEADLINE_MISSED": "ON",
-        "ENABLE_LIFESPAN": "ON",
-        "ENABLE_NETWORK_PARTITIONS": "ON",
-        "ENABLE_SECURITY": "OFF",
-        "ENABLE_SHM": "OFF",
-        "ENABLE_SOURCE_SPECIFIC_MULTICAST": "ON",
-        "ENABLE_SSL": "OFF",  # TODO(mvukov) Here we could use openssl/boringssl.
-        "ENABLE_TOPIC_DISCOVERY": "OFF",
-        "ENABLE_TYPE_DISCOVERY": "OFF",
-        "WERROR": "OFF",
-        "WITH_FREERTOS": "OFF",
-        "WITH_LWIP": "OFF",
-    },
+    cache_entries = select({
+        ":enable_shm_on": dicts.add(
+            cache_entries,
+            {
+                "ENABLE_SHM": "ON",
+                "CMAKE_PREFIX_PATH": "$EXT_BUILD_DEPS/iceoryx",
+            },
+        ),
+        "//conditions:default": dicts.add(
+            cache_entries,
+            {
+                "ENABLE_SHM": "OFF",
+            },
+        ),
+    }),
     generate_args = ["-GNinja"],
     lib_source = ":all_srcs",
     linkopts = ["-lpthread"],
     out_static_libs = ["libddsc.a"],
     visibility = ["//visibility:public"],
+    deps = select({
+        ":enable_shm_on": ["@iceoryx"],
+        "//conditions:default": [],
+    }),
 )
