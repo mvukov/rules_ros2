@@ -8,6 +8,7 @@ cc_library(
     srcs = glob(["src/*.cpp"]),
     hdrs = glob(["include/class_loader/*.hpp"]),
     includes = ["include"],
+    linkopts = ["-ldl"],
     visibility = ["//visibility:public"],
     deps = [
         "@console_bridge",
