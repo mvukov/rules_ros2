@@ -15,6 +15,10 @@ repositories:
   cyclonedds:
     name: cyclonedds
     build_file: "@com_github_mvukov_rules_ros2//repositories:cyclonedds.BUILD.bazel"
+  iceoryx:
+    name: iceoryx
+    strip_prefix: iceoryx-2.0.2
+    build_file: "@com_github_mvukov_rules_ros2//repositories:iceoryx.BUILD.bazel"
   launch:
     name: ros2_launch
     build_file: "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel"
