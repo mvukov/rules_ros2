@@ -11,6 +11,7 @@ load(
     "py_ros2_interface_library",
     "ros2_interface_library",
 )
+load("@rules_python//python:defs.bzl", "py_library")
 
 ros2_interface_library(
     name = "std_msgs",
