@@ -1,4 +1,5 @@
 load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
+load("//ros2:plugin.bzl", "ros2_ament_setup", "ros2_plugin")
 
 cc_library(
     name = "polygon_base",
@@ -6,12 +7,21 @@ cc_library(
 )
 
 cc_library(
-    name = "polygon_plugins",
+    name = "_polygon_plugins",
     srcs = ["polygon_plugins.cc"],
     deps = [
         ":polygon_base",
         "@ros2_pluginlib//:pluginlib",
     ],
+)
+
+ros2_plugin(
+    name = "polygon_plugins",
+    dep = ":_polygon_plugins",
+    types_to_base_class_types = {
+        "polygon_plugins::Square": "polygon_base::RegularPolygon",
+        "polygon_plugins::Triangle": "polygon_base::RegularPolygon",
+    },
 )
 
 # <library path="polygon_plugins">
@@ -26,6 +36,7 @@ cc_library(
 cc_test(
     name = "tests",
     srcs = ["tests.cc"],
+    data = [":polygon_plugins"],
     env = {
         "AMENT_PREFIX_PATH": "/tmp",
     },
@@ -33,6 +44,12 @@ cc_test(
         ":polygon_base",
         "@ros2_pluginlib//:pluginlib",
     ],
+)
+
+ros2_ament_setup(
+    name = "ament_setup",
+    testonly = True,
+    deps = [":tests"],
 )
 
 # Let's say the prefix path is /tmp.

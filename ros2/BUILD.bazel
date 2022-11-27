@@ -8,6 +8,7 @@ exports_files([
     "interfaces.bzl",
     "launch.bzl",
     "launch.py.tpl",
+    "plugin.bzl",
     "ros2_topic.py",
     "test.bzl",
     "test.py.tpl",
