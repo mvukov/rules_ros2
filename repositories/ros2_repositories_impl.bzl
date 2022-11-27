@@ -12,22 +12,13 @@ def ros2_repositories_impl():
         url = "https://github.com/ros2/ament_cmake_ros/archive/refs/tags/0.10.0.tar.gz",
     )
 
-    # maybe(
-    #     http_archive,
-    #     name = "ros2_ament_index",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:ament_index.BUILD.bazel",
-    #     sha256 = "e66896e255653508cb2bdecd7789f8dd5a03d7d2b4a1dd37445821a5679c447c",
-    #     strip_prefix = "ament_index-1.4.0",
-    #     url = "https://github.com/ament/ament_index/archive/refs/tags/1.4.0.tar.gz",
-    # )
-
-    native.new_local_repository(
+    maybe(
+        http_archive,
         name = "ros2_ament_index",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ament_index.BUILD.bazel",
-        path = "/home/madwolf/dev/ros2_humble/src/ament/ament_index",
-        # sha256 = "e66896e255653508cb2bdecd7789f8dd5a03d7d2b4a1dd37445821a5679c447c",
-        # strip_prefix = "ament_index-1.4.0",
-        # url = "https://github.com/ament/ament_index/archive/refs/tags/1.4.0.tar.gz",
+        sha256 = "e66896e255653508cb2bdecd7789f8dd5a03d7d2b4a1dd37445821a5679c447c",
+        strip_prefix = "ament_index-1.4.0",
+        url = "https://github.com/ament/ament_index/archive/refs/tags/1.4.0.tar.gz",
     )
 
     maybe(
@@ -102,22 +93,13 @@ def ros2_repositories_impl():
         url = "https://github.com/osrf/osrf_pycommon/archive/refs/tags/2.1.0.tar.gz",
     )
 
-    # maybe(
-    #     http_archive,
-    #     name = "ros2_pluginlib",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:pluginlib.BUILD.bazel",
-    #     sha256 = "74188b886f9bbe7e857d21f3bb50b480e7c0e5adab97c10563dc17013600198b",
-    #     strip_prefix = "pluginlib-5.1.0",
-    #     url = "https://github.com/ros/pluginlib/archive/refs/tags/5.1.0.tar.gz",
-    # )
-
-    native.new_local_repository(
+    maybe(
+        http_archive,
         name = "ros2_pluginlib",
         build_file = "@com_github_mvukov_rules_ros2//repositories:pluginlib.BUILD.bazel",
-        path = "/home/madwolf/dev/ros2_humble/src/ros/pluginlib",
-        # sha256 = "74188b886f9bbe7e857d21f3bb50b480e7c0e5adab97c10563dc17013600198b",
-        # strip_prefix = "pluginlib-5.1.0",
-        # url = "https://github.com/ros/pluginlib/archive/refs/tags/5.1.0.tar.gz",
+        sha256 = "74188b886f9bbe7e857d21f3bb50b480e7c0e5adab97c10563dc17013600198b",
+        strip_prefix = "pluginlib-5.1.0",
+        url = "https://github.com/ros/pluginlib/archive/refs/tags/5.1.0.tar.gz",
     )
 
     maybe(

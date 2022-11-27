@@ -12,13 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// #include "gtest/gtest.h"
+#include "console_bridge/console.h"
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 #include "pluginlib/class_loader.hpp"
+#include "rcutils/logging.h"
 
 #include "ros2/test/pluginlib/regular_polygon.h"
 
-// TEST(TestPluginlibClassLoader, Foo) {
-int main(int, char**) {
+using ::testing::DoubleNear;
+using ::testing::Eq;
+
+TEST(TestPluginlibClassLoader,
+     WhenPluginsAvailable_EnsurePluginsCanBeLoadedAndWork) {
+  rcutils_logging_set_default_logger_level(RCUTILS_LOG_SEVERITY_DEBUG);
+  console_bridge::setLogLevel(console_bridge::CONSOLE_BRIDGE_LOG_DEBUG);
+
   pluginlib::ClassLoader<polygon_base::RegularPolygon> poly_loader(
       "polygon_base", "polygon_base::RegularPolygon");
 
@@ -30,6 +39,6 @@ int main(int, char**) {
       poly_loader.createSharedInstance("polygon_plugins::Square");
   square->initialize(10.0);
 
-  // printf("Triangle area: %.2f\n", triangle->area());
-  // printf("Square area: %.2f\n", square->area());
+  EXPECT_THAT(triangle->area(), DoubleNear(43.3013, 1e-4));
+  EXPECT_THAT(square->area(), Eq(100.0));
 }

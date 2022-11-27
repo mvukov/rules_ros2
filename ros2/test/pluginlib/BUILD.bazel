@@ -13,65 +13,34 @@ cc_library(
         ":polygon_base",
         "@ros2_pluginlib//:pluginlib",
     ],
+    alwayslink = True,
 )
 
 ros2_plugin(
     name = "polygon_plugins",
-    dep = ":_polygon_plugins",
-    types_to_base_class_types = {
-        "polygon_plugins::Square": "polygon_base::RegularPolygon",
-        "polygon_plugins::Triangle": "polygon_base::RegularPolygon",
-    },
-)
-
-# <library path="polygon_plugins">
-#   <class type="polygon_plugins::Square" base_class_type="polygon_base::RegularPolygon">
-#     <description>This is a square plugin.</description>
-#   </class>
-#   <class type="polygon_plugins::Triangle" base_class_type="polygon_base::RegularPolygon">
-#     <description>This is a triangle plugin.</description>
-#   </class>
-# </library>
-
-cc_test(
-    name = "tests",
-    srcs = ["tests.cc"],
-    data = [":polygon_plugins"],
-    env = {
-        "AMENT_PREFIX_PATH": "/tmp",
-    },
-    deps = [
-        ":polygon_base",
-        "@ros2_pluginlib//:pluginlib",
+    base_class_type = "polygon_base::RegularPolygon",
+    class_types = [
+        "polygon_plugins::Square",
+        "polygon_plugins::Triangle",
     ],
+    dep = ":_polygon_plugins",
 )
 
 ros2_ament_setup(
     name = "ament_setup",
-    testonly = True,
-    deps = [":tests"],
+    deps = [":polygon_plugins"],
 )
 
-# Let's say the prefix path is /tmp.
-# In there we need the following:
-# share/ament_index/resource_index/packages/<plugin_base>
-# share/ament_index/resource_index/<plugin_base>__pluginlib__plugin
-# share/ament_index/resource_index/<plugin_base>__pluginlib__plugin/manifest must have paths to plugins.xml paths
-# e.g. share/ament_index/resource_index/packages/polygon_base/plugins.xml:
-# the path must be relative to the prefix path. The contents can look like:
-#
-# <library path="polygon_plugins">
-#   <class type="polygon_plugins::Square" base_class_type="polygon_base::RegularPolygon">
-#     <description>This is a square plugin.</description>
-#   </class>
-#   <class type="polygon_plugins::Triangle" base_class_type="polygon_base::RegularPolygon">
-#     <description>This is a triangle plugin.</description>
-#   </class>
-# </library>
-# Next to plugins.xml we need to have package.xml, with
-# <?xml version="1.0"?>
-# <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
-# <package format="2">
-#   <name>polygon_plugins</name>
-# </package>
-# So, we'll need the lib now: /tmp/lib/libpolygon_plugins.so or /tmp/bin/libpolygon_plugins.so
+cc_test(
+    name = "tests",
+    srcs = ["tests.cc"],
+    data = [":ament_setup"],
+    env = {
+        "AMENT_PREFIX_PATH": package_name() + "/ament_setup",
+    },
+    deps = [
+        ":polygon_base",
+        "@com_google_googletest//:gtest_main",
+        "@ros2_pluginlib//:pluginlib",
+    ],
+)
