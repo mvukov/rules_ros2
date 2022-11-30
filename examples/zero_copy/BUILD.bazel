@@ -1,0 +1,100 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "cpp_ros2_interface_library",
+    "py_ros2_interface_library",
+    "ros2_interface_library",
+)
+load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
+load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
+load(
+    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "expand_template",
+)
+load("@rules_python//python:defs.bzl", "py_library")
+
+ros2_interface_library(
+    name = "chatter_interface",
+    srcs = ["Chatter.msg"],
+    deps = [
+        "@ros2_common_interfaces//:std_msgs",
+        "@ros2_rcl_interfaces//:builtin_interfaces",
+    ],
+)
+
+cpp_ros2_interface_library(
+    name = "cpp_chatter_interface",
+    deps = [":chatter_interface"],
+)
+
+ros2_cpp_binary(
+    name = "talker",
+    srcs = ["talker.cc"],
+    deps = [
+        ":cpp_chatter_interface",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "listener",
+    srcs = ["listener.cc"],
+    deps = [
+        ":cpp_chatter_interface",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+expand_template(
+    name = "roudi_py",
+    out = "roudi.py",
+    data = ["@iceoryx//:iox_roudi"],
+    substitutions = {
+        "{roudi_path}": "$(rootpath @iceoryx//:iox_roudi)",
+    },
+    template = "roudi.py.tpl",
+)
+
+py_library(
+    name = "roudi",
+    srcs = [":roudi_py"],
+    data = ["@iceoryx//:iox_roudi"],
+)
+
+ros2_launch(
+    name = "zero_copy",
+    data = ["cyclonedds.xml"],
+    launch_file = "zero_copy.py",
+    nodes = [
+        ":listener",
+        ":talker",
+        "@iceoryx//:iox_roudi",
+    ],
+    deps = [":roudi"],
+)
+
+ros2_cpp_binary(
+    name = "talker_tests",
+    testonly = True,
+    srcs = ["talker_tests.cc"],
+    deps = [
+        ":cpp_chatter_interface",
+        "@com_google_googletest//:gtest",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_test(
+    name = "tests",
+    size = "small",
+    data = ["cyclonedds.xml"],
+    launch_file = "tests.py",
+    nodes = [
+        ":talker",
+        ":talker_tests",
+        "@iceoryx//:iox_roudi",
+    ],
+    # TODO(mvukov) Set up a CI job with SHM backend enabled.
+    tags = ["manual"],
+    deps = [":roudi"],
+)

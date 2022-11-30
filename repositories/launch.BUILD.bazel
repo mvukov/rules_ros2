@@ -26,6 +26,7 @@ py_library(
         ":launch",
         "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
         "@osrf_pycommon",
+        requirement("pytest"),
     ],
 )
 

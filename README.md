@@ -22,6 +22,7 @@ Available features:
 - Defining ROS2 deployments with `ros2_launch` Bazel macro.
 - Defining ROS2 tests with `ros2_test` Bazel macro.
 - Only CycloneDDS middleware can be used at the moment.
+  - Zero copy transport via shared memory backend ([iceoryx](https://github.com/eclipse-iceoryx/iceoryx)) for CycloneDDS.
 - Utilities:
   - `ros2_param` for handling parameters
   - `ros2_topic` for handling topics

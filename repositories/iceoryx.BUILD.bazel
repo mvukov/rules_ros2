@@ -1,0 +1,54 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+load("@rules_foreign_cc//foreign_cc:cmake.bzl", "cmake")
+
+filegroup(
+    name = "all_srcs",
+    srcs = glob(["**"]),
+    visibility = ["//visibility:public"],
+)
+
+# Depends on libacl. On Ubuntu install as `sudo apt-get install libacl1-dev`.
+cmake(
+    name = "iceoryx",
+    build_args = [
+        "--",  # <- Pass options to the native tool.
+        "-j4",
+    ],
+    cache_entries = {
+        "BUILD_SHARED_LIBS": "OFF",
+        "CCACHE": "OFF",
+        "CMAKE_BUILD_TYPE": "Release",
+    },
+    generate_args = ["-GNinja"],
+    lib_source = ":all_srcs",
+    linkopts = [
+        "-lacl",
+        "-latomic",
+        "-lpthread",
+        "-lrt",
+    ],
+    out_binaries = ["iox-roudi"],
+    out_data_dirs = ["lib/cmake"],
+    out_include_dir = "include/iceoryx/v2.0.2/",
+    out_static_libs = [
+        # The order of the libs is important for linking to work out.
+        "libiceoryx_binding_c.a",
+        "libiceoryx_posh_config.a",
+        "libiceoryx_posh_roudi.a",
+        "libiceoryx_posh.a",
+        "libiceoryx_posh_gateway.a",
+        "libiceoryx_hoofs.a",
+        "libiceoryx_platform.a",
+    ],
+    # TODO(mvukov) Provide toml library instead of allowing network access?
+    tags = ["requires-network"],
+    visibility = ["//visibility:public"],
+    working_directory = "iceoryx_meta",
+)
+
+filegroup(
+    name = "iox_roudi",
+    srcs = [":iceoryx"],
+    output_group = "iox-roudi",
+    visibility = ["//visibility:public"],
+)

@@ -4,5 +4,6 @@ lark-parser
 netifaces
 numpy
 packaging
+pytest
 pyyaml
 types-pkg-resources
