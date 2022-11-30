@@ -28,6 +28,7 @@ ros2_plugin(
 
 ros2_ament_setup(
     name = "ament_setup",
+    package_name = package_name(),
     deps = [":polygon_plugins"],
 )
 

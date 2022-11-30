@@ -4,6 +4,7 @@
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 
 exports_files([
+    "ament_setup.py.tpl",
     "cc_defs.bzl",
     "interfaces.bzl",
     "launch.bzl",

@@ -14,6 +14,7 @@
 """ ROS2 plugin definitions.
 """
 
+load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 Ros2PluginInfo = provider(
@@ -40,7 +41,7 @@ def _ros2_plugin_impl(ctx):
         feature_configuration = feature_configuration,
         cc_toolchain = cc_toolchain,
         linking_contexts = [cc_info.linking_context],
-        name = ctx.attr.name + "__plugin__",
+        name = ctx.attr.name + "/plugin",
         output_type = "dynamic_library",
     )
     dynamic_library = linking_outputs.library_to_link.resolved_symlink_dynamic_library
@@ -135,7 +136,7 @@ ros2_plugin_collector_aspect = aspect(
     provides = [Ros2PluginCollectorAspectInfo],
 )
 
-PACKAGE_XML_TEMPLATE = """\
+_PACKAGE_XML_TEMPLATE = """\
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
@@ -143,43 +144,60 @@ PACKAGE_XML_TEMPLATE = """\
 </package>
 """
 
+_RESOURCE_INDEX_PATH = "share/ament_index/resource_index"
+_PACKAGES_RELATIVE_PATH = paths.join(_RESOURCE_INDEX_PATH, "packages")
+_PACKAGE_XML = "package.xml"
+_PLUGINS_XML = "plugins.xml"
+
 def write_package_xml(ctx, prefix_path, package_name):
-    package_xml = ctx.actions.declare_file(prefix_path + "/share/ament_index/resource_index/packages/" + package_name + "/package.xml")
-    ctx.actions.write(package_xml, PACKAGE_XML_TEMPLATE.format(package_name = package_name))
+    package_xml = ctx.actions.declare_file(
+        paths.join(prefix_path, _PACKAGES_RELATIVE_PATH, package_name, _PACKAGE_XML),
+    )
+    ctx.actions.write(package_xml, _PACKAGE_XML_TEMPLATE.format(package_name = package_name))
     return package_xml
 
 def write_plugin_manifest(ctx, prefix_path, base_package, plugin_package):
-    manifest = ctx.actions.declare_file(prefix_path +
-                                        "/share/ament_index/resource_index/" + base_package + "__pluginlib__plugin/" + plugin_package + "_manifest")
-    ctx.actions.write(manifest, "share/ament_index/resource_index/packages/" + plugin_package + "/plugins.xml")
+    manifest = ctx.actions.declare_file(
+        paths.join(
+            prefix_path,
+            _RESOURCE_INDEX_PATH,
+            base_package + "__pluginlib__plugin",
+            plugin_package + "_manifest",
+        ),
+    )
+    ctx.actions.write(manifest, paths.join(_PACKAGES_RELATIVE_PATH, plugin_package, _PLUGINS_XML))
     return manifest
 
-PLUGINS_XML_TEMPLATE = """\
+_PLUGINS_XML_TEMPLATE = """\
 <library path="{plugin_package}">
 {plugins}
 </library>
 """
 
-PLUGIN_XML_TEMPLATE = """\
+_PLUGIN_XML_TEMPLATE = """\
 <class type="{class_type}" base_class_type="{base_class_type}">
 <description>{class_type}</description>
 </class>
 """
 
 def write_plugins_xml(ctx, prefix_path, plugin_package, base_class_type, class_types):
-    plugins_xml = ctx.actions.declare_file(prefix_path + "/share/ament_index/resource_index/packages/" + plugin_package + "/plugins.xml")
+    plugins_xml = ctx.actions.declare_file(
+        paths.join(prefix_path, _PACKAGES_RELATIVE_PATH, plugin_package, _PLUGINS_XML),
+    )
     plugins = [
-        PLUGIN_XML_TEMPLATE.format(
+        _PLUGIN_XML_TEMPLATE.format(
             class_type = class_type,
             base_class_type = base_class_type,
         )
         for class_type in class_types
     ]
-    ctx.actions.write(plugins_xml, PLUGINS_XML_TEMPLATE.format(
+    ctx.actions.write(plugins_xml, _PLUGINS_XML_TEMPLATE.format(
         plugin_package = plugin_package,
         plugins = "\n".join(plugins),
     ))
     return plugins_xml
+
+AMENT_SETUP = "ament_setup.py"
 
 def _ros2_ament_setup_impl(ctx):
     plugins = depset(
@@ -212,8 +230,20 @@ def _ros2_ament_setup_impl(ctx):
         )
         outputs.append(dynamic_library)
 
-    outputs_depset = depset(outputs)
+    ament_setup = ctx.actions.declare_file(paths.join(prefix_path, AMENT_SETUP))
+    ament_prefix_path = "None"
+    if outputs:
+        ament_prefix_path = "'{}'".format(paths.join(ctx.attr.package_name, ctx.attr.name))
+    ctx.actions.expand_template(
+        template = ctx.file._template,
+        output = ament_setup,
+        substitutions = {
+            "{ament_prefix_path}": ament_prefix_path,
+        },
+    )
+    outputs.append(ament_setup)
 
+    outputs_depset = depset(outputs)
     return [
         DefaultInfo(
             files = outputs_depset,
@@ -226,6 +256,13 @@ ros2_ament_setup = rule(
         "deps": attr.label_list(
             mandatory = True,
             aspects = [ros2_plugin_collector_aspect],
+        ),
+        "package_name": attr.string(
+            mandatory = True,
+        ),
+        "_template": attr.label(
+            default = Label("@com_github_mvukov_rules_ros2//ros2:ament_setup.py.tpl"),
+            allow_single_file = True,
         ),
     },
     implementation = _ros2_ament_setup_impl,
