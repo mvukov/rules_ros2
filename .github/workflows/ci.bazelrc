@@ -4,8 +4,16 @@
 # Debug where options came from
 build --announce_rc
 # This directory is configured in GitHub actions to be persisted between runs.
-build --disk_cache=~/.cache/bazel
 build --repository_cache=~/.cache/bazel-repo
+
+# Set up remote cache.
+build --bes_results_url=https://app.buildbuddy.io/invocation/
+build --bes_backend=grpcs://remote.buildbuddy.io
+build --remote_cache=grpcs://remote.buildbuddy.io
+build --remote_timeout=3600
+build --remote_download_toplevel
+build --experimental_remote_cache_compression
+
 # Don't rely on test logs being easily accessible from the test runner,
 # though it makes the log noisier.
 test --test_output=errors

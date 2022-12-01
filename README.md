@@ -43,3 +43,11 @@ The grand idea would be to get this repo at least to the level of
 [rules_ros](https://github.com/mvukov/rules_ros). In particular:
 
 - It has to be convenient to cross-compile a ROS2 deployment.
+
+## Alternatives
+
+For alternative approaches, see:
+
+- [`ApexAI/rules_ros`](https://github.com/ApexAI/rules_ros/)
+- [`RobotLocomotion/drake-ros/bazel_ros2_rules`](https://github.com/RobotLocomotion/drake-ros/tree/main/bazel_ros2_rules/ros2#alternatives),
+  which includes a brief analysis of this and other approaches.
