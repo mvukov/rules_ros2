@@ -28,8 +28,8 @@ cc_binary(
     name = "plugin_tests",
     srcs = ["plugin_tests.cc"],
     data = [":polygon_plugins"],
-    # Must be linked as a dynamic one such that pluginlib static variables are
-    # correctly initialized. alwayslink=True doesn't work. Keep in mind that
+    # Must be linked in dynamic way such that pluginlib static variables are
+    # correctly initialized. alwayslink=True doesn't help here. Keep in mind that
     # pluginlib is a header-only library.
     linkstatic = False,
     deps = [
