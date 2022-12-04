@@ -1,0 +1,44 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
+load("//ros2:plugin.bzl", "ros2_plugin")
+load("//ros2:test.bzl", "ros2_test")
+
+cc_library(
+    name = "polygon_base",
+    hdrs = ["regular_polygon.h"],
+)
+
+ros2_plugin(
+    name = "polygon_plugins",
+    srcs = ["polygon_plugins.cc"],
+    base_class_type = "polygon_base::RegularPolygon",
+    class_types = [
+        "polygon_plugins::Square",
+        "polygon_plugins::Triangle",
+    ],
+    deps = [
+        ":polygon_base",
+        "@ros2_pluginlib//:pluginlib",
+    ],
+)
+
+# TODO(mvukov) Dig deeper into why cc_test doesn't work here.
+cc_binary(
+    name = "plugin_tests",
+    srcs = ["plugin_tests.cc"],
+    data = [":polygon_plugins"],
+    # Must be linked in dynamic way such that pluginlib static variables are
+    # correctly initialized. alwayslink=True doesn't help here. Keep in mind that
+    # pluginlib is a header-only library.
+    linkstatic = False,
+    deps = [
+        ":polygon_base",
+        "@com_google_googletest//:gtest_main",
+        "@ros2_pluginlib//:pluginlib",
+    ],
+)
+
+ros2_test(
+    name = "tests",
+    launch_file = "tests.py",
+    nodes = [":plugin_tests"],
+)

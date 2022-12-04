@@ -81,6 +81,24 @@ def ros2_repositories():
 
     maybe(
         http_archive,
+        name = "tinyxml2",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:tinyxml2.BUILD.bazel",
+        sha256 = "cc2f1417c308b1f6acc54f88eb70771a0bf65f76282ce5c40e54cfe52952702c",
+        strip_prefix = "tinyxml2-9.0.0",
+        urls = ["https://github.com/leethomason/tinyxml2/archive/refs/tags/9.0.0.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "console_bridge",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:console_bridge.BUILD.bazel",
+        sha256 = "303a619c01a9e14a3c82eb9762b8a428ef5311a6d46353872ab9a904358be4a4",
+        strip_prefix = "console_bridge-1.0.2",
+        urls = ["https://github.com/ros/console_bridge/archive/1.0.2.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
         name = "ros2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
         sha256 = "89b68b0ffb84068bc19c1103e658d90b05c2276c8f07d504301bed02bac8bd86",

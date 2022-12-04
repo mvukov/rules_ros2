@@ -1,0 +1,17 @@
+""" Builds class_loader.
+"""
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "class_loader",
+    srcs = glob(["src/*.cpp"]),
+    hdrs = glob(["include/class_loader/*.hpp"]),
+    includes = ["include"],
+    linkopts = ["-ldl"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@console_bridge",
+        "@ros2_rcpputils//:rcpputils",
+    ],
+)

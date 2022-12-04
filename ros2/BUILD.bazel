@@ -4,10 +4,13 @@
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 
 exports_files([
+    "ament.bzl",
+    "ament_setup.py.tpl",
     "cc_defs.bzl",
     "interfaces.bzl",
     "launch.bzl",
     "launch.py.tpl",
+    "plugin.bzl",
     "ros2_topic.py",
     "test.bzl",
     "test.py.tpl",
