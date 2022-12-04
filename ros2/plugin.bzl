@@ -45,13 +45,10 @@ def _ros2_plugin_impl(ctx):
     )
     dynamic_library = linking_outputs.library_to_link.resolved_symlink_dynamic_library
 
-    # TODO(mvukov) The given library might have data-deps: those must be propagated!
-
-    print(ctx.attr.dep[DefaultInfo])
-
     return [
         DefaultInfo(
             files = depset([dynamic_library]),
+            runfiles = ctx.attr.dep[DefaultInfo].default_runfiles,
         ),
         Ros2PluginInfo(
             dynamic_library = dynamic_library,
