@@ -1,5 +1,6 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
-load("//ros2:plugin.bzl", "ros2_ament_setup", "ros2_plugin")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
+load("//ros2:plugin.bzl", "ros2_plugin")
+load("//ros2:test.bzl", "ros2_test")
 
 cc_library(
     name = "polygon_base",
@@ -13,6 +14,7 @@ cc_library(
         ":polygon_base",
         "@ros2_pluginlib//:pluginlib",
     ],
+    # This must be set such that static plugin registration works.
     alwayslink = True,
 )
 
@@ -26,22 +28,24 @@ ros2_plugin(
     dep = ":_polygon_plugins",
 )
 
-ros2_ament_setup(
-    name = "ament_setup",
-    package_name = package_name(),
-    deps = [":polygon_plugins"],
-)
-
-cc_test(
-    name = "tests",
-    srcs = ["tests.cc"],
-    data = [":ament_setup"],
-    env = {
-        "AMENT_PREFIX_PATH": package_name() + "/ament_setup",
-    },
+# TODO(mvukov) Dig deeper into why cc_test doesn't work here.
+cc_binary(
+    name = "plugin_tests",
+    srcs = ["plugin_tests.cc"],
+    data = [":polygon_plugins"],
+    # Must be linked as a dynamic one such that pluginlib static variables are
+    # correctly initialized. alwayslink=True doesn't work. Keep in mind that
+    # pluginlib is a header-only library.
+    linkstatic = False,
     deps = [
         ":polygon_base",
         "@com_google_googletest//:gtest_main",
         "@ros2_pluginlib//:pluginlib",
     ],
+)
+
+ros2_test(
+    name = "tests",
+    launch_file = "tests.py",
+    nodes = [":plugin_tests"],
 )

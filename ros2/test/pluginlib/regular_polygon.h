@@ -22,9 +22,6 @@ class RegularPolygon {
   virtual ~RegularPolygon() = default;
   virtual void initialize(double side_length) = 0;
   virtual double area() = 0;
-
- protected:
-  RegularPolygon() = default;
 };
 
 }  // namespace polygon_base

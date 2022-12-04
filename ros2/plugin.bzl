@@ -14,11 +14,10 @@
 """ ROS2 plugin definitions.
 """
 
-load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 Ros2PluginInfo = provider(
-    "Provides necessary info for plugin routing",
+    "Provides necessary info for plugin routing.",
     fields = [
         "dynamic_library",
         "base_class_type",
@@ -47,6 +46,8 @@ def _ros2_plugin_impl(ctx):
     dynamic_library = linking_outputs.library_to_link.resolved_symlink_dynamic_library
 
     # TODO(mvukov) The given library might have data-deps: those must be propagated!
+
+    print(ctx.attr.dep[DefaultInfo])
 
     return [
         DefaultInfo(
@@ -82,7 +83,7 @@ ros2_plugin = rule(
 )
 
 Ros2PluginCollectorAspectInfo = provider(
-    "TBD",
+    "Provides info about collected plugins.",
     fields = [
         "plugins",
     ],
@@ -98,11 +99,11 @@ def _get_list_attr(rule_attr, attr_name):
         fail("Expected a list for attribute `{}`!".format(attr_name))
     return candidate
 
-def _collect_deps(rule_attr, attr_name, aspect_info):
+def _collect_deps(rule_attr, attr_name, provider_info):
     return [
         dep
         for dep in _get_list_attr(rule_attr, attr_name)
-        if type(dep) == "Target" and aspect_info in dep
+        if type(dep) == "Target" and provider_info in dep
     ]
 
 def _ros2_plugin_collector_aspect_impl(target, ctx):
@@ -134,136 +135,4 @@ ros2_plugin_collector_aspect = aspect(
     implementation = _ros2_plugin_collector_aspect_impl,
     attr_aspects = _ROS2_PLUGIN_COLLECTOR_ATTR_ASPECTS,
     provides = [Ros2PluginCollectorAspectInfo],
-)
-
-_PACKAGE_XML_TEMPLATE = """\
-<?xml version="1.0"?>
-<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
-<package format="2">
-  <name>{package_name}</name>
-</package>
-"""
-
-_RESOURCE_INDEX_PATH = "share/ament_index/resource_index"
-_PACKAGES_RELATIVE_PATH = paths.join(_RESOURCE_INDEX_PATH, "packages")
-_PACKAGE_XML = "package.xml"
-_PLUGINS_XML = "plugins.xml"
-
-def write_package_xml(ctx, prefix_path, package_name):
-    package_xml = ctx.actions.declare_file(
-        paths.join(prefix_path, _PACKAGES_RELATIVE_PATH, package_name, _PACKAGE_XML),
-    )
-    ctx.actions.write(package_xml, _PACKAGE_XML_TEMPLATE.format(package_name = package_name))
-    return package_xml
-
-def write_plugin_manifest(ctx, prefix_path, base_package, plugin_package):
-    manifest = ctx.actions.declare_file(
-        paths.join(
-            prefix_path,
-            _RESOURCE_INDEX_PATH,
-            base_package + "__pluginlib__plugin",
-            plugin_package + "_manifest",
-        ),
-    )
-    ctx.actions.write(manifest, paths.join(_PACKAGES_RELATIVE_PATH, plugin_package, _PLUGINS_XML))
-    return manifest
-
-_PLUGINS_XML_TEMPLATE = """\
-<library path="{plugin_package}">
-{plugins}
-</library>
-"""
-
-_PLUGIN_XML_TEMPLATE = """\
-<class type="{class_type}" base_class_type="{base_class_type}">
-<description>{class_type}</description>
-</class>
-"""
-
-def write_plugins_xml(ctx, prefix_path, plugin_package, base_class_type, class_types):
-    plugins_xml = ctx.actions.declare_file(
-        paths.join(prefix_path, _PACKAGES_RELATIVE_PATH, plugin_package, _PLUGINS_XML),
-    )
-    plugins = [
-        _PLUGIN_XML_TEMPLATE.format(
-            class_type = class_type,
-            base_class_type = base_class_type,
-        )
-        for class_type in class_types
-    ]
-    ctx.actions.write(plugins_xml, _PLUGINS_XML_TEMPLATE.format(
-        plugin_package = plugin_package,
-        plugins = "\n".join(plugins),
-    ))
-    return plugins_xml
-
-AMENT_SETUP = "ament_setup.py"
-
-def _ros2_ament_setup_impl(ctx):
-    plugins = depset(
-        transitive = [
-            dep[Ros2PluginCollectorAspectInfo].plugins
-            for dep in ctx.attr.deps
-        ],
-    ).to_list()
-
-    prefix_path = ctx.attr.name
-    base_packages = []
-    outputs = []
-    for plugin in plugins:
-        base_package = plugin.base_class_type.split("::")[0]
-        if base_package not in base_packages:
-            outputs.append(write_package_xml(ctx, prefix_path, base_package))
-
-        plugin_package = plugin.class_types[0].split("::")[0]
-        outputs.append(write_package_xml(ctx, prefix_path, plugin_package))
-
-        outputs.append(write_plugin_manifest(ctx, prefix_path, base_package, plugin_package))
-        outputs.append(write_plugins_xml(ctx, prefix_path, plugin_package, plugin.base_class_type, plugin.class_types))
-
-        dynamic_library = ctx.actions.declare_file(
-            prefix_path + "/lib/lib" + plugin_package + ".so",
-        )
-        ctx.actions.symlink(
-            output = dynamic_library,
-            target_file = plugin.dynamic_library,
-        )
-        outputs.append(dynamic_library)
-
-    ament_setup = ctx.actions.declare_file(paths.join(prefix_path, AMENT_SETUP))
-    ament_prefix_path = "None"
-    if outputs:
-        ament_prefix_path = "'{}'".format(paths.join(ctx.attr.package_name, ctx.attr.name))
-    ctx.actions.expand_template(
-        template = ctx.file._template,
-        output = ament_setup,
-        substitutions = {
-            "{ament_prefix_path}": ament_prefix_path,
-        },
-    )
-    outputs.append(ament_setup)
-
-    outputs_depset = depset(outputs)
-    return [
-        DefaultInfo(
-            files = outputs_depset,
-            runfiles = ctx.runfiles(transitive_files = outputs_depset),
-        ),
-    ]
-
-ros2_ament_setup = rule(
-    attrs = {
-        "deps": attr.label_list(
-            mandatory = True,
-            aspects = [ros2_plugin_collector_aspect],
-        ),
-        "package_name": attr.string(
-            mandatory = True,
-        ),
-        "_template": attr.label(
-            default = Label("@com_github_mvukov_rules_ros2//ros2:ament_setup.py.tpl"),
-            allow_single_file = True,
-        ),
-    },
-    implementation = _ros2_ament_setup_impl,
 )

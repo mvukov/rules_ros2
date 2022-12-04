@@ -34,9 +34,9 @@ class Triangle : public polygon_base::RegularPolygon {
  public:
   void initialize(double side_length) override { side_length_ = side_length; }
 
-  double area() override { return 0.5 * side_length_ * getHeight(); }
+  double area() override { return 0.5 * side_length_ * GetHeight(); }
 
-  double getHeight() {
+  double GetHeight() {
     return sqrt((side_length_ * side_length_) -
                 ((side_length_ / 2) * (side_length_ / 2)));
   }
