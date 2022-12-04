@@ -7,25 +7,20 @@ cc_library(
     hdrs = ["regular_polygon.h"],
 )
 
-cc_library(
-    name = "_polygon_plugins",
+ros2_plugin(
+    name = "polygon_plugins",
     srcs = ["polygon_plugins.cc"],
+    base_class_type = "polygon_base::RegularPolygon",
+    class_types = [
+        "polygon_plugins::Square",
+        "polygon_plugins::Triangle",
+    ],
     deps = [
         ":polygon_base",
         "@ros2_pluginlib//:pluginlib",
     ],
     # This must be set such that static plugin registration works.
     alwayslink = True,
-)
-
-ros2_plugin(
-    name = "polygon_plugins",
-    base_class_type = "polygon_base::RegularPolygon",
-    class_types = [
-        "polygon_plugins::Square",
-        "polygon_plugins::Triangle",
-    ],
-    dep = ":_polygon_plugins",
 )
 
 # TODO(mvukov) Dig deeper into why cc_test doesn't work here.

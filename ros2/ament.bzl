@@ -103,7 +103,7 @@ def _ros2_ament_setup_impl(ctx):
         ))
 
         dynamic_library = ctx.actions.declare_file(
-            prefix_path + "/lib/lib" + plugin_package + ".so",
+            paths.join(prefix_path, "lib", "lib" + plugin_package + ".so"),
         )
         ctx.actions.symlink(
             output = dynamic_library,

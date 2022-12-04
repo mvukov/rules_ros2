@@ -14,6 +14,7 @@
 """ ROS2 plugin definitions.
 """
 
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 Ros2PluginInfo = provider(
@@ -57,7 +58,7 @@ def _ros2_plugin_impl(ctx):
         ),
     ]
 
-ros2_plugin = rule(
+ros2_plugin_rule = rule(
     attrs = {
         "dep": attr.label(
             providers = [CcInfo],
@@ -78,6 +79,21 @@ ros2_plugin = rule(
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
     fragments = ["cpp"],
 )
+
+def ros2_plugin(name, base_class_type, class_types, **kwargs):
+    lib_name = "_" + name
+
+    # TODO(mvukov) Extract tags and other common fields and pass to ros2_plugin_rule.
+    ros2_cpp_library(
+        name = lib_name,
+        **kwargs
+    )
+    ros2_plugin_rule(
+        name = name,
+        base_class_type = base_class_type,
+        class_types = class_types,
+        dep = lib_name,
+    )
 
 Ros2PluginCollectorAspectInfo = provider(
     "Provides info about collected plugins.",
@@ -105,7 +121,7 @@ def _collect_deps(rule_attr, attr_name, provider_info):
 
 def _ros2_plugin_collector_aspect_impl(target, ctx):
     direct_plugins = []
-    if ctx.rule.kind == "ros2_plugin":
+    if ctx.rule.kind == "ros2_plugin_rule":
         info = target[Ros2PluginInfo]
         plugin = struct(
             dynamic_library = info.dynamic_library,
