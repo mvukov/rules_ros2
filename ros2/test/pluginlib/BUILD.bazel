@@ -19,8 +19,6 @@ ros2_plugin(
         ":polygon_base",
         "@ros2_pluginlib//:pluginlib",
     ],
-    # This must be set such that static plugin registration works.
-    alwayslink = True,
 )
 
 # TODO(mvukov) Dig deeper into why cc_test doesn't work here.

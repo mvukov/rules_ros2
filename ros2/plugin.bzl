@@ -86,6 +86,8 @@ def ros2_plugin(name, base_class_type, class_types, **kwargs):
     # TODO(mvukov) Extract tags and other common fields and pass to ros2_plugin_rule.
     ros2_cpp_library(
         name = lib_name,
+        # This must be set such that static plugin registration works.
+        alwayslink = True,
         **kwargs
     )
     ros2_plugin_rule(
