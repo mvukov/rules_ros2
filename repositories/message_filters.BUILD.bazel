@@ -1,0 +1,18 @@
+load(
+    "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_cpp_library",
+)
+
+ros2_cpp_library(
+    name = "message_filters",
+    srcs = glob([
+        "src/*.cpp",
+    ]),
+    hdrs = glob(["include/**/*.h"]),
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rcutils//:rcutils",
+    ],
+)
