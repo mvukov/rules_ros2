@@ -19,6 +19,9 @@ repositories:
     name: iceoryx
     strip_prefix: iceoryx-2.0.2
     build_file: "@com_github_mvukov_rules_ros2//repositories:iceoryx.BUILD.bazel"
+  keyboard_handler:
+    name: ros2_keyboard_handler
+    build_file: "@com_github_mvukov_rules_ros2//repositories:keyboard_handler.BUILD.bazel"
   launch:
     name: ros2_launch
     build_file: "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel"
@@ -85,6 +88,9 @@ repositories:
   ros_testing:
     name: ros2_ros_testing
     build_file: "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel"
+  rosbag2:
+    name: ros2_rosbag2
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rosbag2.BUILD.bazel"
   rosidl:
     name: ros2_rosidl
     build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel"

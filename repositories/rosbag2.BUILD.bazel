@@ -1,0 +1,174 @@
+""" Builds rosbag2.
+"""
+
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "cpp_ros2_interface_library",
+    "ros2_interface_library",
+)
+
+ros2_cpp_library(
+    name = "rosbag2_storage",
+    srcs = glob([
+        "rosbag2_storage/src/**/*.cpp",
+        "rosbag2_storage/src/**/*.hpp",
+    ]),
+    hdrs = glob(["rosbag2_storage/include/**/*.hpp"]),
+    includes = ["rosbag2_storage/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2_pluginlib//:pluginlib",
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rcutils//:rcutils",
+        "@yaml_cpp",
+    ],
+)
+
+ros2_cpp_library(
+    name = "_rosbag2_storage_default_plugins",
+    srcs = glob([
+        "rosbag2_storage_default_plugins/src/**/*.cpp",
+        "rosbag2_storage_default_plugins/src/**/*.hpp",
+    ]),
+    hdrs = glob(["rosbag2_storage_default_plugins/include/**/*.hpp"]),
+    includes = ["rosbag2_storage_default_plugins/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":rosbag2_storage",
+        "@ros2_pluginlib//:pluginlib",
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rcutils//:rcutils",
+        "@sqlite",
+        "@yaml_cpp",
+    ],
+)
+
+# TODO(mvukov) Define ros2_plugin:
+# type="rosbag2_storage_plugins::SqliteStorage"
+# base_class_type="rosbag2_storage::storage_interfaces::ReadWriteInterface"
+
+ros2_cpp_library(
+    name = "rosbag2_cpp",
+    srcs = glob([
+        "rosbag2_cpp/src/**/*.hpp",
+    ]) + [
+        "rosbag2_cpp/src/rosbag2_cpp/cache/cache_consumer.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/cache/message_cache_buffer.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/cache/message_cache_circular_buffer.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/cache/message_cache.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/cache/circular_message_cache.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/clocks/time_controller_clock.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/converter.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/info.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/reader.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/readers/sequential_reader.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/rmw_implemented_serialization_format_converter.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/serialization_format_converter_factory.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/typesupport_helpers.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/types/introspection_message.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/writer.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/writers/sequential_writer.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/reindexer.cpp",
+    ],
+    hdrs = glob(["rosbag2_cpp/include/**/*.hpp"]),
+    includes = ["rosbag2_cpp/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":rosbag2_storage",
+        "@ros2_pluginlib//:pluginlib",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rcutils//:rcutils",
+        "@ros2_rmw//:rmw_cpp",
+        "@ros2_rmw_implementation//:rmw_implementation",
+        "@ros2_rosidl//:rosidl_runtime_c",
+        "@ros2_rosidl//:rosidl_runtime_cpp",
+        "@ros2_rosidl//:rosidl_typesupport_introspection_cpp",
+        "@ros2_rosidl_typesupport//:rosidl_typesupport_cpp",
+        "@yaml_cpp",
+    ],
+)
+
+ros2_cpp_library(
+    name = "rosbag2_compression",
+    srcs = glob([
+        "rosbag2_compression/src/**/*.cpp",
+        "rosbag2_compression/src/**/*.hpp",
+    ]),
+    hdrs = glob(["rosbag2_compression/include/**/*.hpp"]),
+    includes = ["rosbag2_compression/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":rosbag2_cpp",
+        ":rosbag2_storage",
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rcutils//:rcutils",
+    ],
+)
+
+ros2_cpp_library(
+    name = "_rosbag2_compression_zstd",
+    srcs = glob([
+        "rosbag2_compression_zstd/src/**/*.cpp",
+        "rosbag2_compression_zstd/src/**/*.hpp",
+    ]),
+    hdrs = glob(["rosbag2_compression_zstd/include/**/*.hpp"]),
+    includes = ["rosbag2_compression_zstd/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":rosbag2_compression",
+        "@ros2_pluginlib//:pluginlib",
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rcutils//:rcutils",
+        "@zstd",
+    ],
+)
+
+# TODO(mvukov) Add ros2_plugin:
+# <library path="rosbag2_compression_zstd">
+#   <class
+#     name="zstd"
+#     type="rosbag2_compression_zstd::ZstdCompressor"
+#     base_class_type="rosbag2_compression::BaseCompressorInterface">
+#     <description>Zstd implementation for rosbag2 compressor</description>
+#   </class>
+#   <class
+#     name="zstd"
+#     type="rosbag2_compression_zstd::ZstdDecompressor"
+#     base_class_type="rosbag2_compression::BaseDecompressorInterface">
+#     <description>Zstd implementation for rosbag2 decompressor</description>
+#   </class>
+# </library>
+
+ros2_interface_library(
+    name = "rosbag2_interfaces",
+    srcs = glob(["rosbag2_interfaces/srv/*.srv"]),
+    visibility = ["//visibility:public"],
+)
+
+cpp_ros2_interface_library(
+    name = "cpp_rosbag2_interfaces",
+    deps = [":rosbag2_interfaces"],
+)
+
+ros2_cpp_library(
+    name = "rosbag2_transport",
+    srcs = glob([
+        "rosbag2_transport/src/**/*.cpp",
+        "rosbag2_transport/src/**/*.hpp",
+    ]),
+    hdrs = glob(["rosbag2_transport/include/**/*.hpp"]),
+    includes = ["rosbag2_transport/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":cpp_rosbag2_interfaces",
+        ":rosbag2_compression",
+        ":rosbag2_cpp",
+        ":rosbag2_storage",
+        "@readerwriterqueue",
+        "@ros2_keyboard_handler//:keyboard_handler",
+        "@ros2_rmw//:rmw_cpp",
+        "@yaml_cpp",
+    ],
+)
