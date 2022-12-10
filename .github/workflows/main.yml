@@ -9,6 +9,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.sha}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -29,6 +32,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.sha}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: Check bazelrc files
         run: |
           if [[ $(cmp --silent .bazelrc examples/.bazelrc; echo $?) -ne 0 ]]; then
