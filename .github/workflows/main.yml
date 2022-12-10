@@ -9,6 +9,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.sha}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -29,6 +32,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.sha}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: Check bazelrc files
         run: |
           if [[ $(cmp --silent .bazelrc examples/.bazelrc; echo $?) -ne 0 ]]; then
@@ -50,10 +56,9 @@ jobs:
         uses: actions/cache@v3.0.11
         with:
           path: |
-            ~/.cache/bazel
             ~/.cache/bazel-repo
-          key: v2-bazel-cache-${{ hashFiles('**/BUILD.bazel', '**/*.BUILD.bazel', '**/*.bzl', 'WORKSPACE') }}
-          restore-keys: v2-bazel-cache-
+          key: v3-bazel-repo-cache-${{ hashFiles('.bazelversion', 'examples/WORKSPACE', 'repositories/**', 'requirements_lock.txt', 'WORKSPACE') }}
+          restore-keys: v3-bazel-repo-cache-
       - name: bazel test //...
         env:
           # Bazelisk will download bazel to here, ensure it is cached between runs.
