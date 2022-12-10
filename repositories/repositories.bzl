@@ -99,6 +99,24 @@ def ros2_repositories():
 
     maybe(
         http_archive,
+        name = "readerwriterqueue",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:readerwriterqueue.BUILD.bazel",
+        sha256 = "fc68f55bbd49a8b646462695e1777fb8f2c0b4f342d5e6574135211312ba56c1",
+        strip_prefix = "readerwriterqueue-1.0.6",
+        urls = ["https://github.com/cameron314/readerwriterqueue/archive/refs/tags/v1.0.6.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "concurrentqueue",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:concurrentqueue.BUILD.bazel",
+        sha256 = "eb37336bf9ae59aca7b954db3350d9b30d1cab24b96c7676f36040aa76e915e8",
+        strip_prefix = "concurrentqueue-1.0.3",
+        urls = ["https://github.com/cameron314/concurrentqueue/archive/refs/tags/v1.0.3.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
         name = "ros2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
         sha256 = "89b68b0ffb84068bc19c1103e658d90b05c2276c8f07d504301bed02bac8bd86",
