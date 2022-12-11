@@ -35,3 +35,13 @@ py_binary(
         "@ros2cli//:ros2param",
     ],
 )
+
+py_binary(
+    name = "ros2_bag",
+    srcs = ["ros2_bag.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":ros2_cmd",
+        "@ros2_rosbag2//:ros2bag",
+    ],
+)
