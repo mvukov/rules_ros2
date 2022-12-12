@@ -15,6 +15,9 @@ repositories:
   cyclonedds:
     name: cyclonedds
     build_file: "@com_github_mvukov_rules_ros2//repositories:cyclonedds.BUILD.bazel"
+  geometry2:
+    name: ros2_geometry2
+    build_file: "@com_github_mvukov_rules_ros2//repositories:geometry2.BUILD.bazel"
   iceoryx:
     name: iceoryx
     strip_prefix: iceoryx-2.0.2
@@ -28,6 +31,9 @@ repositories:
   libstatistics_collector:
     name: ros2_libstatistics_collector
     build_file: "@com_github_mvukov_rules_ros2//repositories:libstatistics_collector.BUILD.bazel"
+  message_filters:
+    name: ros2_message_filters
+    build_file: "@com_github_mvukov_rules_ros2//repositories:message_filters.BUILD.bazel"
   osrf_pycommon:
     name: osrf_pycommon
     build_file: "@com_github_mvukov_rules_ros2//repositories:osrf_pycommon.BUILD.bazel"
