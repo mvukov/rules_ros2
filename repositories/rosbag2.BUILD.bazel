@@ -11,6 +11,7 @@ load(
     "cpp_ros2_interface_library",
     "ros2_interface_library",
 )
+load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
 load("@rules_python//python:defs.bzl", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
@@ -31,13 +32,16 @@ ros2_cpp_library(
     ],
 )
 
-ros2_cpp_library(
-    name = "_rosbag2_storage_default_plugins",
+ros2_plugin(
+    name = "rosbag2_storage_default_plugins",
     srcs = glob([
         "rosbag2_storage_default_plugins/src/**/*.cpp",
         "rosbag2_storage_default_plugins/src/**/*.hpp",
     ]),
     hdrs = glob(["rosbag2_storage_default_plugins/include/**/*.hpp"]),
+    base_class_type = "rosbag2_storage::storage_interfaces::ReadWriteInterface",
+    class_names = ["sqlite3"],
+    class_types = ["rosbag2_storage_plugins::SqliteStorage"],
     includes = ["rosbag2_storage_default_plugins/include"],
     visibility = ["//visibility:public"],
     deps = [
@@ -49,10 +53,6 @@ ros2_cpp_library(
         "@yaml_cpp",
     ],
 )
-
-# TODO(mvukov) Define ros2_plugin:
-# type="rosbag2_storage_plugins::SqliteStorage"
-# base_class_type="rosbag2_storage::storage_interfaces::ReadWriteInterface"
 
 ros2_cpp_library(
     name = "rosbag2_cpp",
@@ -78,6 +78,7 @@ ros2_cpp_library(
         "rosbag2_cpp/src/rosbag2_cpp/reindexer.cpp",
     ],
     hdrs = glob(["rosbag2_cpp/include/**/*.hpp"]),
+    data = [":rosbag2_storage_default_plugins"],
     includes = ["rosbag2_cpp/include"],
     visibility = ["//visibility:public"],
     deps = [

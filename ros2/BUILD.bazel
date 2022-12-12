@@ -1,11 +1,14 @@
 """ ROS2 common definitions.
 """
 
+load("@com_github_mvukov_rules_ros2//ros2:bag.bzl", "ros2_bag")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 
 exports_files([
     "ament.bzl",
     "ament_setup.py.tpl",
+    "bag.bzl",
+    "bag.py.tpl",
     "cc_defs.bzl",
     "interfaces.bzl",
     "launch.bzl",
@@ -36,12 +39,7 @@ py_binary(
     ],
 )
 
-py_binary(
+ros2_bag(
     name = "ros2_bag",
-    srcs = ["ros2_bag.py"],
     visibility = ["//visibility:public"],
-    deps = [
-        ":ros2_cmd",
-        "@ros2_rosbag2//:ros2bag",
-    ],
 )

@@ -23,6 +23,7 @@ Ros2PluginInfo = provider(
         "dynamic_library",
         "base_class_type",
         "class_types",
+        "class_names",
     ],
 )
 
@@ -55,6 +56,7 @@ def _ros2_plugin_impl(ctx):
             dynamic_library = dynamic_library,
             base_class_type = ctx.attr.base_class_type,
             class_types = ctx.attr.class_types,
+            class_names = ctx.attr.class_names or ctx.attr.class_types,
         ),
     ]
 
@@ -70,6 +72,7 @@ ros2_plugin_rule = rule(
         "class_types": attr.string_list(
             mandatory = True,
         ),
+        "class_names": attr.string_list(),
         "_cc_toolchain": attr.label(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
@@ -83,6 +86,8 @@ ros2_plugin_rule = rule(
 def ros2_plugin(name, base_class_type, class_types, **kwargs):
     lib_name = "_" + name
 
+    class_names = kwargs.pop("class_names", None)
+
     # TODO(mvukov) Extract tags and other common fields and pass to ros2_plugin_rule.
     ros2_cpp_library(
         name = lib_name,
@@ -94,6 +99,7 @@ def ros2_plugin(name, base_class_type, class_types, **kwargs):
         name = name,
         base_class_type = base_class_type,
         class_types = class_types,
+        class_names = class_names,
         dep = lib_name,
     )
 
@@ -129,6 +135,7 @@ def _ros2_plugin_collector_aspect_impl(target, ctx):
             dynamic_library = info.dynamic_library,
             base_class_type = info.base_class_type,
             class_types = info.class_types,
+            class_names = info.class_names,
         )
         direct_plugins.append(plugin)
 

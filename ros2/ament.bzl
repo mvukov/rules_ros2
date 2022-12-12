@@ -49,21 +49,23 @@ _PLUGINS_XML_TEMPLATE = """\
 """
 
 _PLUGIN_XML_TEMPLATE = """\
-<class type="{class_type}" base_class_type="{base_class_type}">
+<class name="{class_name}" type="{class_type}" base_class_type="{base_class_type}">
 <description>{class_type}</description>
 </class>
 """
 
-def _write_plugins_xml(ctx, prefix_path, plugin_package, base_class_type, class_types):
+def _write_plugins_xml(ctx, prefix_path, plugin_package, base_class_type, class_types, class_names):
     plugins_xml = ctx.actions.declare_file(
         paths.join(prefix_path, _PACKAGES_PATH, plugin_package, _PLUGINS_XML),
     )
+
     plugins = [
         _PLUGIN_XML_TEMPLATE.format(
+            class_name = class_name,
             class_type = class_type,
             base_class_type = base_class_type,
         )
-        for class_type in class_types
+        for class_type, class_name in zip(class_types, class_names)
     ]
     ctx.actions.write(plugins_xml, _PLUGINS_XML_TEMPLATE.format(
         plugin_package = plugin_package,
@@ -100,6 +102,7 @@ def _ros2_ament_setup_impl(ctx):
             plugin_package,
             plugin.base_class_type,
             plugin.class_types,
+            plugin.class_names,
         ))
 
         dynamic_library = ctx.actions.declare_file(
