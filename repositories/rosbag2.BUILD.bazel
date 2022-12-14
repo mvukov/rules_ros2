@@ -43,6 +43,14 @@ ros2_plugin(
     class_names = ["sqlite3"],
     class_types = ["rosbag2_storage_plugins::SqliteStorage"],
     includes = ["rosbag2_storage_default_plugins/include"],
+    specs = [
+        {
+            "name": "sqlite3",
+            "type": "rosbag2_storage_plugins::SqliteStorage",
+            "base_class_type": "rosbag2_storage::storage_interfaces::ReadWriteInterface",
+        },
+        # type -> base_class_type, name (if not given set to type)
+    ],
     visibility = ["//visibility:public"],
     deps = [
         ":rosbag2_storage",

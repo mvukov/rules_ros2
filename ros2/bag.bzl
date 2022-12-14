@@ -6,13 +6,14 @@ load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "AMENT_SETUP_MODULE", "ros
 load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
 load("@rules_python//python:defs.bzl", "py_binary")
 
-def ros2_bag(name, **kwargs):
+def ros2_bag(name, plugins = None, **kwargs):
     ament_setup_target = name + "_ament_setup"
     package_name = native.package_name()
+    plugins = plugins or []
     ros2_ament_setup(
         name = ament_setup_target,
         package_name = package_name,
-        deps = ["@ros2_rosbag2//:ros2bag"],
+        deps = ["@ros2_rosbag2//:ros2bag"] + plugins,
     )
 
     repo_relative_ament_setup = paths.join(
