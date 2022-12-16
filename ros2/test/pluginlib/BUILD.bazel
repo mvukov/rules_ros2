@@ -10,10 +10,15 @@ cc_library(
 ros2_plugin(
     name = "polygon_plugins",
     srcs = ["polygon_plugins.cc"],
-    base_class_type = "polygon_base::RegularPolygon",
-    class_types = [
-        "polygon_plugins::Square",
-        "polygon_plugins::Triangle",
+    plugin_specs = [
+        {
+            "class_type": "polygon_plugins::Square",
+            "base_class_type": "polygon_base::RegularPolygon",
+        },
+        {
+            "class_type": "polygon_plugins::Triangle",
+            "base_class_type": "polygon_base::RegularPolygon",
+        },
     ],
     deps = [
         ":polygon_base",
