@@ -54,18 +54,18 @@ _PLUGIN_XML_TEMPLATE = """\
 </class>
 """
 
-def _write_plugins_xml(ctx, prefix_path, plugin_package, base_class_type, class_types, class_names):
+def _write_plugins_xml(ctx, prefix_path, plugin_package, types_to_bases_and_names):
     plugins_xml = ctx.actions.declare_file(
         paths.join(prefix_path, _PACKAGES_PATH, plugin_package, _PLUGINS_XML),
     )
 
     plugins = [
         _PLUGIN_XML_TEMPLATE.format(
-            class_name = class_name,
+            class_name = base_class_type_and_name[1],
             class_type = class_type,
-            base_class_type = base_class_type,
+            base_class_type = base_class_type_and_name[0],
         )
-        for class_type, class_name in zip(class_types, class_names)
+        for class_type, base_class_type_and_name in types_to_bases_and_names.items()
     ]
     ctx.actions.write(plugins_xml, _PLUGINS_XML_TEMPLATE.format(
         plugin_package = plugin_package,
@@ -88,11 +88,13 @@ def _ros2_ament_setup_impl(ctx):
     base_packages = []
     outputs = []
     for plugin in plugins:
-        base_package = _get_package_name(plugin.base_class_type)
+        types_to_bases_and_names = plugin.types_to_bases_and_names
+
+        base_package = _get_package_name(types_to_bases_and_names.values()[0][0])
         if base_package not in base_packages:
             outputs.append(_write_package_xml(ctx, prefix_path, base_package))
 
-        plugin_package = _get_package_name(plugin.class_types[0])
+        plugin_package = _get_package_name(types_to_bases_and_names.keys()[0])
         outputs.append(_write_package_xml(ctx, prefix_path, plugin_package))
 
         outputs.append(_write_plugin_manifest(ctx, prefix_path, base_package, plugin_package))
@@ -100,9 +102,7 @@ def _ros2_ament_setup_impl(ctx):
             ctx,
             prefix_path,
             plugin_package,
-            plugin.base_class_type,
-            plugin.class_types,
-            plugin.class_names,
+            types_to_bases_and_names,
         ))
 
         dynamic_library = ctx.actions.declare_file(

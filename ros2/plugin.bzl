@@ -21,9 +21,7 @@ Ros2PluginInfo = provider(
     "Provides necessary info for plugin routing.",
     fields = [
         "dynamic_library",
-        "base_class_type",
-        "class_types",
-        "class_names",
+        "types_to_bases_and_names",
     ],
 )
 
@@ -54,9 +52,7 @@ def _ros2_plugin_impl(ctx):
         ),
         Ros2PluginInfo(
             dynamic_library = dynamic_library,
-            base_class_type = ctx.attr.base_class_type,
-            class_types = ctx.attr.class_types,
-            class_names = ctx.attr.class_names or ctx.attr.class_types,
+            types_to_bases_and_names = ctx.attr.types_to_bases_and_names,
         ),
     ]
 
@@ -66,13 +62,9 @@ ros2_plugin_rule = rule(
             providers = [CcInfo],
             mandatory = True,
         ),
-        "base_class_type": attr.string(
+        "types_to_bases_and_names": attr.string_list_dict(
             mandatory = True,
         ),
-        "class_types": attr.string_list(
-            mandatory = True,
-        ),
-        "class_names": attr.string_list(),
         "_cc_toolchain": attr.label(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
@@ -83,12 +75,16 @@ ros2_plugin_rule = rule(
     fragments = ["cpp"],
 )
 
-def ros2_plugin(name, base_class_type, class_types, **kwargs):
-    lib_name = "_" + name
-
-    class_names = kwargs.pop("class_names", None)
+def ros2_plugin(name, plugin_specs, **kwargs):
+    types_to_bases_and_names = {}
+    for plugin_spec in plugin_specs:
+        class_type = plugin_spec["class_type"]
+        class_name = plugin_spec.get("class_name", class_type)
+        base_class_type = plugin_spec["base_class_type"]
+        types_to_bases_and_names[class_type] = [base_class_type, class_name]
 
     # TODO(mvukov) Extract tags and other common fields and pass to ros2_plugin_rule.
+    lib_name = "_" + name
     ros2_cpp_library(
         name = lib_name,
         # This must be set such that static plugin registration works.
@@ -97,9 +93,7 @@ def ros2_plugin(name, base_class_type, class_types, **kwargs):
     )
     ros2_plugin_rule(
         name = name,
-        base_class_type = base_class_type,
-        class_types = class_types,
-        class_names = class_names,
+        types_to_bases_and_names = types_to_bases_and_names,
         dep = lib_name,
     )
 
@@ -133,9 +127,7 @@ def _ros2_plugin_collector_aspect_impl(target, ctx):
         info = target[Ros2PluginInfo]
         plugin = struct(
             dynamic_library = info.dynamic_library,
-            base_class_type = info.base_class_type,
-            class_types = info.class_types,
-            class_names = info.class_names,
+            types_to_bases_and_names = info.types_to_bases_and_names,
         )
         direct_plugins.append(plugin)
 
