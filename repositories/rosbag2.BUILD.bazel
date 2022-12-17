@@ -39,19 +39,14 @@ ros2_plugin(
         "rosbag2_storage_default_plugins/src/**/*.hpp",
     ]),
     hdrs = glob(["rosbag2_storage_default_plugins/include/**/*.hpp"]),
-    base_class_type = "rosbag2_storage::storage_interfaces::ReadWriteInterface",
-    class_names = ["sqlite3"],
-    class_types = ["rosbag2_storage_plugins::SqliteStorage"],
     includes = ["rosbag2_storage_default_plugins/include"],
-    specs = [
+    plugin_specs = [
         {
-            "name": "sqlite3",
-            "type": "rosbag2_storage_plugins::SqliteStorage",
+            "class_name": "sqlite3",
+            "class_type": "rosbag2_storage_plugins::SqliteStorage",
             "base_class_type": "rosbag2_storage::storage_interfaces::ReadWriteInterface",
         },
-        # type -> base_class_type, name (if not given set to type)
     ],
-    visibility = ["//visibility:public"],
     deps = [
         ":rosbag2_storage",
         "@ros2_pluginlib//:pluginlib",
@@ -122,15 +117,26 @@ ros2_cpp_library(
     ],
 )
 
-ros2_cpp_library(
-    name = "_rosbag2_compression_zstd",
+ros2_plugin(
+    name = "rosbag2_compression_zstd",
     srcs = glob([
         "rosbag2_compression_zstd/src/**/*.cpp",
         "rosbag2_compression_zstd/src/**/*.hpp",
     ]),
     hdrs = glob(["rosbag2_compression_zstd/include/**/*.hpp"]),
     includes = ["rosbag2_compression_zstd/include"],
-    visibility = ["//visibility:public"],
+    plugin_specs = [
+        {
+            "class_name": "zstd",
+            "class_type": "rosbag2_compression_zstd::ZstdCompressor",
+            "base_class_type": "rosbag2_compression::BaseCompressorInterface",
+        },
+        {
+            "class_name": "zstd",
+            "class_type": "rosbag2_compression_zstd::ZstdDecompressor",
+            "base_class_type": "rosbag2_compression::BaseDecompressorInterface",
+        },
+    ],
     deps = [
         ":rosbag2_compression",
         "@ros2_pluginlib//:pluginlib",
@@ -139,22 +145,6 @@ ros2_cpp_library(
         "@zstd",
     ],
 )
-
-# TODO(mvukov) Add ros2_plugin:
-# <library path="rosbag2_compression_zstd">
-#   <class
-#     name="zstd"
-#     type="rosbag2_compression_zstd::ZstdCompressor"
-#     base_class_type="rosbag2_compression::BaseCompressorInterface">
-#     <description>Zstd implementation for rosbag2 compressor</description>
-#   </class>
-#   <class
-#     name="zstd"
-#     type="rosbag2_compression_zstd::ZstdDecompressor"
-#     base_class_type="rosbag2_compression::BaseDecompressorInterface">
-#     <description>Zstd implementation for rosbag2 decompressor</description>
-#   </class>
-# </library>
 
 ros2_interface_library(
     name = "rosbag2_interfaces",
@@ -175,6 +165,7 @@ ros2_cpp_library(
         "rosbag2_transport/src/**/*.hpp",
     ]),
     hdrs = glob(["rosbag2_transport/include/**/*.hpp"]),
+    data = [":rosbag2_compression_zstd"],
     includes = ["rosbag2_transport/include"],
     visibility = ["//visibility:public"],
     deps = [

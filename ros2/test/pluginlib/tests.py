@@ -35,7 +35,7 @@ def generate_test_description():
 class TestPlugins(unittest.TestCase):
 
     def test_plugin_tests(self, proc_info, plugin_tests):
-        proc_info.assertWaitForShutdown(process=plugin_tests, timeout=0.1)
+        proc_info.assertWaitForShutdown(process=plugin_tests, timeout=0.2)
         launch_testing.asserts.assertExitCodes(
             proc_info,
             allowable_exit_codes=[launch_testing.asserts.EXIT_OK],
