@@ -10,8 +10,8 @@ py_library(
     imports = ["launch_ros"],
     visibility = ["//visibility:public"],
     deps = [
-        "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
         "@osrf_pycommon",
+        "@ros2_ament_index//:ament_index_python",
         "@ros2_launch//:launch",
         "@ros2_rcl_interfaces//:py_composition_interfaces",
         "@ros2_rcl_interfaces//:py_lifecycle_msgs",
@@ -39,7 +39,7 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         ":launch_ros",
-        "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
+        "@ros2_ament_index//:ament_index_python",
         "@ros2_launch//:launch",
         "@ros2cli",
         "@ros2cli//:ros2pkg",

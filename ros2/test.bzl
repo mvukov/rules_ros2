@@ -2,7 +2,7 @@
 """
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "AMENT_SETUP_MODULE", "ros2_ament_setup")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "ros2_ament_setup")
 load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
 load("@rules_python//python:defs.bzl", "py_test")
 
@@ -21,22 +21,17 @@ def ros2_test(name, nodes, launch_file, deps = None, data = None, **kwargs):
         fail("A list of nodes must be given!")
 
     ament_setup_target = name + "_ament_setup"
-    package_name = native.package_name()
-    ros2_ament_setup(
-        name = ament_setup_target,
-        package_name = package_name,
+    tags = kwargs.get("tags", None)
+    ament_setup_py_module = ros2_ament_setup(
+        ament_setup_target,
         deps = nodes,
         testonly = True,
+        tags = tags,
     )
 
-    repo_relative_ament_setup = paths.join(
-        package_name,
-        ament_setup_target,
-        AMENT_SETUP_MODULE,
-    ).replace("/", ".")
     substitutions = {
         "{launch_file}": "$(rootpath {})".format(launch_file),
-        "{ament_setup}": repo_relative_ament_setup,
+        "{ament_setup}": ament_setup_py_module,
     }
 
     launch_script = "{}_launch.py".format(name)

@@ -75,6 +75,7 @@ ros2_cpp_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "@ros2_ament_index//:ament_index_cpp",
         "@ros2_libstatistics_collector//:libstatistics_collector",
         "@ros2_rcl//:rcl",
         "@ros2_rcl//:rcl_yaml_param_parser",
