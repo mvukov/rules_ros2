@@ -83,8 +83,9 @@ def ros2_plugin(name, plugin_specs, **kwargs):
         base_class_type = plugin_spec["base_class_type"]
         types_to_bases_and_names[class_type] = [base_class_type, class_name]
 
-    # TODO(mvukov) Extract tags and other common fields and pass to ros2_plugin_rule.
     lib_name = "_" + name
+    tags = kwargs.get("tags", None)
+    visibility = kwargs.pop("visibility", None)
     ros2_cpp_library(
         name = lib_name,
         # This must be set such that static plugin registration works.
@@ -95,6 +96,8 @@ def ros2_plugin(name, plugin_specs, **kwargs):
         name = name,
         types_to_bases_and_names = types_to_bases_and_names,
         dep = lib_name,
+        tags = tags,
+        visibility = visibility,
     )
 
 Ros2PluginCollectorAspectInfo = provider(

@@ -8,7 +8,7 @@ load(
     "ros2_plugin_collector_aspect",
 )
 
-AMENT_SETUP_MODULE = "ament_setup"
+_AMENT_SETUP_MODULE = "ament_setup"
 
 _PACKAGE_XML_TEMPLATE = """\
 <?xml version="1.0"?>
@@ -76,7 +76,7 @@ def _write_plugins_xml(ctx, prefix_path, plugin_package, types_to_bases_and_name
 def _get_package_name(class_name):
     return class_name.split("::")[0]
 
-def _ros2_ament_setup_impl(ctx):
+def _ros2_ament_setup_rule_impl(ctx):
     plugins = depset(
         transitive = [
             dep[Ros2PluginCollectorAspectInfo].plugins
@@ -114,7 +114,7 @@ def _ros2_ament_setup_impl(ctx):
         )
         outputs.append(dynamic_library)
 
-    ament_setup = ctx.actions.declare_file(paths.join(prefix_path, AMENT_SETUP_MODULE + ".py"))
+    ament_setup = ctx.actions.declare_file(paths.join(prefix_path, _AMENT_SETUP_MODULE + ".py"))
     ament_prefix_path = "None"
     if outputs:
         ament_prefix_path = "'{}'".format(paths.join(ctx.attr.package_name, prefix_path))
@@ -138,7 +138,7 @@ def _ros2_ament_setup_impl(ctx):
         ),
     ]
 
-ros2_ament_setup = rule(
+ros2_ament_setup_rule = rule(
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
@@ -152,5 +152,18 @@ ros2_ament_setup = rule(
             allow_single_file = True,
         ),
     },
-    implementation = _ros2_ament_setup_impl,
+    implementation = _ros2_ament_setup_rule_impl,
 )
+
+def ros2_ament_setup(name, deps, testonly = False, tags = None):
+    package_name = native.package_name()
+    ros2_ament_setup_rule(
+        name = name,
+        package_name = package_name,
+        deps = deps,
+        testonly = testonly,
+        tags = tags,
+    )
+
+    py_module = "{}.{}".format(name, _AMENT_SETUP_MODULE)
+    return py_module

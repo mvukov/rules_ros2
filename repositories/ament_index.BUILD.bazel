@@ -2,6 +2,7 @@
 """
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_python//python:defs.bzl", "py_library")
 
 cc_library(
     name = "ament_index_cpp",
@@ -11,5 +12,12 @@ cc_library(
         "ament_index_cpp/include/ament_index_cpp/*.h",
     ]),
     includes = ["ament_index_cpp/include"],
+    visibility = ["//visibility:public"],
+)
+
+py_library(
+    name = "ament_index_python",
+    srcs = glob(["ament_index_python/ament_index_python/*.py"]),
+    imports = ["ament_index_python"],
     visibility = ["//visibility:public"],
 )

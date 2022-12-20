@@ -1,6 +1,7 @@
 """ Defines launch_ros-like ROS2 deployment.
 """
 
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "ros2_ament_setup")
 load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
 load("@rules_python//python:defs.bzl", "py_binary")
 
@@ -18,8 +19,17 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):
     if not nodes:
         fail("A list of nodes must be given!")
 
+    ament_setup_target = name + "_ament_setup"
+    tags = kwargs.get("tags", None)
+    ament_setup_py_module = ros2_ament_setup(
+        ament_setup_target,
+        deps = nodes,
+        tags = tags,
+    )
+
     substitutions = {
         "{launch_file}": "$(rootpath {})".format(launch_file),
+        "{ament_setup}": ament_setup_py_module,
     }
 
     launch_script = "{}_launch.py".format(name)
@@ -32,6 +42,7 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):
     )
 
     deps = deps or []
+    deps.append(ament_setup_target)
     data = data or []
     py_binary(
         name = name,

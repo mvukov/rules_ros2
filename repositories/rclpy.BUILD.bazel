@@ -36,7 +36,7 @@ py_library(
     imports = ["rclpy"],
     visibility = ["//visibility:public"],
     deps = [
-        "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
+        "@ros2_ament_index//:ament_index_python",
         "@ros2_rcl_interfaces//:py_action_msgs",
         "@ros2_rcl_interfaces//:py_builtin_interfaces",
         "@ros2_rcl_interfaces//:py_rcl_interfaces",

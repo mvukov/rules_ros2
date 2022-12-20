@@ -23,7 +23,7 @@ py_library(
     imports = ["ros2pkg"],
     visibility = ["//visibility:public"],
     deps = [
-        "@com_github_mvukov_rules_ros2//ros2/fake_ament:ament_index_python",
+        "@ros2_ament_index//:ament_index_python",
         requirement("catkin_pkg"),
         requirement("empy"),
         requirement("types-pkg-resources"),

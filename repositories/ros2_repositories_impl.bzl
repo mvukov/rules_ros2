@@ -52,6 +52,15 @@ def ros2_repositories_impl():
 
     maybe(
         http_archive,
+        name = "ros2_geometry2",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:geometry2.BUILD.bazel",
+        sha256 = "028a0aaa2f0ddd142da24921a9fa8e1b790734de364bd37de6d6a89c7487c3ab",
+        strip_prefix = "geometry2-0.25.0",
+        url = "https://github.com/ros2/geometry2/archive/refs/tags/0.25.0.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "iceoryx",
         strip_prefix = "iceoryx-2.0.2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:iceoryx.BUILD.bazel",
@@ -93,6 +102,15 @@ def ros2_repositories_impl():
         sha256 = "25a28787c6c616038bf4425a561e53dc92a3d315de4cf00d030f18edde2774c6",
         strip_prefix = "libstatistics_collector-1.2.0",
         url = "https://github.com/ros-tooling/libstatistics_collector/archive/refs/tags/1.2.0.tar.gz",
+    )
+
+    maybe(
+        http_archive,
+        name = "ros2_message_filters",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:message_filters.BUILD.bazel",
+        sha256 = "261cae7438b3b2907cc8f9d4972826a156147ec4b13b02eabca066f011b7d6bb",
+        strip_prefix = "message_filters-4.3.1",
+        url = "https://github.com/ros2/message_filters/archive/refs/tags/4.3.1.tar.gz",
     )
 
     maybe(
@@ -144,8 +162,6 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rclcpp",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel",
-        patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_remove_ament_dependency.patch"],
         sha256 = "88efccf847f9e5c698773d7b64a2ef6eb95e455f091356470a17692a596b025c",
         strip_prefix = "rclcpp-16.0.1",
         url = "https://github.com/ros2/rclcpp/archive/refs/tags/16.0.1.tar.gz",
