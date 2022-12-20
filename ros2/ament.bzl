@@ -164,9 +164,5 @@ def ros2_ament_setup(name, deps, testonly = False, tags = None):
         tags = tags,
     )
 
-    py_module = paths.join(
-        package_name,
-        name,
-        _AMENT_SETUP_MODULE,
-    ).replace("/", ".")
+    py_module = "{}.{}".format(name, _AMENT_SETUP_MODULE)
     return py_module
