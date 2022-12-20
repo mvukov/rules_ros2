@@ -1,0 +1,173 @@
+load(
+    "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_cpp_library",
+)
+load(
+    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "cpp_ros2_interface_library",
+)
+load(
+    "@com_github_mvukov_rules_ros2//ros2:plugin.bzl",
+    "ros2_plugin",
+)
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+ros2_cpp_library(
+    name = "camera_calibration_parsers",
+    srcs = glob([
+        "camera_calibration_parsers/src/parse.cpp",
+        "camera_calibration_parsers/src/parse_ini.cpp",
+        "camera_calibration_parsers/src/parse_yml.cpp",
+    ]),
+    hdrs = glob([
+        "camera_calibration_parsers/include/**/*.h",
+        "camera_calibration_parsers/include/**/*.hpp",
+    ]),
+    includes = ["camera_calibration_parsers/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rcpputils//:rcpputils",
+        "@yaml-cpp",
+    ],
+)
+
+ros2_cpp_library(
+    name = "image_transport_common_hdrs",
+    hdrs = glob([
+        "image_transport/include/image_transport/camera_common.h",
+        "image_transport/include/image_transport/camera_common.hpp",
+        "image_transport/include/image_transport/camera_publisher.h",
+        "image_transport/include/image_transport/camera_publisher.hpp",
+        "image_transport/include/image_transport/camera_subscriber.h",
+        "image_transport/include/image_transport/camera_subscriber.hpp",
+        "image_transport/include/image_transport/exception.h",
+        "image_transport/include/image_transport/exception.hpp",
+        "image_transport/include/image_transport/image_transport.h",
+        "image_transport/include/image_transport/image_transport.hpp",
+        "image_transport/include/image_transport/loader_fwds.h",
+        "image_transport/include/image_transport/loader_fwds.hpp",
+        "image_transport/include/image_transport/publisher.h",
+        "image_transport/include/image_transport/publisher.hpp",
+        "image_transport/include/image_transport/publisher_plugin.h",
+        "image_transport/include/image_transport/publisher_plugin.hpp",
+        "image_transport/include/image_transport/subscriber.h",
+        "image_transport/include/image_transport/single_subscriber_publisher.hpp",
+        "image_transport/include/image_transport/subscriber.hpp",
+        "image_transport/include/image_transport/subscriber_filter.h",
+        "image_transport/include/image_transport/subscriber_filter.hpp",
+        "image_transport/include/image_transport/subscriber_plugin.h",
+        "image_transport/include/image_transport/subscriber_plugin.hpp",
+        "image_transport/include/image_transport/transport_hints.h",
+        "image_transport/include/image_transport/transport_hints.hpp",
+        "image_transport/include/image_transport/visibility_control.hpp",
+    ]),
+    includes = ["image_transport/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_cpp_library(
+    name = "image_transport",
+    srcs = glob([
+        "image_transport/src/camera_common.cpp",
+        "image_transport/src/publisher.cpp",
+        "image_transport/src/subscriber.cpp",
+        "image_transport/src/single_subscriber_publisher.cpp",
+        "image_transport/src/camera_publisher.cpp",
+        "image_transport/src/camera_subscriber.cpp",
+        "image_transport/src/image_transport.cpp",
+    ]),
+    data = [
+        ":raw_publisher",
+        ":raw_subscriber",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":image_transport_common_hdrs",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_message_filters//:message_filters",
+        "@ros2_pluginlib//:pluginlib",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+cc_library(
+    name = "raw_publisher",
+    hdrs = [
+        "image_transport/include/image_transport/raw_publisher.h",
+        "image_transport/include/image_transport/raw_publisher.hpp",
+        "image_transport/include/image_transport/simple_publisher_plugin.hpp",
+        "image_transport/include/image_transport/single_subscriber_publisher.hpp",
+    ],
+    includes = ["image_transport/include"],
+    deps = [
+        ":image_transport_common_hdrs",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+cc_library(
+    name = "raw_subscriber",
+    hdrs = [
+        "image_transport/include/image_transport/raw_subscriber.h",
+        "image_transport/include/image_transport/raw_subscriber.hpp",
+        "image_transport/include/image_transport/simple_subscriber_plugin.hpp",
+        "image_transport/include/image_transport/single_subscriber_publisher.hpp",
+    ],
+    includes = ["image_transport/include"],
+    deps = [
+        ":image_transport_common_hdrs",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_plugin(
+    name = "raw_pub_sub_plugin",
+    srcs = [
+        "image_transport/src/manifest.cpp",
+    ],
+    plugin_specs = [
+        {
+            "class_type": "image_transport::RawPublisher",
+            "base_class_type": "image_transport::PublisherPlugin",
+        },
+        {
+            "class_type": "image_transport::RawSubscriber",
+            "base_class_type": "image_transport::SubscriberPlugin",
+        },
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":image_transport_common_hdrs",
+        ":raw_publisher",
+        ":raw_subscriber",
+        "@ros2_pluginlib//:pluginlib",
+    ],
+)
+
+ros2_cpp_library(
+    name = "camera_info_manager",
+    srcs = glob([
+        "camera_info_manager/src/camera_info_manager.cpp",
+    ]),
+    hdrs = glob([
+        "camera_info_manager/include/**/*.h",
+        "camera_info_manager/include/**/*.hpp",
+    ]),
+    includes = ["camera_info_manager/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":camera_calibration_parsers",
+        "@ros2_ament_index//:ament_index_cpp",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rcpputils//:rcpputils",
+    ],
+)
