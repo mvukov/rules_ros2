@@ -55,9 +55,6 @@ repositories:
   rclcpp:
     name: ros2_rclcpp
     build_file: "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel"
-    patch_args: ["-p1"]
-    patches:
-      - "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_remove_ament_dependency.patch"
   rclpy:
     name: ros2_rclpy
     build_file: "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel"

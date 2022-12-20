@@ -153,8 +153,6 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rclcpp",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel",
-        patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_remove_ament_dependency.patch"],
         sha256 = "88efccf847f9e5c698773d7b64a2ef6eb95e455f091356470a17692a596b025c",
         strip_prefix = "rclcpp-16.0.1",
         url = "https://github.com/ros2/rclcpp/archive/refs/tags/16.0.1.tar.gz",
