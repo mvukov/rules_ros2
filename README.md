@@ -27,7 +27,7 @@ Available features:
   - `ros2_param` for handling parameters
   - `ros2_topic` for handling topics
 
-ROS2 packages are by default locked to versions from [release-humble-20220523](https://github.com/ros2/ros2/releases/tag/release-humble-20220523).
+ROS2 packages are by default locked to versions from [release-humble-20221123](https://github.com/ros2/ros2/releases/tag/release-humble-20221123).
 
 NOTE: Unlike ROS1 genmsg which refuses to generate code if the deps between
 interface targets are not set correctly, code generation for ROS2 seems to not
