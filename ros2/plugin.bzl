@@ -33,7 +33,7 @@ Ros2PluginInfo = provider(
     ],
 )
 
-def _create_dynamic_library(ctx, name, cc_info):
+def _create_dynamic_library(ctx, **kwargs):
     cc_toolchain = find_cpp_toolchain(ctx)
     feature_configuration = cc_common.configure_features(
         ctx = ctx,
@@ -46,16 +46,19 @@ def _create_dynamic_library(ctx, name, cc_info):
         actions = ctx.actions,
         feature_configuration = feature_configuration,
         cc_toolchain = cc_toolchain,
-        linking_contexts = [cc_info.linking_context],
-        name = name,
         output_type = "dynamic_library",
+        **kwargs
     )
     dynamic_library = linking_outputs.library_to_link.resolved_symlink_dynamic_library
     return dynamic_library
 
 def _ros2_plugin_impl(ctx):
     name = ctx.attr.name + "/plugin"
-    dynamic_library = _create_dynamic_library(ctx, name, ctx.attr.dep[CcInfo])
+    dynamic_library = _create_dynamic_library(
+        ctx,
+        name = name,
+        linking_contexts = [ctx.attr.dep[CcInfo].linking_context],
+    )
 
     return [
         DefaultInfo(
@@ -176,7 +179,15 @@ Ros2IdlPluginAspectInfo = provider(
 def _ros2_idl_plugin_aspect_impl(target, ctx):
     package_name = target.label.name
     cc_info = target[CppGeneratorAspectInfo].cc_info
-    dynamic_library = _create_dynamic_library(ctx, package_name + "/plugin", cc_info)
+    compilation_outputs = cc_common.create_compilation_outputs(
+        pic_objects = target[CppGeneratorAspectInfo].pic_objects,
+    )
+    dynamic_library = _create_dynamic_library(
+        ctx,
+        name = package_name + "/plugin",
+        compilation_outputs = compilation_outputs,
+        linking_contexts = [cc_info.linking_context],
+    )
     plugin = struct(
         package_name = package_name,
         dynamic_library = dynamic_library,
