@@ -72,9 +72,9 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_keyboard_handler",
         build_file = "@com_github_mvukov_rules_ros2//repositories:keyboard_handler.BUILD.bazel",
-        sha256 = "7279075e599965dc414789640039affc2fc04ae27b46244423c665818b031a6b",
-        strip_prefix = "keyboard_handler-0.0.4",
-        url = "https://github.com/ros-tooling/keyboard_handler/archive/refs/tags/0.0.4.tar.gz",
+        sha256 = "36e64e9e1927a6026e1b45cafc4c8efd32db274bfab5da0edd273a583f3c73f4",
+        strip_prefix = "keyboard_handler-0.0.5",
+        url = "https://github.com/ros-tooling/keyboard_handler/archive/refs/tags/0.0.5.tar.gz",
     )
 
     maybe(
@@ -265,9 +265,9 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rosbag2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosbag2.BUILD.bazel",
-        sha256 = "d12403052f7e0956ff959969bfff962f2b3517cbcec1ed8a93dafdcb9aba021b",
-        strip_prefix = "rosbag2-0.15.2",
-        url = "https://github.com/ros2/rosbag2/archive/refs/tags/0.15.2.tar.gz",
+        sha256 = "3a7c8939df436d830fb960e7bdf20331c071aee1c7eb2cb55b46546c4b751891",
+        strip_prefix = "rosbag2-0.15.3",
+        url = "https://github.com/ros2/rosbag2/archive/refs/tags/0.15.3.tar.gz",
     )
 
     maybe(
