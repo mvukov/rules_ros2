@@ -3,8 +3,16 @@
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load(
+    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "Ros2InterfaceInfo",
+    "cpp_generator_aspect",
+    "idl_adapter_aspect",
+)
+load(
     "@com_github_mvukov_rules_ros2//ros2:plugin.bzl",
+    "Ros2IdlPluginAspectInfo",
     "Ros2PluginCollectorAspectInfo",
+    "ros2_idl_plugin_aspect",
     "ros2_plugin_collector_aspect",
 )
 
@@ -114,6 +122,25 @@ def _ros2_ament_setup_rule_impl(ctx):
         )
         outputs.append(dynamic_library)
 
+    idl_plugins = depset(
+        transitive = [
+            dep[Ros2IdlPluginAspectInfo].plugins
+            for dep in ctx.attr.idl_deps
+        ],
+    ).to_list()
+
+    for plugin in idl_plugins:
+        package_name = plugin.package_name
+        outputs.append(_write_package_xml(ctx, prefix_path, package_name))
+        dynamic_library = ctx.actions.declare_file(
+            paths.join(prefix_path, "lib", "lib" + package_name + "__" + "rosidl_typesupport_cpp" + ".so"),
+        )
+        ctx.actions.symlink(
+            output = dynamic_library,
+            target_file = plugin.dynamic_library,
+        )
+        outputs.append(dynamic_library)
+
     ament_setup = ctx.actions.declare_file(paths.join(prefix_path, _AMENT_SETUP_MODULE + ".py"))
     ament_prefix_path = "None"
     if outputs:
@@ -144,6 +171,14 @@ ros2_ament_setup_rule = rule(
             mandatory = True,
             aspects = [ros2_plugin_collector_aspect],
         ),
+        "idl_deps": attr.label_list(
+            aspects = [
+                idl_adapter_aspect,
+                cpp_generator_aspect,
+                ros2_idl_plugin_aspect,
+            ],
+            providers = [Ros2InterfaceInfo],
+        ),
         "package_name": attr.string(
             mandatory = True,
         ),
@@ -155,12 +190,13 @@ ros2_ament_setup_rule = rule(
     implementation = _ros2_ament_setup_rule_impl,
 )
 
-def ros2_ament_setup(name, deps, testonly = False, tags = None):
+def ros2_ament_setup(name, deps, idl_deps = None, testonly = False, tags = None):
     package_name = native.package_name()
     ros2_ament_setup_rule(
         name = name,
         package_name = package_name,
         deps = deps,
+        idl_deps = idl_deps,
         testonly = testonly,
         tags = tags,
     )

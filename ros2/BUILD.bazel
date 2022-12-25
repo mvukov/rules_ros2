@@ -41,5 +41,9 @@ py_binary(
 
 ros2_bag(
     name = "ros2_bag",
+    idl_deps = [
+        "@ros2_rcl_interfaces//:rcl_interfaces",
+        "@ros2_common_interfaces//:std_msgs",
+    ],
     visibility = ["//visibility:public"],
 )
