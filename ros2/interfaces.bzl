@@ -510,7 +510,7 @@ c_ros2_interface_library = rule(
 
 CppGeneratorAspectInfo = provider("TBD", fields = [
     "cc_info",
-    "pic_objects",
+    "compilation_outputs",
 ])
 
 _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING = [
@@ -593,13 +593,7 @@ def _cpp_generator_aspect_impl(target, ctx):
     return [
         CppGeneratorAspectInfo(
             cc_info = compilation_info.cc_info,
-            pic_objects = depset(
-                direct = compilation_info.compilation_outputs.pic_objects,
-                transitive = [
-                    dep[CppGeneratorAspectInfo].pic_objects
-                    for dep in ctx.rule.attr.deps
-                ],
-            ),
+            compilation_outputs = compilation_info.compilation_outputs,
         ),
     ]
 

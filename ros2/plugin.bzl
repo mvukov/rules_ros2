@@ -179,13 +179,10 @@ Ros2IdlPluginAspectInfo = provider(
 def _ros2_idl_plugin_aspect_impl(target, ctx):
     package_name = target.label.name
     cc_info = target[CppGeneratorAspectInfo].cc_info
-    compilation_outputs = cc_common.create_compilation_outputs(
-        pic_objects = target[CppGeneratorAspectInfo].pic_objects,
-    )
     dynamic_library = _create_dynamic_library(
         ctx,
         name = package_name + "/plugin",
-        compilation_outputs = compilation_outputs,
+        compilation_outputs = target[CppGeneratorAspectInfo].compilation_outputs,
         linking_contexts = [cc_info.linking_context],
     )
     plugin = struct(
