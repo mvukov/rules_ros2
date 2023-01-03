@@ -1,0 +1,37 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
+
+ros2_cpp_binary(
+    name = "publisher",
+    srcs = ["publisher.cc"],
+    deps = [
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "recorder",
+    srcs = ["recorder.cc"],
+    deps = [
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rosbag2//:rosbag2_storage",
+        "@ros2_rosbag2//:rosbag2_transport",
+    ],
+)
+
+ros2_test(
+    name = "tests",
+    size = "small",
+    idl_deps = [
+        "@ros2_common_interfaces//:std_msgs",
+        "@ros2_rcl_interfaces//:rcl_interfaces",
+        "@ros2_rosbag2//:rosbag2_interfaces",
+    ],
+    launch_file = "tests.py",
+    nodes = [
+        ":publisher",
+        ":recorder",
+    ],
+)

@@ -6,7 +6,7 @@ load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "ros2_ament_setup")
 load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
 load("@rules_python//python:defs.bzl", "py_test")
 
-def ros2_test(name, nodes, launch_file, deps = None, data = None, **kwargs):
+def ros2_test(name, nodes, launch_file, deps = None, data = None, idl_deps = None, **kwargs):
     """ Defines a ROS2 test.
 
     Args:
@@ -15,6 +15,7 @@ def ros2_test(name, nodes, launch_file, deps = None, data = None, **kwargs):
         launch_file: A ros2test-compatible launch file.
         deps: Additional Python deps that can be used by the launch file.
         data: Additional data that can be used by the launch file.
+        idl_deps: Additional IDL deps that are used as runtime plugins.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
     """
     if not nodes:
@@ -25,6 +26,7 @@ def ros2_test(name, nodes, launch_file, deps = None, data = None, **kwargs):
     ament_setup_py_module = ros2_ament_setup(
         ament_setup_target,
         deps = nodes,
+        idl_deps = idl_deps,
         testonly = True,
         tags = tags,
     )
