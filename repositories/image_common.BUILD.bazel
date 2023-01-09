@@ -34,61 +34,67 @@ ros2_cpp_library(
 )
 
 ros2_cpp_library(
-    name = "image_transport_common_hdrs",
-    hdrs = glob([
+    name = "image_transport_common",
+    srcs = [
+        "image_transport/src/camera_common.cpp",
+        "image_transport/src/publisher.cpp",
+        "image_transport/src/single_subscriber_publisher.cpp",
+    ],
+    hdrs = [
         "image_transport/include/image_transport/camera_common.h",
         "image_transport/include/image_transport/camera_common.hpp",
-        "image_transport/include/image_transport/camera_publisher.h",
-        "image_transport/include/image_transport/camera_publisher.hpp",
-        "image_transport/include/image_transport/camera_subscriber.h",
-        "image_transport/include/image_transport/camera_subscriber.hpp",
         "image_transport/include/image_transport/exception.h",
         "image_transport/include/image_transport/exception.hpp",
-        "image_transport/include/image_transport/image_transport.h",
-        "image_transport/include/image_transport/image_transport.hpp",
         "image_transport/include/image_transport/loader_fwds.h",
         "image_transport/include/image_transport/loader_fwds.hpp",
         "image_transport/include/image_transport/publisher.h",
         "image_transport/include/image_transport/publisher.hpp",
         "image_transport/include/image_transport/publisher_plugin.h",
         "image_transport/include/image_transport/publisher_plugin.hpp",
-        "image_transport/include/image_transport/subscriber.h",
+        "image_transport/include/image_transport/simple_publisher_plugin.hpp",
+        "image_transport/include/image_transport/simple_subscriber_plugin.hpp",
         "image_transport/include/image_transport/single_subscriber_publisher.hpp",
-        "image_transport/include/image_transport/subscriber.hpp",
-        "image_transport/include/image_transport/subscriber_filter.h",
-        "image_transport/include/image_transport/subscriber_filter.hpp",
         "image_transport/include/image_transport/subscriber_plugin.h",
         "image_transport/include/image_transport/subscriber_plugin.hpp",
-        "image_transport/include/image_transport/transport_hints.h",
-        "image_transport/include/image_transport/transport_hints.hpp",
         "image_transport/include/image_transport/visibility_control.hpp",
-    ]),
+    ],
     includes = ["image_transport/include"],
     visibility = ["//visibility:public"],
     deps = [
         "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_pluginlib//:pluginlib",
         "@ros2_rclcpp//:rclcpp",
     ],
 )
 
 ros2_cpp_library(
     name = "image_transport",
-    srcs = glob([
-        "image_transport/src/camera_common.cpp",
-        "image_transport/src/publisher.cpp",
-        "image_transport/src/subscriber.cpp",
-        "image_transport/src/single_subscriber_publisher.cpp",
+    srcs = [
         "image_transport/src/camera_publisher.cpp",
         "image_transport/src/camera_subscriber.cpp",
         "image_transport/src/image_transport.cpp",
-    ]),
+        "image_transport/src/subscriber.cpp",
+    ],
+    hdrs = [
+        "image_transport/include/image_transport/camera_publisher.h",
+        "image_transport/include/image_transport/camera_publisher.hpp",
+        "image_transport/include/image_transport/camera_subscriber.h",
+        "image_transport/include/image_transport/camera_subscriber.hpp",
+        "image_transport/include/image_transport/image_transport.h",
+        "image_transport/include/image_transport/image_transport.hpp",
+        "image_transport/include/image_transport/subscriber.h",
+        "image_transport/include/image_transport/subscriber.hpp",
+        "image_transport/include/image_transport/subscriber_filter.h",
+        "image_transport/include/image_transport/subscriber_filter.hpp",
+        "image_transport/include/image_transport/transport_hints.h",
+        "image_transport/include/image_transport/transport_hints.hpp",
+    ],
     data = [
-        ":raw_publisher",
-        ":raw_subscriber",
+        ":image_transport_plugins",
     ],
     visibility = ["//visibility:public"],
     deps = [
-        ":image_transport_common_hdrs",
+        ":image_transport_common",
         "@ros2_common_interfaces//:cpp_sensor_msgs",
         "@ros2_message_filters//:message_filters",
         "@ros2_pluginlib//:pluginlib",
@@ -96,67 +102,40 @@ ros2_cpp_library(
     ],
 )
 
-cc_library(
-    name = "raw_publisher",
-    hdrs = [
+ros2_plugin(
+    name = "image_transport_plugins",
+    srcs = [
         "image_transport/include/image_transport/raw_publisher.h",
         "image_transport/include/image_transport/raw_publisher.hpp",
-        "image_transport/include/image_transport/simple_publisher_plugin.hpp",
-        "image_transport/include/image_transport/single_subscriber_publisher.hpp",
-    ],
-    includes = ["image_transport/include"],
-    deps = [
-        ":image_transport_common_hdrs",
-        "@ros2_common_interfaces//:cpp_sensor_msgs",
-        "@ros2_rclcpp//:rclcpp",
-    ],
-)
-
-cc_library(
-    name = "raw_subscriber",
-    hdrs = [
         "image_transport/include/image_transport/raw_subscriber.h",
         "image_transport/include/image_transport/raw_subscriber.hpp",
-        "image_transport/include/image_transport/simple_subscriber_plugin.hpp",
-        "image_transport/include/image_transport/single_subscriber_publisher.hpp",
-    ],
-    includes = ["image_transport/include"],
-    deps = [
-        ":image_transport_common_hdrs",
-        "@ros2_common_interfaces//:cpp_sensor_msgs",
-        "@ros2_rclcpp//:rclcpp",
-    ],
-)
-
-ros2_plugin(
-    name = "raw_pub_sub_plugin",
-    srcs = [
         "image_transport/src/manifest.cpp",
     ],
     plugin_specs = [
         {
+            "name": "image_transport/raw_pub",
             "class_type": "image_transport::RawPublisher",
             "base_class_type": "image_transport::PublisherPlugin",
         },
         {
+            "name": "image_transport/raw_sub",
             "class_type": "image_transport::RawSubscriber",
             "base_class_type": "image_transport::SubscriberPlugin",
         },
     ],
-    visibility = ["//visibility:public"],
     deps = [
-        ":image_transport_common_hdrs",
-        ":raw_publisher",
-        ":raw_subscriber",
+        ":image_transport_common",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
         "@ros2_pluginlib//:pluginlib",
+        "@ros2_rclcpp//:rclcpp",
     ],
 )
 
 ros2_cpp_library(
     name = "camera_info_manager",
-    srcs = glob([
+    srcs = [
         "camera_info_manager/src/camera_info_manager.cpp",
-    ]),
+    ],
     hdrs = glob([
         "camera_info_manager/include/**/*.h",
         "camera_info_manager/include/**/*.hpp",
