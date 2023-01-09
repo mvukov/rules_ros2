@@ -70,6 +70,15 @@ def ros2_repositories_impl():
 
     maybe(
         http_archive,
+        name = "ros2_image_common",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:image_common.BUILD.bazel",
+        sha256 = "bfe5bcf247370c21cb270de8421728b4e4961d8dbec11f9e178afe8e39078cb5",
+        strip_prefix = "image_common-3.1.4",
+        url = "https://github.com/ros-perception/image_common/archive/refs/tags/3.1.4.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_launch",
         build_file = "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel",
         sha256 = "4c75be48263bfe7f95b82a7dc37806f7722d6af007556328963153546db3a4c9",

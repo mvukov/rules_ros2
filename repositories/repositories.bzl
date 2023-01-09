@@ -99,6 +99,15 @@ def ros2_repositories():
 
     maybe(
         http_archive,
+        name = "yaml_cpp",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:yaml_cpp.BUILD.bazel",
+        sha256 = "43e6a9fcb146ad871515f0d0873947e5d497a1c9c60c58cb102a97b47208b7c3",
+        strip_prefix = "yaml-cpp-yaml-cpp-0.7.0",
+        urls = ["https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.7.0.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
         name = "ros2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
         sha256 = "2dd2a267d374563b06213e7148f1b459da8ad0912953ad557c561a150258df88",
