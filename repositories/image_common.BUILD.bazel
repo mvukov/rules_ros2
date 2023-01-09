@@ -113,12 +113,12 @@ ros2_plugin(
     ],
     plugin_specs = [
         {
-            "name": "image_transport/raw_pub",
+            "class_name": "image_transport/raw_pub",
             "class_type": "image_transport::RawPublisher",
             "base_class_type": "image_transport::PublisherPlugin",
         },
         {
-            "name": "image_transport/raw_sub",
+            "class_name": "image_transport/raw_sub",
             "class_type": "image_transport::RawSubscriber",
             "base_class_type": "image_transport::SubscriberPlugin",
         },
