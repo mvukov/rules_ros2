@@ -29,7 +29,7 @@ ros2_cpp_library(
         "@ros2_common_interfaces//:cpp_sensor_msgs",
         "@ros2_rclcpp//:rclcpp",
         "@ros2_rcpputils//:rcpputils",
-        "@yaml-cpp",
+        "@yaml_cpp",
     ],
 )
 

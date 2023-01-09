@@ -1,0 +1,30 @@
+""" Builds yaml_cpp.
+"""
+
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+
+filegroup(
+    name = "all_srcs",
+    # TODO(mvukov) Minimize srcs.
+    srcs = glob(["**"]),
+)
+
+cmake(
+    name = "yaml_cpp",
+    build_args = [
+        "--",
+        "-j4",
+    ],
+    cache_entries = {
+        "BUILD_SHARED_LIBS": "OFF",
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
+        "YAML_CPP_BUILD_CONTRIB": "ON",
+        "YAML_CPP_BUILD_TESTS": "OFF",
+        "YAML_CPP_BUILD_TOOLS": "ON",
+    },
+    generate_args = ["-GNinja"],
+    lib_source = ":all_srcs",
+    out_static_libs = ["libyaml-cpp.a"],
+    visibility = ["//visibility:public"],
+)
