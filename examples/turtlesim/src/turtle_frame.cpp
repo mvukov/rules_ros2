@@ -88,11 +88,17 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent, 
   turtles.append("humble.png");
   turtles.append("rolling.png");
 
-  QString images_path = (ament_index_cpp::get_package_share_directory("turtlesim") + "/images/").c_str();
+  /*
+   * QString images_path = (ament_index_cpp::get_package_share_directory("turtlesim") + "/images/").c_str();
+   * AndreasKnoblach 2023-01-15: get_package_share_directory cause crash because
+   *   Environment variable 'AMENT_PREFIX_PATH' is not set or empty
+   * Since this is only needed to determine the images_path, it is replaced by hard coding the path.
+   */
+  // QString images_path{"<complete path to rules_ros2>/examples/turtlesim/images/"}; //inentionally comment to trigger compile error
   for (int i = 0; i < turtles.size(); ++i)
   {
     QImage img;
-    img.load(images_path + turtles[i]);
+    img.load(images_path + turtles[i]); //Uncomment and complete line 97
     turtle_images_.append(img);
   }
 
