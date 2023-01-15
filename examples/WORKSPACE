@@ -84,3 +84,10 @@ container_pull(
     registry = "docker.io",
     repository = "mvukov/ros-deploy-base",
 )
+
+# Add QT lib
+new_local_repository(
+    name = "qt",
+    path = "/usr/include/x86_64-linux-gnu/qt5",
+    build_file = "third_party/qt/BUILD.bazel"
+)

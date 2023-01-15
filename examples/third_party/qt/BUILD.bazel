@@ -1,0 +1,31 @@
+cc_library(
+    name = "qt_core",
+    hdrs = glob(["QtCore/**"]),
+    includes = [".", "./QtCore"],
+    linkopts = [
+        "-lQt5Core",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "qt_widgets",
+    hdrs = glob(["QtWidgets/**"]),
+    includes = [".", "./QtWidgets"],
+    deps = [":qt_core"],
+    linkopts = [
+        "-lQt5Widgets",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "qt_gui",
+    hdrs = glob(["QtGui/**"]),
+    includes = [".", "./QtGui"],
+    deps = [":qt_core"],
+    linkopts = [
+        "-lQt5Gui",
+    ],
+    visibility = ["//visibility:public"],
+)
