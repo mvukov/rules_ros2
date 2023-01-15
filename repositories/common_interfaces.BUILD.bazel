@@ -33,6 +33,25 @@ py_ros2_interface_library(
 )
 
 ros2_interface_library(
+    name = "std_srvs",
+    srcs = glob(["std_srvs/srv/*.srv"]),
+    visibility = ["//visibility:public"],
+    deps = ["@ros2_rcl_interfaces//:builtin_interfaces"],
+)
+
+cpp_ros2_interface_library(
+    name = "cpp_std_srvs",
+    visibility = ["//visibility:public"],
+    deps = [":std_srvs"],
+)
+
+py_ros2_interface_library(
+    name = "py_std_srvs",
+    visibility = ["//visibility:public"],
+    deps = [":std_srvs"],
+)
+
+ros2_interface_library(
     name = "geometry_msgs",
     srcs = glob(["geometry_msgs/msg/*.msg"]),
     visibility = ["//visibility:public"],
