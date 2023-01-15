@@ -1,0 +1,13 @@
+load("@com_github_mvukov_rules_ros2//ros2:interfaces.bzl", "ros2_interface_library")
+
+ros2_interface_library(
+    name = "turtlesim",
+    srcs = [
+        "Kill.srv",
+        "SetPen.srv",
+        "Spawn.srv",
+        "TeleportAbsolute.srv",
+        "TeleportRelative.srv",
+    ],
+    visibility = ["//turtlesim:__pkg__"],
+)

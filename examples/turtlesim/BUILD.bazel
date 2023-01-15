@@ -1,0 +1,87 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load("@com_github_mvukov_rules_ros2//ros2:interfaces.bzl", "cpp_ros2_interface_library")
+load("//third_party/qt:qt.bzl", "ros_qt_cc_library")
+
+cpp_ros2_interface_library(
+    name = "cpp_turtlesim_interface",
+    deps = [
+        "//turtlesim/action:turtlesim",
+        "//turtlesim/msg:turtlesim",
+        "//turtlesim/srv:turtlesim",
+    ],
+)
+
+ros_qt_cc_library(
+    name = "turtle",
+    src = "src/turtle.cpp",
+    hdr = "include/turtlesim/turtle.h",
+    includes = [
+        "include",
+    ],
+    deps = [
+        ":cpp_turtlesim_interface",
+        "@qt//:qt_core",
+        "@qt//:qt_gui",
+        "@ros2_common_interfaces//:cpp_geometry_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rclcpp//:rclcpp_action",
+    ],
+)
+
+ros_qt_cc_library(
+    name = "turtle_frame",
+    src = "src/turtle_frame.cpp",
+    data = glob(["images/*.png"]),
+    hdr = "include/turtlesim/turtle_frame.h",
+    deps = [
+        ":cpp_turtlesim_interface",
+        ":turtle",
+        "@qt//:qt_core",
+        "@qt//:qt_gui",
+        "@qt//:qt_widgets",
+        "@ros2_common_interfaces//:cpp_std_srvs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "turtlesim",
+    srcs = ["src/turtlesim.cpp"],
+    deps = [
+        ":turtle_frame",
+        "@qt//:qt_widgets",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "teleop",
+    srcs = ["tutorials/teleop_turtle_key.cpp"],
+    deps = [
+        ":cpp_turtlesim_interface",
+        "@ros2_common_interfaces//:cpp_geometry_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rclcpp//:rclcpp_action",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "draw_square",
+    srcs = ["tutorials/draw_square.cpp"],
+    deps = [
+        ":cpp_turtlesim_interface",
+        "@ros2_common_interfaces//:cpp_geometry_msgs",
+        "@ros2_common_interfaces//:cpp_std_srvs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "mimic",
+    srcs = ["tutorials/mimic.cpp"],
+    deps = [
+        ":cpp_turtlesim_interface",
+        "@ros2_common_interfaces//:cpp_geometry_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
