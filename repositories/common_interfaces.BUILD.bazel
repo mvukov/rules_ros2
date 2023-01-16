@@ -100,7 +100,7 @@ ros2_cpp_library(
     hdrs = glob([
         "sensor_msgs/include/**/*.hpp",
     ]),
-    strip_include_prefix = "sensor_msgs/include",
+    includes = ["sensor_msgs/include"],
     visibility = ["//visibility:public"],
     deps = [":_cpp_sensor_msgs"],
 )
