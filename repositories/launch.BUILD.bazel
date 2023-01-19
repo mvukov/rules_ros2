@@ -18,6 +18,21 @@ py_library(
 )
 
 py_library(
+    name = "launch_pytest",
+    srcs = glob(["launch_pytest/launch_pytest/**/*.py"]),
+    imports = ["launch_pytest"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":launch",
+        ":launch_testing",
+        "@osrf_pycommon",
+        "@ros2_ament_index//:ament_index_python",
+        requirement("pytest"),
+        requirement("pyyaml"),
+    ],
+)
+
+py_library(
     name = "launch_testing",
     srcs = glob(["launch_testing/launch_testing/**/*.py"]),
     imports = ["launch_testing"],
