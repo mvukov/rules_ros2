@@ -21,6 +21,10 @@ repositories:
   geometry2:
     name: ros2_geometry2
     build_file: "@com_github_mvukov_rules_ros2//repositories:geometry2.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      # https://github.com/ros2/geometry2/commit/f95dfbef3f7b2b65ecf18c7cc70bdac84a2bb6d4
+      - "@com_github_mvukov_rules_ros2//repositories/patches:geometry2_fix-use-after-free-bug.patch"
   iceoryx:
     name: iceoryx
     strip_prefix: iceoryx-2.0.2
@@ -58,6 +62,10 @@ repositories:
   rclcpp:
     name: ros2_rclcpp
     build_file: "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      # https://github.com/ros2/rclcpp/commit/37adc03c11171f67c213ee72f7ce43fdcbda7b9e
+      - "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_fix-maybe-uninitialized-warning.patch"
   rclpy:
     name: ros2_rclpy
     build_file: "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel"
