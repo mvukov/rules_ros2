@@ -45,5 +45,4 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    print('ROS_LOG_DIR: ' + os.environ['ROS_LOG_DIR'])
     main()
