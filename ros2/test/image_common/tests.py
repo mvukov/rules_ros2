@@ -16,8 +16,10 @@ import unittest
 import launch.actions
 import launch_testing.actions
 import launch_testing.asserts
+import launch_testing.markers
 
 
+@launch_testing.markers.keep_alive
 def generate_test_description():
     test_node = launch.actions.ExecuteProcess(
         name='plugin_tests',
