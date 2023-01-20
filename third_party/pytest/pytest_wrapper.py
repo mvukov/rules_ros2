@@ -1,15 +1,15 @@
-import sys
 import os
 import pathlib
+import sys
 
 import coverage
 import pytest
 
 
 def start_coverage_session() -> coverage.Coverage:
-    coverage_dir = pathlib.Path(os.getenv("COVERAGE_DIR"))
-    coverage_file = coverage_dir / ".coverage"
-    coverage_manifest = pathlib.Path(os.getenv("COVERAGE_MANIFEST"))
+    coverage_dir = pathlib.Path(os.getenv('COVERAGE_DIR'))
+    coverage_file = coverage_dir / '.coverage'
+    coverage_manifest = pathlib.Path(os.getenv('COVERAGE_MANIFEST'))
     coverage_sources = coverage_manifest.read_text().splitlines()
     coverage_session = coverage.Coverage(
         data_file=str(coverage_file),
@@ -22,15 +22,15 @@ def start_coverage_session() -> coverage.Coverage:
 def finalize_coverage_session(coverage_session: coverage.Coverage) -> None:
     coverage_session.stop()
     coverage_session.save()
-    output_file = pathlib.Path(os.getenv("COVERAGE_OUTPUT_FILE"))
+    output_file = pathlib.Path(os.getenv('COVERAGE_OUTPUT_FILE'))
     coverage_session.lcov_report(outfile=output_file)
 
 
 def main() -> None:
     args = sys.argv[1:]
 
-    bazel_coverage = os.getenv("COVERAGE") == "1"
-    output_dir = pathlib.Path(os.getenv("TEST_UNDECLARED_OUTPUTS_DIR"))
+    bazel_coverage = os.getenv('COVERAGE') == '1'
+    output_dir = pathlib.Path(os.getenv('TEST_UNDECLARED_OUTPUTS_DIR'))
 
     coverage_session = None
     if bazel_coverage:
@@ -45,6 +45,6 @@ def main() -> None:
     sys.exit(pytest_exit_code)
 
 
-if __name__ == "__main__":
-    print("ROS_LOG_DIR: " + os.environ["ROS_LOG_DIR"])
+if __name__ == '__main__':
+    print('ROS_LOG_DIR: ' + os.environ['ROS_LOG_DIR'])
     main()
