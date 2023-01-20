@@ -30,13 +30,12 @@ def main() -> None:
     args = sys.argv[1:]
 
     bazel_coverage = os.getenv('COVERAGE') == '1'
-    output_dir = pathlib.Path(os.getenv('TEST_UNDECLARED_OUTPUTS_DIR'))
 
     coverage_session = None
     if bazel_coverage:
         coverage_session = start_coverage_session()
 
-    args.append(f"--junitxml={output_dir / 'junit-report.xml'}")
+    args.append(f'--junitxml={os.environ["XML_OUTPUT_FILE"]}')
     pytest_exit_code = pytest.main(args)
 
     if coverage_session:
