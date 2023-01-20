@@ -1,18 +1,14 @@
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+load("//ros2:test.bzl", "ros2_test")
 
 cc_binary(
     name = "hello",
+    testonly = True,
     srcs = ["hello.cpp"],
 )
 
-py_test(
+ros2_test(
     name = "launch_pytest_test",
-    srcs = ["launch_pytest_test.py"],
-    data = [":hello"],
-    # launch_file = "launch_pytest_test.py",
-    # nodes = [":hello"],
-    deps = [
-        requirement("pytest"),
-        "@ros2_launch//:launch_pytest",
-    ],
+    launch_file = "launch_pytest_test.py",
+    nodes = [":hello"],
+    use_pytest = True,
 )

@@ -1,0 +1,9 @@
+py_library(
+    name = "pytest_wrapper",
+    srcs = ["pytest_wrapper.py"],
+    visibility = ["//visibility:public"],
+)
+
+exports_files([
+    "pytest_wrapper.py",
+])
