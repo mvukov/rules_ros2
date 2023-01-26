@@ -9,6 +9,7 @@ load(
     "py_ros2_interface_library",
     "ros2_interface_library",
 )
+load("@rules_python//python:defs.bzl", "py_library")
 
 ros2_interface_library(
     name = "tf2_msgs",
@@ -130,5 +131,54 @@ ros2_cpp_library(
         ":tf2_ros",
         "@eigen",
         "@ros2_common_interfaces//:cpp_sensor_msgs",
+    ],
+)
+
+ros2_cpp_library(
+    name = "tf2_eigen",
+    hdrs = ["tf2_eigen/include/tf2_eigen/tf2_eigen.hpp"],
+    includes = ["tf2_eigen/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":tf2",
+        ":tf2_ros",
+        "@WayveCode//3rdparty/cpp:eigen",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "tf2_py/tf2_py/_tf2_py.so",
+    srcs = [
+        "tf2_py/src/tf2_py.cpp",
+    ],
+    linkshared = True,
+    deps = [
+        ":tf2",
+        "@python_runtime//:dev",
+    ],
+)
+
+py_library(
+    name = "tf2_py",
+    srcs = [
+        "tf2_py/tf2_py/__init__.py",
+    ],
+    data = [
+        ":tf2_py/tf2_py/_tf2_py.so",
+    ],
+    imports = ["tf2_py"],
+)
+
+py_library(
+    name = "tf2_ros_py",
+    srcs = glob(["tf2_ros_py/tf2_ros/*.py"]),
+    imports = ["tf2_ros_py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":py_tf2_msgs",
+        ":tf2_py",
+        "@ros2_common_interfaces//:py_geometry_msgs",
+        "@ros2_common_interfaces//:py_sensor_msgs",
+        "@ros2_common_interfaces//:py_std_msgs",
     ],
 )
