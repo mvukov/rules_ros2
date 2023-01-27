@@ -45,7 +45,7 @@ def main() -> None:
     if bazel_coverage:
         coverage_session = start_coverage_session()
 
-    args = sys.argv[1:]
+    args = ["-ra", "-vv", "-p", "launch_pytest.plugin"] + sys.argv[1:]
     args.append(f'--junitxml={os.environ["XML_OUTPUT_FILE"]}')
     pytest_exit_code = pytest.main(args)
 

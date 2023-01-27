@@ -82,12 +82,7 @@ def _ros2_launch_pytest_test(name, nodes, launch_file, ament_setup_py_module, de
         srcs = [launch_script, launch_file],
         main = launch_script,
         data = nodes + data,
-        args = [
-            "-ra",
-            "-vv",
-            "-p",
-            "launch_pytest.plugin",
-        ] + kwargs.pop("args", []) + ["$(location :%s)" % launch_file],
+        args = kwargs.pop("args", []) + ["$(location :%s)" % launch_file],
         deps = deps + [
             "@ros2_launch//:launch_pytest",
             requirement("coverage"),
