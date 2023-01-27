@@ -8,6 +8,9 @@ import coverage
 import pytest
 
 
+import {ament_setup}
+
+
 def start_coverage_session() -> coverage.Coverage:
     coverage_dir = pathlib.Path(os.getenv('COVERAGE_DIR'))
     coverage_file = coverage_dir / '.coverage'
@@ -29,7 +32,12 @@ def finalize_coverage_session(coverage_session: coverage.Coverage) -> None:
 
 
 def main() -> None:
-    args = sys.argv[1:]
+    {ament_setup}.set_up_ament()
+
+    test_outputs_dir = os.environ.get('TEST_UNDECLARED_OUTPUTS_DIR')
+    if test_outputs_dir:
+        os.environ['ROS_HOME'] = test_outputs_dir
+        os.environ['ROS_LOG_DIR'] = test_outputs_dir
 
     bazel_coverage = os.getenv('COVERAGE') == '1'
 
@@ -37,6 +45,7 @@ def main() -> None:
     if bazel_coverage:
         coverage_session = start_coverage_session()
 
+    args = sys.argv[1:]
     args.append(f'--junitxml={os.environ["XML_OUTPUT_FILE"]}')
     pytest_exit_code = pytest.main(args)
 

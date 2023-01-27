@@ -15,6 +15,7 @@ exports_files([
     "test.bzl",
     "test.py.tpl",
     "topic.bzl",
+    "pytest_wrapper.py.tpl",
 ])
 
 py_library(

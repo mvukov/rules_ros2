@@ -1,5 +1,3 @@
-import sys
-
 import launch
 import launch_pytest.tools
 import pytest
@@ -23,7 +21,7 @@ def launch_description(hello_proc):
 def test_check_output(hello_proc, launch_context):
     launch_pytest.tools.wait_for_start_sync(launch_context,
                                             hello_proc,
-                                            timeout=10)
+                                            timeout=5)
 
     def check_output(output):
         assert output.splitlines() == [f'Hello, count {i}' for i in range(5)]
@@ -32,8 +30,3 @@ def test_check_output(hello_proc, launch_context):
                                            hello_proc,
                                            check_output,
                                            timeout=10)
-
-
-if __name__ == '__main__':
-    sys.exit(
-        pytest.main(['-rP', '-p', 'launch_pytest.plugin', '--', sys.argv[0]]))
