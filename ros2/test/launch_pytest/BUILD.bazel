@@ -4,7 +4,7 @@ load("//ros2:test.bzl", "ros2_test")
 cc_binary(
     name = "hello",
     testonly = True,
-    srcs = ["hello.cpp"],
+    srcs = ["hello.cc"],
 )
 
 ros2_test(

@@ -6,7 +6,7 @@ load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_t
 load("@com_github_mvukov_rules_ros2//third_party/pytest:defs.bzl", "py_pytest_test")
 load("@rules_python//python:defs.bzl", "py_test")
 
-def ros2_test(name, nodes, launch_file, deps = [], data = [], use_pytest = False, **kwargs):
+def ros2_test(name, nodes, launch_file, deps = None, data = None, use_pytest = False, **kwargs):
     """ Defines a ROS2 test.
 
     Args:
@@ -50,7 +50,9 @@ def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, **kwargs):
         data = [launch_file],
     )
 
-    deps = deps + [ament_setup_target]
+    deps = deps or []
+    deps.append(ament_setup_target)
+    data = data or []
     py_test(
         name = name,
         srcs = [launch_script],
@@ -64,6 +66,8 @@ def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, **kwargs):
     )
 
 def _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, **kwargs):
+    data = data or []
+    deps = deps or []
     py_pytest_test(
         name = name,
         srcs = [launch_file],

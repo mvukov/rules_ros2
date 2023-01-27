@@ -1,3 +1,5 @@
+# Adapted from https://gist.github.com/betaboon/c1dd785b5ba468b4df4e382eafff969a
+
 import os
 import pathlib
 import sys
