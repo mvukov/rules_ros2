@@ -27,7 +27,7 @@ class Publisher : public rclcpp::Node {
       message.data = std::to_string(count_++);
       publisher_->publish(message);
     };
-    timer_ = create_wall_timer(std::chrono::milliseconds(100), timer_callback);
+    timer_ = create_wall_timer(std::chrono::milliseconds(20), timer_callback);
   }
 
  private:

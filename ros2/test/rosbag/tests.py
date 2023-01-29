@@ -11,12 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import unittest
 
 import launch.actions
 import launch_ros.actions
 import launch_testing.actions
 import launch_testing.asserts
+import yaml
 
 
 def generate_test_description():
@@ -47,3 +49,19 @@ class TestRecorder(unittest.TestCase):
             proc_info,
             allowable_exit_codes=[launch_testing.asserts.EXIT_OK],
             process=recorder)
+        bag_dir = os.path.join(os.environ['TEST_UNDECLARED_OUTPUTS_DIR'], 'bag')
+        bag_db_file = os.path.join(bag_dir, 'bag_0.db3')
+        bag_metadata_file = os.path.join(bag_dir, 'metadata.yaml')
+
+        self.assertTrue(os.path.exists(bag_db_file))
+        self.assertTrue(os.path.exists(bag_metadata_file))
+
+        with open(bag_metadata_file, 'r', encoding='utf-8') as stream:
+            bag_metadata = yaml.load(
+                stream, Loader=yaml.Loader)['rosbag2_bagfile_information']
+
+        self.assertEqual(bag_metadata['message_count'], 10)
+
+        topic = bag_metadata['topics_with_message_count'][0]
+        self.assertEqual(topic['topic_metadata']['name'], '/topic')
+        self.assertEqual(topic['message_count'], 10)

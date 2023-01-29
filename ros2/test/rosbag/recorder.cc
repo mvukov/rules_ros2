@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
 
   while (rclcpp::ok()) {
     executor.spin_once(std::chrono::milliseconds(10));
-    if (msg_counter->msg_count() > 20) {
+    if (msg_counter->msg_count() > 10) {
       break;
     }
   }
