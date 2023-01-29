@@ -151,12 +151,6 @@ def ros2_repositories():
         urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-humble-20221123.tar.gz"],
     )
 
-    # native.new_local_repository(
-    #     name = "ros2_rosbag2",
-    #     path = "../ros2_humble/src/ros2/rosbag2",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:rosbag2.BUILD.bazel",
-    # )
-
     ros2_repositories_impl()
 
     # ros2-devel branch
