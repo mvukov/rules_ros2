@@ -1,0 +1,15 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+load("//ros2:test.bzl", "ros2_test")
+
+cc_binary(
+    name = "hello",
+    testonly = True,
+    srcs = ["hello.cc"],
+)
+
+ros2_test(
+    name = "launch_pytest_test",
+    launch_file = "launch_pytest_test.py",
+    nodes = [":hello"],
+    use_pytest = True,
+)
