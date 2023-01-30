@@ -11,11 +11,11 @@ exports_files([
     "launch.bzl",
     "launch.py.tpl",
     "plugin.bzl",
+    "pytest_wrapper.py.tpl",
     "ros2_topic.py",
     "test.bzl",
     "test.py.tpl",
     "topic.bzl",
-    "pytest_wrapper.py.tpl",
 ])
 
 py_library(
