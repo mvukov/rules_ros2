@@ -59,8 +59,9 @@ def _ros2_launch_testing_test(name, nodes, launch_file, ament_setup_py_module, d
         data = nodes + [launch_file] + data,
         main = launch_script,
         deps = [
-            "@ros2_ros_testing//:ros2test",
-            "@ros2cli",
+            "@ros2_ament_cmake_ros//:domain_coordinator",
+            "@ros2_launch//:launch_testing",
+            "@ros2_launch_ros//:launch_testing_ros",
         ] + deps,
         **kwargs
     )
