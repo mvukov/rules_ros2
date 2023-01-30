@@ -6,9 +6,8 @@ import pathlib
 import sys
 
 import coverage
-import pytest
-
 import domain_coordinator
+import pytest
 
 import {ament_setup}
 
@@ -45,7 +44,7 @@ def main() -> None:
         if 'ROS_DOMAIN_ID' not in os.environ:
             domain_id = stack.enter_context(domain_coordinator.domain_id())
             os.environ['ROS_DOMAIN_ID'] = str(domain_id)
-        print('Running with ROS_DOMAIN_ID {}'.format(os.environ['ROS_DOMAIN_ID']))
+        print(f'Running with ROS_DOMAIN_ID {os.environ["ROS_DOMAIN_ID"]}')
 
         bazel_coverage = os.getenv('COVERAGE') == '1'
 
@@ -53,8 +52,10 @@ def main() -> None:
         if bazel_coverage:
             coverage_session = start_coverage_session()
 
-        args = ["-ra", "-vv", "-p", "launch_pytest.plugin"] + sys.argv[1:]
-        args.append(f'--junitxml={os.environ["XML_OUTPUT_FILE"]}')
+        args = [
+            '-ra', '-vv', '-p', 'launch_pytest.plugin',
+            f'--junitxml={os.environ["XML_OUTPUT_FILE"]}'
+        ] + sys.argv[1:]
         pytest_exit_code = pytest.main(args)
 
         if coverage_session:
