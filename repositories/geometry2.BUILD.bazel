@@ -1,5 +1,6 @@
 load(
     "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_cpp_binary",
     "ros2_cpp_library",
 )
 load(
@@ -83,5 +84,27 @@ ros2_cpp_library(
         "@ros2_message_filters//:message_filters",
         "@ros2_rclcpp//:rclcpp",
         "@ros2_rclcpp//:rclcpp_action",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "static_transform_publisher",
+    srcs = [
+        "tf2_ros/include/tf2_ros/static_transform_broadcaster_node.hpp",
+        "tf2_ros/include/tf2_ros/static_transform_broadcaster_visibility_control.h",
+        "tf2_ros/include/tf2_ros/visibility_control.h",
+        "tf2_ros/src/static_transform_broadcaster_node.cpp",
+        "tf2_ros/src/static_transform_broadcaster_program.cpp",
+    ],
+    includes = ["tf2_ros/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":cpp_tf2_msgs",
+        ":tf2",
+        ":tf2_ros",
+        "@ros2_common_interfaces//:cpp_geometry_msgs",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rclcpp//:rclcpp_components",
     ],
 )
