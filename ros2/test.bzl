@@ -32,7 +32,7 @@ def ros2_test(name, nodes, launch_file, deps = None, data = None, use_pytest = F
 
     deps = deps or []
     deps.append(ament_setup_target)
-
+    data = data or []
     if use_pytest:
         _ros2_launch_pytest_test(name, nodes, launch_file, ament_setup_py_module, deps, data, **kwargs)
     else:
@@ -53,7 +53,6 @@ def _ros2_launch_testing_test(name, nodes, launch_file, ament_setup_py_module, d
         data = [launch_file],
     )
 
-    data = data or []
     py_test(
         name = name,
         srcs = [launch_script],
@@ -75,8 +74,6 @@ def _ros2_launch_pytest_test(name, nodes, launch_file, ament_setup_py_module, de
         out = launch_script,
     )
 
-    data = data or []
-    deps = deps or []
     py_test(
         name = name,
         srcs = [launch_script, launch_file],
@@ -85,6 +82,7 @@ def _ros2_launch_pytest_test(name, nodes, launch_file, ament_setup_py_module, de
         args = kwargs.pop("args", []) + ["$(location :%s)" % launch_file],
         deps = deps + [
             "@ros2_launch//:launch_pytest",
+            "@ros2_ament_cmake_ros//:domain_coordinator",
             requirement("coverage"),
             requirement("pytest"),
             requirement("pytest-cov"),

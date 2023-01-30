@@ -1,5 +1,6 @@
 # Adapted from https://gist.github.com/betaboon/c1dd785b5ba468b4df4e382eafff969a
 
+import contextlib
 import os
 import pathlib
 import sys
@@ -7,6 +8,7 @@ import sys
 import coverage
 import pytest
 
+import domain_coordinator
 
 import {ament_setup}
 
@@ -39,20 +41,26 @@ def main() -> None:
         os.environ['ROS_HOME'] = test_outputs_dir
         os.environ['ROS_LOG_DIR'] = test_outputs_dir
 
-    bazel_coverage = os.getenv('COVERAGE') == '1'
+    with contextlib.ExitStack() as stack:
+        if 'ROS_DOMAIN_ID' not in os.environ:
+            domain_id = stack.enter_context(domain_coordinator.domain_id())
+            os.environ['ROS_DOMAIN_ID'] = str(domain_id)
+        print('Running with ROS_DOMAIN_ID {}'.format(os.environ['ROS_DOMAIN_ID']))
 
-    coverage_session = None
-    if bazel_coverage:
-        coverage_session = start_coverage_session()
+        bazel_coverage = os.getenv('COVERAGE') == '1'
 
-    args = ["-ra", "-vv", "-p", "launch_pytest.plugin"] + sys.argv[1:]
-    args.append(f'--junitxml={os.environ["XML_OUTPUT_FILE"]}')
-    pytest_exit_code = pytest.main(args)
+        coverage_session = None
+        if bazel_coverage:
+            coverage_session = start_coverage_session()
 
-    if coverage_session:
-        finalize_coverage_session(coverage_session)
+        args = ["-ra", "-vv", "-p", "launch_pytest.plugin"] + sys.argv[1:]
+        args.append(f'--junitxml={os.environ["XML_OUTPUT_FILE"]}')
+        pytest_exit_code = pytest.main(args)
 
-    sys.exit(pytest_exit_code)
+        if coverage_session:
+            finalize_coverage_session(coverage_session)
+
+        sys.exit(pytest_exit_code)
 
 
 if __name__ == '__main__':
