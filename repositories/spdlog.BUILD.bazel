@@ -20,7 +20,14 @@ cc_library(
         "SPDLOG_FMT_EXTERNAL",
     ],
     includes = ["include"],
-    linkopts = ["-lpthread"],
+    linkopts = select(
+        {
+            "@platforms//os:linux": ["-lpthread"],
+            "@platforms//os:macos": ["-lpthread"],
+            "@platforms//os:qnx": [],
+        },
+        no_match_error = "Only Linux, macOS and QNX are supported!",
+    ),
     visibility = ["//visibility:public"],
     deps = ["@fmt"],
 )
