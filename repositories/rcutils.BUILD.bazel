@@ -47,8 +47,9 @@ ros2_c_library(
         {
             "@platforms//os:linux": ["src/time_unix.c"],
             "@platforms//os:macos": ["src/time_unix.c"],
+            "@platforms//os:qnx": ["src/time_unix.c"],
         },
-        no_match_error = "Only Linux and macOS are supported!",
+        no_match_error = "Only Linux, macOS and QNX are supported!",
     ),
     hdrs = glob(["include/**/*.h"]) + [":logging_macros"],
     includes = ["include"],
@@ -56,8 +57,9 @@ ros2_c_library(
         {
             "@platforms//os:linux": ["-ldl"],
             "@platforms//os:macos": ["-ldl"],
+            "@platforms//os:qnx": [],
         },
-        no_match_error = "Only Linux and macOS are supported!",
+        no_match_error = "Only Linux, macOS and QNX are supported!",
     ),
     local_defines = select({
         "@platforms//os:linux": ["_GNU_SOURCE"],
