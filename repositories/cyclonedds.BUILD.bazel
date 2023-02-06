@@ -12,13 +12,13 @@ bool_flag(
 )
 
 config_setting(
-    name = "with_shm",
+    name = "enable_shm_on",
     flag_values = {":enable_shm": "True"},
     visibility = ["//visibility:public"],
 )
 
 config_setting(
-    name = "without_shm",
+    name = "enable_shm_off",
     flag_values = {":enable_shm": "False"},
     visibility = ["//visibility:public"],
 )
@@ -35,7 +35,7 @@ selects.config_setting_group(
     name = "linux_or_macos_with_shm",
     match_all = [
         ":linux_or_macos",
-        ":with_shm",
+        ":enable_shm_on",
     ]
 )
 
@@ -43,7 +43,7 @@ selects.config_setting_group(
     name = "qnx_with_shm",
     match_all = [
         "@platforms//os:qnx",
-        ":with_shm",
+        ":enable_shm_on",
     ]
 )
 
@@ -51,7 +51,7 @@ selects.config_setting_group(
     name = "linux_or_macos_without_shm",
     match_all = [
         ":linux_or_macos",
-        ":without_shm",
+        ":enable_shm_off",
     ]
 )
 
@@ -59,7 +59,7 @@ selects.config_setting_group(
     name = "qnx_without_shm",
     match_all = [
         "@platforms//os:qnx",
-        ":without_shm",
+        ":enable_shm_off",
     ]
 )
 
@@ -156,7 +156,7 @@ cmake(
     out_static_libs = ["libddsc.a"],
     visibility = ["//visibility:public"],
     deps = select({
-        ":with_shm": ["@iceoryx"],
+        ":enable_shm_on": ["@iceoryx"],
         "//conditions:default": [],
     }),
 )
