@@ -28,7 +28,7 @@ selects.config_setting_group(
     match_any = [
         "@platforms//os:linux",
         "@platforms//os:macos",
-    ]
+    ],
 )
 
 selects.config_setting_group(
@@ -36,7 +36,7 @@ selects.config_setting_group(
     match_all = [
         ":linux_or_macos",
         ":enable_shm_on",
-    ]
+    ],
 )
 
 selects.config_setting_group(
@@ -44,7 +44,7 @@ selects.config_setting_group(
     match_all = [
         "@platforms//os:qnx",
         ":enable_shm_on",
-    ]
+    ],
 )
 
 selects.config_setting_group(
@@ -52,7 +52,7 @@ selects.config_setting_group(
     match_all = [
         ":linux_or_macos",
         ":enable_shm_off",
-    ]
+    ],
 )
 
 selects.config_setting_group(
@@ -60,7 +60,7 @@ selects.config_setting_group(
     match_all = [
         "@platforms//os:qnx",
         ":enable_shm_off",
-    ]
+    ],
 )
 
 filegroup(
@@ -123,22 +123,22 @@ cmake(
             ":linux_or_macos_with_shm": dicts.add(
                 cache_entries,
                 cache_entries_linux_and_macos,
-                cache_entries_with_shm
+                cache_entries_with_shm,
             ),
             ":qnx_with_shm": dicts.add(
                 cache_entries,
                 cache_entries_qnx,
-                cache_entries_with_shm
+                cache_entries_with_shm,
             ),
             ":linux_or_macos_without_shm": dicts.add(
                 cache_entries,
                 cache_entries_linux_and_macos,
-                cache_entries_without_shm
+                cache_entries_without_shm,
             ),
             ":qnx_without_shm": dicts.add(
                 cache_entries,
                 cache_entries_qnx,
-                cache_entries_without_shm
+                cache_entries_without_shm,
             ),
         },
         no_match_error = "Unsupported build configuration",
