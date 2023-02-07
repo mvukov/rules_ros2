@@ -29,11 +29,10 @@ cmake(
     cache_entries = selects.with_or(
         {
             ("@platforms//os:linux", "@platforms//os:macos"): cache_entries,
-            "@platforms//os:qnx":
-                dicts.add(
-                    cache_entries,
-                    cache_entries_qnx,
-                ),
+            "@platforms//os:qnx": dicts.add(
+                cache_entries,
+                cache_entries_qnx,
+            ),
         },
         no_match_error = "Only Linux, macOS and QNX are supported!",
     ),
