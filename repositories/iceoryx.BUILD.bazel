@@ -1,6 +1,6 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary")
 load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@bazel_skylib//lib:selects.bzl", "selects")
+load("@rules_cc//cc:defs.bzl", "cc_binary")
 load("@rules_foreign_cc//foreign_cc:cmake.bzl", "cmake")
 
 filegroup(
