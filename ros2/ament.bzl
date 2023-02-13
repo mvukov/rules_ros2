@@ -3,8 +3,16 @@
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load(
+    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "Ros2InterfaceInfo",
+    "cpp_generator_aspect",
+    "idl_adapter_aspect",
+)
+load(
     "@com_github_mvukov_rules_ros2//ros2:plugin.bzl",
+    "Ros2IdlPluginAspectInfo",
     "Ros2PluginCollectorAspectInfo",
+    "ros2_idl_plugin_aspect",
     "ros2_plugin_collector_aspect",
 )
 
@@ -49,7 +57,7 @@ _PLUGINS_XML_TEMPLATE = """\
 """
 
 _PLUGIN_XML_TEMPLATE = """\
-<class type="{class_type}" base_class_type="{base_class_type}">
+<class name="{class_name}" type="{class_type}" base_class_type="{base_class_type}">
 <description>{class_type}</description>
 </class>
 """
@@ -58,6 +66,7 @@ def _write_plugins_xml(ctx, prefix_path, plugin_package, types_to_bases_and_name
     plugins_xml = ctx.actions.declare_file(
         paths.join(prefix_path, _PACKAGES_PATH, plugin_package, _PLUGINS_XML),
     )
+
     plugins = [
         _PLUGIN_XML_TEMPLATE.format(
             class_name = base_class_type_and_name[1],
@@ -84,17 +93,20 @@ def _ros2_ament_setup_rule_impl(ctx):
     ).to_list()
 
     prefix_path = ctx.attr.name
-    base_packages = []
     outputs = []
+    registered_packages = []
     for plugin in plugins:
         types_to_bases_and_names = plugin.types_to_bases_and_names
 
         base_package = _get_package_name(types_to_bases_and_names.values()[0][0])
-        if base_package not in base_packages:
+        if base_package not in registered_packages:
             outputs.append(_write_package_xml(ctx, prefix_path, base_package))
+            registered_packages.append(base_package)
 
         plugin_package = _get_package_name(types_to_bases_and_names.keys()[0])
-        outputs.append(_write_package_xml(ctx, prefix_path, plugin_package))
+        if plugin_package not in registered_packages:
+            outputs.append(_write_package_xml(ctx, prefix_path, plugin_package))
+            registered_packages.append(base_package)
 
         outputs.append(_write_plugin_manifest(ctx, prefix_path, base_package, plugin_package))
         outputs.append(_write_plugins_xml(
@@ -106,6 +118,28 @@ def _ros2_ament_setup_rule_impl(ctx):
 
         dynamic_library = ctx.actions.declare_file(
             paths.join(prefix_path, "lib", "lib" + plugin_package + ".so"),
+        )
+        ctx.actions.symlink(
+            output = dynamic_library,
+            target_file = plugin.dynamic_library,
+        )
+        outputs.append(dynamic_library)
+
+    idl_plugins = depset(
+        transitive = [
+            dep[Ros2IdlPluginAspectInfo].plugins
+            for dep in ctx.attr.idl_deps
+        ],
+    ).to_list()
+
+    for plugin in idl_plugins:
+        package_name = plugin.package_name
+
+        if package_name not in registered_packages:
+            outputs.append(_write_package_xml(ctx, prefix_path, package_name))
+            registered_packages.append(package_name)
+        dynamic_library = ctx.actions.declare_file(
+            paths.join(prefix_path, "lib", "lib" + package_name + "__" + "rosidl_typesupport_cpp" + ".so"),
         )
         ctx.actions.symlink(
             output = dynamic_library,
@@ -143,6 +177,14 @@ ros2_ament_setup_rule = rule(
             mandatory = True,
             aspects = [ros2_plugin_collector_aspect],
         ),
+        "idl_deps": attr.label_list(
+            aspects = [
+                idl_adapter_aspect,
+                cpp_generator_aspect,
+                ros2_idl_plugin_aspect,
+            ],
+            providers = [Ros2InterfaceInfo],
+        ),
         "package_name": attr.string(
             mandatory = True,
         ),
@@ -154,14 +196,12 @@ ros2_ament_setup_rule = rule(
     implementation = _ros2_ament_setup_rule_impl,
 )
 
-def ros2_ament_setup(name, deps, testonly = False, tags = None):
+def ros2_ament_setup(name, **kwargs):
     package_name = native.package_name()
     ros2_ament_setup_rule(
         name = name,
         package_name = package_name,
-        deps = deps,
-        testonly = testonly,
-        tags = tags,
+        **kwargs
     )
 
     py_module = "{}.{}".format(name, _AMENT_SETUP_MODULE)

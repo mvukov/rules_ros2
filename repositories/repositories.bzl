@@ -99,6 +99,33 @@ def ros2_repositories():
 
     maybe(
         http_archive,
+        name = "readerwriterqueue",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:readerwriterqueue.BUILD.bazel",
+        sha256 = "fc68f55bbd49a8b646462695e1777fb8f2c0b4f342d5e6574135211312ba56c1",
+        strip_prefix = "readerwriterqueue-1.0.6",
+        urls = ["https://github.com/cameron314/readerwriterqueue/archive/refs/tags/v1.0.6.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "sqlite",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:sqlite.BUILD.bazel",
+        sha256 = "ad68c1216c3a474cf360c7581a4001e952515b3649342100f2d7ca7c8e313da6",
+        strip_prefix = "sqlite-amalgamation-3240000",
+        urls = ["https://www.sqlite.org/2018/sqlite-amalgamation-3240000.zip"],
+    )
+
+    maybe(
+        http_archive,
+        name = "zstd",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:zstd.BUILD.bazel",
+        sha256 = "7c42d56fac126929a6a85dbc73ff1db2411d04f104fae9bdea51305663a83fd0",
+        strip_prefix = "zstd-1.5.2",
+        urls = ["https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
         name = "yaml_cpp",
         build_file = "@com_github_mvukov_rules_ros2//repositories:yaml_cpp.BUILD.bazel",
         sha256 = "43e6a9fcb146ad871515f0d0873947e5d497a1c9c60c58cb102a97b47208b7c3",

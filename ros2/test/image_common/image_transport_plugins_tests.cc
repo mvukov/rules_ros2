@@ -26,7 +26,7 @@ TEST(TestImageTransportPlugins,
       "image_transport", "image_transport::PublisherPlugin");
 
   std::shared_ptr<image_transport::PublisherPlugin> pub =
-      pub_loader.createSharedInstance("image_transport::RawPublisher");
+      pub_loader.createSharedInstance("image_transport/raw_pub");
   EXPECT_THAT(pub->getTransportName(), Eq("raw"));
 }
 
@@ -35,6 +35,6 @@ TEST(TestImageTransportPlugins,
   pluginlib::ClassLoader<image_transport::SubscriberPlugin> sub_loader(
       "image_transport", "image_transport::SubscriberPlugin");
   std::shared_ptr<image_transport::SubscriberPlugin> sub =
-      sub_loader.createSharedInstance("image_transport::RawSubscriber");
+      sub_loader.createSharedInstance("image_transport/raw_sub");
   EXPECT_THAT(sub->getTransportName(), Eq("raw"));
 }

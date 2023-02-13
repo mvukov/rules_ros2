@@ -1,0 +1,12 @@
+""" Builds sqlite.
+"""
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "sqlite",
+    srcs = glob(["*.c"]),
+    hdrs = glob(["*.h"]),
+    includes = ["."],
+    visibility = ["//visibility:public"],
+)

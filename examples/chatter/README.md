@@ -25,6 +25,12 @@ and list the parameters with
 bazel run //:ros2_param -- list
 ```
 
+You can record a topic with
+
+```sh
+bazel run //chatter:bag -- record /topic
+```
+
 You can run tests with
 
 ```sh

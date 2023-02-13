@@ -81,6 +81,15 @@ def ros2_repositories_impl():
 
     maybe(
         http_archive,
+        name = "ros2_keyboard_handler",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:keyboard_handler.BUILD.bazel",
+        sha256 = "36e64e9e1927a6026e1b45cafc4c8efd32db274bfab5da0edd273a583f3c73f4",
+        strip_prefix = "keyboard_handler-0.0.5",
+        url = "https://github.com/ros-tooling/keyboard_handler/archive/refs/tags/0.0.5.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_launch",
         build_file = "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel",
         sha256 = "4c75be48263bfe7f95b82a7dc37806f7722d6af007556328963153546db3a4c9",
@@ -164,8 +173,9 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rclcpp",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel",
+        patch_cmds = ["patch"],
         patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_fix-maybe-uninitialized-warning.patch"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_fix-maybe-uninitialized-warning.patch", "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_move_ts_lib_to_subscription_base.patch"],
         sha256 = "b319bcae8cf767ca33a7fb106226cfb45662508760bea4ae7b34e75e4d010e8a",
         strip_prefix = "rclcpp-16.0.2",
         url = "https://github.com/ros2/rclcpp/archive/refs/tags/16.0.2.tar.gz",
@@ -263,6 +273,17 @@ def ros2_repositories_impl():
         sha256 = "f52dc8d48e3e525597e96e5316e882a03cbed6b2d3024699219c0afc0283a38b",
         strip_prefix = "ros_testing-0.4.0",
         url = "https://github.com/ros2/ros_testing/archive/refs/tags/0.4.0.tar.gz",
+    )
+
+    maybe(
+        http_archive,
+        name = "ros2_rosbag2",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rosbag2.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosbag2_relax_plugin_errors.patch"],
+        sha256 = "3a7c8939df436d830fb960e7bdf20331c071aee1c7eb2cb55b46546c4b751891",
+        strip_prefix = "rosbag2-0.15.3",
+        url = "https://github.com/ros2/rosbag2/archive/refs/tags/0.15.3.tar.gz",
     )
 
     maybe(
