@@ -1,3 +1,5 @@
+load("@bazel_skylib//lib:dicts.bzl", "dicts")
+load("@bazel_skylib//lib:selects.bzl", "selects")
 load("@rules_cc//cc:defs.bzl", "cc_binary")
 load("@rules_foreign_cc//foreign_cc:cmake.bzl", "cmake")
 
@@ -7,6 +9,16 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+cache_entries = {
+    "BUILD_SHARED_LIBS": "OFF",
+    "CCACHE": "OFF",
+    "CMAKE_BUILD_TYPE": "Release",
+}
+
+cache_entries_qnx = {
+    "CMAKE_SYSTEM_NAME": "QNX",
+}
+
 # Depends on libacl. On Ubuntu install as `sudo apt-get install libacl1-dev`.
 cmake(
     name = "iceoryx",
@@ -14,19 +26,30 @@ cmake(
         "--",  # <- Pass options to the native tool.
         "-j4",
     ],
-    cache_entries = {
-        "BUILD_SHARED_LIBS": "OFF",
-        "CCACHE": "OFF",
-        "CMAKE_BUILD_TYPE": "Release",
-    },
+    cache_entries = selects.with_or(
+        {
+            ("@platforms//os:linux", "@platforms//os:macos"): cache_entries,
+            "@platforms//os:qnx": dicts.add(
+                cache_entries,
+                cache_entries_qnx,
+            ),
+        },
+        no_match_error = "Only Linux, macOS and QNX are supported!",
+    ),
     generate_args = ["-GNinja"],
     lib_source = ":all_srcs",
-    linkopts = [
-        "-lacl",
-        "-latomic",
-        "-lpthread",
-        "-lrt",
-    ],
+    linkopts = selects.with_or(
+        {
+            ("@platforms//os:linux", "@platforms//os:macos"): [
+                "-lacl",
+                "-latomic",
+                "-lpthread",
+                "-lrt",
+            ],
+            "@platforms//os:qnx": ["-latomic"],
+        },
+        no_match_error = "Only Linux, macOS and QNX are supported!",
+    ),
     out_binaries = ["iox-roudi"],
     out_data_dirs = ["lib/cmake"],
     out_include_dir = "include/iceoryx/v2.0.2/",

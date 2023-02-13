@@ -1,9 +1,11 @@
 catkin_pkg
+coverage
 empy
 lark-parser
 netifaces
 numpy
 packaging
 pytest
+pytest-cov
 pyyaml
 types-pkg-resources
