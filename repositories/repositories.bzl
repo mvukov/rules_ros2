@@ -108,15 +108,6 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "concurrentqueue",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:concurrentqueue.BUILD.bazel",
-        sha256 = "eb37336bf9ae59aca7b954db3350d9b30d1cab24b96c7676f36040aa76e915e8",
-        strip_prefix = "concurrentqueue-1.0.3",
-        urls = ["https://github.com/cameron314/concurrentqueue/archive/refs/tags/v1.0.3.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
         name = "sqlite",
         build_file = "@com_github_mvukov_rules_ros2//repositories:sqlite.BUILD.bazel",
         sha256 = "ad68c1216c3a474cf360c7581a4001e952515b3649342100f2d7ca7c8e313da6",
