@@ -24,6 +24,7 @@ Available features:
 - Only CycloneDDS middleware can be used at the moment.
   - Zero copy transport via shared memory backend ([iceoryx](https://github.com/eclipse-iceoryx/iceoryx)) for CycloneDDS.
 - Utilities:
+  - `ros2_bag` for handling rosbags
   - `ros2_param` for handling parameters
   - `ros2_topic` for handling topics
 
@@ -36,13 +37,6 @@ during compilation of the generated code. It could be that I missed setting some
 flags to the code generation of ROS2 interfaces.
 
 Please take a look at the [examples](examples) folder to get started.
-
-## What's next?
-
-The grand idea would be to get this repo at least to the level of
-[rules_ros](https://github.com/mvukov/rules_ros). In particular:
-
-- It has to be convenient to cross-compile a ROS2 deployment.
 
 ## Alternatives
 
