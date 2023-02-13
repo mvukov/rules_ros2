@@ -93,17 +93,20 @@ def _ros2_ament_setup_rule_impl(ctx):
     ).to_list()
 
     prefix_path = ctx.attr.name
-    base_packages = []
     outputs = []
+    registered_packages = []
     for plugin in plugins:
         types_to_bases_and_names = plugin.types_to_bases_and_names
 
         base_package = _get_package_name(types_to_bases_and_names.values()[0][0])
-        if base_package not in base_packages:
+        if base_package not in registered_packages:
             outputs.append(_write_package_xml(ctx, prefix_path, base_package))
+            registered_packages.append(base_package)
 
         plugin_package = _get_package_name(types_to_bases_and_names.keys()[0])
-        outputs.append(_write_package_xml(ctx, prefix_path, plugin_package))
+        if plugin_package not in registered_packages:
+            outputs.append(_write_package_xml(ctx, prefix_path, plugin_package))
+            registered_packages.append(base_package)
 
         outputs.append(_write_plugin_manifest(ctx, prefix_path, base_package, plugin_package))
         outputs.append(_write_plugins_xml(
@@ -131,7 +134,10 @@ def _ros2_ament_setup_rule_impl(ctx):
 
     for plugin in idl_plugins:
         package_name = plugin.package_name
-        outputs.append(_write_package_xml(ctx, prefix_path, package_name))
+
+        if package_name not in registered_packages:
+            outputs.append(_write_package_xml(ctx, prefix_path, package_name))
+            registered_packages.append(package_name)
         dynamic_library = ctx.actions.declare_file(
             paths.join(prefix_path, "lib", "lib" + package_name + "__" + "rosidl_typesupport_cpp" + ".so"),
         )
@@ -190,15 +196,12 @@ ros2_ament_setup_rule = rule(
     implementation = _ros2_ament_setup_rule_impl,
 )
 
-def ros2_ament_setup(name, deps, idl_deps = None, testonly = False, tags = None):
+def ros2_ament_setup(name, **kwargs):
     package_name = native.package_name()
     ros2_ament_setup_rule(
         name = name,
         package_name = package_name,
-        deps = deps,
-        idl_deps = idl_deps,
-        testonly = testonly,
-        tags = tags,
+        **kwargs
     )
 
     py_module = "{}.{}".format(name, _AMENT_SETUP_MODULE)
