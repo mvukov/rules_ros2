@@ -1,7 +1,6 @@
 """ ROS2 common definitions.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:bag.bzl", "ros2_bag")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 
 exports_files([
@@ -38,14 +37,4 @@ py_binary(
         ":ros2_cmd",
         "@ros2cli//:ros2param",
     ],
-)
-
-ros2_bag(
-    name = "ros2_bag",
-    idl_deps = [
-        "@ros2_common_interfaces//:std_msgs",
-        "@ros2_rcl_interfaces//:rcl_interfaces",
-        "@ros2_rosbag2//:rosbag2_interfaces",
-    ],
-    visibility = ["//visibility:public"],
 )
