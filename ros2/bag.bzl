@@ -7,25 +7,30 @@ load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_t
 load("@rules_python//python:defs.bzl", "py_binary")
 
 def ros2_bag(name, idl_deps = None, **kwargs):
+    """ Defines a binary target for a bag app.
+
+    Args:
+        name: A unique target name.
+        idl_deps: Additional IDL deps that are used as runtime type-support plugins.
+        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
+    """
     ament_setup_target = name + "_ament_setup"
-    tags = kwargs.get("tags", None)
     ament_setup_py_module = ros2_ament_setup(
         ament_setup_target,
         deps = ["@ros2_rosbag2//:ros2bag"],
         idl_deps = idl_deps,
-        tags = tags,
+        tags = ["manual"],
     )
-
-    substitutions = {
-        "{ament_setup}": ament_setup_py_module,
-    }
 
     main_script = "{}.py".format(name)
     expand_template(
         name = "{}_generator".format(name),
         template = "@com_github_mvukov_rules_ros2//ros2:bag.py.tpl",
-        substitutions = substitutions,
+        substitutions = {
+            "{ament_setup}": ament_setup_py_module,
+        },
         out = main_script,
+        tags = ["manual"],
     )
 
     deps = kwargs.pop("deps", []) + [ament_setup_target]

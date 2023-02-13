@@ -23,13 +23,12 @@ def ros2_test(name, nodes, launch_file, deps = None, data = None, idl_deps = Non
         fail("A list of nodes must be given!")
 
     ament_setup_target = name + "_ament_setup"
-    tags = kwargs.get("tags", None)
     ament_setup_py_module = ros2_ament_setup(
         ament_setup_target,
         deps = nodes,
         idl_deps = idl_deps,
         testonly = True,
-        tags = tags,
+        tags = ["manual"],
     )
 
     deps = deps or []
@@ -53,6 +52,7 @@ def _ros2_launch_testing_test(name, nodes, launch_file, ament_setup_py_module, d
         substitutions = substitutions,
         out = launch_script,
         data = [launch_file],
+        tags = ["manual"],
     )
 
     py_test(
@@ -75,6 +75,7 @@ def _ros2_launch_pytest_test(name, nodes, launch_file, ament_setup_py_module, de
         template = "@com_github_mvukov_rules_ros2//ros2:pytest_wrapper.py.tpl",
         substitutions = {"{ament_setup}": ament_setup_py_module},
         out = launch_script,
+        tags = ["manual"],
     )
 
     py_test(
