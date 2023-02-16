@@ -1,0 +1,19 @@
+""" Builds mcap.
+"""
+
+load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "mcap",
+    hdrs = glob([
+        "include/**/*.hpp",
+        "include/**/*.inl",
+    ]),
+    copts = CPP_COPTS,
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@lz4//:lz4_frame",
+    ],
+)
