@@ -14,7 +14,6 @@ exports_files([
     "launch.py.tpl",
     "plugin.bzl",
     "pytest_wrapper.py.tpl",
-    "ros2_param.py",
     "ros2_service.py",
     "ros2_topic.py",
     "service.bzl",
