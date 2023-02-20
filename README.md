@@ -26,6 +26,7 @@ Available features:
 - Utilities:
   - `ros2_bag` for handling rosbags
   - `ros2_param` for handling parameters
+  - `ros2_service` for handling services
   - `ros2_topic` for handling topics
 
 ROS2 packages are by default locked to versions from [release-humble-20230127](https://github.com/ros2/ros2/releases/tag/release-humble-20230127).
