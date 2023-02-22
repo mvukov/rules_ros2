@@ -11,16 +11,17 @@ Besides Bazel, you will need a C++ compiler and a Python 3 interpreter.
 
 And no, you don't have to install any ROS2 packages via `apt`.
 
-The code is developed and tested on Ubuntu 20.04 with Python 3.8.
+The code is developed and tested on Ubuntu 20.04 with gcc 9.x and Python 3.8.
 
 ## What works?
 
 Available features:
 
-- Building of C++ and Python nodes (rclcpp and rclpy work).
+- Building of C++ and Python nodes.
 - C/C++/Python code generation for interfaces (messages, services and actions).
 - Defining ROS2 deployments with `ros2_launch` Bazel macro.
 - Defining ROS2 tests with `ros2_test` Bazel macro.
+- Defining ROS2 plugins with `ros2_plugin` Bazel macro.
 - Only CycloneDDS middleware can be used at the moment.
   - Zero copy transport via shared memory backend ([iceoryx](https://github.com/eclipse-iceoryx/iceoryx)) for CycloneDDS.
 - Utilities:
@@ -29,15 +30,14 @@ Available features:
   - `ros2_service` for handling services
   - `ros2_topic` for handling topics
 
+Please take a look at the [examples](examples) folder to get started.
+
 ROS2 packages are by default locked to versions from [release-humble-20230127](https://github.com/ros2/ros2/releases/tag/release-humble-20230127).
 
-NOTE: Unlike ROS1 genmsg which refuses to generate code if the deps between
-interface targets are not set correctly, code generation for ROS2 seems to not
-care about this. If the deps are not correctly set, you'll only see failures
-during compilation of the generated code. It could be that I missed setting some
-flags to the code generation of ROS2 interfaces.
-
-Please take a look at the [examples](examples) folder to get started.
+> **NOTE**: Unlike ROS1 genmsg which refuses to generate code if the deps between
+> interface targets are not set correctly, code generation for ROS2 seems to not
+> care about this. If the deps are not correctly set, you'll only see failures
+> during compilation of the generated code.
 
 ## Alternatives
 
