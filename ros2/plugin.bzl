@@ -99,12 +99,13 @@ def ros2_plugin(name, plugin_specs, **kwargs):
         types_to_bases_and_names[class_type] = [base_class_type, class_name]
 
     lib_name = "_" + name
-    tags = kwargs.get("tags", None)
+    tags = kwargs.pop("tags", None)
     visibility = kwargs.pop("visibility", None)
     ros2_cpp_library(
         name = lib_name,
         # This must be set such that static plugin registration works.
         alwayslink = True,
+        tags = ["manual"],
         **kwargs
     )
     ros2_plugin_rule(
