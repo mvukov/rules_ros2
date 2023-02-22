@@ -41,6 +41,10 @@ jobs:
             echo ".bazelrc != examples/.bazelrc"
             exit 1
           fi
+          if [[ $(cmp --silent .bazelversion examples/.bazelversion; echo $?) -ne 0 ]]; then
+            echo ".bazelversion != examples/.bazelversion"
+            exit 1
+          fi
       # Cache build and external artifacts so that the next ci build is incremental.
       # Because github action caches cannot be updated after a build, we need to
       # store the contents of each build in a unique cache key, then fall back to loading

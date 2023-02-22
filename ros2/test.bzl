@@ -22,10 +22,12 @@ def ros2_test(name, nodes, launch_file, deps = None, data = None, idl_deps = Non
     if not nodes:
         fail("A list of nodes must be given!")
 
+    data = data or []
+
     ament_setup_target = name + "_ament_setup"
     ament_setup_py_module = ros2_ament_setup(
         ament_setup_target,
-        deps = nodes,
+        deps = nodes + data,
         idl_deps = idl_deps,
         testonly = True,
         tags = ["manual"],
@@ -33,7 +35,6 @@ def ros2_test(name, nodes, launch_file, deps = None, data = None, idl_deps = Non
 
     deps = deps or []
     deps.append(ament_setup_target)
-    data = data or []
     if use_pytest:
         _ros2_launch_pytest_test(name, nodes, launch_file, ament_setup_py_module, deps, data, **kwargs)
     else:

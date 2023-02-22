@@ -19,12 +19,13 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):
     if not nodes:
         fail("A list of nodes must be given!")
 
+    data = data or []
+
     ament_setup_target = name + "_ament_setup"
-    tags = kwargs.get("tags", None)
     ament_setup_py_module = ros2_ament_setup(
         ament_setup_target,
-        deps = nodes,
-        tags = tags,
+        deps = nodes + data,
+        tags = ["manual"],
     )
 
     substitutions = {
@@ -39,11 +40,11 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):
         substitutions = substitutions,
         out = launch_script,
         data = [launch_file],
+        tags = ["manual"],
     )
 
     deps = deps or []
     deps.append(ament_setup_target)
-    data = data or []
     py_binary(
         name = name,
         srcs = [launch_script],
