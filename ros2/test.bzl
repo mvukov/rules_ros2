@@ -1,7 +1,7 @@
 """ Defines ROS 2 testing functionality.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "ros2_ament_setup")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_ros2_ament_setup")
 load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
 load("@rules_python//python:defs.bzl", "py_test")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
@@ -25,7 +25,7 @@ def ros2_test(name, nodes, launch_file, deps = None, data = None, idl_deps = Non
     data = data or []
 
     ament_setup_target = name + "_ament_setup"
-    ament_setup_py_module = ros2_ament_setup(
+    ament_setup_py_module = py_ros2_ament_setup(
         ament_setup_target,
         deps = nodes + data,
         idl_deps = idl_deps,

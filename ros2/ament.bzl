@@ -84,6 +84,13 @@ def _write_plugins_xml(ctx, prefix_path, plugin_package, types_to_bases_and_name
 def _get_package_name(class_name):
     return class_name.split("::")[0]
 
+Ros2AmentSetupInfo = provider(
+    "TBD",
+    fields = [
+        "ament_prefix_path",
+    ],
+)
+
 def _ros2_ament_setup_rule_impl(ctx):
     plugins = depset(
         transitive = [
@@ -147,18 +154,9 @@ def _ros2_ament_setup_rule_impl(ctx):
         )
         outputs.append(dynamic_library)
 
-    ament_setup = ctx.actions.declare_file(paths.join(prefix_path, _AMENT_SETUP_MODULE + ".py"))
-    ament_prefix_path = "None"
+    ament_prefix_path = None
     if outputs:
         ament_prefix_path = "'{}'".format(paths.join(ctx.attr.package_name, prefix_path))
-    ctx.actions.expand_template(
-        template = ctx.file._template,
-        output = ament_setup,
-        substitutions = {
-            "{ament_prefix_path}": ament_prefix_path,
-        },
-    )
-    outputs.append(ament_setup)
 
     outputs_depset = depset(outputs)
     return [
@@ -166,12 +164,12 @@ def _ros2_ament_setup_rule_impl(ctx):
             files = outputs_depset,
             runfiles = ctx.runfiles(transitive_files = outputs_depset),
         ),
-        PyInfo(
-            transitive_sources = depset([ament_setup]),
+        Ros2AmentSetupInfo(
+            ament_prefix_path = ament_prefix_path,
         ),
     ]
 
-ros2_ament_setup_rule = rule(
+ros2_ament_setup = rule(
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
@@ -188,19 +186,63 @@ ros2_ament_setup_rule = rule(
         "package_name": attr.string(
             mandatory = True,
         ),
+    },
+    implementation = _ros2_ament_setup_rule_impl,
+)
+
+def _py_ros2_ament_setup_rule_impl(ctx):
+    ament_setup = ctx.actions.declare_file(paths.join(ctx.attr.name, _AMENT_SETUP_MODULE + ".py"))
+    ament_prefix_path = ctx.attr.dep[Ros2AmentSetupInfo].ament_prefix_path or "None"
+    ctx.actions.expand_template(
+        template = ctx.file._template,
+        output = ament_setup,
+        substitutions = {
+            "{ament_prefix_path}": ament_prefix_path,
+        },
+    )
+
+    files = depset([ament_setup])
+    runfiles = ctx.runfiles(transitive_files = files)
+    runfiles = runfiles.merge(ctx.attr.dep[DefaultInfo].default_runfiles)
+    return [
+        DefaultInfo(
+            files = files,
+            runfiles = runfiles,
+        ),
+        PyInfo(
+            transitive_sources = files,
+        ),
+    ]
+
+py_ros2_ament_setup_rule = rule(
+    attrs = {
+        "dep": attr.label(
+            mandatory = True,
+            providers = [Ros2AmentSetupInfo],
+        ),
         "_template": attr.label(
             default = Label("@com_github_mvukov_rules_ros2//ros2:ament_setup.py.tpl"),
             allow_single_file = True,
         ),
     },
-    implementation = _ros2_ament_setup_rule_impl,
+    implementation = _py_ros2_ament_setup_rule_impl,
 )
 
-def ros2_ament_setup(name, **kwargs):
+def py_ros2_ament_setup(name, deps, idl_deps = None, **kwargs):
     package_name = native.package_name()
-    ros2_ament_setup_rule(
-        name = name,
+    ament_setup_target = name + "_impl"
+    testonly = kwargs.get("testonly", False)
+    ros2_ament_setup(
+        name = ament_setup_target,
+        deps = deps,
+        idl_deps = idl_deps,
         package_name = package_name,
+        tags = ["manual"],
+        testonly = testonly,
+    )
+    py_ros2_ament_setup_rule(
+        name = name,
+        dep = ament_setup_target,
         **kwargs
     )
 
