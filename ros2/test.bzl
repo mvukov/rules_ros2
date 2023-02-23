@@ -1,4 +1,4 @@
-""" Defines ROS2 testing functionality.
+""" Defines ROS 2 testing functionality.
 """
 
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "ros2_ament_setup")
@@ -7,11 +7,11 @@ load("@rules_python//python:defs.bzl", "py_test")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 def ros2_test(name, nodes, launch_file, deps = None, data = None, idl_deps = None, use_pytest = False, **kwargs):
-    """ Defines a ROS2 test.
+    """ Defines a ROS 2 test.
 
     Args:
         name: A unique target name.
-        nodes: A list of ROS2 nodes in the test target.
+        nodes: A list of ROS 2 nodes in the test target.
         launch_file: A ros2test-compatible launch file.
         deps: Additional Python deps that can be used by the launch file.
         data: Additional data that can be used by the launch file.

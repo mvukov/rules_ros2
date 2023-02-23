@@ -1,4 +1,4 @@
-""" Implements a macro for setting up a ROS2 bag app.
+""" Implements a macro for setting up a ROS 2 bag app.
 """
 
 load("@bazel_skylib//lib:paths.bzl", "paths")

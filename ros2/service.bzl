@@ -1,10 +1,10 @@
-""" Implements a macro for setting up a ROS2 service app.
+""" Implements a macro for setting up a ROS 2 service app.
 """
 
 load("@rules_python//python:defs.bzl", "py_binary")
 
 def ros2_service(name, deps, **kwargs):
-    """ Defines a ROS2 service app for a set of deps.
+    """ Defines a ROS 2 service app for a set of deps.
 
     Args:
         name: A unique target name.

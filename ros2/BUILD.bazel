@@ -1,4 +1,4 @@
-""" ROS2 common definitions.
+""" ROS 2 common definitions.
 """
 
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")

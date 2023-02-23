@@ -48,7 +48,7 @@ load(
 
 install_rules_ros2_pip_deps()
 
-# Below are listed only deps needed by examples: if you just need ROS2 you don't
+# Below are listed only deps needed by examples: if you just need ROS 2 you don't
 # need to import/load anything below.
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
