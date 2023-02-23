@@ -13,7 +13,7 @@ Before you build/run/test any of the targets in this folder, please make sure
 your terminal is in this folder, or in a subfolder, and not in the root
 of the repo.
 
-If you want to run ROS2 deployments in Docker containers, please install
+If you want to run ROS 2 deployments in Docker containers, please install
 [Docker](https://docs.docker.com/engine/install/ubuntu/).
 
 You can start with a simple [chatter](chatter) example.

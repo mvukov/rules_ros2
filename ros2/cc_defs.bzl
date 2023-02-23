@@ -27,35 +27,35 @@ def _ros2_cc_target(target, lang, name, ros2_package_name, **kwargs):
     )
 
 def ros2_c_library(name, ros2_package_name = None, **kwargs):
-    """ Defines a ROS2 C library.
+    """ Defines a ROS 2 C library.
 
-    Adds common ROS2 C definitions on top of a cc_library.
+    Adds common ROS 2 C definitions on top of a cc_library.
 
     Args:
         name: A unique target name.
-        ros2_package_name: If given, defines a ROS2 package name for the target.
+        ros2_package_name: If given, defines a ROS 2 package name for the target.
             Otherwise, the `name` is used as the package name.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes
     """
     _ros2_cc_target(cc_library, "c", name, ros2_package_name, **kwargs)
 
 def ros2_cpp_library(name, ros2_package_name = None, **kwargs):
-    """ Defines a ROS2 C++ library.
+    """ Defines a ROS 2 C++ library.
 
-    Adds common ROS2 C++ definitions on top of a cc_library.
+    Adds common ROS 2 C++ definitions on top of a cc_library.
 
     Args:
         name: A unique target name.
-        ros2_package_name: If given, defines a ROS2 package name for the target.
+        ros2_package_name: If given, defines a ROS 2 package name for the target.
             Otherwise, the `name` is used as the package name.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes
     """
     _ros2_cc_target(cc_library, "cpp", name, ros2_package_name, **kwargs)
 
 def ros2_c_binary(name, ros2_package_name = None, **kwargs):
-    """ Defines a ROS2 C binary.
+    """ Defines a ROS 2 C binary.
 
-    Adds common ROS2 C definitions on top of a cc_binary.
+    Adds common ROS 2 C definitions on top of a cc_binary.
 
     Args:
         name: A unique target name.
@@ -66,9 +66,9 @@ def ros2_c_binary(name, ros2_package_name = None, **kwargs):
     _ros2_cc_target(cc_binary, "c", name, ros2_package_name, **kwargs)
 
 def ros2_cpp_binary(name, ros2_package_name = None, **kwargs):
-    """ Defines a ROS2 C++ binary.
+    """ Defines a ROS 2 C++ binary.
 
-    Adds common ROS2 C++ definitions on top of a cc_binary.
+    Adds common ROS 2 C++ definitions on top of a cc_binary.
 
     Args:
         name: A unique target name.

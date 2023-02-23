@@ -1,6 +1,6 @@
 # A pub/sub example demonstrating shared memory backend for zero-copy transport
 
-ROS2 supports using shared memory to speed up transport of messages.
+ROS 2 supports using shared memory to speed up transport of messages.
 
 Before building, make sure you have `libacl1-dev` package installed on your system.
 You can install this library (licensed under GPL/LPGL) on Ubuntu as
