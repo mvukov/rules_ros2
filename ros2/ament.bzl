@@ -10,7 +10,7 @@ load(
     "idl_adapter_aspect",
 )
 load(
-    "@com_github_mvukov_rules_ros2//ros2:plugin.bzl",
+    "@com_github_mvukov_rules_ros2//ros2:plugin_aspects.bzl",
     "Ros2IdlPluginAspectInfo",
     "Ros2PluginCollectorAspectInfo",
     "ros2_idl_plugin_aspect",
@@ -266,3 +266,69 @@ def py_launcher(name, deps, idl_deps = None, **kwargs):
         **kwargs
     )
     return name + ".py"
+
+SH_TOOLCHAIN = "@bazel_tools//tools/sh:toolchain_type"
+
+def _sh_launcher_rule_impl(ctx):
+    output = ctx.actions.declare_file(ctx.attr.name)
+    ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path
+
+    substitutions = dicts.add(
+        ctx.attr.substitutions,
+        {
+            "{{bash_bin}}": ctx.toolchains[SH_TOOLCHAIN].path,
+            "{{ament_prefix_path}}": ament_prefix_path,
+        },
+    )
+
+    expand_template_impl(
+        ctx,
+        template = ctx.file.template,
+        output = output,
+        substitutions = substitutions,
+        is_executable = True,
+    )
+
+    files = depset([output])
+    runfiles = ctx.runfiles(transitive_files = files)
+    runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
+    return [
+        DefaultInfo(
+            files = files,
+            runfiles = runfiles,
+        ),
+    ]
+
+sh_launcher_rule = rule(
+    attrs = {
+        "ament_setup": attr.label(
+            mandatory = True,
+            providers = [Ros2AmentSetupInfo],
+        ),
+        "template": attr.label(
+            mandatory = True,
+            allow_single_file = True,
+        ),
+        "substitutions": attr.string_dict(mandatory = True),
+        "data": attr.label_list(allow_files = True),
+    },
+    implementation = _sh_launcher_rule_impl,
+    toolchains = [SH_TOOLCHAIN],
+)
+
+def sh_launcher(name, deps, idl_deps = None, **kwargs):
+    ament_setup = name + "_ament_setup"
+    testonly = kwargs.get("testonly", False)
+    ros2_ament_setup(
+        name = ament_setup,
+        deps = deps,
+        idl_deps = idl_deps,
+        package_name = native.package_name(),
+        tags = ["manual"],
+        testonly = testonly,
+    )
+    sh_launcher_rule(
+        name = name,
+        ament_setup = ament_setup,
+        **kwargs
+    )

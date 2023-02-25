@@ -2,7 +2,6 @@
 """
 
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
-load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
 load("@rules_python//python:defs.bzl", "py_binary")
 
 def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):

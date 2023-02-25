@@ -15,7 +15,7 @@
 """
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "CPP_COPTS", "C_COPTS")
+load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS", "C_COPTS")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 load("@rules_python//python:defs.bzl", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")

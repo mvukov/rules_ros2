@@ -1,5 +1,6 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("@rules_python//python:defs.bzl", "py_test")
+load("//ros2:cc_defs.bzl", "ros2_cpp_test")
 load("//ros2:plugin.bzl", "ros2_plugin")
 load("//ros2:test.bzl", "ros2_test")
 
@@ -27,11 +28,11 @@ ros2_plugin(
     ],
 )
 
-# TODO(mvukov) Dig deeper into why cc_test doesn't work here.
-cc_binary(
-    name = "plugin_tests",
+ros2_cpp_test(
+    name = "tests",
     srcs = ["plugin_tests.cc"],
     data = [":polygon_plugins"],
+    set_up_ament = True,
     deps = [
         ":polygon_base",
         "@com_google_googletest//:gtest_main",
@@ -50,11 +51,11 @@ cc_binary(
     ],
 )
 
-ros2_test(
-    name = "tests",
-    launch_file = "tests.py",
-    nodes = [":plugin_tests"],
-)
+# ros2_test(
+#     name = "tests",
+#     launch_file = "tests.py",
+#     nodes = [":plugin_tests"],
+# )
 
 # py_test(
 #     name = "py_loader_tests",
