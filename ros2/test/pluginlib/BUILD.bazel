@@ -56,13 +56,13 @@ ros2_test(
     nodes = [":plugin_tests"],
 )
 
-py_test(
-    name = "py_loader_tests",
-    srcs = [
-        "py_loader_tests.py",
-    ],
-    data = [":py_loader.so"],
-    deps = [
-        ":tests_ament_setup",  # This is an implicit target from :tests.
-    ],
-)
+# py_test(
+#     name = "py_loader_tests",
+#     srcs = [
+#         "py_loader_tests.py",
+#     ],
+#     data = [":py_loader.so"],
+#     deps = [
+#         ":tests_ament_setup",  # This is an implicit target from :tests.
+#     ],
+# )

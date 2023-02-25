@@ -9,7 +9,7 @@ import coverage
 import domain_coordinator
 import pytest
 
-import {ament_setup}
+{ament_setup}
 
 
 def start_coverage_session() -> coverage.Coverage:
@@ -33,8 +33,6 @@ def finalize_coverage_session(coverage_session: coverage.Coverage) -> None:
 
 
 def main() -> None:
-    {ament_setup}.set_up_ament()
-
     test_outputs_dir = os.environ.get('TEST_UNDECLARED_OUTPUTS_DIR')
     if test_outputs_dir:
         os.environ['ROS_HOME'] = test_outputs_dir

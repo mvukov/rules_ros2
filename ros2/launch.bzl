@@ -1,7 +1,7 @@
 """ Defines launch_ros-like ROS 2 deployment.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_ros2_ament_setup")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
 load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
 load("@rules_python//python:defs.bzl", "py_binary")
 
@@ -20,34 +20,22 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):
         fail("A list of nodes must be given!")
 
     data = data or []
-
-    ament_setup_target = name + "_ament_setup"
-    ament_setup_py_module = py_ros2_ament_setup(
-        ament_setup_target,
+    launcher = "{}_launch".format(name)
+    launch_script = py_launcher(
+        launcher,
         deps = nodes + data,
-        tags = ["manual"],
-    )
-
-    substitutions = {
-        "{launch_file}": "$(rootpath {})".format(launch_file),
-        "{ament_setup}": ament_setup_py_module,
-    }
-
-    launch_script = "{}_launch.py".format(name)
-    expand_template(
-        name = "{}_launch_gen".format(name),
         template = "@com_github_mvukov_rules_ros2//ros2:launch.py.tpl",
-        substitutions = substitutions,
-        out = launch_script,
+        substitutions = {
+            "{launch_file}": "$(rootpath {})".format(launch_file),
+        },
         data = [launch_file],
         tags = ["manual"],
     )
 
     deps = deps or []
-    deps.append(ament_setup_target)
     py_binary(
         name = name,
-        srcs = [launch_script],
+        srcs = [launcher],
         data = nodes + [launch_file] + data,
         main = launch_script,
         deps = [

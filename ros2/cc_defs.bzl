@@ -1,7 +1,7 @@
 """ Defines commonly used C/C++ macros2.
 """
 
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
 
 C_COPTS = ["-std=c11"]
 CPP_COPTS = ["-std=c++17"]
@@ -77,3 +77,18 @@ def ros2_cpp_binary(name, ros2_package_name = None, **kwargs):
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
     _ros2_cc_target(cc_binary, "cpp", name, ros2_package_name, **kwargs)
+
+def ros2_cpp_test(name, ros2_package_name = None, with_ament = False, **kwargs):
+    """ Defines a ROS 2 C++ test.
+
+    Adds common ROS 2 C++ definitions on top of a cc_test.
+
+    Args:
+        name: A unique target name.
+        ros2_package_name: If given, defines a ROS package name for the target.
+            Otherwise, the `name` is used as the package name.
+        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
+    """
+    if with_ament == False:
+        _ros2_cc_target(cc_test, "cpp", name, ros2_package_name, **kwargs)
+        return

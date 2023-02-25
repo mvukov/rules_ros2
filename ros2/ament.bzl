@@ -1,6 +1,7 @@
 """ Defines ament-related utilities.
 """
 
+load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
@@ -14,6 +15,10 @@ load(
     "Ros2PluginCollectorAspectInfo",
     "ros2_idl_plugin_aspect",
     "ros2_plugin_collector_aspect",
+)
+load(
+    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "expand_template_impl",
 )
 
 _AMENT_SETUP_MODULE = "ament_setup"
@@ -156,7 +161,7 @@ def _ros2_ament_setup_rule_impl(ctx):
 
     ament_prefix_path = None
     if outputs:
-        ament_prefix_path = "'{}'".format(paths.join(ctx.attr.package_name, prefix_path))
+        ament_prefix_path = paths.join(ctx.attr.package_name, prefix_path)
 
     outputs_depset = depset(outputs)
     return [
@@ -190,20 +195,34 @@ ros2_ament_setup = rule(
     implementation = _ros2_ament_setup_rule_impl,
 )
 
-def _py_ros2_ament_setup_rule_impl(ctx):
-    ament_setup = ctx.actions.declare_file(paths.join(ctx.attr.name, _AMENT_SETUP_MODULE + ".py"))
-    ament_prefix_path = ctx.attr.dep[Ros2AmentSetupInfo].ament_prefix_path or "None"
-    ctx.actions.expand_template(
-        template = ctx.file._template,
-        output = ament_setup,
-        substitutions = {
-            "{ament_prefix_path}": ament_prefix_path,
+def py_create_ament_setup(ament_prefix_path):
+    """ The client code must do `import os`. """
+    if ament_prefix_path == None:
+        return "os.unsetenv('AMENT_PREFIX_PATH')"
+    return "os.environ['AMENT_PREFIX_PATH'] = '{}'".format(ament_prefix_path)
+
+def _py_launcher_rule_impl(ctx):
+    output = ctx.actions.declare_file(ctx.attr.name + ".py")
+    ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path
+
+    substitutions = dicts.add(
+        ctx.attr.substitutions,
+        {
+            "{ament_setup}": py_create_ament_setup(ament_prefix_path),
         },
     )
 
-    files = depset([ament_setup])
+    expand_template_impl(
+        ctx,
+        template = ctx.file.template,
+        output = output,
+        substitutions = substitutions,
+        is_executable = False,
+    )
+
+    files = depset([output])
     runfiles = ctx.runfiles(transitive_files = files)
-    runfiles = runfiles.merge(ctx.attr.dep[DefaultInfo].default_runfiles)
+    runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
     return [
         DefaultInfo(
             files = files,
@@ -214,37 +233,36 @@ def _py_ros2_ament_setup_rule_impl(ctx):
         ),
     ]
 
-py_ros2_ament_setup_rule = rule(
+py_launcher_rule = rule(
     attrs = {
-        "dep": attr.label(
+        "ament_setup": attr.label(
             mandatory = True,
             providers = [Ros2AmentSetupInfo],
         ),
-        "_template": attr.label(
-            default = Label("@com_github_mvukov_rules_ros2//ros2:ament_setup.py.tpl"),
+        "template": attr.label(
+            mandatory = True,
             allow_single_file = True,
         ),
+        "substitutions": attr.string_dict(mandatory = True),
+        "data": attr.label_list(allow_files = True),
     },
-    implementation = _py_ros2_ament_setup_rule_impl,
+    implementation = _py_launcher_rule_impl,
 )
 
-def py_ros2_ament_setup(name, deps, idl_deps = None, **kwargs):
-    package_name = native.package_name()
-    ament_setup_target = name + "_impl"
+def py_launcher(name, deps, idl_deps = None, **kwargs):
+    ament_setup = name + "_ament_setup"
     testonly = kwargs.get("testonly", False)
     ros2_ament_setup(
-        name = ament_setup_target,
+        name = ament_setup,
         deps = deps,
         idl_deps = idl_deps,
-        package_name = package_name,
+        package_name = native.package_name(),
         tags = ["manual"],
         testonly = testonly,
     )
-    py_ros2_ament_setup_rule(
+    py_launcher_rule(
         name = name,
-        dep = ament_setup_target,
+        ament_setup = ament_setup,
         **kwargs
     )
-
-    py_module = "{}.{}".format(name, _AMENT_SETUP_MODULE)
-    return py_module
+    return name + ".py"
