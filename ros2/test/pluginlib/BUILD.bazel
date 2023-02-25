@@ -1,6 +1,7 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("@rules_python//python:defs.bzl", "py_test")
-load("//ros2:cc_defs.bzl", "ros2_cpp_test")
+load("//ros2:ament.bzl", "ros2_ament_setup")
+load("//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_test")
 load("//ros2:plugin.bzl", "ros2_plugin")
 load("//ros2:test.bzl", "ros2_test")
 
@@ -40,7 +41,7 @@ ros2_cpp_test(
     ],
 )
 
-cc_binary(
+ros2_cpp_binary(
     name = "py_loader.so",
     srcs = ["py_loader.cc"],
     linkshared = True,
@@ -51,19 +52,19 @@ cc_binary(
     ],
 )
 
-# ros2_test(
-#     name = "tests",
-#     launch_file = "tests.py",
-#     nodes = [":plugin_tests"],
-# )
+ros2_ament_setup(
+    name = "polygon_plugins_ament_setup",
+    package_name = package_name(),
+    deps = [":polygon_plugins"],
+)
 
-# py_test(
-#     name = "py_loader_tests",
-#     srcs = [
-#         "py_loader_tests.py",
-#     ],
-#     data = [":py_loader.so"],
-#     deps = [
-#         ":tests_ament_setup",  # This is an implicit target from :tests.
-#     ],
-# )
+py_test(
+    name = "py_loader_tests",
+    srcs = [
+        "py_loader_tests.py",
+    ],
+    data = [
+        ":polygon_plugins_ament_setup",
+        ":py_loader.so",
+    ],
+)
