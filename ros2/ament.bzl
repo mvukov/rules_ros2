@@ -175,6 +175,35 @@ def _ros2_ament_setup_rule_impl(ctx):
         )
         outputs.append(dynamic_library)
 
+    idls = depset(
+        transitive = [
+            depset([
+                struct(
+                    package_name = dep.label.name,
+                    srcs = dep[Ros2InterfaceInfo].info.srcs,
+                ),
+            ])
+            for dep in ctx.attr.idl_deps
+        ],
+    ).to_list()
+
+    for idl in idls:
+        package_name = idl.package_name
+        if package_name not in registered_packages:
+            outputs.append(_write_package_xml(ctx, prefix_path, package_name))
+            registered_packages.append(package_name)
+        for src in idl.srcs:
+            if src.basename[-4:] != ".msg":
+                continue
+            src_file = ctx.actions.declare_file(
+                paths.join(prefix_path, "share", package_name, "msg", src.basename),
+            )
+            ctx.actions.symlink(
+                output = src_file,
+                target_file = src,
+            )
+            outputs.append(src_file)
+
     ament_prefix_path = None
     if outputs:
         ament_prefix_path = paths.join(ctx.attr.package_name, prefix_path)
