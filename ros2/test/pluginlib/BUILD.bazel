@@ -10,13 +10,24 @@ cc_library(
 )
 
 ros2_plugin(
-    name = "polygon_plugins",
-    srcs = ["polygon_plugins.cc"],
+    name = "square",
+    srcs = ["square.cc"],
     plugin_specs = [
         {
             "class_type": "polygon_plugins::Square",
             "base_class_type": "polygon_base::RegularPolygon",
         },
+    ],
+    deps = [
+        ":polygon_base",
+        "@ros2_pluginlib//:pluginlib",
+    ],
+)
+
+ros2_plugin(
+    name = "triangle",
+    srcs = ["triangle.cc"],
+    plugin_specs = [
         {
             "class_type": "polygon_plugins::Triangle",
             "base_class_type": "polygon_base::RegularPolygon",
@@ -31,7 +42,10 @@ ros2_plugin(
 ros2_cpp_test(
     name = "tests",
     srcs = ["plugin_tests.cc"],
-    data = [":polygon_plugins"],
+    data = [
+        ":square",
+        ":triangle",
+    ],
     set_up_ament = True,
     deps = [
         ":polygon_base",
@@ -54,7 +68,10 @@ ros2_cpp_binary(
 ros2_ament_setup(
     name = "polygon_plugins_ament_setup",
     package_name = package_name(),
-    deps = [":polygon_plugins"],
+    deps = [
+        ":square",
+        ":triangle",
+    ],
 )
 
 py_test(
