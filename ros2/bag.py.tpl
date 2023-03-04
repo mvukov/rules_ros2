@@ -1,3 +1,4 @@
+import os
 import sys
 
 import ros2.ros2_cmd
@@ -9,9 +10,7 @@ import ros2bag.verb.record
 import ros2bag.verb.reindex
 import ros2cli.cli
 
-import {ament_setup}
-
-{ament_setup}.set_up_ament()
+{ament_setup}
 
 COMMAND_EXTENSIONS = {
     'convert': ros2bag.verb.convert.ConvertVerb(),

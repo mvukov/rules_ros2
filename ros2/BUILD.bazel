@@ -19,6 +19,7 @@ exports_files([
     "service.bzl",
     "test.bzl",
     "test.py.tpl",
+    "test.sh.tpl",
     "topic.bzl",
 ])
 

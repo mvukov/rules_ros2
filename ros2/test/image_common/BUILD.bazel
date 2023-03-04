@@ -1,18 +1,13 @@
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load("//ros2:cc_defs.bzl", "ros2_cpp_test")
 load("//ros2:test.bzl", "ros2_test")
 
-ros2_cpp_binary(
+ros2_cpp_test(
     name = "image_transport_plugins_tests",
     srcs = ["image_transport_plugins_tests.cc"],
+    set_up_ament = True,
     deps = [
         "@com_google_googletest//:gtest_main",
         "@ros2_image_common//:image_transport",
         "@ros2_pluginlib//:pluginlib",
     ],
-)
-
-ros2_test(
-    name = "tests",
-    launch_file = "tests.py",
-    nodes = [":image_transport_plugins_tests"],
 )

@@ -1,13 +1,16 @@
 """ Defines ROS 2 testing functionality.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "ros2_ament_setup")
-load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
 load("@rules_python//python:defs.bzl", "py_test")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 def ros2_test(name, nodes, launch_file, deps = None, data = None, idl_deps = None, use_pytest = False, **kwargs):
     """ Defines a ROS 2 test.
+
+    In case you don't need ROS 2 nodes for tests, but need ament setup such
+    that e.g. plugins can work: use a lightweight macro ros2_cpp_test
+    from //ros2:cc_defs.bzl.
 
     Args:
         name: A unique target name.
@@ -23,42 +26,30 @@ def ros2_test(name, nodes, launch_file, deps = None, data = None, idl_deps = Non
         fail("A list of nodes must be given!")
 
     data = data or []
+    deps = deps or []
+    if use_pytest:
+        _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs)
+    else:
+        _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs)
 
-    ament_setup_target = name + "_ament_setup"
-    ament_setup_py_module = ros2_ament_setup(
-        ament_setup_target,
+def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs):
+    launcher = "{}_launch".format(name)
+    launch_script = py_launcher(
+        launcher,
         deps = nodes + data,
         idl_deps = idl_deps,
-        testonly = True,
-        tags = ["manual"],
-    )
-
-    deps = deps or []
-    deps.append(ament_setup_target)
-    if use_pytest:
-        _ros2_launch_pytest_test(name, nodes, launch_file, ament_setup_py_module, deps, data, **kwargs)
-    else:
-        _ros2_launch_testing_test(name, nodes, launch_file, ament_setup_py_module, deps, data, **kwargs)
-
-def _ros2_launch_testing_test(name, nodes, launch_file, ament_setup_py_module, deps, data, **kwargs):
-    substitutions = {
-        "{launch_file}": "$(rootpath {})".format(launch_file),
-        "{ament_setup}": ament_setup_py_module,
-    }
-
-    launch_script = "{}_launch.py".format(name)
-    expand_template(
-        name = "{}_launch_gen".format(name),
         template = "@com_github_mvukov_rules_ros2//ros2:test.py.tpl",
-        substitutions = substitutions,
-        out = launch_script,
+        substitutions = {
+            "{launch_file}": "$(rootpath {})".format(launch_file),
+        },
         data = [launch_file],
+        testonly = True,
         tags = ["manual"],
     )
 
     py_test(
         name = name,
-        srcs = [launch_script],
+        srcs = [launcher],
         data = nodes + [launch_file] + data,
         main = launch_script,
         deps = [
@@ -69,22 +60,24 @@ def _ros2_launch_testing_test(name, nodes, launch_file, ament_setup_py_module, d
         **kwargs
     )
 
-def _ros2_launch_pytest_test(name, nodes, launch_file, ament_setup_py_module, deps, data, **kwargs):
-    launch_script = "{}_launch.py".format(name)
-    expand_template(
-        name = "{}_pytest_wrapper_gen".format(name),
+def _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs):
+    launcher = "{}_launch".format(name)
+    launch_script = py_launcher(
+        launcher,
+        deps = nodes + data,
+        idl_deps = idl_deps,
         template = "@com_github_mvukov_rules_ros2//ros2:pytest_wrapper.py.tpl",
-        substitutions = {"{ament_setup}": ament_setup_py_module},
-        out = launch_script,
+        substitutions = {},
+        testonly = True,
         tags = ["manual"],
     )
 
     py_test(
         name = name,
-        srcs = [launch_script, launch_file],
+        srcs = [launcher, launch_file],
         main = launch_script,
         data = nodes + data,
-        args = kwargs.pop("args", []) + ["$(location :%s)" % launch_file],
+        args = kwargs.pop("args", []) + ["$(rootpath :%s)" % launch_file],
         deps = deps + [
             "@ros2_launch//:launch_pytest",
             "@ros2_ament_cmake_ros//:domain_coordinator",

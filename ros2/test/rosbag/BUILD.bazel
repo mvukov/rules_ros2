@@ -1,6 +1,6 @@
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
-load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
-load("@rules_ros2_resolver_deps//:requirements.bzl", "requirement")
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+load("//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load("//ros2:test.bzl", "ros2_test")
 
 ros2_cpp_binary(
     name = "publisher",

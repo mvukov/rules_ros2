@@ -1,6 +1,7 @@
 """ Defines ament-related utilities.
 """
 
+load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
@@ -9,11 +10,15 @@ load(
     "idl_adapter_aspect",
 )
 load(
-    "@com_github_mvukov_rules_ros2//ros2:plugin.bzl",
+    "@com_github_mvukov_rules_ros2//ros2:plugin_aspects.bzl",
     "Ros2IdlPluginAspectInfo",
     "Ros2PluginCollectorAspectInfo",
     "ros2_idl_plugin_aspect",
     "ros2_plugin_collector_aspect",
+)
+load(
+    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "expand_template_impl",
 )
 
 _AMENT_SETUP_MODULE = "ament_setup"
@@ -84,6 +89,13 @@ def _write_plugins_xml(ctx, prefix_path, plugin_package, types_to_bases_and_name
 def _get_package_name(class_name):
     return class_name.split("::")[0]
 
+Ros2AmentSetupInfo = provider(
+    "TBD",
+    fields = [
+        "ament_prefix_path",
+    ],
+)
+
 def _ros2_ament_setup_rule_impl(ctx):
     plugins = depset(
         transitive = [
@@ -147,18 +159,9 @@ def _ros2_ament_setup_rule_impl(ctx):
         )
         outputs.append(dynamic_library)
 
-    ament_setup = ctx.actions.declare_file(paths.join(prefix_path, _AMENT_SETUP_MODULE + ".py"))
-    ament_prefix_path = "None"
+    ament_prefix_path = None
     if outputs:
-        ament_prefix_path = "'{}'".format(paths.join(ctx.attr.package_name, prefix_path))
-    ctx.actions.expand_template(
-        template = ctx.file._template,
-        output = ament_setup,
-        substitutions = {
-            "{ament_prefix_path}": ament_prefix_path,
-        },
-    )
-    outputs.append(ament_setup)
+        ament_prefix_path = paths.join(ctx.attr.package_name, prefix_path)
 
     outputs_depset = depset(outputs)
     return [
@@ -166,12 +169,12 @@ def _ros2_ament_setup_rule_impl(ctx):
             files = outputs_depset,
             runfiles = ctx.runfiles(transitive_files = outputs_depset),
         ),
-        PyInfo(
-            transitive_sources = depset([ament_setup]),
+        Ros2AmentSetupInfo(
+            ament_prefix_path = ament_prefix_path,
         ),
     ]
 
-ros2_ament_setup_rule = rule(
+ros2_ament_setup = rule(
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
@@ -188,21 +191,144 @@ ros2_ament_setup_rule = rule(
         "package_name": attr.string(
             mandatory = True,
         ),
-        "_template": attr.label(
-            default = Label("@com_github_mvukov_rules_ros2//ros2:ament_setup.py.tpl"),
-            allow_single_file = True,
-        ),
     },
     implementation = _ros2_ament_setup_rule_impl,
 )
 
-def ros2_ament_setup(name, **kwargs):
-    package_name = native.package_name()
-    ros2_ament_setup_rule(
-        name = name,
-        package_name = package_name,
-        **kwargs
+def py_create_ament_setup(ament_prefix_path):
+    """ The client code must do `import os`. """
+    if ament_prefix_path == None:
+        return "os.unsetenv('AMENT_PREFIX_PATH')"
+    return "os.environ['AMENT_PREFIX_PATH'] = '{}'".format(ament_prefix_path)
+
+def _py_launcher_rule_impl(ctx):
+    output = ctx.actions.declare_file(ctx.attr.name + ".py")
+    ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path
+
+    substitutions = dicts.add(
+        ctx.attr.substitutions,
+        {
+            "{ament_setup}": py_create_ament_setup(ament_prefix_path),
+        },
     )
 
-    py_module = "{}.{}".format(name, _AMENT_SETUP_MODULE)
-    return py_module
+    expand_template_impl(
+        ctx,
+        template = ctx.file.template,
+        output = output,
+        substitutions = substitutions,
+        is_executable = False,
+    )
+
+    files = depset([output])
+    runfiles = ctx.runfiles(transitive_files = files)
+    runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
+    return [
+        DefaultInfo(
+            files = files,
+            runfiles = runfiles,
+        ),
+        PyInfo(
+            transitive_sources = files,
+        ),
+    ]
+
+py_launcher_rule = rule(
+    attrs = {
+        "ament_setup": attr.label(
+            mandatory = True,
+            providers = [Ros2AmentSetupInfo],
+        ),
+        "template": attr.label(
+            mandatory = True,
+            allow_single_file = True,
+        ),
+        "substitutions": attr.string_dict(mandatory = True),
+        "data": attr.label_list(allow_files = True),
+    },
+    implementation = _py_launcher_rule_impl,
+)
+
+def py_launcher(name, deps, idl_deps = None, **kwargs):
+    ament_setup = name + "_ament_setup"
+    testonly = kwargs.get("testonly", False)
+    ros2_ament_setup(
+        name = ament_setup,
+        deps = deps,
+        idl_deps = idl_deps,
+        package_name = native.package_name(),
+        tags = ["manual"],
+        testonly = testonly,
+    )
+    py_launcher_rule(
+        name = name,
+        ament_setup = ament_setup,
+        **kwargs
+    )
+    return name + ".py"
+
+SH_TOOLCHAIN = "@bazel_tools//tools/sh:toolchain_type"
+
+def _sh_launcher_rule_impl(ctx):
+    output = ctx.actions.declare_file(ctx.attr.name)
+    ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path
+
+    substitutions = dicts.add(
+        ctx.attr.substitutions,
+        {
+            "{{bash_bin}}": ctx.toolchains[SH_TOOLCHAIN].path,
+            "{{ament_prefix_path}}": ament_prefix_path,
+        },
+    )
+
+    expand_template_impl(
+        ctx,
+        template = ctx.file.template,
+        output = output,
+        substitutions = substitutions,
+        is_executable = True,
+    )
+
+    files = depset([output])
+    runfiles = ctx.runfiles(transitive_files = files)
+    runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
+    return [
+        DefaultInfo(
+            files = files,
+            runfiles = runfiles,
+        ),
+    ]
+
+sh_launcher_rule = rule(
+    attrs = {
+        "ament_setup": attr.label(
+            mandatory = True,
+            providers = [Ros2AmentSetupInfo],
+        ),
+        "template": attr.label(
+            mandatory = True,
+            allow_single_file = True,
+        ),
+        "substitutions": attr.string_dict(mandatory = True),
+        "data": attr.label_list(allow_files = True),
+    },
+    implementation = _sh_launcher_rule_impl,
+    toolchains = [SH_TOOLCHAIN],
+)
+
+def sh_launcher(name, deps, idl_deps = None, **kwargs):
+    ament_setup = name + "_ament_setup"
+    testonly = kwargs.get("testonly", False)
+    ros2_ament_setup(
+        name = ament_setup,
+        deps = deps,
+        idl_deps = idl_deps,
+        package_name = native.package_name(),
+        tags = ["manual"],
+        testonly = testonly,
+    )
+    sh_launcher_rule(
+        name = name,
+        ament_setup = ament_setup,
+        **kwargs
+    )

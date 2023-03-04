@@ -1,7 +1,7 @@
 """ Builds fmt
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "CPP_COPTS")
+load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS")
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
