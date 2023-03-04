@@ -1,4 +1,4 @@
-""" Defines commonly used C/C++ macros2.
+""" Defines commonly used C/C++ macros.
 """
 
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher")
@@ -86,7 +86,8 @@ def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = False, **kwargs
         name: A unique target name.
         ros2_package_name: If given, defines a ROS package name for the target.
             Otherwise, the `name` is used as the package name.
-        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
+        set_up_ament: If true, sets up ament file tree for the test target.
+        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
     """
     if set_up_ament == False:
         _ros2_cc_target(cc_test, "cpp", name, ros2_package_name, **kwargs)
