@@ -34,7 +34,6 @@ _PACKAGE_XML_TEMPLATE = """\
 _RESOURCE_INDEX_PATH = "share/ament_index/resource_index"
 _PACKAGES_PATH = paths.join(_RESOURCE_INDEX_PATH, "packages")
 _PACKAGE_XML = "package.xml"
-_PLUGINS_XML = "plugins.xml"
 
 def _write_package_xml(ctx, prefix_path, package_name):
     package_xml = ctx.actions.declare_file(
@@ -43,20 +42,24 @@ def _write_package_xml(ctx, prefix_path, package_name):
     ctx.actions.write(package_xml, _PACKAGE_XML_TEMPLATE.format(package_name = package_name))
     return package_xml
 
-def _write_plugin_manifest(ctx, prefix_path, base_package, plugin_package):
+def get_plugins_xml_path(plugin_package, plugin_target_name):
+    """Returns prefix-path relative plugins XML file."""
+    return paths.join(_PACKAGES_PATH, plugin_package, plugin_target_name + "_plugins.xml")
+
+def _write_plugin_manifest(ctx, prefix_path, base_package, plugin_package, plugin_target_name):
     manifest = ctx.actions.declare_file(
         paths.join(
             prefix_path,
             _RESOURCE_INDEX_PATH,
             base_package + "__pluginlib__plugin",
-            plugin_package + "_manifest",
+            plugin_target_name + "_manifest",
         ),
     )
-    ctx.actions.write(manifest, paths.join(_PACKAGES_PATH, plugin_package, _PLUGINS_XML))
+    ctx.actions.write(manifest, get_plugins_xml_path(plugin_package, plugin_target_name))
     return manifest
 
 _PLUGINS_XML_TEMPLATE = """\
-<library path="{plugin_package}">
+<library path="{library_path}">
 {plugins}
 </library>
 """
@@ -67,9 +70,14 @@ _PLUGIN_XML_TEMPLATE = """\
 </class>
 """
 
-def _write_plugins_xml(ctx, prefix_path, plugin_package, types_to_bases_and_names):
+def _write_plugins_xml(
+        ctx,
+        prefix_path,
+        plugin_package,
+        plugin_target_name,
+        types_to_bases_and_names):
     plugins_xml = ctx.actions.declare_file(
-        paths.join(prefix_path, _PACKAGES_PATH, plugin_package, _PLUGINS_XML),
+        paths.join(prefix_path, get_plugins_xml_path(plugin_package, plugin_target_name)),
     )
 
     plugins = [
@@ -81,7 +89,7 @@ def _write_plugins_xml(ctx, prefix_path, plugin_package, types_to_bases_and_name
         for class_type, base_class_type_and_name in types_to_bases_and_names.items()
     ]
     ctx.actions.write(plugins_xml, _PLUGINS_XML_TEMPLATE.format(
-        plugin_package = plugin_package,
+        library_path = plugin_target_name,
         plugins = "\n".join(plugins),
     ))
     return plugins_xml
@@ -108,6 +116,7 @@ def _ros2_ament_setup_rule_impl(ctx):
     outputs = []
     registered_packages = []
     for plugin in plugins:
+        plugin_target_name = plugin.target_name
         types_to_bases_and_names = plugin.types_to_bases_and_names
 
         base_package = _get_package_name(types_to_bases_and_names.values()[0][0])
@@ -120,16 +129,23 @@ def _ros2_ament_setup_rule_impl(ctx):
             outputs.append(_write_package_xml(ctx, prefix_path, plugin_package))
             registered_packages.append(base_package)
 
-        outputs.append(_write_plugin_manifest(ctx, prefix_path, base_package, plugin_package))
+        outputs.append(_write_plugin_manifest(
+            ctx,
+            prefix_path,
+            base_package,
+            plugin_package,
+            plugin_target_name,
+        ))
         outputs.append(_write_plugins_xml(
             ctx,
             prefix_path,
             plugin_package,
+            plugin_target_name,
             types_to_bases_and_names,
         ))
 
         dynamic_library = ctx.actions.declare_file(
-            paths.join(prefix_path, "lib", "lib" + plugin_package + ".so"),
+            paths.join(prefix_path, "lib", "lib" + plugin_target_name + ".so"),
         )
         ctx.actions.symlink(
             output = dynamic_library,

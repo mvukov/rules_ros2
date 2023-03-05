@@ -25,6 +25,7 @@ load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 Ros2PluginInfo = provider(
     "Provides necessary info for plugin routing.",
     fields = [
+        "target_name",
         "dynamic_library",
         "types_to_bases_and_names",
     ],
@@ -57,12 +58,7 @@ def _collect_deps(rule_attr, attr_name, provider_info):
 def _ros2_plugin_collector_aspect_impl(target, ctx):
     direct_plugins = []
     if ctx.rule.kind == "ros2_plugin_rule":
-        info = target[Ros2PluginInfo]
-        plugin = struct(
-            dynamic_library = info.dynamic_library,
-            types_to_bases_and_names = info.types_to_bases_and_names,
-        )
-        direct_plugins.append(plugin)
+        direct_plugins.append(target[Ros2PluginInfo])
 
     transitive_plugins = []
     for attr_name in _ROS2_PLUGIN_COLLECTOR_ATTR_ASPECTS:

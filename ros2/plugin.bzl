@@ -31,7 +31,8 @@ load(
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 def _ros2_plugin_impl(ctx):
-    name = ctx.attr.name + "/plugin"
+    target_name = ctx.attr.name
+    name = target_name + "/plugin"
     dynamic_library = create_dynamic_library(
         ctx,
         name = name,
@@ -44,6 +45,7 @@ def _ros2_plugin_impl(ctx):
             runfiles = ctx.attr.dep[DefaultInfo].default_runfiles,
         ),
         Ros2PluginInfo(
+            target_name = target_name,
             dynamic_library = dynamic_library,
             types_to_bases_and_names = ctx.attr.types_to_bases_and_names,
         ),
