@@ -128,7 +128,7 @@ ros2_cpp_library(
     deps = [
         ":tf2",
         ":tf2_ros",
-        "@eigen",  # TODO we could make the user responsible for providing eigen and remove it here
+        "@eigen",
         "@ros2_common_interfaces//:cpp_sensor_msgs",
     ],
 )
