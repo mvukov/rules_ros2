@@ -22,18 +22,27 @@ ros2_cpp_binary(
     ],
 )
 
-ros2_test(
-    name = "tests",
-    size = "small",
-    idl_deps = [
-        "@ros2_common_interfaces//:std_msgs",
-        "@ros2_rcl_interfaces//:rcl_interfaces",
-        "@ros2_rosbag2//:rosbag2_interfaces",
-    ],
-    launch_file = "tests.py",
-    nodes = [
-        ":publisher",
-        ":recorder",
-    ],
-    deps = [requirement("pyyaml")],
-)
+[
+    ros2_test(
+        name = "{}_tests".format(storage_id),
+        size = "small",
+        env = {
+            "STORAGE_ID": storage_id,
+        },
+        idl_deps = [
+            "@ros2_common_interfaces//:std_msgs",
+            "@ros2_rcl_interfaces//:rcl_interfaces",
+            "@ros2_rosbag2//:rosbag2_interfaces",
+        ],
+        launch_file = "tests.py",
+        nodes = [
+            ":publisher",
+            ":recorder",
+        ],
+        deps = [requirement("pyyaml")],
+    )
+    for storage_id in [
+        "mcap",
+        "sqlite3",
+    ]
+]

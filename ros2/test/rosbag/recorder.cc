@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
   rosbag2_storage::StorageOptions storage_options;
   storage_options.uri =
       std::string(std::getenv("TEST_UNDECLARED_OUTPUTS_DIR")) + "/bag";
-  storage_options.storage_id = "sqlite3";
+  storage_options.storage_id = std::getenv("STORAGE_ID");
   auto recorder = std::make_shared<rosbag2_transport::Recorder>(
       std::move(writer), storage_options, record_options);
   recorder->record();

@@ -22,6 +22,10 @@ import launch_testing.markers
 import yaml
 
 
+def get_storage_id() -> str:
+    return os.environ['STORAGE_ID']
+
+
 @launch_testing.markers.keep_alive
 def generate_test_description():
     publisher_node = launch_ros.actions.Node(
@@ -43,6 +47,12 @@ def generate_test_description():
     })
 
 
+STORAGE_IDS_TO_BAG_NAMES = {
+    'mcap': 'bag_0.mcap',
+    'sqlite3': 'bag_0.db3',
+}
+
+
 class TestRecorder(unittest.TestCase):
 
     def test_recorder(self, proc_info, recorder):
@@ -52,7 +62,8 @@ class TestRecorder(unittest.TestCase):
             allowable_exit_codes=[launch_testing.asserts.EXIT_OK],
             process=recorder)
         bag_dir = os.path.join(os.environ['TEST_UNDECLARED_OUTPUTS_DIR'], 'bag')
-        bag_db_file = os.path.join(bag_dir, 'bag_0.db3')
+        bag_db_file = os.path.join(bag_dir,
+                                   STORAGE_IDS_TO_BAG_NAMES[get_storage_id()])
         bag_metadata_file = os.path.join(bag_dir, 'metadata.yaml')
 
         self.assertTrue(os.path.exists(bag_db_file))

@@ -126,6 +126,24 @@ def ros2_repositories():
 
     maybe(
         http_archive,
+        name = "lz4",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:lz4.BUILD.bazel",
+        sha256 = "4ec935d99aa4950eadfefbd49c9fad863185ac24c32001162c44a683ef61b580",
+        strip_prefix = "lz4-1.9.3",
+        urls = ["https://github.com/lz4/lz4/archive/refs/tags/v1.9.3.zip"],
+    )
+
+    maybe(
+        http_archive,
+        name = "mcap",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:mcap.BUILD.bazel",
+        sha256 = "2833f72344308ea58639f3b363a0cf17669580ae7ab435f43f3b104cff6ef548",
+        strip_prefix = "mcap-releases-cpp-v0.8.0/cpp/mcap",
+        urls = ["https://github.com/foxglove/mcap/archive/refs/tags/releases/cpp/v0.8.0.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
         name = "yaml_cpp",
         build_file = "@com_github_mvukov_rules_ros2//repositories:yaml_cpp.BUILD.bazel",
         sha256 = "43e6a9fcb146ad871515f0d0873947e5d497a1c9c60c58cb102a97b47208b7c3",

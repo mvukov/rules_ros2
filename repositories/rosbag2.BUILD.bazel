@@ -58,6 +58,48 @@ ros2_plugin(
 )
 
 ros2_cpp_library(
+    name = "mcap_vendor",
+    srcs = ["mcap_vendor/src/main.cpp"],
+    deps = [
+        "@mcap",
+        "@zstd",
+    ],
+)
+
+ros2_plugin(
+    name = "rosbag2_storage_mcap_plugin",
+    srcs = [
+        "rosbag2_storage_mcap/src/mcap_storage.cpp",
+        "rosbag2_storage_mcap/src/message_definition_cache.cpp",
+    ],
+    hdrs = [
+        "rosbag2_storage_mcap/include/rosbag2_storage_mcap/message_definition_cache.hpp",
+        "rosbag2_storage_mcap/include/rosbag2_storage_mcap/visibility_control.hpp",
+    ],
+    defines = [
+        "ROSBAG2_STORAGE_MCAP_HAS_YAML_HPP",
+        "ROSBAG2_STORAGE_MCAP_HAS_STORAGE_OPTIONS",
+        "ROSBAG2_STORAGE_MCAP_WRITER_CREATES_DIRECTORY",
+        "ROSBAG2_STORAGE_MCAP_OVERRIDE_SEEK_METHOD",
+    ],
+    includes = ["rosbag2_storage_mcap/include"],
+    plugin_specs = [
+        {
+            "class_name": "mcap",
+            "class_type": "rosbag2_storage_plugins::MCAPStorage",
+            "base_class_type": "rosbag2_storage::storage_interfaces::ReadWriteInterface",
+        },
+    ],
+    deps = [
+        ":mcap_vendor",
+        ":rosbag2_storage",
+        "@ros2_pluginlib//:pluginlib",
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rcutils//:rcutils",
+    ],
+)
+
+ros2_cpp_library(
     name = "rosbag2_cpp",
     srcs = glob([
         "rosbag2_cpp/src/**/*.hpp",
@@ -81,7 +123,10 @@ ros2_cpp_library(
         "rosbag2_cpp/src/rosbag2_cpp/reindexer.cpp",
     ],
     hdrs = glob(["rosbag2_cpp/include/**/*.hpp"]),
-    data = [":rosbag2_storage_default_plugins"],
+    data = [
+        ":rosbag2_storage_default_plugins",
+        ":rosbag2_storage_mcap_plugin",
+    ],
     includes = ["rosbag2_cpp/include"],
     visibility = ["//visibility:public"],
     deps = [
