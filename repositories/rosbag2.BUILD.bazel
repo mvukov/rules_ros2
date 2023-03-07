@@ -6,7 +6,6 @@ load(
     "ros2_cpp_binary",
     "ros2_cpp_library",
 )
-load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS")
 load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
     "cpp_ros2_interface_library",
@@ -40,7 +39,6 @@ ros2_plugin(
         "rosbag2_storage_default_plugins/src/**/*.hpp",
     ]),
     hdrs = glob(["rosbag2_storage_default_plugins/include/**/*.hpp"]),
-    copts = CPP_COPTS,
     includes = ["rosbag2_storage_default_plugins/include"],
     plugin_specs = [
         {
@@ -62,7 +60,6 @@ ros2_plugin(
 ros2_cpp_library(
     name = "mcap_vendor",
     srcs = ["mcap_vendor/src/main.cpp"],
-    copts = CPP_COPTS,
     deps = [
         "@mcap",
         "@zstd",
@@ -79,7 +76,6 @@ ros2_plugin(
         "rosbag2_storage_mcap/include/rosbag2_storage_mcap/message_definition_cache.hpp",
         "rosbag2_storage_mcap/include/rosbag2_storage_mcap/visibility_control.hpp",
     ],
-    copts = CPP_COPTS,
     defines = [
         "ROSBAG2_STORAGE_MCAP_HAS_YAML_HPP",
         "ROSBAG2_STORAGE_MCAP_HAS_STORAGE_OPTIONS",
