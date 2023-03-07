@@ -153,6 +153,15 @@ def ros2_repositories():
 
     maybe(
         http_archive,
+        name = "eigen",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:eigen.BUILD.bazel",
+        sha256 = "8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72",
+        strip_prefix = "eigen-3.4.0",
+        urls = ["https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
         name = "ros2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
         sha256 = "f2590bb8b64e6a3c8d563687d055b9002805e13a04eb3059da6400659a8c9028",
