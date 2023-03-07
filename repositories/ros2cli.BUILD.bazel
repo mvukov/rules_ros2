@@ -79,3 +79,14 @@ py_library(
         "@ros2_rclpy//:rclpy",
     ],
 )
+
+py_library(
+    name = "ros2run",
+    srcs = glob(["ros2run/ros2run/**/*.py"]),
+    imports = ["ros2run"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":ros2cli",
+        ":ros2pkg",
+    ],
+)

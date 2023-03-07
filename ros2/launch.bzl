@@ -18,11 +18,10 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):
     if not nodes:
         fail("A list of nodes must be given!")
 
-    data = data or []
     launcher = "{}_launch".format(name)
     launch_script = py_launcher(
         launcher,
-        deps = nodes + data,
+        deps = nodes,
         template = "@com_github_mvukov_rules_ros2//ros2:launch.py.tpl",
         substitutions = {
             "{launch_file}": "$(rootpath {})".format(launch_file),
@@ -31,6 +30,7 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):
         tags = ["manual"],
     )
 
+    data = data or []
     deps = deps or []
     py_binary(
         name = name,
