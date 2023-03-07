@@ -40,8 +40,6 @@ def generate_test_description():
 
     return (launch.LaunchDescription([
         publisher_node,
-        launch.actions.SetEnvironmentVariable(name='STORAGE_ID',
-                                              value=get_storage_id()),
         recorder_node,
         launch_testing.actions.ReadyToTest(),
     ]), {
