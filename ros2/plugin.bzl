@@ -15,20 +15,7 @@
 """
 
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
-load(
-    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
-    "CppGeneratorAspectInfo",
-    "IdlAdapterAspectInfo",
-    "Ros2InterfaceInfo",
-    "cpp_generator_aspect",
-    "idl_adapter_aspect",
-)
-load(
-    "@com_github_mvukov_rules_ros2//ros2:plugin_aspects.bzl",
-    "Ros2PluginInfo",
-    "create_dynamic_library",
-)
-load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
+load("@com_github_mvukov_rules_ros2//ros2:plugin_aspects.bzl", "Ros2PluginInfo", "create_dynamic_library")
 
 def _ros2_plugin_impl(ctx):
     target_name = ctx.attr.name
@@ -78,7 +65,7 @@ def ros2_plugin(name, plugin_specs, **kwargs):
         base_class_type = plugin_spec["base_class_type"]
         types_to_bases_and_names[class_type] = [base_class_type, class_name]
 
-    lib_name = "_" + name
+    lib_name = "cpp_" + name
     tags = kwargs.pop("tags", None)
     visibility = kwargs.pop("visibility", None)
     ros2_cpp_library(
@@ -86,6 +73,7 @@ def ros2_plugin(name, plugin_specs, **kwargs):
         # This must be set such that static plugin registration works.
         alwayslink = True,
         tags = ["manual"],
+        visibility = visibility,
         **kwargs
     )
     ros2_plugin_rule(
