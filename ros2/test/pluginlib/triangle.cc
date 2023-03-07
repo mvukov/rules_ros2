@@ -20,16 +20,6 @@
 
 namespace polygon_plugins {
 
-class Square : public polygon_base::RegularPolygon {
- public:
-  void initialize(double side_length) override { side_length_ = side_length; }
-
-  double area() override { return side_length_ * side_length_; }
-
- protected:
-  double side_length_;
-};
-
 class Triangle : public polygon_base::RegularPolygon {
  public:
   void initialize(double side_length) override { side_length_ = side_length; }
@@ -47,5 +37,4 @@ class Triangle : public polygon_base::RegularPolygon {
 
 }  // namespace polygon_plugins
 
-PLUGINLIB_EXPORT_CLASS(polygon_plugins::Square, polygon_base::RegularPolygon)
 PLUGINLIB_EXPORT_CLASS(polygon_plugins::Triangle, polygon_base::RegularPolygon)

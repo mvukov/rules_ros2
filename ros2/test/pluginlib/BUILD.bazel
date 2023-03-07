@@ -1,7 +1,8 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_python//python:defs.bzl", "py_test")
+load("//ros2:ament.bzl", "ros2_ament_setup")
+load("//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_test")
 load("//ros2:plugin.bzl", "ros2_plugin")
-load("//ros2:test.bzl", "ros2_test")
 
 cc_library(
     name = "polygon_base",
@@ -9,13 +10,24 @@ cc_library(
 )
 
 ros2_plugin(
-    name = "polygon_plugins",
-    srcs = ["polygon_plugins.cc"],
+    name = "square",
+    srcs = ["square.cc"],
     plugin_specs = [
         {
             "class_type": "polygon_plugins::Square",
             "base_class_type": "polygon_base::RegularPolygon",
         },
+    ],
+    deps = [
+        ":polygon_base",
+        "@ros2_pluginlib//:pluginlib",
+    ],
+)
+
+ros2_plugin(
+    name = "triangle",
+    srcs = ["triangle.cc"],
+    plugin_specs = [
         {
             "class_type": "polygon_plugins::Triangle",
             "base_class_type": "polygon_base::RegularPolygon",
@@ -27,11 +39,14 @@ ros2_plugin(
     ],
 )
 
-# TODO(mvukov) Dig deeper into why cc_test doesn't work here.
-cc_binary(
-    name = "plugin_tests",
+ros2_cpp_test(
+    name = "tests",
     srcs = ["plugin_tests.cc"],
-    data = [":polygon_plugins"],
+    data = [
+        ":square",
+        ":triangle",
+    ],
+    set_up_ament = True,
     deps = [
         ":polygon_base",
         "@com_google_googletest//:gtest_main",
@@ -39,7 +54,7 @@ cc_binary(
     ],
 )
 
-cc_binary(
+ros2_cpp_binary(
     name = "py_loader.so",
     srcs = ["py_loader.cc"],
     linkshared = True,
@@ -50,10 +65,13 @@ cc_binary(
     ],
 )
 
-ros2_test(
-    name = "tests",
-    launch_file = "tests.py",
-    nodes = [":plugin_tests"],
+ros2_ament_setup(
+    name = "polygon_plugins_ament_setup",
+    package_name = package_name(),
+    deps = [
+        ":square",
+        ":triangle",
+    ],
 )
 
 py_test(
@@ -61,8 +79,8 @@ py_test(
     srcs = [
         "py_loader_tests.py",
     ],
-    data = [":py_loader.so"],
-    deps = [
-        ":tests_ament_setup",  # This is an implicit target from :tests.
+    data = [
+        ":polygon_plugins_ament_setup",
+        ":py_loader.so",
     ],
 )

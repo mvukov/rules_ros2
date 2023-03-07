@@ -8,7 +8,7 @@ To launch a sample deployment, run
 bazel run //chatter
 ```
 
-By running this command, Bazel will (re-)build all necessary code (ROS2, nodes,
+By running this command, Bazel will (re-)build all necessary code (ROS 2, nodes,
 launch relevant code, etc.) and run the target. This is basically one of the
 value propositions for using Bazel: you don't have to (semi-)manually keep
 e.g. nodes up-to-date. With correctly specified deps, Bazel takes care of this.
@@ -23,6 +23,12 @@ and list the parameters with
 
 ```sh
 bazel run //:ros2_param -- list
+```
+
+You can record a topic with
+
+```sh
+bazel run //chatter:bag -- record /topic
 ```
 
 You can run tests with

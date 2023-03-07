@@ -1,20 +1,24 @@
-""" ROS2 common definitions.
+""" ROS 2 common definitions.
 """
 
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 
 exports_files([
     "ament.bzl",
-    "ament_setup.py.tpl",
+    "bag.bzl",
+    "bag.py.tpl",
     "cc_defs.bzl",
     "interfaces.bzl",
     "launch.bzl",
     "launch.py.tpl",
     "plugin.bzl",
     "pytest_wrapper.py.tpl",
+    "ros2_service.py",
     "ros2_topic.py",
+    "service.bzl",
     "test.bzl",
     "test.py.tpl",
+    "test.sh.tpl",
     "topic.bzl",
 ])
 

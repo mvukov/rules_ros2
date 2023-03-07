@@ -32,6 +32,9 @@ repositories:
   image_common:
     name: ros2_image_common
     build_file: "@com_github_mvukov_rules_ros2//repositories:image_common.BUILD.bazel"
+  keyboard_handler:
+    name: ros2_keyboard_handler
+    build_file: "@com_github_mvukov_rules_ros2//repositories:keyboard_handler.BUILD.bazel"
   launch:
     name: ros2_launch
     build_file: "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel"
@@ -62,10 +65,13 @@ repositories:
   rclcpp:
     name: ros2_rclcpp
     build_file: "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel"
+    patch_cmds: ["patch"]
     patch_args: ["-p1"]
     patches:
       # https://github.com/ros2/rclcpp/commit/37adc03c11171f67c213ee72f7ce43fdcbda7b9e
       - "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_fix-maybe-uninitialized-warning.patch"
+      # https://github.com/mvukov/rules_ros2/pull/47
+      - "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_move_ts_lib_to_subscription_base.patch"
   rclpy:
     name: ros2_rclpy
     build_file: "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel"
@@ -102,6 +108,12 @@ repositories:
   ros_testing:
     name: ros2_ros_testing
     build_file: "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel"
+  rosbag2:
+    name: ros2_rosbag2
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rosbag2.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:rosbag2_relax_plugin_errors.patch"
   rosidl:
     name: ros2_rosidl
     build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel"

@@ -6,7 +6,7 @@ import domain_coordinator
 import launch_testing.launch_test
 import launch_testing_ros
 
-import {ament_setup}
+{ament_setup}
 
 LAUNCH_FILE = '{launch_file}'
 
@@ -16,8 +16,6 @@ sys.argv = sys.argv[:1] + [
     f'--junit-xml={os.environ["XML_OUTPUT_FILE"]}',
     LAUNCH_FILE,
 ] + sys.argv[1:]
-
-{ament_setup}.set_up_ament()
 
 test_outputs_dir = os.environ.get('TEST_UNDECLARED_OUTPUTS_DIR')
 if test_outputs_dir:

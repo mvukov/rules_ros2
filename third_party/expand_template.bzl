@@ -24,15 +24,24 @@ Args:
   is_executable: A boolean indicating whether the output file should be executable
 """
 
-def _expand_template_impl(ctx):
+def expand_template_impl(ctx, template, output, substitutions, is_executable):
     ctx.actions.expand_template(
-        template = ctx.file.template,
-        output = ctx.outputs.out,
+        template = template,
+        output = output,
         substitutions = {
             k: ctx.expand_location(v, ctx.attr.data)
-            for k, v in ctx.attr.substitutions.items()
+            for k, v in substitutions.items()
         },
-        is_executable = ctx.attr.is_executable,
+        is_executable = is_executable,
+    )
+
+def _expand_template_impl(ctx):
+    expand_template_impl(
+        ctx,
+        ctx.file.template,
+        ctx.outputs.out,
+        ctx.attr.substitutions,
+        ctx.attr.is_executable,
     )
 
 expand_template = rule(

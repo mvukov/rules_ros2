@@ -1,0 +1,68 @@
+diff --git a/rosbag2_cpp/src/rosbag2_cpp/serialization_format_converter_factory_impl.hpp b/rosbag2_cpp/src/rosbag2_cpp/serialization_format_converter_factory_impl.hpp
+index 31901ce..d95b8c4 100644
+--- a/rosbag2_cpp/src/rosbag2_cpp/serialization_format_converter_factory_impl.hpp
++++ b/rosbag2_cpp/src/rosbag2_cpp/serialization_format_converter_factory_impl.hpp
+@@ -57,8 +57,7 @@ public:
+         "rosbag2_cpp",
+         converter_interfaces::SerializationFormatDeserializer::get_base_class_name());
+     } catch (const std::exception & e) {
+-      ROSBAG2_CPP_LOG_ERROR_STREAM("Unable to create class loader instance: " << e.what());
+-      throw e;
++      ROSBAG2_CPP_LOG_DEBUG_STREAM("Unable to create class loader instance: " << e.what());
+     }
+   }
+ 
+@@ -67,17 +66,26 @@ public:
+   std::unique_ptr<converter_interfaces::SerializationFormatDeserializer>
+   load_deserializer(const std::string & format)
+   {
++    if (deserializer_class_loader_ == nullptr) {
++      return nullptr;
++    }
+     return load_interface(format, deserializer_class_loader_);
+   }
+ 
+   std::unique_ptr<converter_interfaces::SerializationFormatSerializer>
+   load_serializer(const std::string & format)
+   {
++    if (serializer_class_loader_ == nullptr) {
++      return nullptr;
++    }
+     return load_interface(format, serializer_class_loader_);
+   }
+ 
+   std::vector<std::string> get_declared_serialization_plugins() const
+   {
++    if (serializer_class_loader_ == nullptr) {
++      return {};
++    }
+     return serializer_class_loader_->getDeclaredClasses();
+   }
+ 
+diff --git a/rosbag2_py/src/rosbag2_py/_writer.cpp b/rosbag2_py/src/rosbag2_py/_writer.cpp
+index 2683f60..1579785 100644
+--- a/rosbag2_py/src/rosbag2_py/_writer.cpp
++++ b/rosbag2_py/src/rosbag2_py/_writer.cpp
+@@ -94,12 +94,16 @@ std::unordered_set<std::string> get_registered_compressors()
+ 
+ std::unordered_set<std::string> get_registered_serializers()
+ {
+-  auto serializers = rosbag2_cpp::plugins::get_class_plugins<
+-    rosbag2_cpp::converter_interfaces::SerializationFormatSerializer>();
+-  auto converters = rosbag2_cpp::plugins::get_class_plugins<
+-    rosbag2_cpp::converter_interfaces::SerializationFormatConverter>();
+-  serializers.insert(converters.begin(), converters.end());
+-  return serializers;
++  try {
++    auto serializers = rosbag2_cpp::plugins::get_class_plugins<
++      rosbag2_cpp::converter_interfaces::SerializationFormatSerializer>();
++    auto converters = rosbag2_cpp::plugins::get_class_plugins<
++      rosbag2_cpp::converter_interfaces::SerializationFormatConverter>();
++    serializers.insert(converters.begin(), converters.end());
++    return serializers;
++  } catch (const std::exception&) {
++    return {};
++  }
+ }
+ 
+ }  // namespace rosbag2_py

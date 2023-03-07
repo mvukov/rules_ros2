@@ -11,11 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-""" ROS2 IDL handling.
+""" ROS 2 IDL handling.
 """
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "CPP_COPTS", "C_COPTS")
+load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS", "C_COPTS")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 load("@rules_python//python:defs.bzl", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
@@ -342,7 +342,7 @@ def _compile_cc_generated_code(
         ) +
         _get_linking_contexts_from_deps(deps)
     )
-    linking_context, _ = cc_common.create_linking_context_from_compilation_outputs(
+    linking_context, linking_outputs = cc_common.create_linking_context_from_compilation_outputs(
         actions = ctx.actions,
         name = name,
         compilation_outputs = compilation_outputs,
@@ -356,7 +356,11 @@ def _compile_cc_generated_code(
         linking_context = linking_context,
     )
 
-    return cc_info, compilation_outputs
+    return struct(
+        cc_info = cc_info,
+        compilation_outputs = compilation_outputs,
+        linking_outputs = linking_outputs,
+    )
 
 def _c_generator_aspect_impl(target, ctx):
     package_name = target.label.name
@@ -411,7 +415,7 @@ def _c_generator_aspect_impl(target, ctx):
     hdrs = _get_hdrs(all_outputs)
     srcs = _get_srcs(all_outputs)
 
-    cc_info, _ = _compile_cc_generated_code(
+    compilation_info = _compile_cc_generated_code(
         ctx,
         name = package_name + "_c",
         aspect_info = CGeneratorAspectInfo,
@@ -423,7 +427,7 @@ def _c_generator_aspect_impl(target, ctx):
     )
 
     return [
-        CGeneratorAspectInfo(cc_info = cc_info),
+        CGeneratorAspectInfo(cc_info = compilation_info.cc_info),
     ]
 
 c_generator_aspect = aspect(
@@ -506,6 +510,7 @@ c_ros2_interface_library = rule(
 
 CppGeneratorAspectInfo = provider("TBD", fields = [
     "cc_info",
+    "compilation_outputs",
 ])
 
 _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING = [
@@ -574,7 +579,7 @@ def _cpp_generator_aspect_impl(target, ctx):
     hdrs = _get_hdrs(all_outputs)
     srcs = _get_srcs(all_outputs)
 
-    cc_info, _ = _compile_cc_generated_code(
+    compilation_info = _compile_cc_generated_code(
         ctx,
         name = package_name + "_cpp",
         aspect_info = CppGeneratorAspectInfo,
@@ -586,7 +591,10 @@ def _cpp_generator_aspect_impl(target, ctx):
     )
 
     return [
-        CppGeneratorAspectInfo(cc_info = cc_info),
+        CppGeneratorAspectInfo(
+            cc_info = compilation_info.cc_info,
+            compilation_outputs = compilation_info.compilation_outputs,
+        ),
     ]
 
 cpp_generator_aspect = aspect(
@@ -703,7 +711,7 @@ def _py_generator_aspect_impl(target, ctx):
 
     cc_srcs = _get_srcs(all_outputs)
     py_extension_name = "{}_s__{}".format(package_name, type_support_impl)
-    cc_info, compilation_outputs = _compile_cc_generated_code(
+    compilation_info = _compile_cc_generated_code(
         ctx,
         name = package_name + "_py",
         aspect_info = CGeneratorAspectInfo,
@@ -735,8 +743,8 @@ def _py_generator_aspect_impl(target, ctx):
         actions = ctx.actions,
         feature_configuration = feature_configuration,
         cc_toolchain = cc_toolchain,
-        compilation_outputs = compilation_outputs,
-        linking_contexts = [cc_info.linking_context] + linking_contexts,
+        compilation_outputs = compilation_info.compilation_outputs,
+        linking_contexts = [compilation_info.cc_info.linking_context] + linking_contexts,
         name = dynamic_library_name_stem,
         output_type = "dynamic_library",
         # TODO(mvukov) More deps means larger libs. Try to set this to False.
@@ -765,7 +773,7 @@ def _py_generator_aspect_impl(target, ctx):
 
     py_info = PyGeneratorAspectInfo(
         cc_info = cc_common.merge_cc_infos(
-            direct_cc_infos = [cc_info] + [
+            direct_cc_infos = [compilation_info.cc_info] + [
                 dep[PyGeneratorAspectInfo].cc_info
                 for dep in ctx.rule.attr.deps
             ],
