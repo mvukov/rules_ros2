@@ -117,3 +117,18 @@ ros2_cpp_binary(
         "@ros2_rclcpp//:rclcpp_components",
     ],
 )
+
+ros2_cpp_library(
+    name = "cpp_tf2_sensor_msgs",
+    srcs = [
+        "tf2_sensor_msgs/include/tf2_sensor_msgs/tf2_sensor_msgs.hpp",
+    ],
+    includes = ["tf2_sensor_msgs/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":tf2",
+        ":tf2_ros",
+        "@eigen",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+    ],
+)
