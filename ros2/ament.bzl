@@ -316,7 +316,7 @@ SH_TOOLCHAIN = "@bazel_tools//tools/sh:toolchain_type"
 
 def _sh_launcher_rule_impl(ctx):
     output = ctx.actions.declare_file(ctx.attr.name)
-    ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path
+    ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path or ""
 
     substitutions = dicts.add(
         ctx.attr.substitutions,
