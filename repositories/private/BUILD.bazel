@@ -18,8 +18,8 @@ py_binary(
         "--output=$(rootpath //repositories:ros2_repositories_impl.bzl)",
     ],
     data = [
-        "//repositories:ros2_repo_mappings.yaml",
-        "//repositories:ros2_repositories_impl.bzl",
+        "@com_github_mvukov_rules_ros2//repositories:ros2_repo_mappings.yaml",
+        "@com_github_mvukov_rules_ros2//repositories:ros2_repositories_impl.bzl",
         "@ros2//:repos",
     ],
     deps = [
@@ -33,7 +33,7 @@ py_binary(
 py_test(
     name = "tests",
     srcs = ["ros2_repo_mappings_tests.py"],
-    data = ["//repositories:ros2_repo_mappings.yaml"],
+    data = ["@com_github_mvukov_rules_ros2//repositories:ros2_repo_mappings.yaml"],
     main = "ros2_repo_mappings_tests.py",
     deps = [requirement("pyyaml")],
 )
