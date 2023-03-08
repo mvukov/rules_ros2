@@ -12,6 +12,7 @@ exports_files([
     "launch.bzl",
     "launch.py.tpl",
     "plugin.bzl",
+    "py_defs.bzl",
     "pytest_wrapper.py.tpl",
     "ros2_service.py",
     "ros2_topic.py",

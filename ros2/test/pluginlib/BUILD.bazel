@@ -1,8 +1,7 @@
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "ros2_ament_setup")
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_test")
 load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
+load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_test")
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("@rules_python//python:defs.bzl", "py_test")
 
 cc_library(
     name = "polygon_base",
@@ -65,22 +64,16 @@ ros2_cpp_binary(
     ],
 )
 
-ros2_ament_setup(
-    name = "polygon_plugins_ament_setup",
-    package_name = package_name(),
-    deps = [
-        ":square",
-        ":triangle",
-    ],
-)
-
-py_test(
+ros2_py_test(
     name = "py_loader_tests",
     srcs = [
         "py_loader_tests.py",
     ],
     data = [
-        ":polygon_plugins_ament_setup",
         ":py_loader.so",
+        ":square",
+        ":triangle",
     ],
+    main = "py_loader_tests.py",
+    set_up_ament = True,
 )

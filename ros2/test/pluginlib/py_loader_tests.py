@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import os
-
 from ros2.test.pluginlib import py_loader
 
-os.environ['AMENT_PREFIX_PATH'] = (
-    'ros2/test/pluginlib/polygon_plugins_ament_setup')
 py_loader.load_plugins()
