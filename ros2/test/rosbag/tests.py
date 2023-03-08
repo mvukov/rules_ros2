@@ -61,7 +61,7 @@ class TestRecorder(unittest.TestCase):
             proc_info,
             allowable_exit_codes=[launch_testing.asserts.EXIT_OK],
             process=recorder)
-        bag_dir = os.path.join(os.environ['TEST_UNDECLARED_OUTPUTS_DIR'], 'bag')
+        bag_dir = os.path.join(os.environ['TEST_TMPDIR'], 'bag')
         bag_db_file = os.path.join(bag_dir,
                                    STORAGE_IDS_TO_BAG_NAMES[get_storage_id()])
         bag_metadata_file = os.path.join(bag_dir, 'metadata.yaml')
