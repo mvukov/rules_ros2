@@ -1,9 +1,7 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_test")
+load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
+load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_test")
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("@rules_python//python:defs.bzl", "py_test")
-load("//ros2:ament.bzl", "ros2_ament_setup")
-load("//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_test")
-load("//ros2:plugin.bzl", "ros2_plugin")
-load("//ros2:py_defs.bzl", "ros2_py_test")
 
 cc_library(
     name = "polygon_base",
