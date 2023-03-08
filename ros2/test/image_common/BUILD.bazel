@@ -1,5 +1,5 @@
-load("//ros2:cc_defs.bzl", "ros2_cpp_test")
-load("//ros2:test.bzl", "ros2_test")
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_test")
+load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
 
 ros2_cpp_test(
     name = "image_transport_plugins_tests",
