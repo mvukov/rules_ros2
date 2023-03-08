@@ -24,3 +24,6 @@ test --build_tests_only
 # as the user configuration should be able to overwrite flags from this file.
 # See https://docs.bazel.build/versions/master/best-practices.html#bazelrc
 try-import %workspace%/user.bazelrc
+
+build --repo_env=CC=clang
+build --repo_env=CXX=clang++
