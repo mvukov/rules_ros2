@@ -27,4 +27,4 @@ try-import %workspace%/user.bazelrc
 
 build --repo_env=CC=clang
 build --repo_env=CXX=clang++
-build --linkopt=-fuse-ld=/usr/lib/llvm-11/bin/lld
+# build --linkopt=-fuse-ld=/usr/bin/ld.lld
