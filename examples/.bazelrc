@@ -27,4 +27,5 @@ try-import %workspace%/user.bazelrc
 
 build --repo_env=CC=clang
 build --repo_env=CXX=clang++
+build --linkopt=-latomic # Clang builds need this to avoid "undefined symbol: __atomic_is_lock_free"
 # build --linkopt=-fuse-ld=/usr/bin/ld.lld
