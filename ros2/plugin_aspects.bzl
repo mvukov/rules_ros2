@@ -38,7 +38,7 @@ Ros2PluginCollectorAspectInfo = provider(
     ],
 )
 
-_ROS2_PLUGIN_COLLECTOR_ATTR_ASPECTS = ["data", "deps"]
+_ROS2_COLLECTOR_ATTR_ASPECTS = ["data", "deps"]
 
 def _get_list_attr(rule_attr, attr_name):
     if not hasattr(rule_attr, attr_name):
@@ -61,7 +61,7 @@ def _ros2_plugin_collector_aspect_impl(target, ctx):
         direct_plugins.append(target[Ros2PluginInfo])
 
     transitive_plugins = []
-    for attr_name in _ROS2_PLUGIN_COLLECTOR_ATTR_ASPECTS:
+    for attr_name in _ROS2_COLLECTOR_ATTR_ASPECTS:
         for dep in _collect_deps(ctx.rule.attr, attr_name, Ros2PluginCollectorAspectInfo):
             transitive_plugins.append(dep[Ros2PluginCollectorAspectInfo].plugins)
 
@@ -76,8 +76,45 @@ def _ros2_plugin_collector_aspect_impl(target, ctx):
 
 ros2_plugin_collector_aspect = aspect(
     implementation = _ros2_plugin_collector_aspect_impl,
-    attr_aspects = _ROS2_PLUGIN_COLLECTOR_ATTR_ASPECTS,
+    attr_aspects = _ROS2_COLLECTOR_ATTR_ASPECTS,
     provides = [Ros2PluginCollectorAspectInfo],
+)
+
+Ros2InterfaceCollectorAspectInfo = provider(
+    "Provides info about collected interfaces.",
+    fields = [
+        "interfaces",
+    ],
+)
+
+def _ros2_interface_collector_aspect_impl(target, ctx):
+    direct_interfaces = []
+    if ctx.rule.kind == "ros2_interface_library":
+        direct_interfaces.append(
+            struct(
+                package_name = target.label.name,
+                srcs = target[Ros2InterfaceInfo].info.srcs,
+            ),
+        )
+
+    transitive_interfaces = []
+    for attr_name in _ROS2_COLLECTOR_ATTR_ASPECTS:
+        for dep in _collect_deps(ctx.rule.attr, attr_name, Ros2InterfaceCollectorAspectInfo):
+            transitive_interfaces.append(dep[Ros2InterfaceCollectorAspectInfo].interfaces)
+
+    return [
+        Ros2InterfaceCollectorAspectInfo(
+            interfaces = depset(
+                direct = direct_interfaces,
+                transitive = transitive_interfaces,
+            ),
+        ),
+    ]
+
+ros2_interface_collector_aspect = aspect(
+    implementation = _ros2_interface_collector_aspect_impl,
+    attr_aspects = _ROS2_COLLECTOR_ATTR_ASPECTS,
+    provides = [Ros2InterfaceCollectorAspectInfo],
 )
 
 Ros2IdlPluginAspectInfo = provider(
