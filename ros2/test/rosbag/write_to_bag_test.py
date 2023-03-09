@@ -23,7 +23,7 @@ ODOMETRY_TOPIC = '/foo'
 SERIALIZATION_FORMAT = 'cdr'
 
 
-def make_bag(bag_filepath: str, storage_id: str):
+def make_bag(bag_filepath: pathlib.Path, storage_id: str):
     """Make a bag with a single message on a single topic.
 
     Args:
@@ -33,7 +33,7 @@ def make_bag(bag_filepath: str, storage_id: str):
     writer = rosbag2_py.SequentialWriter()
     writer.open(
         rosbag2_py.StorageOptions(
-            uri=bag_filepath,
+            uri=str(bag_filepath),
             storage_id=storage_id,
         ),
         rosbag2_py.ConverterOptions(
@@ -47,12 +47,12 @@ def make_bag(bag_filepath: str, storage_id: str):
 
 
 def test_write_to_sqlite(tmp_path):
-    bag_filepath = str(pathlib.Path(tmp_path) / 'test.db3')
+    bag_filepath = tmp_path / 'test.db3'
     make_bag(bag_filepath=bag_filepath, storage_id=SQLITE3_STORAGE_ID)
 
 
 def test_write_to_mcap(tmp_path):
-    bag_filepath = str(pathlib.Path(tmp_path) / 'test.mcap')
+    bag_filepath = tmp_path / 'test.mcap'
     make_bag(bag_filepath=bag_filepath, storage_id=MCAP_STORAGE_ID)
 
 
