@@ -12,8 +12,11 @@ load(
 load(
     "@com_github_mvukov_rules_ros2//ros2:plugin_aspects.bzl",
     "Ros2IdlPluginAspectInfo",
+    "Ros2InterfaceCollectorAspectInfo",
     "Ros2PluginCollectorAspectInfo",
+    "create_interface_struct",
     "ros2_idl_plugin_aspect",
+    "ros2_interface_collector_aspect",
     "ros2_plugin_collector_aspect",
 )
 load(
@@ -175,16 +178,17 @@ def _ros2_ament_setup_rule_impl(ctx):
         )
         outputs.append(dynamic_library)
 
+    idls_from_deps = depset(
+        transitive = [
+            dep[Ros2InterfaceCollectorAspectInfo].interfaces
+            for dep in ctx.attr.deps
+        ],
+    )
     idls = depset(
         transitive = [
-            depset([
-                struct(
-                    package_name = dep.label.name,
-                    srcs = dep[Ros2InterfaceInfo].info.srcs,
-                ),
-            ])
+            depset([create_interface_struct(dep)])
             for dep in ctx.attr.idl_deps
-        ],
+        ] + [idls_from_deps],
     ).to_list()
 
     for idl in idls:
@@ -223,7 +227,10 @@ ros2_ament_setup = rule(
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
-            aspects = [ros2_plugin_collector_aspect],
+            aspects = [
+                ros2_interface_collector_aspect,
+                ros2_plugin_collector_aspect,
+            ],
         ),
         "idl_deps": attr.label_list(
             aspects = [

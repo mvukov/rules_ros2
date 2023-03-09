@@ -1,4 +1,5 @@
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_test")
 load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
@@ -46,3 +47,16 @@ ros2_cpp_binary(
         "sqlite3",
     ]
 ]
+
+ros2_py_test(
+    name = "write_to_bag_tests",
+    srcs = ["write_to_bag_tests.py"],
+    main = "write_to_bag_tests.py",
+    set_up_ament = True,
+    deps = [
+        "@ros2_common_interfaces//:py_nav_msgs",
+        "@ros2_rclpy//:rclpy",
+        "@ros2_rosbag2//:rosbag2_py",
+        requirement("pytest"),
+    ],
+)
