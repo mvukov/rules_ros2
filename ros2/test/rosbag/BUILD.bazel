@@ -49,9 +49,9 @@ ros2_cpp_binary(
 ]
 
 ros2_py_test(
-    name = "write_to_bag_test",
-    srcs = ["write_to_bag_test.py"],
-    main = "write_to_bag_test.py",
+    name = "write_to_bag_tests",
+    srcs = ["write_to_bag_tests.py"],
+    main = "write_to_bag_tests.py",
     set_up_ament = True,
     deps = [
         "@ros2_common_interfaces//:py_nav_msgs",
