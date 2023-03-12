@@ -47,6 +47,7 @@ ros2_plugin(
             "base_class_type": "rosbag2_storage::storage_interfaces::ReadWriteInterface",
         },
     ],
+    visibility = ["//visibility:public"],  # https://github.com/mvukov/rules_ros2/issues/78
     deps = [
         ":rosbag2_storage",
         "@ros2_pluginlib//:pluginlib",
@@ -90,6 +91,7 @@ ros2_plugin(
             "base_class_type": "rosbag2_storage::storage_interfaces::ReadWriteInterface",
         },
     ],
+    visibility = ["//visibility:public"],  # https://github.com/mvukov/rules_ros2/issues/78
     deps = [
         ":mcap_vendor",
         ":rosbag2_storage",
@@ -182,6 +184,7 @@ ros2_plugin(
             "base_class_type": "rosbag2_compression::BaseDecompressorInterface",
         },
     ],
+    visibility = ["//visibility:public"],  # https://github.com/mvukov/rules_ros2/issues/78
     deps = [
         ":rosbag2_compression",
         "@ros2_pluginlib//:pluginlib",
