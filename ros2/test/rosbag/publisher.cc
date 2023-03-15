@@ -27,9 +27,8 @@ class Publisher : public rclcpp::Node {
       // Produce reasonably large messages so we quickly reach the size limit
       // that causes the recorder to split the bag (we use this as a signal that
       // the recorder has received a sufficient number of messages).
-      constexpr std::size_t minimum_message_size = 8192;
-      constexpr char random_char = 'x';
-      message.data = std::string(minimum_message_size, random_char);
+      constexpr std::size_t kMinimumMessageSize = 8192;
+      message.data = std::string(kMinimumMessageSize, 'x');
       publisher_->publish(message);
     };
     timer_ = create_wall_timer(std::chrono::milliseconds(20), timer_callback);
