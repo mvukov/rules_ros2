@@ -24,16 +24,19 @@ class Publisher : public rclcpp::Node {
     publisher_ = create_publisher<std_msgs::msg::String>("topic", 10);
     auto timer_callback = [this]() -> void {
       auto message = std_msgs::msg::String();
-      message.data = std::to_string(count_++);
+      // Produce reasonably large messages so we quickly reach the size limit
+      // that causes the recorder to split the bag (we use this as a signal that
+      // the recorder has received a sufficient number of messages).
+      constexpr std::size_t kMinimumMessageSize = 8192;
+      message.data = std::string(kMinimumMessageSize, 'x');
       publisher_->publish(message);
     };
     timer_ = create_wall_timer(std::chrono::milliseconds(20), timer_callback);
   }
 
  private:
-  rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
-  size_t count_ = 0;
+  rclcpp::TimerBase::SharedPtr timer_;
 };
 
 int main(int argc, char* argv[]) {

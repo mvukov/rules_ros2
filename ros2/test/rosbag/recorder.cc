@@ -13,6 +13,7 @@
 // limitations under the License.
 #include "rosbag2_transport/recorder.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "rosbag2_interfaces/msg/write_split_event.hpp"
 #include "rosbag2_storage/storage_options.hpp"
 #include "rosbag2_transport/reader_writer_factory.hpp"
 #include "rosbag2_transport/record_options.hpp"
@@ -20,27 +21,27 @@
 
 constexpr auto kTopicName = "topic";
 
-class MessageCounter : public rclcpp::Node {
+class BagSplitEventListener : public rclcpp::Node {
  public:
-  MessageCounter() : Node("message_counter") {
-    subscription_ = create_subscription<std_msgs::msg::String>(
-        kTopicName, 10,
-        [this](std_msgs::msg::String::SharedPtr /*msg*/) { ++msg_count_; });
+  using WriteSplitEvent = rosbag2_interfaces::msg::WriteSplitEvent;
+
+  BagSplitEventListener() : Node("bag_split_event_listener") {
+    subscription_ = create_subscription<WriteSplitEvent>(
+        "events/write_split", 10,
+        [this](WriteSplitEvent::SharedPtr /*msg*/) { ++split_count_; });
   }
 
-  auto msg_count() const { return msg_count_; }
+  auto split_count() const { return split_count_; }
 
  private:
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_;
-  int msg_count_ = 0;
+  rclcpp::Subscription<WriteSplitEvent>::SharedPtr subscription_;
+  int split_count_ = 0;
 };
 
 int main(int argc, char* argv[]) {
   rclcpp::init(argc, argv);
 
   rclcpp::executors::SingleThreadedExecutor executor;
-  auto msg_counter = std::make_shared<MessageCounter>();
-  executor.add_node(msg_counter);
 
   rosbag2_transport::RecordOptions record_options;
   record_options.topics = {kTopicName};
@@ -54,19 +55,22 @@ int main(int argc, char* argv[]) {
       rosbag2_transport::ReaderWriterFactory::make_writer(record_options);
 
   rosbag2_storage::StorageOptions storage_options;
-  storage_options.uri =
-      std::string(std::getenv("TEST_UNDECLARED_OUTPUTS_DIR")) + "/bag";
+  storage_options.uri = std::string(std::getenv("TEST_TMPDIR")) + "/bag";
   storage_options.storage_id = std::getenv("STORAGE_ID");
+  // We use the bag split event as a signal that we can stop.
+  constexpr uint64_t kSqlite3MinimumSplitSize = 86016;
+  storage_options.max_bagfile_size = kSqlite3MinimumSplitSize;
   auto recorder = std::make_shared<rosbag2_transport::Recorder>(
       std::move(writer), storage_options, record_options);
-  recorder->record();
   executor.add_node(recorder);
 
-  while (rclcpp::ok()) {
+  auto split_counter = std::make_shared<BagSplitEventListener>();
+  executor.add_node(split_counter);
+
+  recorder->record();
+
+  while (rclcpp::ok() && split_counter->split_count() == 0) {
     executor.spin_once(std::chrono::milliseconds(10));
-    if (msg_counter->msg_count() > 10) {
-      break;
-    }
   }
 
   return rclcpp::shutdown() ? EXIT_SUCCESS : EXIT_FAILURE;
