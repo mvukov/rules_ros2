@@ -41,7 +41,7 @@ ROS 2 packages are by default locked to versions from [release-humble-20230127](
 
 ## Known issues
 
-- Plugin registration doesn't work at the moment when the code is compiled with
+- Plugin registration doesn't work automatically at the moment when the code is compiled with
   clang. Keep an eye on https://github.com/mvukov/rules_ros2/issues/78.
 
 ## Alternatives
