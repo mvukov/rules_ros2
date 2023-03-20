@@ -142,7 +142,7 @@ ros2_cpp_library(
     deps = [
         ":tf2",
         ":tf2_ros",
-        "@WayveCode//3rdparty/cpp:eigen",
+        "@eigen",
     ],
 )
 
@@ -154,7 +154,7 @@ ros2_cpp_binary(
     linkshared = True,
     deps = [
         ":tf2",
-        "@python_runtime//:dev",
+        "@rules_ros2_python//:python_headers",
     ],
 )
 
