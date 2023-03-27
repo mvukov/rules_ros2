@@ -27,12 +27,20 @@ jobs:
     name: Run tests
     runs-on: ubuntu-20.04
 
-    # Run bazel test in each workspace
+    # Run bazel test with gcc and clang in each workspace
     strategy:
       matrix:
         folder:
           - "."
           - "examples"
+        toolchain:
+          - "gcc"
+          - "clang"
+        include:
+          - toolchain: "gcc"
+            config_option: ""
+          - toolchain: "clang"
+            config_option: "--config=clang"
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -68,12 +76,12 @@ jobs:
             ~/.cache/bazel-repo
           key: v3-bazel-repo-cache-${{ hashFiles('.bazelversion', 'examples/WORKSPACE', 'repositories/**', 'requirements_lock.txt', 'WORKSPACE') }}
           restore-keys: v3-bazel-repo-cache-
-      - name: bazel test //...
+      - name: bazel test ${{ matrix.config_option }} //...
         env:
           # Bazelisk will download bazel to here, ensure it is cached between runs.
           XDG_CACHE_HOME: ~/.cache/bazel-repo
         working-directory: ${{ matrix.folder }}
         run: |
           bazel --bazelrc=$GITHUB_WORKSPACE/.github/workflows/ci.bazelrc --bazelrc=.bazelrc \
-              test //... \
+              test ${{ matrix.config_option }} //... \
               --remote_header=x-buildbuddy-api-key=${{ secrets.BUILDBUDDY_ORG_API_KEY }}
