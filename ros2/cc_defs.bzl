@@ -64,7 +64,41 @@ def ros2_c_binary(name, ros2_package_name = None, **kwargs):
     """
     _ros2_cc_target(cc_binary, "c", name, ros2_package_name, **kwargs)
 
-def ros2_cpp_binary(name, ros2_package_name = None, **kwargs):
+def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False, **kwargs):
+    if set_up_ament == False:
+        _ros2_cc_target(target, "cpp", name, ros2_package_name, **kwargs)
+        return
+
+    target_impl = name + "_impl"
+    tags = kwargs.pop("tags", [])
+    visibility = kwargs.pop("visibility", None)
+    _ros2_cc_target(cc_binary, "cpp", target_impl, ros2_package_name, tags = ["manual"], **kwargs)
+
+    is_test = target == cc_test
+
+    launcher = "{}_launch".format(name)
+    sh_launcher(
+        launcher,
+        deps = [target_impl],
+        template = "@com_github_mvukov_rules_ros2//ros2:launch.sh.tpl",
+        substitutions = {
+            "{entry_point}": "$(rootpath {})".format(target_impl),
+        },
+        tags = ["manual"],
+        data = [target_impl],
+        testonly = is_test,
+    )
+
+    sh_target = native.sh_test if is_test else native.sh_binary
+    sh_target(
+        name = name,
+        srcs = [launcher],
+        data = [target_impl],
+        tags = tags,
+        visibility = visibility,
+    )
+
+def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, **kwargs):
     """ Defines a ROS 2 C++ binary.
 
     Adds common ROS 2 C++ definitions on top of a cc_binary.
@@ -73,9 +107,10 @@ def ros2_cpp_binary(name, ros2_package_name = None, **kwargs):
         name: A unique target name.
         ros2_package_name: If given, defines a ROS package name for the target.
             Otherwise, the `name` is used as the package name.
+        set_up_ament: If true, sets up ament file tree for the binary target.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
-    _ros2_cc_target(cc_binary, "cpp", name, ros2_package_name, **kwargs)
+    _ros2_cpp_exec(cc_binary, name, ros2_package_name, set_up_ament, **kwargs)
 
 def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = False, **kwargs):
     """ Defines a ROS 2 C++ test.
@@ -89,30 +124,4 @@ def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = False, **kwargs
         set_up_ament: If true, sets up ament file tree for the test target.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
     """
-    if set_up_ament == False:
-        _ros2_cc_target(cc_test, "cpp", name, ros2_package_name, **kwargs)
-        return
-
-    test_target = name + "_impl"
-    tags = kwargs.pop("tags", None)
-    _ros2_cc_target(cc_binary, "cpp", test_target, ros2_package_name, tags = ["manual"], **kwargs)
-
-    launcher = "{}_launch".format(name)
-    sh_launcher(
-        launcher,
-        deps = [test_target],
-        template = "@com_github_mvukov_rules_ros2//ros2:test.sh.tpl",
-        substitutions = {
-            "{entry_point}": "$(rootpath {})".format(test_target),
-        },
-        tags = ["manual"],
-        data = [test_target],
-        testonly = True,
-    )
-
-    native.sh_test(
-        name = name,
-        srcs = [launcher],
-        data = [test_target],
-        tags = tags,
-    )
+    _ros2_cpp_exec(cc_test, name, ros2_package_name, set_up_ament, **kwargs)

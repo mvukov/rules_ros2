@@ -1,6 +1,6 @@
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_test")
 load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
-load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_test")
+load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_binary", "ros2_py_test")
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
@@ -76,4 +76,51 @@ ros2_py_test(
     ],
     main = "py_loader_tests.py",
     set_up_ament = True,
+)
+
+ros2_cpp_binary(
+    name = "plugin_tests_binary",
+    srcs = ["plugin_tests.cc"],
+    data = [
+        ":square",
+        ":triangle",
+    ],
+    set_up_ament = True,
+    deps = [
+        ":polygon_base",
+        "@com_google_googletest//:gtest_main",
+        "@ros2_pluginlib//:pluginlib",
+    ],
+)
+
+sh_test(
+    name = "ros2_cpp_binary_test",
+    srcs = ["ros2_cpp_binary_test.sh"],
+    data = [
+        ":plugin_tests_binary",
+    ],
+)
+
+ros2_py_binary(
+    name = "py_loader_tests_binary",
+    srcs = [
+        "py_loader_tests.py",
+    ],
+    data = [
+        ":py_loader.so",
+        ":square",
+        ":triangle",
+    ],
+    main = "py_loader_tests.py",
+    set_up_ament = True,
+)
+
+sh_test(
+    name = "ros2_py_library_test",
+    srcs = [
+        "ros2_py_binary_test.sh",
+    ],
+    data = [
+        ":py_loader_tests_binary",
+    ],
 )

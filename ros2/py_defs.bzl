@@ -3,48 +3,70 @@
 
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher")
 load("@com_github_mvukov_rules_ros2//third_party:symlink.bzl", "symlink")
-load("@rules_python//python:defs.bzl", "py_test")
+load("@rules_python//python:defs.bzl", "py_binary", "py_test")
 
-def ros2_py_test(name, set_up_ament = False, **kwargs):
-    """ Defines a ROS 2 Python test.
-
-    Args:
-        name: A unique target name.
-        set_up_ament: If true, sets up ament file tree for the test target.
-        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
-    """
+def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
     if set_up_ament == False:
-        py_test(name = name, **kwargs)
+        target(name = name, srcs = srcs, main = main, **kwargs)
         return
 
-    test_target = name + "_impl"
-    tags = kwargs.pop("tags", None)
-    py_test(name = test_target, tags = ["manual"], **kwargs)
+    target_impl = name + "_impl"
+    tags = kwargs.pop("tags", [])
+    visibility = kwargs.pop("visibility", None)
+    target(name = target_impl, srcs = srcs, main = main, tags = ["manual"], **kwargs)
 
-    test_target_symlink = test_target + "_symlink"
+    is_test = target == py_test
+
+    target_impl_symlink = target_impl + "_symlink"
     symlink(
-        name = test_target_symlink,
-        executable = test_target,
-        testonly = True,
+        name = target_impl_symlink,
+        executable = target_impl,
+        testonly = is_test,
         tags = ["manual"],
     )
 
     launcher = "{}_launch".format(name)
     sh_launcher(
         launcher,
-        deps = [test_target],
-        template = "@com_github_mvukov_rules_ros2//ros2:test.sh.tpl",
+        deps = [target_impl],
+        template = "@com_github_mvukov_rules_ros2//ros2:launch.sh.tpl",
         substitutions = {
-            "{entry_point}": "$(rootpath {})".format(test_target_symlink),
+            "{entry_point}": "$(rootpath {})".format(target_impl_symlink),
         },
         tags = ["manual"],
-        data = [test_target_symlink],
-        testonly = True,
+        data = [target_impl_symlink],
+        testonly = is_test,
     )
 
-    native.sh_test(
+    sh_target = native.sh_test if is_test else native.sh_binary
+    sh_target(
         name = name,
         srcs = [launcher],
-        data = [test_target_symlink],
+        data = [target_impl_symlink],
         tags = tags,
+        visibility = visibility,
     )
+
+def ros2_py_binary(name, srcs, main, set_up_ament = False, **kwargs):
+    """ Defines a ROS 2 Python binary.
+
+    Args:
+        name: A unique target name.
+        srcs: List of source files.
+        main: Source file to use as entrypoint.
+        set_up_ament: If true, sets up ament file tree for the binary target.
+        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
+    """
+    _ros2_py_exec(py_binary, name, srcs, main, set_up_ament, **kwargs)
+
+def ros2_py_test(name, srcs, main, set_up_ament = False, **kwargs):
+    """ Defines a ROS 2 Python test.
+
+    Args:
+        name: A unique target name.
+        srcs: List of source files.
+        main: Source file to use as entrypoint.
+        set_up_ament: If true, sets up ament file tree for the test target.
+        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
+    """
+    _ros2_py_exec(py_test, name, srcs, main, set_up_ament, **kwargs)
