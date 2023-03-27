@@ -12,7 +12,7 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
 
     target_impl = name + "_impl"
     tags = kwargs.pop("tags", [])
-    visibility = kwargs.pop("tags", None)
+    visibility = kwargs.pop("visibility", None)
     target(name = target_impl, srcs = srcs, main = main, tags = ["manual"], **kwargs)
 
     is_test = target == py_test
