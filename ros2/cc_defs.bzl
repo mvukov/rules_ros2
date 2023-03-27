@@ -71,6 +71,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False,
 
     target_impl = name + "_impl"
     tags = kwargs.pop("tags", [])
+    visibility = kwargs.pop("tags", None)
     _ros2_cc_target(cc_binary, "cpp", target_impl, ros2_package_name, tags = ["manual"], **kwargs)
 
     is_test = target == cc_test
@@ -94,7 +95,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False,
         srcs = [launcher],
         data = [target_impl],
         tags = tags,
-        visibility = kwargs.pop("visibility", None),
+        visibility = visibility,
     )
 
 def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, **kwargs):

@@ -12,6 +12,7 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
 
     target_impl = name + "_impl"
     tags = kwargs.pop("tags", [])
+    visibility = kwargs.pop("tags", None)
     target(name = target_impl, srcs = srcs, main = main, tags = ["manual"], **kwargs)
 
     is_test = target == py_test
@@ -43,7 +44,7 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
         srcs = [launcher],
         data = [target_impl_symlink],
         tags = tags,
-        visibility = kwargs.pop("visibility", None),
+        visibility = visibility,
     )
 
 def ros2_py_binary(name, srcs, main, set_up_ament = False, **kwargs):
@@ -53,7 +54,7 @@ def ros2_py_binary(name, srcs, main, set_up_ament = False, **kwargs):
         name: A unique target name.
         srcs: List of source files.
         main: Source file to use as entrypoint.
-        set_up_ament: If true, sets up ament file tree for the test target.
+        set_up_ament: If true, sets up ament file tree for the binary target.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
     _ros2_py_exec(py_binary, name, srcs, main, set_up_ament, **kwargs)
@@ -65,7 +66,7 @@ def ros2_py_test(name, srcs, main, set_up_ament = False, **kwargs):
         name: A unique target name.
         srcs: List of source files.
         main: Source file to use as entrypoint.
-        set_up_ament: If true, sets up ament file tree for the binary target.
+        set_up_ament: If true, sets up ament file tree for the test target.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
     """
     _ros2_py_exec(py_test, name, srcs, main, set_up_ament, **kwargs)
