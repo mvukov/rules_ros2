@@ -25,8 +25,6 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_class_loader",
         build_file = "@com_github_mvukov_rules_ros2//repositories:class_loader.BUILD.bazel",
-        patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:class_loader_fix_global_data.patch"],
         sha256 = "a85a99b93fcad7c8d9686672b8e3793200b1da9d8feab7ab3a9962e34ab1f675",
         strip_prefix = "class_loader-2.2.0",
         url = "https://github.com/ros/class_loader/archive/refs/tags/2.2.0.tar.gz",
