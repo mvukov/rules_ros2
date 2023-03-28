@@ -22,6 +22,7 @@ test --build_tests_only
 # To use a clang compiler, invoke Bazel with `--config=clang`.
 build:clang --repo_env=CC=clang
 build:clang --repo_env=CXX=clang++
+build:clang --linkopt="-fuse-ld=lld"
 
 # Load any settings specific to the current user.
 # user.bazelrc should appear in .gitignore so that settings are not shared with
