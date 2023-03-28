@@ -86,8 +86,6 @@ def ros2_plugin(name, plugin_specs, **kwargs):
         # This must be set such that static plugin registration works.
         alwayslink = True,
         tags = ["manual"],
-        # https://github.com/mvukov/rules_ros2/issues/78
-        visibility = visibility,
         **kwargs
     )
     ros2_plugin_rule(
