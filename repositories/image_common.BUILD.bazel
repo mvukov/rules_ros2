@@ -123,7 +123,6 @@ ros2_plugin(
             "base_class_type": "image_transport::SubscriberPlugin",
         },
     ],
-    visibility = ["//visibility:public"],  # https://github.com/mvukov/rules_ros2/issues/78
     deps = [
         ":image_transport_common",
         "@ros2_common_interfaces//:cpp_sensor_msgs",
