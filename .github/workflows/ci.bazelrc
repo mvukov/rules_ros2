@@ -19,3 +19,7 @@ build --experimental_remote_cache_compression
 test --test_output=errors
 # Allows tests to run bazelisk-in-bazel, since this is the cache folder used
 test --test_env=XDG_CACHE_HOME
+
+# Add a config to test with clang
+build:clang --repo_env=CC=clang
+build:clang --repo_env=CXX=clang++

@@ -9,9 +9,6 @@ repositories:
   class_loader:
     name: ros2_class_loader
     build_file: "@com_github_mvukov_rules_ros2//repositories:class_loader.BUILD.bazel"
-    patch_args: ["-p1"]
-    patches:
-      - "@com_github_mvukov_rules_ros2//repositories/patches:class_loader_fix_global_data.patch"
   common_interfaces:
     name: ros2_common_interfaces
     build_file: "@com_github_mvukov_rules_ros2//repositories:common_interfaces.BUILD.bazel"
