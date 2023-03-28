@@ -39,11 +39,6 @@ ROS 2 packages are by default locked to versions from [release-humble-20230127](
 > care about this. If the deps are not correctly set, you'll only see failures
 > during compilation of the generated code.
 
-## Known issues
-
-- Plugin registration doesn't work automatically at the moment when the code is
-  compiled with clang. Keep an eye on https://github.com/mvukov/rules_ros2/issues/78.
-
 ## Alternatives
 
 For alternative approaches, see:

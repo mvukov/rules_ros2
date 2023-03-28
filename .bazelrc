@@ -1,6 +1,7 @@
 # See e.g. https://blog.aspect.dev/bazelrc-flags
 
 # Fix the wrong default to generate __init__.py to delimit a Python package.
+# This is a mandatory flag.
 build --incompatible_default_to_explicit_init_py
 
 # Ensure that you don't accidentally make non-hermetic actions/tests
@@ -17,6 +18,11 @@ build --noexperimental_check_output_files
 
 # Don't bother building targets which aren't dependencies of the tests.
 test --build_tests_only
+
+# To use a clang compiler, invoke Bazel with `--config=clang`.
+build:clang --repo_env=CC=clang
+build:clang --repo_env=CXX=clang++
+build:clang --linkopt="-fuse-ld=lld"
 
 # Load any settings specific to the current user.
 # user.bazelrc should appear in .gitignore so that settings are not shared with

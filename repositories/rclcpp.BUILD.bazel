@@ -69,6 +69,7 @@ ros2_cpp_library(
         ":logging_macros",
         ":rclcpp_interfaces",
     ],
+    copts = ["-w"],
     includes = [
         "include",
         "rclcpp/include",
