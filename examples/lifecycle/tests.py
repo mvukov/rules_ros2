@@ -22,7 +22,7 @@ import launch_testing.actions
 import launch_testing.asserts
 import lifecycle_msgs.msg
 
-Transition = lifecycle_msgs.msg.Transition
+_Transition = lifecycle_msgs.msg.Transition
 
 
 def generate_test_description():
@@ -52,7 +52,7 @@ def generate_test_description():
             launch.event_handlers.on_process_start.OnProcessStart(
                 target_action=talker_node,
                 on_start=[
-                    emit_change_state_event(Transition.TRANSITION_CONFIGURE)
+                    emit_change_state_event(_Transition.TRANSITION_CONFIGURE)
                 ],
             )),
         # When the talker reaches the 'inactive' state, make it take the
@@ -63,7 +63,7 @@ def generate_test_description():
                 start_state='configuring',
                 goal_state='inactive',
                 entities=[
-                    emit_change_state_event(Transition.TRANSITION_ACTIVATE)
+                    emit_change_state_event(_Transition.TRANSITION_ACTIVATE)
                 ],
             )),
         # When the talker node reaches the 'active' state, wait a bit and then
@@ -78,7 +78,7 @@ def generate_test_description():
                         period=0.5,
                         actions=[
                             emit_change_state_event(
-                                Transition.TRANSITION_DEACTIVATE)
+                                _Transition.TRANSITION_DEACTIVATE)
                         ]),
                 ],
             )),
@@ -90,7 +90,7 @@ def generate_test_description():
                 start_state='deactivating',
                 goal_state='inactive',
                 entities=[
-                    emit_change_state_event(Transition.TRANSITION_CLEANUP)
+                    emit_change_state_event(_Transition.TRANSITION_CLEANUP)
                 ],
             )),
         # When the talker node reaches the 'unconfigured' state after
@@ -103,7 +103,7 @@ def generate_test_description():
                 goal_state='unconfigured',
                 entities=[
                     emit_change_state_event(
-                        Transition.TRANSITION_UNCONFIGURED_SHUTDOWN)
+                        _Transition.TRANSITION_UNCONFIGURED_SHUTDOWN)
                 ],
             )),
         launch_testing.actions.ReadyToTest()
