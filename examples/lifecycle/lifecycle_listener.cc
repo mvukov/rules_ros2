@@ -32,7 +32,7 @@ class LifecycleListener : public rclcpp::Node {
  public:
   explicit LifecycleListener(const std::string& node_name) : Node(node_name) {
     // Data topic from the lc_talker node
-    sub_data_ = this->create_subscription<std_msgs::msg::String>(
+    sub_data_ = create_subscription<std_msgs::msg::String>(
         "lifecycle_chatter", 10,
         std::bind(&LifecycleListener::data_callback, this,
                   std::placeholders::_1));
@@ -41,7 +41,7 @@ class LifecycleListener : public rclcpp::Node {
     // are published here as TransitionEvents with
     // a start and goal state indicating the transition
     sub_notification_ =
-        this->create_subscription<lifecycle_msgs::msg::TransitionEvent>(
+        create_subscription<lifecycle_msgs::msg::TransitionEvent>(
             "/lc_talker/transition_event", 10,
             std::bind(&LifecycleListener::notification_callback, this,
                       std::placeholders::_1));

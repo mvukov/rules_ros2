@@ -22,6 +22,8 @@ import launch_testing.actions
 import launch_testing.asserts
 import lifecycle_msgs.msg
 
+Transition = lifecycle_msgs.msg.Transition
+
 
 def generate_test_description():
     talker_node = launch_ros.actions.LifecycleNode(
@@ -33,6 +35,14 @@ def generate_test_description():
         executable='lifecycle/lifecycle_listener',
         name='listener',
         output='screen')
+
+    def emit_change_state_event(transition_id):
+        return launch.actions.EmitEvent(
+            event=launch_ros.events.lifecycle.ChangeState(
+                lifecycle_node_matcher=launch.events.matches_action(
+                    talker_node),
+                transition_id=transition_id))
+
     return launch.LaunchDescription([
         talker_node,
         listener_node,
@@ -42,13 +52,7 @@ def generate_test_description():
             launch.event_handlers.on_process_start.OnProcessStart(
                 target_action=talker_node,
                 on_start=[
-                    launch.actions.EmitEvent(
-                        event=launch_ros.events.lifecycle.ChangeState(
-                            lifecycle_node_matcher=launch.events.matches_action(
-                                talker_node),
-                            transition_id=lifecycle_msgs.msg.Transition.
-                            TRANSITION_CONFIGURE,
-                        )),
+                    emit_change_state_event(Transition.TRANSITION_CONFIGURE)
                 ],
             )),
         # When the talker reaches the 'inactive' state, make it take the
@@ -59,13 +63,7 @@ def generate_test_description():
                 start_state='configuring',
                 goal_state='inactive',
                 entities=[
-                    launch.actions.EmitEvent(
-                        event=launch_ros.events.lifecycle.ChangeState(
-                            lifecycle_node_matcher=launch.events.matches_action(
-                                talker_node),
-                            transition_id=lifecycle_msgs.msg.Transition.
-                            TRANSITION_ACTIVATE,
-                        )),
+                    emit_change_state_event(Transition.TRANSITION_ACTIVATE)
                 ],
             )),
         # When the talker node reaches the 'active' state, wait a bit and then
@@ -77,15 +75,10 @@ def generate_test_description():
                 goal_state='active',
                 entities=[
                     launch.actions.TimerAction(
-                        period=5.0,
+                        period=0.5,
                         actions=[
-                            launch.actions.EmitEvent(
-                                event=launch_ros.events.lifecycle.ChangeState(
-                                    lifecycle_node_matcher=launch.events.
-                                    matches_action(talker_node),
-                                    transition_id=lifecycle_msgs.msg.Transition.
-                                    TRANSITION_DEACTIVATE,
-                                )),
+                            emit_change_state_event(
+                                Transition.TRANSITION_DEACTIVATE)
                         ]),
                 ],
             )),
@@ -97,13 +90,7 @@ def generate_test_description():
                 start_state='deactivating',
                 goal_state='inactive',
                 entities=[
-                    launch.actions.EmitEvent(
-                        event=launch_ros.events.lifecycle.ChangeState(
-                            lifecycle_node_matcher=launch.events.matches_action(
-                                talker_node),
-                            transition_id=lifecycle_msgs.msg.Transition.
-                            TRANSITION_CLEANUP,
-                        )),
+                    emit_change_state_event(Transition.TRANSITION_CLEANUP)
                 ],
             )),
         # When the talker node reaches the 'unconfigured' state after
@@ -115,13 +102,8 @@ def generate_test_description():
                 start_state='cleaningup',
                 goal_state='unconfigured',
                 entities=[
-                    launch.actions.EmitEvent(
-                        event=launch_ros.events.lifecycle.ChangeState(
-                            lifecycle_node_matcher=launch.events.matches_action(
-                                talker_node),
-                            transition_id=(lifecycle_msgs.msg.Transition.
-                                           TRANSITION_UNCONFIGURED_SHUTDOWN),
-                        )),
+                    emit_change_state_event(
+                        Transition.TRANSITION_UNCONFIGURED_SHUTDOWN)
                 ],
             )),
         launch_testing.actions.ReadyToTest()
@@ -148,7 +130,7 @@ class TestLifecyclePubSub(unittest.TestCase):
                                   timeout=5)
         proc_output.assertWaitFor('on_deactivate() is called',
                                   process=talker_node,
-                                  timeout=10)
+                                  timeout=5)
         proc_output.assertWaitFor('on cleanup is called',
                                   process=talker_node,
                                   timeout=5)

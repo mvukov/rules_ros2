@@ -67,11 +67,10 @@ class LifecycleServiceClient : public rclcpp::Node {
     // of services which allow an external interaction with
     // these nodes.
     // The two main important ones are GetState and ChangeState.
-    client_get_state_ = this->create_client<lifecycle_msgs::srv::GetState>(
-        node_get_state_topic);
-    client_change_state_ =
-        this->create_client<lifecycle_msgs::srv::ChangeState>(
-            node_change_state_topic);
+    client_get_state_ =
+        create_client<lifecycle_msgs::srv::GetState>(node_get_state_topic);
+    client_change_state_ = create_client<lifecycle_msgs::srv::ChangeState>(
+        node_change_state_topic);
   }
 
   /// Requests the current state of the node
