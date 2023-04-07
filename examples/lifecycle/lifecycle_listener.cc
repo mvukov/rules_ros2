@@ -20,13 +20,11 @@
 #include "rcutils/logging_macros.h"
 #include "std_msgs/msg/string.hpp"
 
-/// LifecycleListener class as a simple listener node
 /**
  * We subscribe to two topics
  * - lifecycle_chatter: The data topic from the talker
- * - lc_talker__transition_event: The topic publishing
- *   notifications about state changes of the node
- *   lc_talker
+ * - lc_talker__transition_event: The topic publishing notifications about state
+ *   changes of the node lc_talker
  */
 class LifecycleListener : public rclcpp::Node {
  public:
@@ -70,11 +68,8 @@ int main(int argc, char** argv) {
   setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
   rclcpp::init(argc, argv);
-
   auto lc_listener = std::make_shared<LifecycleListener>("lc_listener");
   rclcpp::spin(lc_listener);
-
   rclcpp::shutdown();
-
   return 0;
 }
