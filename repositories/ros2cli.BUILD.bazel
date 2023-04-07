@@ -90,3 +90,17 @@ py_library(
         ":ros2pkg",
     ],
 )
+
+py_library(
+    name = "ros2lifecycle",
+    srcs = glob(["ros2lifecycle/ros2lifecycle/**/*.py"]),
+    imports = ["ros2lifecycle"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":ros2cli",
+        ":ros2node",
+        ":ros2service",
+        "@ros2_rcl_interfaces//:py_lifecycle_msgs",
+        "@ros2_rclpy//:rclpy",
+    ],
+)

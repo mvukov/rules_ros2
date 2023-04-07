@@ -41,3 +41,13 @@ py_binary(
         "@ros2cli//:ros2param",
     ],
 )
+
+py_binary(
+    name = "ros2_lifecycle",
+    srcs = ["ros2_lifecycle.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":ros2_cmd",
+        "@ros2cli//:ros2lifecycle",
+    ],
+)
