@@ -11,20 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from launch import LaunchDescription
-from launch.actions import Shutdown
-from launch_ros.actions import LifecycleNode
-from launch_ros.actions import Node
+import launch.actions
+import launch_ros.actions
 
 
 def generate_launch_description():
-    return LaunchDescription([
-        LifecycleNode(executable='lifecycle/lifecycle_talker',
-                      name='lc_talker',
-                      namespace='',
-                      output='screen'),
-        Node(executable='lifecycle/lifecycle_listener', output='screen'),
-        Node(executable='lifecycle/lifecycle_service_client',
-             output='screen',
-             on_exit=Shutdown()),
+    return launch.LaunchDescription([
+        launch_ros.actions.LifecycleNode(
+            executable='lifecycle/lifecycle_talker',
+            name='lc_talker',
+            namespace='',
+            output='screen'),
+        launch_ros.actions.Node(executable='lifecycle/lifecycle_listener',
+                                output='screen'),
+        launch_ros.actions.Node(executable='lifecycle/lifecycle_service_client',
+                                output='screen',
+                                on_exit=launch.actions.Shutdown()),
     ])
