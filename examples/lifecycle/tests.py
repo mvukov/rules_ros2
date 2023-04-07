@@ -25,15 +25,14 @@ import lifecycle_msgs.msg
 
 def generate_test_description():
     talker_node = launch_ros.actions.LifecycleNode(
-        package='lifecycle',
-        executable='lifecycle_talker',
+        executable='lifecycle/lifecycle_talker',
         name='lc_talker',
         namespace='',
         output='screen')
-    listener_node = launch_ros.actions.Node(package='lifecycle',
-                                            executable='lifecycle_listener',
-                                            name='listener',
-                                            output='screen')
+    listener_node = launch_ros.actions.Node(
+        executable='lifecycle/lifecycle_listener',
+        name='listener',
+        output='screen')
     return launch.LaunchDescription([
         talker_node,
         listener_node,
@@ -126,7 +125,10 @@ def generate_test_description():
                 ],
             )),
         launch_testing.actions.ReadyToTest()
-    ]), locals()
+    ]), {
+        'talker_node': talker_node,
+        'listener_node': listener_node,
+    }
 
 
 class TestLifecyclePubSub(unittest.TestCase):

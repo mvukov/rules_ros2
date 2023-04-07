@@ -1,0 +1,52 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
+load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
+
+ros2_cpp_binary(
+    name = "lifecycle_talker",
+    srcs = ["lifecycle_talker.cc"],
+    deps = [
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_rcl_interfaces//:cpp_lifecycle_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rclcpp//:rclcpp_lifecycle",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "lifecycle_listener",
+    srcs = ["lifecycle_listener.cc"],
+    deps = [
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_rcl_interfaces//:cpp_lifecycle_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "lifecycle_service_client",
+    srcs = ["lifecycle_service_client.cc"],
+    deps = [
+        "@ros2_rcl_interfaces//:cpp_lifecycle_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_launch(
+    name = "lifecycle",
+    launch_file = "launch.py",
+    nodes = [
+        ":lifecycle_talker",
+        ":lifecycle_listener",
+        ":lifecycle_service_client",
+    ],
+)
+
+ros2_test(
+    name = "tests",
+    launch_file = "tests.py",
+    nodes = [
+        ":lifecycle_listener",
+        ":lifecycle_talker",
+    ],
+)

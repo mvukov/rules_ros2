@@ -19,16 +19,12 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     return LaunchDescription([
-        LifecycleNode(package='lifecycle',
-                      executable='lifecycle_talker',
+        LifecycleNode(executable='lifecycle/lifecycle_talker',
                       name='lc_talker',
                       namespace='',
                       output='screen'),
-        Node(package='lifecycle',
-             executable='lifecycle_listener',
-             output='screen'),
-        Node(package='lifecycle',
-             executable='lifecycle_service_client',
+        Node(executable='lifecycle/lifecycle_listener', output='screen'),
+        Node(executable='lifecycle/lifecycle_service_client',
              output='screen',
              on_exit=Shutdown()),
     ])
