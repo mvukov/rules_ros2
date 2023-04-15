@@ -25,6 +25,8 @@
 #include "rcutils/logging_macros.h"
 
 using namespace std::chrono_literals;  // NOLINT
+using Transition = lifecycle_msgs::msg::Transition;
+using State = lifecycle_msgs::msg::State;
 
 // which node to handle
 static constexpr char const* lifecycle_node = "lc_talker";
@@ -84,13 +86,13 @@ class LifecycleServiceClient : public rclcpp::Node {
    * how long we wait for a response before returning
    * unknown state
    */
-  unsigned int GetState(std::chrono::seconds time_out = 3s) {
+  auto GetState(std::chrono::seconds time_out = 3s) {
     auto request = std::make_shared<lifecycle_msgs::srv::GetState::Request>();
 
     if (!client_get_state_->wait_for_service(time_out)) {
       RCLCPP_ERROR(get_logger(), "Service %s is not available.",
                    client_get_state_->get_service_name());
-      return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
+      return State::PRIMARY_STATE_UNKNOWN;
     }
 
     // We send the service request for asking the current
@@ -106,7 +108,7 @@ class LifecycleServiceClient : public rclcpp::Node {
       RCLCPP_ERROR(get_logger(),
                    "Server time out while getting current state for node %s",
                    lifecycle_node);
-      return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
+      return State::PRIMARY_STATE_UNKNOWN;
     }
 
     // We have an succesful answer. So let's print the current state.
@@ -117,7 +119,7 @@ class LifecycleServiceClient : public rclcpp::Node {
     } else {
       RCLCPP_ERROR(get_logger(), "Failed to get current state for node %s",
                    lifecycle_node);
-      return lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN;
+      return State::PRIMARY_STATE_UNKNOWN;
     }
   }
 
@@ -195,11 +197,10 @@ void TriggerLifecycle(std::shared_ptr<LifecycleServiceClient> lc_client) {
 
   // configure
   {
-    if (!lc_client->ChangeState(
-            lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE)) {
+    if (!lc_client->ChangeState(Transition::TRANSITION_CONFIGURE)) {
       return;
     }
-    if (!lc_client->GetState()) {
+    if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
       return;
     }
   }
@@ -210,11 +211,10 @@ void TriggerLifecycle(std::shared_ptr<LifecycleServiceClient> lc_client) {
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->ChangeState(
-            lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE)) {
+    if (!lc_client->ChangeState(Transition::TRANSITION_ACTIVATE)) {
       return;
     }
-    if (!lc_client->GetState()) {
+    if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
       return;
     }
   }
@@ -225,11 +225,10 @@ void TriggerLifecycle(std::shared_ptr<LifecycleServiceClient> lc_client) {
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->ChangeState(
-            lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE)) {
+    if (!lc_client->ChangeState(Transition::TRANSITION_DEACTIVATE)) {
       return;
     }
-    if (!lc_client->GetState()) {
+    if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
       return;
     }
   }
@@ -240,11 +239,10 @@ void TriggerLifecycle(std::shared_ptr<LifecycleServiceClient> lc_client) {
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->ChangeState(
-            lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE)) {
+    if (!lc_client->ChangeState(Transition::TRANSITION_ACTIVATE)) {
       return;
     }
-    if (!lc_client->GetState()) {
+    if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
       return;
     }
   }
@@ -255,11 +253,10 @@ void TriggerLifecycle(std::shared_ptr<LifecycleServiceClient> lc_client) {
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->ChangeState(
-            lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE)) {
+    if (!lc_client->ChangeState(Transition::TRANSITION_DEACTIVATE)) {
       return;
     }
-    if (!lc_client->GetState()) {
+    if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
       return;
     }
   }
@@ -270,11 +267,10 @@ void TriggerLifecycle(std::shared_ptr<LifecycleServiceClient> lc_client) {
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->ChangeState(
-            lifecycle_msgs::msg::Transition::TRANSITION_CLEANUP)) {
+    if (!lc_client->ChangeState(Transition::TRANSITION_CLEANUP)) {
       return;
     }
-    if (!lc_client->GetState()) {
+    if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
       return;
     }
   }
@@ -288,11 +284,10 @@ void TriggerLifecycle(std::shared_ptr<LifecycleServiceClient> lc_client) {
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->ChangeState(lifecycle_msgs::msg::Transition::
-                                    TRANSITION_UNCONFIGURED_SHUTDOWN)) {
+    if (!lc_client->ChangeState(Transition::TRANSITION_UNCONFIGURED_SHUTDOWN)) {
       return;
     }
-    if (!lc_client->GetState()) {
+    if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
       return;
     }
   }
