@@ -29,7 +29,7 @@ using Transition = lifecycle_msgs::msg::Transition;
 using State = lifecycle_msgs::msg::State;
 
 // which node to handle
-static constexpr char const* lifecycle_node = "lc_talker";
+static constexpr auto kLifecycleNodeName = "lc_talker";
 
 // Every lifecycle node has various services
 // attached to it. By convention, we use the format of
@@ -38,8 +38,8 @@ static constexpr char const* lifecycle_node = "lc_talker";
 // and thus the two service topics are:
 // lc_talker/get_state
 // lc_talker/change_state
-static constexpr char const* node_get_state_topic = "lc_talker/get_state";
-static constexpr char const* node_change_state_topic = "lc_talker/change_state";
+static constexpr auto kNodeGetStateTopic = "lc_talker/get_state";
+static constexpr auto kNodeChangeStateTopic = "lc_talker/change_state";
 
 template <typename FutureT, typename WaitTimeT>
 std::future_status WaitForResult(FutureT& future,  // NOLINT
@@ -62,17 +62,15 @@ std::future_status WaitForResult(FutureT& future,  // NOLINT
 class LifecycleServiceClient : public rclcpp::Node {
  public:
   explicit LifecycleServiceClient(const std::string& node_name)
-      : Node(node_name) {}
-
-  void Init() {
+      : Node(node_name) {
     // Every lifecycle node spawns automatically a couple
     // of services which allow an external interaction with
     // these nodes.
     // The two main important ones are GetState and ChangeState.
     client_get_state_ =
-        create_client<lifecycle_msgs::srv::GetState>(node_get_state_topic);
-    client_change_state_ = create_client<lifecycle_msgs::srv::ChangeState>(
-        node_change_state_topic);
+        create_client<lifecycle_msgs::srv::GetState>(kNodeGetStateTopic);
+    client_change_state_ =
+        create_client<lifecycle_msgs::srv::ChangeState>(kNodeChangeStateTopic);
   }
 
   /**
@@ -107,18 +105,19 @@ class LifecycleServiceClient : public rclcpp::Node {
     if (future_status != std::future_status::ready) {
       RCLCPP_ERROR(get_logger(),
                    "Server time out while getting current state for node %s",
-                   lifecycle_node);
+                   kLifecycleNodeName);
       return State::PRIMARY_STATE_UNKNOWN;
     }
 
     // We have an succesful answer. So let's print the current state.
     if (future_result.get()) {
-      RCLCPP_INFO(get_logger(), "Node %s has current state %s.", lifecycle_node,
+      RCLCPP_INFO(get_logger(), "Node %s has current state %s.",
+                  kLifecycleNodeName,
                   future_result.get()->current_state.label.c_str());
       return future_result.get()->current_state.id;
     } else {
       RCLCPP_ERROR(get_logger(), "Failed to get current state for node %s",
-                   lifecycle_node);
+                   kLifecycleNodeName);
       return State::PRIMARY_STATE_UNKNOWN;
     }
   }
@@ -161,7 +160,7 @@ class LifecycleServiceClient : public rclcpp::Node {
     if (future_status != std::future_status::ready) {
       RCLCPP_ERROR(get_logger(),
                    "Server time out while getting current state for node %s",
-                   lifecycle_node);
+                   kLifecycleNodeName);
       return false;
     }
 
@@ -193,103 +192,58 @@ class LifecycleServiceClient : public rclcpp::Node {
  * cleanup and finally shutdown
  */
 void TriggerLifecycle(std::shared_ptr<LifecycleServiceClient> lc_client) {
-  rclcpp::WallRate time_between_state_changes(0.1);  // 10s
+  rclcpp::WallRate time_between_state_changes(0.5);  // 2s
 
-  // configure
-  {
-    if (!lc_client->ChangeState(Transition::TRANSITION_CONFIGURE)) {
-      return;
+  auto execute_transition = [&time_between_state_changes, lc_client](
+                                auto transition, bool wait) {
+    if (wait) {
+      time_between_state_changes.sleep();
+    }
+    if (!lc_client->ChangeState(transition)) {
+      return false;
     }
     if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
-      return;
+      return false;
     }
+    return true;
+  };
+
+  // configure
+  if (!execute_transition(Transition::TRANSITION_CONFIGURE, false)) {
+    return;
   }
 
   // activate
-  {
-    time_between_state_changes.sleep();
-    if (!rclcpp::ok()) {
-      return;
-    }
-    if (!lc_client->ChangeState(Transition::TRANSITION_ACTIVATE)) {
-      return;
-    }
-    if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
-      return;
-    }
+  if (!execute_transition(Transition::TRANSITION_ACTIVATE, true)) {
+    return;
   }
 
   // deactivate
-  {
-    time_between_state_changes.sleep();
-    if (!rclcpp::ok()) {
-      return;
-    }
-    if (!lc_client->ChangeState(Transition::TRANSITION_DEACTIVATE)) {
-      return;
-    }
-    if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
-      return;
-    }
+  if (!execute_transition(Transition::TRANSITION_DEACTIVATE, true)) {
+    return;
   }
 
   // activate it again
-  {
-    time_between_state_changes.sleep();
-    if (!rclcpp::ok()) {
-      return;
-    }
-    if (!lc_client->ChangeState(Transition::TRANSITION_ACTIVATE)) {
-      return;
-    }
-    if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
-      return;
-    }
+  if (!execute_transition(Transition::TRANSITION_ACTIVATE, true)) {
+    return;
   }
 
   // and deactivate it again
-  {
-    time_between_state_changes.sleep();
-    if (!rclcpp::ok()) {
-      return;
-    }
-    if (!lc_client->ChangeState(Transition::TRANSITION_DEACTIVATE)) {
-      return;
-    }
-    if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
-      return;
-    }
+  if (!execute_transition(Transition::TRANSITION_DEACTIVATE, true)) {
+    return;
   }
 
   // we cleanup
-  {
-    time_between_state_changes.sleep();
-    if (!rclcpp::ok()) {
-      return;
-    }
-    if (!lc_client->ChangeState(Transition::TRANSITION_CLEANUP)) {
-      return;
-    }
-    if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
-      return;
-    }
+  if (!execute_transition(Transition::TRANSITION_CLEANUP, true)) {
+    return;
   }
 
   // and finally shutdown
   // Note: We have to be precise here on which shutdown transition id to call
   // We are currently in the unconfigured state and thus have to call
   // TRANSITION_UNCONFIGURED_SHUTDOWN
-  {
-    time_between_state_changes.sleep();
-    if (!rclcpp::ok()) {
-      return;
-    }
-    if (!lc_client->ChangeState(Transition::TRANSITION_UNCONFIGURED_SHUTDOWN)) {
-      return;
-    }
-    if (lc_client->GetState() == State::PRIMARY_STATE_UNKNOWN) {
-      return;
-    }
+  if (!execute_transition(Transition::TRANSITION_UNCONFIGURED_SHUTDOWN, true)) {
+    return;
   }
 }
 
@@ -310,7 +264,6 @@ int main(int argc, char** argv) {
   rclcpp::init(argc, argv);
 
   auto lc_client = std::make_shared<LifecycleServiceClient>("lc_client");
-  lc_client->Init();
 
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(lc_client);
