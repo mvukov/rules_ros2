@@ -190,7 +190,7 @@ class LifecycleServiceClient : public rclcpp::Node {
  * deactivate, activate, deactivate,
  * cleanup and finally shutdown
  */
-void CalleeScript(std::shared_ptr<LifecycleServiceClient> lc_client) {
+void TriggerLifecycle(std::shared_ptr<LifecycleServiceClient> lc_client) {
   rclcpp::WallRate time_between_state_changes(0.1);  // 10s
 
   // configure
@@ -321,7 +321,7 @@ int main(int argc, char** argv) {
   executor.add_node(lc_client);
 
   std::shared_future<void> script =
-      std::async(std::launch::async, std::bind(CalleeScript, lc_client));
+      std::async(std::launch::async, std::bind(TriggerLifecycle, lc_client));
   auto wake_exec = std::async(
       std::launch::async, std::bind(WakeExecutor, script, std::ref(executor)));
 
