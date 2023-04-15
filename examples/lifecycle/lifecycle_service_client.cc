@@ -40,8 +40,8 @@ static constexpr char const* node_get_state_topic = "lc_talker/get_state";
 static constexpr char const* node_change_state_topic = "lc_talker/change_state";
 
 template <typename FutureT, typename WaitTimeT>
-std::future_status wait_for_result(FutureT& future,  // NOLINT
-                                   WaitTimeT time_to_wait) {
+std::future_status WaitForResult(FutureT& future,  // NOLINT
+                                 WaitTimeT time_to_wait) {
   auto end = std::chrono::steady_clock::now() + time_to_wait;
   std::chrono::milliseconds wait_period(100);
   std::future_status status = std::future_status::timeout;
@@ -62,7 +62,7 @@ class LifecycleServiceClient : public rclcpp::Node {
   explicit LifecycleServiceClient(const std::string& node_name)
       : Node(node_name) {}
 
-  void init() {
+  void Init() {
     // Every lifecycle node spawns automatically a couple
     // of services which allow an external interaction with
     // these nodes.
@@ -73,7 +73,6 @@ class LifecycleServiceClient : public rclcpp::Node {
         node_change_state_topic);
   }
 
-  /// Requests the current state of the node
   /**
    * In this function, we send a service request
    * asking for the current state of the node
@@ -85,7 +84,7 @@ class LifecycleServiceClient : public rclcpp::Node {
    * how long we wait for a response before returning
    * unknown state
    */
-  unsigned int get_state(std::chrono::seconds time_out = 3s) {
+  unsigned int GetState(std::chrono::seconds time_out = 3s) {
     auto request = std::make_shared<lifecycle_msgs::srv::GetState::Request>();
 
     if (!client_get_state_->wait_for_service(time_out)) {
@@ -101,7 +100,7 @@ class LifecycleServiceClient : public rclcpp::Node {
 
     // Let's wait until we have the answer from the node.
     // If the request times out, we return an unknown state.
-    auto future_status = wait_for_result(future_result, time_out);
+    auto future_status = WaitForResult(future_result, time_out);
 
     if (future_status != std::future_status::ready) {
       RCLCPP_ERROR(get_logger(),
@@ -122,7 +121,6 @@ class LifecycleServiceClient : public rclcpp::Node {
     }
   }
 
-  /// Invokes a transition
   /**
    * We send a Service request and indicate
    * that we want to invoke transition with
@@ -138,8 +136,8 @@ class LifecycleServiceClient : public rclcpp::Node {
    * how long we wait for a response before returning
    * unknown state
    */
-  bool change_state(std::uint8_t transition,
-                    std::chrono::seconds time_out = 3s) {
+  bool ChangeState(std::uint8_t transition,
+                   std::chrono::seconds time_out = 3s) {
     auto request =
         std::make_shared<lifecycle_msgs::srv::ChangeState::Request>();
     request->transition.id = transition;
@@ -156,7 +154,7 @@ class LifecycleServiceClient : public rclcpp::Node {
 
     // Let's wait until we have the answer from the node.
     // If the request times out, we return an unknown state.
-    auto future_status = wait_for_result(future_result, time_out);
+    auto future_status = WaitForResult(future_result, time_out);
 
     if (future_status != std::future_status::ready) {
       RCLCPP_ERROR(get_logger(),
@@ -192,16 +190,16 @@ class LifecycleServiceClient : public rclcpp::Node {
  * deactivate, activate, deactivate,
  * cleanup and finally shutdown
  */
-void callee_script(std::shared_ptr<LifecycleServiceClient> lc_client) {
+void CalleeScript(std::shared_ptr<LifecycleServiceClient> lc_client) {
   rclcpp::WallRate time_between_state_changes(0.1);  // 10s
 
   // configure
   {
-    if (!lc_client->change_state(
+    if (!lc_client->ChangeState(
             lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE)) {
       return;
     }
-    if (!lc_client->get_state()) {
+    if (!lc_client->GetState()) {
       return;
     }
   }
@@ -212,11 +210,11 @@ void callee_script(std::shared_ptr<LifecycleServiceClient> lc_client) {
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->change_state(
+    if (!lc_client->ChangeState(
             lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE)) {
       return;
     }
-    if (!lc_client->get_state()) {
+    if (!lc_client->GetState()) {
       return;
     }
   }
@@ -227,11 +225,11 @@ void callee_script(std::shared_ptr<LifecycleServiceClient> lc_client) {
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->change_state(
+    if (!lc_client->ChangeState(
             lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE)) {
       return;
     }
-    if (!lc_client->get_state()) {
+    if (!lc_client->GetState()) {
       return;
     }
   }
@@ -242,11 +240,11 @@ void callee_script(std::shared_ptr<LifecycleServiceClient> lc_client) {
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->change_state(
+    if (!lc_client->ChangeState(
             lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE)) {
       return;
     }
-    if (!lc_client->get_state()) {
+    if (!lc_client->GetState()) {
       return;
     }
   }
@@ -257,11 +255,11 @@ void callee_script(std::shared_ptr<LifecycleServiceClient> lc_client) {
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->change_state(
+    if (!lc_client->ChangeState(
             lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE)) {
       return;
     }
-    if (!lc_client->get_state()) {
+    if (!lc_client->GetState()) {
       return;
     }
   }
@@ -272,11 +270,11 @@ void callee_script(std::shared_ptr<LifecycleServiceClient> lc_client) {
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->change_state(
+    if (!lc_client->ChangeState(
             lifecycle_msgs::msg::Transition::TRANSITION_CLEANUP)) {
       return;
     }
-    if (!lc_client->get_state()) {
+    if (!lc_client->GetState()) {
       return;
     }
   }
@@ -290,18 +288,18 @@ void callee_script(std::shared_ptr<LifecycleServiceClient> lc_client) {
     if (!rclcpp::ok()) {
       return;
     }
-    if (!lc_client->change_state(lifecycle_msgs::msg::Transition::
-                                     TRANSITION_UNCONFIGURED_SHUTDOWN)) {
+    if (!lc_client->ChangeState(lifecycle_msgs::msg::Transition::
+                                    TRANSITION_UNCONFIGURED_SHUTDOWN)) {
       return;
     }
-    if (!lc_client->get_state()) {
+    if (!lc_client->GetState()) {
       return;
     }
   }
 }
 
-void wake_executor(std::shared_future<void> future,
-                   rclcpp::executors::SingleThreadedExecutor& exec) {  // NOLINT
+void WakeExecutor(std::shared_future<void> future,
+                  rclcpp::executors::SingleThreadedExecutor& exec) {  // NOLINT
   future.wait();
   // Wake the executor when the script is done
   // https://github.com/ros2/rclcpp/issues/1916
@@ -317,19 +315,17 @@ int main(int argc, char** argv) {
   rclcpp::init(argc, argv);
 
   auto lc_client = std::make_shared<LifecycleServiceClient>("lc_client");
-  lc_client->init();
+  lc_client->Init();
 
-  rclcpp::executors::SingleThreadedExecutor exe;
-  exe.add_node(lc_client);
+  rclcpp::executors::SingleThreadedExecutor executor;
+  executor.add_node(lc_client);
 
   std::shared_future<void> script =
-      std::async(std::launch::async, std::bind(callee_script, lc_client));
-  auto wake_exec = std::async(std::launch::async,
-                              std::bind(wake_executor, script, std::ref(exe)));
+      std::async(std::launch::async, std::bind(CalleeScript, lc_client));
+  auto wake_exec = std::async(
+      std::launch::async, std::bind(WakeExecutor, script, std::ref(executor)));
 
-  exe.spin_until_future_complete(script);
-
+  executor.spin_until_future_complete(script);
   rclcpp::shutdown();
-
   return 0;
 }
