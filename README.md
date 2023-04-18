@@ -26,6 +26,7 @@ Available features:
   - Zero copy transport via shared memory backend ([iceoryx](https://github.com/eclipse-iceoryx/iceoryx)) for CycloneDDS.
 - Utilities:
   - `ros2_bag` for handling rosbags
+  - `ros2_node` for handling nodes
   - `ros2_param` for handling parameters
   - `ros2_service` for handling services
   - `ros2_topic` for handling topics
