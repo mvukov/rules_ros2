@@ -124,4 +124,7 @@ def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = False, **kwargs
         set_up_ament: If true, sets up ament file tree for the test target.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
     """
-    _ros2_cpp_exec(cc_test, name, ros2_package_name, set_up_ament, **kwargs)
+    env = kwargs.pop("env", {})
+    env["ROS_HOME"] = env.get("ROS_HOME", "$TEST_UNDECLARED_OUTPUTS_DIR")
+    env["ROS_LOG_DIR"] = env.get("ROS_LOG_DIR", "$TEST_UNDECLARED_OUTPUTS_DIR")
+    _ros2_cpp_exec(cc_test, name, ros2_package_name, set_up_ament, env = env, **kwargs)
