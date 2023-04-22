@@ -27,6 +27,7 @@ Available features:
 - Utilities:
   - `ros2_bag` for handling rosbags
   - `ros2_lifecycle` for handling node lifecycle
+  - `ros2_node` for handling nodes
   - `ros2_param` for handling parameters
   - `ros2_service` for handling services
   - `ros2_topic` for handling topics
