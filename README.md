@@ -11,7 +11,7 @@ Besides Bazel, you will need a C++ compiler and a Python 3 interpreter.
 
 And no, you don't have to install any ROS 2 packages via `apt`.
 
-The code is developed and tested on Ubuntu 20.04 with gcc 9.x and Python 3.8.
+The code is developed and tested on Ubuntu 20.04 with Python 3.8.
 
 ## What works?
 
@@ -26,6 +26,7 @@ Available features:
   - Zero copy transport via shared memory backend ([iceoryx](https://github.com/eclipse-iceoryx/iceoryx)) for CycloneDDS.
 - Utilities:
   - `ros2_bag` for handling rosbags
+  - `ros2_lifecycle` for handling node lifecycle
   - `ros2_node` for handling nodes
   - `ros2_param` for handling parameters
   - `ros2_service` for handling services
