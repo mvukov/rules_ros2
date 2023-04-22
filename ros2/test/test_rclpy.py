@@ -1,0 +1,3 @@
+import rclpy
+
+rclpy.init()

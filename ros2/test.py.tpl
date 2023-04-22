@@ -17,7 +17,7 @@ sys.argv = sys.argv[:1] + [
     LAUNCH_FILE,
 ] + sys.argv[1:]
 
-test_outputs_dir = os.environ.get('TEST_UNDECLARED_OUTPUTS_DIR')
+test_outputs_dir = os.environ.get('TEST_UNDECLARED_OUTPUTS_DIR') or os.environ.get('TEST_TMPDIR')
 if test_outputs_dir:
     os.environ['ROS_HOME'] = test_outputs_dir
     os.environ['ROS_LOG_DIR'] = test_outputs_dir

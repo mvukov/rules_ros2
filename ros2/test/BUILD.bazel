@@ -3,6 +3,7 @@
 
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_test")
 load("@com_github_mvukov_rules_ros2//ros2:interfaces.bzl", "py_ros2_interface_library", "ros2_interface_library")
+load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_test")
 load("@rules_python//python:defs.bzl", "py_test")
 
 py_test(
@@ -48,4 +49,12 @@ ros2_cpp_test(
     size = "small",
     srcs = ["test_rclcpp.cpp"],
     deps = ["@ros2_rclcpp//:rclcpp"],
+)
+
+ros2_py_test(
+    name = "test_rclpy",
+    size = "small",
+    srcs = ["test_rclpy.py"],
+    main = "test_rclpy.py",
+    deps = ["@ros2_rclpy//:rclpy"],
 )
