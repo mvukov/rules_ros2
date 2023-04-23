@@ -210,7 +210,10 @@ def _ros2_ament_setup_rule_impl(ctx):
 
     ament_prefix_path = None
     if outputs:
-        ament_prefix_path = paths.join(ctx.attr.package_name, prefix_path)
+        manifest = ctx.actions.declare_file(paths.join(prefix_path, "manifest.txt"))
+        ctx.actions.write(manifest, "\n".join([p.short_path for p in outputs]))
+        ament_prefix_path = paths.dirname(manifest.short_path)
+        outputs.append(manifest)
 
     outputs_depset = depset(outputs)
     return [
@@ -239,9 +242,6 @@ ros2_ament_setup = rule(
                 ros2_idl_plugin_aspect,
             ],
             providers = [Ros2InterfaceInfo],
-        ),
-        "package_name": attr.string(
-            mandatory = True,
         ),
     },
     implementation = _ros2_ament_setup_rule_impl,
@@ -308,7 +308,6 @@ def py_launcher(name, deps, idl_deps = None, **kwargs):
         name = ament_setup,
         deps = deps,
         idl_deps = idl_deps,
-        package_name = native.package_name(),
         tags = ["manual"],
         testonly = testonly,
     )
@@ -375,7 +374,6 @@ def sh_launcher(name, deps, idl_deps = None, **kwargs):
         name = ament_setup,
         deps = deps,
         idl_deps = idl_deps,
-        package_name = native.package_name(),
         tags = ["manual"],
         testonly = testonly,
     )
