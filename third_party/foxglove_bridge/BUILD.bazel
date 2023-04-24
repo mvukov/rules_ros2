@@ -1,0 +1,45 @@
+""" Builds foxglove_bridge utils.
+"""
+
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
+load(
+    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "expand_template",
+)
+load("@rules_python//python:defs.bzl", "py_library")
+
+ros2_cpp_binary(
+    name = "foxglove_bridge_node",
+    srcs = ["foxglove_bridge_node.cc"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@foxglove_bridge//:foxglove_bridge_component",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+expand_template(
+    name = "node_path_py",
+    out = "node_path.py",
+    data = [":foxglove_bridge_node"],
+    substitutions = {
+        "{node_path}": "$(rootpath :foxglove_bridge_node)",
+    },
+    template = "node_path.py.tpl",
+)
+
+py_library(
+    name = "foxglove_bridge_node_path",
+    srcs = [":node_path_py"],
+    visibility = ["//visibility:public"],
+)
+
+ros2_launch(
+    name = "foxglove_bridge",
+    launch_file = "launch.py",
+    nodes = [
+        ":foxglove_bridge_node",
+    ],
+    deps = [":foxglove_bridge_node_path"],
+)

@@ -169,6 +169,12 @@ def ros2_repositories():
         urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-humble-20230127.tar.gz"],
     )
 
+    native.new_local_repository(
+        name = "ros2_rclcpp",
+        path = "/home/madwolf/dev/ros2_humble/src/ros2/rclcpp",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel",
+    )
+
     ros2_repositories_impl()
 
     # ros2-devel branch
@@ -179,4 +185,70 @@ def ros2_repositories():
         sha256 = "64a96f93053d0d59e8fcccceab5408a7d666dd813d4c12df139ef24d916f49ab",
         strip_prefix = "gps_umd-fc782811804fafb12ee479a48a2aa2e9ee942e2d",
         urls = ["https://github.com/swri-robotics/gps_umd/archive/fc782811804fafb12ee479a48a2aa2e9ee942e2d.tar.gz"],
+    )
+
+    native.new_local_repository(
+        name = "foxglove_bridge",
+        path = "/home/madwolf/dev/ros-foxglove-bridge",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
+    )
+
+    # maybe(
+    #     http_archive,
+    #     name = "foxglove_bridge",
+    #     build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
+    #     sha256 = "5d3cf2dabc9614d055042ab9a537425c811b91b374a0dc6c9cdf63bf73b2d9b1",
+    #     strip_prefix = "ros-foxglove-bridge-0.5.3",
+    #     urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.5.3.tar.gz"],
+    # )
+
+    maybe(
+        http_archive,
+        name = "nlohmann_json",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:nlohmann_json.BUILD.bazel",
+        strip_prefix = "single_include",
+        sha256 = "9c15ca7806f863872452bfbc85fee6d1c9868117e3ea5e00a204ae961a2e1ae7",
+        urls = ["https://github.com/nlohmann/json/releases/download/v3.11.1/include.zip"],
+    )
+
+    # native.new_local_repository(
+    #     name = "websocketpp",
+    #     path = "/home/madwolf/dev/websocketpp-0.8.2",
+    #     build_file = "@com_github_mvukov_rules_ros2//repositories:websocketpp.BUILD.bazel",
+    # )
+
+    maybe(
+        http_archive,
+        name = "websocketpp",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:websocketpp.BUILD.bazel",
+        sha256 = "6ce889d85ecdc2d8fa07408d6787e7352510750daa66b5ad44aacb47bea76755",
+        strip_prefix = "websocketpp-0.8.2",
+        urls = ["https://github.com/zaphoyd/websocketpp/archive/refs/tags/0.8.2.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "asio",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:asio.BUILD.bazel",
+        sha256 = "b31c63867daaba0e460ee2c85dc508a52c81db0a7318e0d2147f444b26f80ed7",
+        strip_prefix = "asio-asio-1-27-0/asio",
+        urls = ["https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-27-0.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "boringssl",
+        sha256 = "041aa5e11948264721bc20d5d6a08c61df9e6ea19b9fefd9a124a11929c782a4",
+        url = "https://github.com/google/boringssl/archive/b0b1f9dfc583c96d5f91b7f8cdb7efabcf22793b.tar.gz",
+        strip_prefix = "boringssl-b0b1f9dfc583c96d5f91b7f8cdb7efabcf22793b",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:boringssl.BUILD.bazel",
+    )
+
+    maybe(
+        http_archive,
+        name = "openssl",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:openssl.BUILD.bazel",
+        sha256 = "f89199be8b23ca45fc7cb9f1d8d3ee67312318286ad030f5316aca6462db6c96",
+        strip_prefix = "openssl-1.1.1m",
+        urls = ["https://www.openssl.org/source/openssl-1.1.1m.tar.gz"],
     )

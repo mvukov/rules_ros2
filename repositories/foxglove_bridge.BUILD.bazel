@@ -1,0 +1,75 @@
+""" Builds foxglove_bridge.
+"""
+
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_library")
+load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "foxglove_bridge_base",
+    srcs = glob(["foxglove_bridge_base/src/*.cpp"]),
+    hdrs = glob(["foxglove_bridge_base/include/foxglove_bridge/*.hpp"]),
+    copts = ["-std=c++17"],
+    includes = ["foxglove_bridge_base/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@nlohmann_json",
+        "@websocketpp",
+        # "@boost//:asio",
+        # "@boost//:version",
+    ],
+)
+
+genrule(
+    name = "ros2_foxglove_bridge_hpp",
+    outs = ["ros2_foxglove_bridge/include/foxglove_bridge/ros2_foxglove_bridge.hpp"],
+    cmd = """cat > $@ << EOL
+#pragma once
+
+#include "rclcpp/rclcpp.hpp"
+
+namespace foxglove_bridge {
+
+class FoxgloveBridge : public rclcpp::Node {
+public:
+  FoxgloveBridge(const rclcpp::NodeOptions& options = rclcpp::NodeOptions());
+  ~FoxgloveBridge();
+};
+
+}  // foxglove_bridge
+
+EOL
+""",
+)
+
+ros2_cpp_library(
+    name = "foxglove_bridge_component",
+    srcs = [
+        "ros2_foxglove_bridge/src/generic_client.cpp",
+        "ros2_foxglove_bridge/src/message_definition_cache.cpp",
+        "ros2_foxglove_bridge/src/param_utils.cpp",
+        "ros2_foxglove_bridge/src/parameter_interface.cpp",
+        "ros2_foxglove_bridge/src/ros2_foxglove_bridge.cpp",
+    ],
+    hdrs = glob(["ros2_foxglove_bridge/include/foxglove_bridge/*.hpp"]) + [
+        ":ros2_foxglove_bridge_hpp",
+    ],
+    includes = ["ros2_foxglove_bridge/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":foxglove_bridge_base",
+        "@ros2_rcl_interfaces//:cpp_rosgraph_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rclcpp//:rclcpp_components",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "foxglove_bridge_node",
+    srcs = ["ros2_foxglove_bridge/src/ros2_foxglove_bridge_node.cpp"],
+    set_up_ament = True,
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2_rclcpp//:rclcpp_components",
+    ],
+)

@@ -196,6 +196,7 @@ def _ros2_ament_setup_rule_impl(ctx):
         if package_name not in registered_packages:
             outputs.append(_write_package_xml(ctx, prefix_path, package_name))
             registered_packages.append(package_name)
+        idl_manifest_contents = []
         for src in idl.srcs:
             if src.extension != "msg":
                 continue
@@ -207,6 +208,13 @@ def _ros2_ament_setup_rule_impl(ctx):
                 target_file = src,
             )
             outputs.append(src_file)
+            idl_manifest_contents.append(paths.join("msg", src.basename))
+
+        idl_manifest = ctx.actions.declare_file(
+            paths.join(prefix_path, _RESOURCE_INDEX_PATH, "rosidl_interfaces", package_name),
+        )
+        ctx.actions.write(idl_manifest, "\n".join([p for p in idl_manifest_contents]))
+        outputs.append(idl_manifest)
 
     ament_prefix_path = None
     if outputs:
