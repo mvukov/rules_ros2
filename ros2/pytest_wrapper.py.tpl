@@ -33,13 +33,12 @@ def finalize_coverage_session(coverage_session: coverage.Coverage) -> None:
 
 
 def main() -> None:
-    test_outputs_dir = os.environ.get('TEST_UNDECLARED_OUTPUTS_DIR')
-    if test_outputs_dir is None:
-        test_outputs_dir = os.environ.get('TEST_TMPDIR')
-    if test_outputs_dir:
-        if 'ROS_HOME' not in os.environ and 'ROS_LOG_DIR' not in os.environ:
-            os.environ['ROS_HOME'] = test_outputs_dir
-            os.environ['ROS_LOG_DIR'] = test_outputs_dir
+    if 'ROS_HOME' not in os.environ and 'ROS_LOG_DIR' not in os.environ:
+        ros_output_dir = os.environ.get('TEST_UNDECLARED_OUTPUTS_DIR')
+        if ros_output_dir is None:
+            ros_output_dir = os.environ.get('TEST_TMPDIR')
+        if ros_output_dir is not None:
+            os.environ['ROS_HOME'] = ros_output_dir
 
     with contextlib.ExitStack() as stack:
         if 'ROS_DOMAIN_ID' not in os.environ:
