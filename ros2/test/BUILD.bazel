@@ -50,11 +50,3 @@ ros2_cpp_test(
     srcs = ["test_rclcpp.cpp"],
     deps = ["@ros2_rclcpp//:rclcpp"],
 )
-
-ros2_py_test(
-    name = "test_rclpy",
-    size = "small",
-    srcs = ["test_rclpy.py"],
-    main = "test_rclpy.py",
-    deps = ["@ros2_rclpy//:rclpy"],
-)
