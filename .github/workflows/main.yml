@@ -79,8 +79,14 @@ jobs:
         env:
           # Bazelisk will download bazel to here, ensure it is cached between runs.
           XDG_CACHE_HOME: ~/.cache/bazel-repo
+          BUILDBUDDY_ORG_API_KEY: ${{ secrets.BUILDBUDDY_ORG_API_KEY }}
         working-directory: ${{ matrix.folder }}
         run: |
+          if [[ ! -z "${BUILDBUDDY_ORG_API_KEY}" ]]; then
+            BAZEL_REMOTE_CONFIG=(
+              --config=remote
+              --remote_header=x-buildbuddy-api-key="${BUILDBUDDY_ORG_API_KEY}"
+            )
+          fi
           bazel --bazelrc=$GITHUB_WORKSPACE/.github/workflows/ci.bazelrc --bazelrc=.bazelrc \
-              test ${{ matrix.config_option }} //... \
-              --remote_header=x-buildbuddy-api-key=${{ secrets.BUILDBUDDY_ORG_API_KEY }}
+              test "${BAZEL_REMOTE_CONFIG[@]}" ${{ matrix.config_option }} //...
