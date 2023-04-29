@@ -82,5 +82,5 @@ jobs:
         working-directory: ${{ matrix.folder }}
         run: |
           bazel --bazelrc=$GITHUB_WORKSPACE/.github/workflows/ci.bazelrc --bazelrc=.bazelrc \
-              test ${{ matrix.config_option }} //... \
+              test --config=remote  ${{ matrix.config_option }} //... \
               --remote_header=x-buildbuddy-api-key=${{ secrets.BUILDBUDDY_ORG_API_KEY }}
