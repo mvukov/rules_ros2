@@ -34,12 +34,14 @@ int main(int argc, char* argv[]) {
         dummyNode->get_parameter(numThreadsDescription.name).as_int());
   }
 
-  auto executor = rclcpp::executors::MultiThreadedExecutor::make_shared(
+  auto executor = rclcpp::executors::MultiThreadedExecutor(
       rclcpp::ExecutorOptions{}, numThreads);
 
+  // rclcpp::executors::SingleThreadedExecutor executor = ;
+
   auto node = std::make_shared<foxglove_bridge::FoxgloveBridge>();
-  executor->add_node(node);
-  executor->spin();
+  executor.add_node(node);
+  executor.spin();
   rclcpp::shutdown();
 
   return EXIT_SUCCESS;

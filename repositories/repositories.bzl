@@ -170,9 +170,9 @@ def ros2_repositories():
     )
 
     native.new_local_repository(
-        name = "ros2_rclcpp",
-        path = "/home/madwolf/dev/ros2_humble/src/ros2/rclcpp",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel",
+        name = "ros2_ament_index",
+        path = "/home/madwolf/dev/ros2_humble/src/ament/ament_index",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:ament_index.BUILD.bazel",
     )
 
     ros2_repositories_impl()

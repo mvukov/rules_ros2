@@ -3,11 +3,25 @@
 
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_library")
 load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
+load(
+    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "expand_template",
+)
 load("@rules_cc//cc:defs.bzl", "cc_library")
+
+expand_template(
+    name = "version_cpp",
+    out = "foxglove_bridge/src/version.cpp",
+    substitutions = {
+        "@FOXGLOVE_BRIDGE_VERSION@": "unknown",
+        "@FOXGLOVE_BRIDGE_GIT_HASH@": "unknown",
+    },
+    template = "foxglove_bridge_base/src/version.cpp.in",
+)
 
 cc_library(
     name = "foxglove_bridge_base",
-    srcs = glob(["foxglove_bridge_base/src/*.cpp"]),
+    srcs = glob(["foxglove_bridge_base/src/*.cpp"]) + [":version_cpp"],
     hdrs = glob(["foxglove_bridge_base/include/foxglove_bridge/*.hpp"]),
     copts = ["-std=c++17"],
     includes = ["foxglove_bridge_base/include"],
