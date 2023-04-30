@@ -8,6 +8,7 @@ wrapper to set the environment vars.
 """
 import launch
 import launch_testing.actions
+import launch_testing.markers
 import rclpy
 
 
@@ -16,6 +17,7 @@ def test_rclpy_init():
     rclpy.init()
 
 
+@launch_testing.markers.keep_alive
 def generate_test_description():
     """This will run when using ros2_test with launch_testing as test driver."""
     rclpy.init()
