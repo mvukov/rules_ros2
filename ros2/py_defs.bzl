@@ -61,7 +61,7 @@ def ros2_py_binary(name, srcs, main, set_up_ament = False, **kwargs):
     """
     _ros2_py_exec(py_binary, name, srcs, main, set_up_ament, **kwargs)
 
-def ros2_py_test(name, srcs, main, set_up_ament = True, **kwargs):
+def ros2_py_test(name, srcs, main, set_up_ament = False, **kwargs):
     """ Defines a ROS 2 Python test.
 
     Args:

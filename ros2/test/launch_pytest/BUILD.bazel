@@ -39,6 +39,7 @@ ros2_py_test(
     size = "small",
     srcs = ["rclpy_init_test.py"],
     main = "rclpy_init_test.py",
+    set_up_ament = True,
     deps = [
         "@ros2_launch//:launch_pytest",
         "@ros2_rclpy//:rclpy",

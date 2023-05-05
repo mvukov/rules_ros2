@@ -114,7 +114,7 @@ def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, **kwar
     """
     _ros2_cpp_exec(cc_binary, name, ros2_package_name, set_up_ament, **kwargs)
 
-def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, **kwargs):
+def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = False, **kwargs):
     """ Defines a ROS 2 C++ test.
 
     Adds common ROS 2 C++ definitions on top of a cc_test.
