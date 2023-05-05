@@ -10,6 +10,7 @@ cc_binary(
 
 ros2_test(
     name = "launch_pytest_test",
+    size = "small",
     launch_file = "launch_pytest_test.py",
     nodes = [":hello"],
     use_pytest = True,
@@ -17,6 +18,7 @@ ros2_test(
 
 ros2_test(
     name = "ros2_test_pytest_rclpy_init_test",
+    size = "small",
     launch_file = "rclpy_init_test.py",
     nodes = [":hello"],
     use_pytest = True,
@@ -25,6 +27,7 @@ ros2_test(
 
 ros2_test(
     name = "ros2_test_launch_testing_rclpy_init_test",
+    size = "small",
     launch_file = "rclpy_init_test.py",
     nodes = [":hello"],
     use_pytest = False,
@@ -33,6 +36,7 @@ ros2_test(
 
 ros2_py_test(
     name = "ros2_py_test_rclpy_init_test",
+    size = "small",
     srcs = ["rclpy_init_test.py"],
     main = "rclpy_init_test.py",
     deps = [

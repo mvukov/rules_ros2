@@ -14,6 +14,8 @@
 
 #include <rclcpp/rclcpp.hpp>
 
+#include <cstdlib>
+
 int main(int argc, char** argv) {
   // If neither $ROS_HOME nor $ROS_LOG_DIR are set to a valid directory,
   // rclcpp:init() will fail with these errors:
@@ -22,5 +24,5 @@ int main(int argc, char** argv) {
   // 'Failed to get logging directory, at external/ros2_rcl_logging/rcl_logging_spdlog/src/rcl_logging_spdlog.cpp:83'  // NOLINT
   // clang-format on
   rclcpp::init(argc, argv);
-  return 0;
+  return rclcpp::shutdown() ? EXIT_SUCCESS : EXIT_FAILURE;
 }

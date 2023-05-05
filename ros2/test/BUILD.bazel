@@ -2,8 +2,11 @@
 """
 
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_test")
-load("@com_github_mvukov_rules_ros2//ros2:interfaces.bzl", "py_ros2_interface_library", "ros2_interface_library")
-load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_test")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "py_ros2_interface_library",
+    "ros2_interface_library",
+)
 load("@rules_python//python:defs.bzl", "py_test")
 
 py_test(
