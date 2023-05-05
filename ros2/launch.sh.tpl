@@ -2,10 +2,13 @@
 
 set -o errexit -o nounset -o pipefail
 
-if [ -z "${ROS_HOME:-}" ] && [ -z "${ROS_LOG_DIR:-}" ]; then
-  ros_output_dir="${TEST_UNDECLARED_OUTPUTS_DIR:-${TEST_TMPDIR:-}}"
-  if [ -n "${ros_output_dir}" ]; then
-    export ROS_HOME="${ros_output_dir}"
+if [[ ! -z "${BAZEL_TEST:-}" ]]; then
+  bazel_test_output_dir="${TEST_UNDECLARED_OUTPUTS_DIR:-${TEST_TMPDIR}}"
+  if [[ -z "${ROS_HOME:-}" ]]; then
+    export ROS_HOME="${bazel_test_output_dir}"
+  fi
+  if [[ -z "${ROS_LOG_DIR:-}" ]]; then
+    export ROS_LOG_DIR="${bazel_test_output_dir}"
   fi
 fi
 
