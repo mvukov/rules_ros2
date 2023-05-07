@@ -13,6 +13,7 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
     target_impl = name + "_impl"
     tags = kwargs.pop("tags", [])
     visibility = kwargs.pop("visibility", None)
+    size = kwargs.pop("size", None)
     target(name = target_impl, srcs = srcs, main = main, tags = ["manual"], **kwargs)
 
     is_test = target == py_test
@@ -41,6 +42,7 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
     sh_target = native.sh_test if is_test else native.sh_binary
     sh_target(
         name = name,
+        size = size,
         srcs = [launcher],
         data = [target_impl_symlink],
         tags = tags,
