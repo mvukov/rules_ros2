@@ -56,19 +56,21 @@ def ros2_py_binary(name, srcs, main, set_up_ament = False, **kwargs):
         name: A unique target name.
         srcs: List of source files.
         main: Source file to use as entrypoint.
-        set_up_ament: If true, sets up ament file tree for the binary target.
+        set_up_ament: If true, wrap the binary target to set up ament file tree and
+            missing ROS_HOME/ROS_LOG_DIR env vars.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
     _ros2_py_exec(py_binary, name, srcs, main, set_up_ament, **kwargs)
 
-def ros2_py_test(name, srcs, main, set_up_ament = False, **kwargs):
+def ros2_py_test(name, srcs, main, set_up_ament = True, **kwargs):
     """ Defines a ROS 2 Python test.
 
     Args:
         name: A unique target name.
         srcs: List of source files.
         main: Source file to use as entrypoint.
-        set_up_ament: If true, sets up ament file tree for the test target.
+        set_up_ament: If true, wrap the test target to set up ament file tree and
+            missing ROS_HOME/ROS_LOG_DIR env vars.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
     """
     _ros2_py_exec(py_test, name, srcs, main, set_up_ament, **kwargs)

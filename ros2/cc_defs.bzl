@@ -109,12 +109,13 @@ def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, **kwar
         name: A unique target name.
         ros2_package_name: If given, defines a ROS package name for the target.
             Otherwise, the `name` is used as the package name.
-        set_up_ament: If true, sets up ament file tree for the binary target.
+        set_up_ament: If true, wrap the binary target to set up ament file tree and
+            missing ROS_HOME/ROS_LOG_DIR env vars.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
     _ros2_cpp_exec(cc_binary, name, ros2_package_name, set_up_ament, **kwargs)
 
-def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = False, **kwargs):
+def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, **kwargs):
     """ Defines a ROS 2 C++ test.
 
     Adds common ROS 2 C++ definitions on top of a cc_test.
@@ -123,7 +124,8 @@ def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = False, **kwargs
         name: A unique target name.
         ros2_package_name: If given, defines a ROS package name for the target.
             Otherwise, the `name` is used as the package name.
-        set_up_ament: If true, sets up ament file tree for the test target.
+        set_up_ament: If true, wrap the test target to set up ament file tree and
+            missing ROS_HOME/ROS_LOG_DIR env vars.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
     """
     _ros2_cpp_exec(cc_test, name, ros2_package_name, set_up_ament, **kwargs)

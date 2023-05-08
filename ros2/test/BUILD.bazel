@@ -51,6 +51,5 @@ ros2_cpp_test(
     name = "test_rclcpp",
     size = "small",
     srcs = ["test_rclcpp.cpp"],
-    set_up_ament = True,
     deps = ["@ros2_rclcpp//:rclcpp"],
 )
