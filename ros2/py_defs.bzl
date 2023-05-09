@@ -14,6 +14,7 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
     tags = kwargs.pop("tags", [])
     visibility = kwargs.pop("visibility", None)
     size = kwargs.pop("size", None)
+    timeout = kwargs.pop("timeout", None)
     target(name = target_impl, srcs = srcs, main = main, tags = ["manual"], **kwargs)
 
     is_test = target == py_test
@@ -43,6 +44,7 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
     sh_target(
         name = name,
         size = size,
+        timeout = timeout,
         srcs = [launcher],
         data = [target_impl_symlink],
         tags = tags,
