@@ -1,7 +1,7 @@
 """ Defines commonly used C/C++ macros.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
 load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS", "C_COPTS")
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
 
@@ -69,11 +69,9 @@ def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False,
         _ros2_cc_target(target, "cpp", name, ros2_package_name, **kwargs)
         return
 
-    launcher_target_attrs = ["args", "size", "tags", "timeout", "visibility"]
-    launcher_target_kwargs = {attr: kwargs.pop(attr) for attr in launcher_target_attrs if attr in kwargs}
-
+    launcher_target_kwargs, binary_kwargs = split_kwargs(**kwargs)
     target_impl = name + "_impl"
-    _ros2_cc_target(cc_binary, "cpp", target_impl, ros2_package_name, tags = ["manual"], **kwargs)
+    _ros2_cc_target(cc_binary, "cpp", target_impl, ros2_package_name, tags = ["manual"], **binary_kwargs)
 
     is_test = target == cc_test
 
