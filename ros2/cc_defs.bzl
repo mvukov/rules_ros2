@@ -69,11 +69,10 @@ def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False,
         _ros2_cc_target(target, "cpp", name, ros2_package_name, **kwargs)
         return
 
+    launcher_target_attrs = ["args", "size", "tags", "timeout", "visibility"]
+    launcher_target_kwargs = {attr: kwargs.pop(attr) for attr in launcher_target_attrs if attr in kwargs}
+
     target_impl = name + "_impl"
-    tags = kwargs.pop("tags", [])
-    visibility = kwargs.pop("visibility", None)
-    size = kwargs.pop("size", None)
-    timeout = kwargs.pop("timeout", None)
     _ros2_cc_target(cc_binary, "cpp", target_impl, ros2_package_name, tags = ["manual"], **kwargs)
 
     is_test = target == cc_test
@@ -94,12 +93,9 @@ def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False,
     sh_target = native.sh_test if is_test else native.sh_binary
     sh_target(
         name = name,
-        size = size,
-        timeout = timeout,
         srcs = [launcher],
         data = [target_impl],
-        tags = tags,
-        visibility = visibility,
+        **launcher_target_kwargs
     )
 
 def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, **kwargs):
