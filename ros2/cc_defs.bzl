@@ -1,7 +1,7 @@
 """ Defines commonly used C/C++ macros.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
 load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS", "C_COPTS")
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
 
@@ -69,12 +69,9 @@ def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False,
         _ros2_cc_target(target, "cpp", name, ros2_package_name, **kwargs)
         return
 
+    launcher_target_kwargs, binary_kwargs = split_kwargs(**kwargs)
     target_impl = name + "_impl"
-    tags = kwargs.pop("tags", [])
-    visibility = kwargs.pop("visibility", None)
-    size = kwargs.pop("size", None)
-    timeout = kwargs.pop("timeout", None)
-    _ros2_cc_target(cc_binary, "cpp", target_impl, ros2_package_name, tags = ["manual"], **kwargs)
+    _ros2_cc_target(cc_binary, "cpp", target_impl, ros2_package_name, tags = ["manual"], **binary_kwargs)
 
     is_test = target == cc_test
 
@@ -94,12 +91,9 @@ def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False,
     sh_target = native.sh_test if is_test else native.sh_binary
     sh_target(
         name = name,
-        size = size,
-        timeout = timeout,
         srcs = [launcher],
         data = [target_impl],
-        tags = tags,
-        visibility = visibility,
+        **launcher_target_kwargs
     )
 
 def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, **kwargs):
