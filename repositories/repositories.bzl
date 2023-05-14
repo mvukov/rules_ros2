@@ -169,12 +169,6 @@ def ros2_repositories():
         urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-humble-20230502.tar.gz"],
     )
 
-    native.new_local_repository(
-        name = "ros2_ament_index",
-        path = "/home/madwolf/dev/ros2_humble/src/ament/ament_index",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:ament_index.BUILD.bazel",
-    )
-
     ros2_repositories_impl()
 
     # ros2-devel branch
@@ -189,7 +183,7 @@ def ros2_repositories():
 
     native.new_local_repository(
         name = "foxglove_bridge",
-        path = "/home/madwolf/dev/ros-foxglove-bridge",
+        path = "../ros-foxglove-bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
     )
 
@@ -211,12 +205,6 @@ def ros2_repositories():
         urls = ["https://github.com/nlohmann/json/releases/download/v3.11.1/include.zip"],
     )
 
-    # native.new_local_repository(
-    #     name = "websocketpp",
-    #     path = "/home/madwolf/dev/websocketpp-0.8.2",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:websocketpp.BUILD.bazel",
-    # )
-
     maybe(
         http_archive,
         name = "websocketpp",
@@ -233,15 +221,6 @@ def ros2_repositories():
         sha256 = "b31c63867daaba0e460ee2c85dc508a52c81db0a7318e0d2147f444b26f80ed7",
         strip_prefix = "asio-asio-1-27-0/asio",
         urls = ["https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-27-0.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
-        name = "boringssl",
-        sha256 = "041aa5e11948264721bc20d5d6a08c61df9e6ea19b9fefd9a124a11929c782a4",
-        url = "https://github.com/google/boringssl/archive/b0b1f9dfc583c96d5f91b7f8cdb7efabcf22793b.tar.gz",
-        strip_prefix = "boringssl-b0b1f9dfc583c96d5f91b7f8cdb7efabcf22793b",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:boringssl.BUILD.bazel",
     )
 
     maybe(

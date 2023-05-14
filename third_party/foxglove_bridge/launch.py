@@ -28,8 +28,11 @@ PARAMS_TO_DEFAULT_VALUES = {
     'use_sim_time':
         False,
     'capabilities': [
-        'clientPublish', 'parameters', 'parametersSubscribe', 'services',
-        'connectionGraph'
+        'clientPublish',
+        'connectionGraph',
+        'parameters',
+        'parametersSubscribe',
+        'services',
     ],
 }
 
