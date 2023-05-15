@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+import signal
+import subprocess
 import unittest
 
 import launch.actions
@@ -55,7 +57,7 @@ STORAGE_IDS_TO_BAG_NAMES = {
 
 class TestRecorder(unittest.TestCase):
 
-    def test_recorder(self, proc_info, recorder):
+    def test_recorder_and_playback(self, proc_info, recorder):
         proc_info.assertWaitForShutdown(process=recorder, timeout=5)
         launch_testing.asserts.assertExitCodes(
             proc_info,
@@ -80,3 +82,19 @@ class TestRecorder(unittest.TestCase):
         topic = bag_metadata['topics_with_message_count'][0]
         self.assertEqual(topic['topic_metadata']['name'], '/topic')
         self.assertGreaterEqual(topic['message_count'], min_num_received_msgs)
+
+        # Test bag player by trying to play previously recorded bag.
+        bag_play_proc = subprocess.Popen(
+            ['ros2/test/rosbag/bag', 'play', bag_dir],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True)
+        try:
+            outs, errs = bag_play_proc.communicate(timeout=10)
+        except subprocess.TimeoutExpired:
+            pass
+        self.assertTrue('Press CURSOR_DOWN' in outs + errs)
+        bag_play_proc.send_signal(signal.SIGINT)
+        bag_play_proc.wait(10)
+        self.assertEqual(bag_play_proc.returncode, 0)
