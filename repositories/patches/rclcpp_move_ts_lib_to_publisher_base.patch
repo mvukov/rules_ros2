@@ -1,0 +1,78 @@
+diff --git a/rclcpp/include/rclcpp/generic_publisher.hpp b/rclcpp/include/rclcpp/generic_publisher.hpp
+index e1b46002..a58b1c94 100644
+--- a/rclcpp/include/rclcpp/generic_publisher.hpp
++++ b/rclcpp/include/rclcpp/generic_publisher.hpp
+@@ -78,8 +78,8 @@ public:
+       node_base,
+       topic_name,
+       *rclcpp::get_typesupport_handle(topic_type, "rosidl_typesupport_cpp", *ts_lib),
+-      options.template to_rcl_publisher_options<rclcpp::SerializedMessage>(qos)),
+-    ts_lib_(ts_lib)
++      options.template to_rcl_publisher_options<rclcpp::SerializedMessage>(qos),
++      ts_lib)
+   {
+     // This is unfortunately duplicated with the code in publisher.hpp.
+     // TODO(nnmm): Deduplicate by moving this into PublisherBase.
+@@ -128,9 +128,6 @@ public:
+   void publish_as_loaned_msg(const rclcpp::SerializedMessage & message);
+ 
+ private:
+-  // The type support library should stay loaded, so it is stored in the GenericPublisher
+-  std::shared_ptr<rcpputils::SharedLibrary> ts_lib_;
+-
+   void * borrow_loaned_message();
+   void deserialize_message(
+     const rmw_serialized_message_t & serialized_message,
+diff --git a/rclcpp/include/rclcpp/publisher_base.hpp b/rclcpp/include/rclcpp/publisher_base.hpp
+index 8416757a..44633d08 100644
+--- a/rclcpp/include/rclcpp/publisher_base.hpp
++++ b/rclcpp/include/rclcpp/publisher_base.hpp
+@@ -36,6 +36,7 @@
+ #include "rclcpp/qos_event.hpp"
+ #include "rclcpp/type_support_decl.hpp"
+ #include "rclcpp/visibility_control.hpp"
++#include "rcpputils/shared_library.hpp"
+ #include "rcpputils/time.hpp"
+ 
+ namespace rclcpp
+@@ -78,7 +79,8 @@ public:
+     rclcpp::node_interfaces::NodeBaseInterface * node_base,
+     const std::string & topic,
+     const rosidl_message_type_support_t & type_support,
+-    const rcl_publisher_options_t & publisher_options);
++    const rcl_publisher_options_t & publisher_options,
++    std::shared_ptr<rcpputils::SharedLibrary> ts_lib = {});
+ 
+   RCLCPP_PUBLIC
+   virtual ~PublisherBase();
+@@ -313,6 +315,10 @@ public:
+     event_handlers_[event_type]->clear_on_ready_callback();
+   }
+ 
++private:
++  // The type support library should stay loaded, so it is stored in the GenericPublisher
++  std::shared_ptr<rcpputils::SharedLibrary> ts_lib_;
++
+ protected:
+   template<typename EventCallbackT>
+   void
+diff --git a/rclcpp/src/rclcpp/publisher_base.cpp b/rclcpp/src/rclcpp/publisher_base.cpp
+index 723d56e0..6ea8ec34 100644
+--- a/rclcpp/src/rclcpp/publisher_base.cpp
++++ b/rclcpp/src/rclcpp/publisher_base.cpp
+@@ -45,11 +45,13 @@ PublisherBase::PublisherBase(
+   rclcpp::node_interfaces::NodeBaseInterface * node_base,
+   const std::string & topic,
+   const rosidl_message_type_support_t & type_support,
+-  const rcl_publisher_options_t & publisher_options)
++  const rcl_publisher_options_t & publisher_options,
++  std::shared_ptr<rcpputils::SharedLibrary> ts_lib)
+ : rcl_node_handle_(node_base->get_shared_rcl_node_handle()),
+   intra_process_is_enabled_(false),
+   intra_process_publisher_id_(0),
+-  type_support_(type_support)
++  type_support_(type_support),
++  ts_lib_(std::move(ts_lib))
+ {
+   auto custom_deleter = [node_handle = this->rcl_node_handle_](rcl_publisher_t * rcl_pub)
+     {
