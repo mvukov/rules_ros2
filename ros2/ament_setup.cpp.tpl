@@ -13,22 +13,17 @@ struct AmentPrefixPathSetup
 {
   AmentPrefixPathSetup()
   {
-    static bool setup = false;
-    if (!setup)
+    const char* ament_prefix_path = std::getenv(AMENT_PREFIX_PATH_ENV);
+    if (ament_prefix_path)
     {
-      const char* ament_prefix_path = std::getenv(AMENT_PREFIX_PATH_ENV);
-      if (ament_prefix_path)
-      {
-        std::string ament_prefix_path_str = ament_prefix_path;
-        ament_prefix_path_str += ":";
-        ament_prefix_path_str += AMENT_PREFIX_PATH;
-        setenv(AMENT_PREFIX_PATH_ENV, ament_prefix_path_str.c_str(), 1);
-      }
-      else
-      {
-        setenv(AMENT_PREFIX_PATH_ENV, AMENT_PREFIX_PATH, 1);
-      }
-      setup = true;
+      std::string ament_prefix_path_str = ament_prefix_path;
+      ament_prefix_path_str += ":";
+      ament_prefix_path_str += AMENT_PREFIX_PATH;
+      setenv(AMENT_PREFIX_PATH_ENV, ament_prefix_path_str.c_str(), 1);
+    }
+    else
+    {
+      setenv(AMENT_PREFIX_PATH_ENV, AMENT_PREFIX_PATH, 1);
     }
   }
 };
