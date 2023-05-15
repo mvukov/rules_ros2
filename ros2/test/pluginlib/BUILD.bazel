@@ -1,7 +1,8 @@
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "ros2_ament_setup_library")
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_test")
 load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
 load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_binary", "ros2_py_test")
-load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 
 cc_library(
     name = "polygon_base",
@@ -13,8 +14,8 @@ ros2_plugin(
     srcs = ["square.cc"],
     plugin_specs = [
         {
-            "class_type": "polygon_plugins::Square",
             "base_class_type": "polygon_base::RegularPolygon",
+            "class_type": "polygon_plugins::Square",
         },
     ],
     deps = [
@@ -28,8 +29,8 @@ ros2_plugin(
     srcs = ["triangle.cc"],
     plugin_specs = [
         {
-            "class_type": "polygon_plugins::Triangle",
             "base_class_type": "polygon_base::RegularPolygon",
+            "class_type": "polygon_plugins::Triangle",
         },
     ],
     deps = [
@@ -122,5 +123,23 @@ sh_test(
     ],
     data = [
         ":py_loader_tests_binary",
+    ],
+)
+
+ros2_ament_setup_library(
+    name = "ament_setup",
+    deps = [
+        "triangle",
+    ],
+)
+
+cc_test(
+    name = "ament_setup_library_test",
+    srcs = ["ament_setup_library_test.cc"],
+    deps = [
+        ":ament_setup",
+        ":polygon_base",
+        "@com_google_googletest//:gtest_main",
+        "@ros2_pluginlib//:pluginlib",
     ],
 )

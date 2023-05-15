@@ -21,6 +21,8 @@ exports_files([
     "test.bzl",
     "test.py.tpl",
     "topic.bzl",
+    "ament_setup.cpp.tpl",
+    "ament_setup.hpp.tpl",
 ])
 
 py_library(

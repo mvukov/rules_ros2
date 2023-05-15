@@ -23,6 +23,7 @@ load(
     "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
     "expand_template_impl",
 )
+load("@rules_cc//cc:defs.bzl", "cc_library")
 
 _AMENT_SETUP_MODULE = "ament_setup"
 
@@ -291,12 +292,12 @@ py_launcher_rule = rule(
             mandatory = True,
             providers = [Ros2AmentSetupInfo],
         ),
+        "data": attr.label_list(allow_files = True),
+        "substitutions": attr.string_dict(mandatory = True),
         "template": attr.label(
             mandatory = True,
             allow_single_file = True,
         ),
-        "substitutions": attr.string_dict(mandatory = True),
-        "data": attr.label_list(allow_files = True),
     },
     implementation = _py_launcher_rule_impl,
 )
@@ -334,8 +335,8 @@ def _sh_launcher_rule_impl(ctx):
     substitutions = dicts.add(
         ctx.attr.substitutions,
         {
-            "{{bash_bin}}": ctx.toolchains[SH_TOOLCHAIN].path,
             "{{ament_prefix_path}}": ament_prefix_path,
+            "{{bash_bin}}": ctx.toolchains[SH_TOOLCHAIN].path,
         },
     )
 
@@ -363,12 +364,12 @@ sh_launcher_rule = rule(
             mandatory = True,
             providers = [Ros2AmentSetupInfo],
         ),
+        "data": attr.label_list(allow_files = True),
+        "substitutions": attr.string_dict(mandatory = True),
         "template": attr.label(
             mandatory = True,
             allow_single_file = True,
         ),
-        "substitutions": attr.string_dict(mandatory = True),
-        "data": attr.label_list(allow_files = True),
     },
     implementation = _sh_launcher_rule_impl,
     toolchains = [SH_TOOLCHAIN],
@@ -388,5 +389,91 @@ def sh_launcher(name, deps, idl_deps = None, **kwargs):
     sh_launcher_rule(
         name = name,
         ament_setup = ament_setup,
+        **kwargs
+    )
+
+def _ros2_ament_cpp_library_impl(ctx):
+    src_output = ctx.actions.declare_file(ctx.attr.basename + ".cpp")
+    hdr_output = ctx.actions.declare_file(ctx.attr.basename + ".hpp")
+    ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path or ""
+
+    substitutions = dicts.add(
+        ctx.attr.substitutions,
+        {
+            "{{ament_prefix_path}}": ament_prefix_path,
+            "{{header}}": hdr_output.short_path,
+        },
+    )
+
+    expand_template_impl(
+        ctx,
+        template = ctx.file.src_template,
+        output = src_output,
+        substitutions = substitutions,
+        is_executable = False,
+    )
+    expand_template_impl(
+        ctx,
+        template = ctx.file.hdr_template,
+        output = hdr_output,
+        substitutions = substitutions,
+        is_executable = False,
+    )
+
+    files = depset([src_output, hdr_output])
+    return [
+        DefaultInfo(
+            files = files,
+        ),
+    ]
+
+ros2_ament_cpp_library_src = rule(
+    attrs = {
+        "ament_setup": attr.label(
+            mandatory = True,
+            providers = [Ros2AmentSetupInfo],
+        ),
+        "basename": attr.string(mandatory = True),
+        "data": attr.label_list(allow_files = True),
+        "hdr_template": attr.label(
+            mandatory = True,
+            allow_single_file = True,
+        ),
+        "src_template": attr.label(
+            mandatory = True,
+            allow_single_file = True,
+        ),
+        "substitutions": attr.string_dict(mandatory = True),
+    },
+    implementation = _ros2_ament_cpp_library_impl,
+)
+
+def ros2_ament_setup_library(name, deps, idl_deps = None, **kwargs):
+    ament_setup = name + "_ament_setup"
+    testonly = kwargs.get("testonly", False)
+    ros2_ament_setup(
+        name = ament_setup,
+        deps = deps,
+        idl_deps = idl_deps,
+        package_name = native.package_name(),
+        tags = ["manual"],
+        testonly = testonly,
+    )
+    cpp_namespace = native.package_name().replace("/", "_") + "_" + name
+    ros2_ament_cpp_library_src(
+        name = name + "_srcs",
+        basename = name,
+        ament_setup = ament_setup,
+        src_template = "@com_github_mvukov_rules_ros2//ros2:ament_setup.cpp.tpl",
+        hdr_template = "@com_github_mvukov_rules_ros2//ros2:ament_setup.hpp.tpl",
+        substitutions = {"{{namespace}}": cpp_namespace},
+    )
+
+    cc_library(
+        name = name,
+        srcs = [":{}_srcs".format(name)],
+        deps = [],
+        data = [ament_setup],
+        testonly = testonly,
         **kwargs
     )
