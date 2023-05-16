@@ -6,4 +6,3 @@ namespace {{namespace}} {
 void setup_ament_prefix_path();
 
 } // namespace {{namespace}}
-
