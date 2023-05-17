@@ -16,8 +16,6 @@ ros2_cpp_binary(
     deps = [
         "@foxglove_bridge//:foxglove_bridge_component",
         "@ros2_rclcpp//:rclcpp",
-        # TODO(mvukov) ros2_launch must support idl_deps.
-        "@ros2_common_interfaces//:cpp_std_msgs",
     ],
 )
 
@@ -39,6 +37,11 @@ py_library(
 
 ros2_launch(
     name = "foxglove_bridge",
+    idl_deps = [
+        "@ros2_rcl_interfaces//:rcl_interfaces",
+        "@ros2_common_interfaces//:std_msgs",
+        "@ros2_common_interfaces//:geometry_msgs",
+    ],
     launch_file = "launch.py",
     nodes = [
         ":foxglove_bridge_node",

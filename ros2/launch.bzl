@@ -4,7 +4,7 @@
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
 load("@rules_python//python:defs.bzl", "py_binary")
 
-def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):
+def ros2_launch(name, nodes, launch_file, deps = None, data = None, idl_deps = None, **kwargs):
     """ Defines a ROS 2 deployment.
 
     Args:
@@ -13,6 +13,7 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):
         launch_file: A ros2launch-compatible launch file.
         deps: Additional Python deps that can be used by the launch file.
         data: Additional data that can be used by the launch file.
+        idl_deps: Additional IDL deps that are used as runtime plugins.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
     if not nodes:
@@ -27,6 +28,7 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, **kwargs):
             "{launch_file}": "$(rootpath {})".format(launch_file),
         },
         data = [launch_file],
+        idl_deps = idl_deps,
         tags = ["manual"],
     )
 
