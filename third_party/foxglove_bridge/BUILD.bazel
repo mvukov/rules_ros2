@@ -38,9 +38,9 @@ py_library(
 ros2_launch(
     name = "foxglove_bridge",
     idl_deps = [
-        "@ros2_rcl_interfaces//:rcl_interfaces",
-        "@ros2_common_interfaces//:std_msgs",
         "@ros2_common_interfaces//:geometry_msgs",
+        "@ros2_common_interfaces//:std_msgs",
+        "@ros2_rcl_interfaces//:rcl_interfaces",
     ],
     launch_file = "launch.py",
     nodes = [
