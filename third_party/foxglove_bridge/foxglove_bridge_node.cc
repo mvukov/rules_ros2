@@ -37,8 +37,6 @@ int main(int argc, char* argv[]) {
   auto executor = rclcpp::executors::MultiThreadedExecutor(
       rclcpp::ExecutorOptions{}, numThreads);
 
-  // rclcpp::executors::SingleThreadedExecutor executor = ;
-
   auto node = std::make_shared<foxglove_bridge::FoxgloveBridge>();
   executor.add_node(node);
   executor.spin();

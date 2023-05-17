@@ -32,7 +32,8 @@ PARAMS_TO_DEFAULT_VALUES = {
         'connectionGraph',
         'parameters',
         'parametersSubscribe',
-        'services',
+        # For services we need auto-generated .msg files. TBD.
+        # 'services',
     ],
 }
 
@@ -48,7 +49,5 @@ def generate_launch_description():
             parameters=[
                 PARAMS_TO_DEFAULT_VALUES,
             ],
-            # prefix=['gdb -ex "catch throw" -ex run -ex bt --args'],
-            # prefix=['gdb -ex "break abort" -ex "thread apply all bt" -ex "run" -ex "bt" --args'],  # noqa
         ),
     ])
