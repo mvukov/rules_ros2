@@ -2,7 +2,6 @@
 
 #include <cstdlib>
 #include <string>
-#include <iostream>
 
 namespace {{namespace}} {
 namespace {
@@ -20,7 +19,6 @@ void setup_ament_prefix_path(bool append)
     std::string ament_prefix_path_str = ament_prefix_path;
     ament_prefix_path_str += ":";
     ament_prefix_path_str += AMENT_PREFIX_PATH;
-    std::cout << "Setting " << AMENT_PREFIX_PATH_ENV << " to " << ament_prefix_path_str << std::endl;
     setenv(AMENT_PREFIX_PATH_ENV, ament_prefix_path_str.c_str(), 1);
   }
   else
