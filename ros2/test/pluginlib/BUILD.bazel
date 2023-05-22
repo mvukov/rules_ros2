@@ -15,7 +15,7 @@ ros2_plugin(
     plugin_specs = [
         {
             "base_class_type": "polygon_base::RegularPolygon",
-            "class_type": "polygon_plugins::Square",
+            "class_type": "square_plugin::Square",
         },
     ],
     deps = [
@@ -30,7 +30,7 @@ ros2_plugin(
     plugin_specs = [
         {
             "base_class_type": "polygon_base::RegularPolygon",
-            "class_type": "polygon_plugins::Triangle",
+            "class_type": "triangle_plugin::Triangle",
         },
     ],
     deps = [
@@ -127,9 +127,16 @@ sh_test(
 )
 
 ros2_ament_setup_library(
-    name = "ament_setup",
+    name = "triangle_ament_setup",
     deps = [
-        "triangle",
+        ":triangle",
+    ],
+)
+
+ros2_ament_setup_library(
+    name = "square_ament_setup",
+    deps = [
+        ":square",
     ],
 )
 
@@ -137,8 +144,9 @@ cc_test(
     name = "ament_setup_library_test",
     srcs = ["ament_setup_library_test.cc"],
     deps = [
-        ":ament_setup",
         ":polygon_base",
+        ":square_ament_setup",
+        ":triangle_ament_setup",
         "@com_google_googletest//:gtest_main",
         "@ros2_pluginlib//:pluginlib",
     ],

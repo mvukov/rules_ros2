@@ -18,7 +18,7 @@
 
 #include "ros2/test/pluginlib/regular_polygon.h"
 
-namespace polygon_plugins {
+namespace triangle_plugin {
 
 class Triangle : public polygon_base::RegularPolygon {
  public:
@@ -35,6 +35,6 @@ class Triangle : public polygon_base::RegularPolygon {
   double side_length_;
 };
 
-}  // namespace polygon_plugins
+}  // namespace triangle_plugin
 
-PLUGINLIB_EXPORT_CLASS(polygon_plugins::Triangle, polygon_base::RegularPolygon)
+PLUGINLIB_EXPORT_CLASS(triangle_plugin::Triangle, polygon_base::RegularPolygon)

@@ -32,11 +32,11 @@ TEST(TestPluginlibClassLoader,
       "polygon_base", "polygon_base::RegularPolygon");
 
   std::shared_ptr<polygon_base::RegularPolygon> triangle =
-      poly_loader.createSharedInstance("polygon_plugins::Triangle");
+      poly_loader.createSharedInstance("triangle_plugin::Triangle");
   triangle->initialize(10.0);
 
   std::shared_ptr<polygon_base::RegularPolygon> square =
-      poly_loader.createSharedInstance("polygon_plugins::Square");
+      poly_loader.createSharedInstance("square_plugin::Square");
   square->initialize(10.0);
 
   EXPECT_THAT(triangle->area(), DoubleNear(43.3013, 1e-4));
