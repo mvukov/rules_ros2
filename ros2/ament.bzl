@@ -448,6 +448,19 @@ cpp_ament_setup = rule(
 )
 
 def cpp_ament_setup_library(name, deps, idl_deps = None, **kwargs):
+    """ Generates a C++ library that contains the ament setup code for a ROS2 package.
+
+    This can be useful in contexts where using a wrapper script (as is the case with the regular ros2_xxx rules)
+    is not desirable. The generated function can be called with an optional allow_append argument, which causes the
+    function to append to the AMENT_PREFIX_PATH instead of overwriting it. Beware that when using this mode when
+    different versions of the same plugin exist, the behavior might be unexpected.
+
+    Args:
+        name: The name of the target.
+        deps: The dependencies, typically targets of type ros2_plugin.
+        idl_deps: any IDL deps.
+        kwargs: Forwarded to the cc_library rule.
+    """
     ament_setup = name + "_ament_setup"
     testonly = kwargs.get("testonly", False)
     ros2_ament_setup(
@@ -458,7 +471,7 @@ def cpp_ament_setup_library(name, deps, idl_deps = None, **kwargs):
         tags = ["manual"],
         testonly = testonly,
     )
-    cpp_namespace = native.package_name().replace("/", "_") + "_" + name
+
     cpp_ament_setup(
         name = name + "_srcs",
         basename = name,
