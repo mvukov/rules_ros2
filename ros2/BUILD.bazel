@@ -5,6 +5,8 @@ load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 
 exports_files([
     "ament.bzl",
+    "ament_setup.cc.tpl",
+    "ament_setup.h.tpl",
     "bag.bzl",
     "bag.py.tpl",
     "cc_defs.bzl",
@@ -21,8 +23,6 @@ exports_files([
     "test.bzl",
     "test.py.tpl",
     "topic.bzl",
-    "ament_setup.cc.tpl",
-    "ament_setup.h.tpl",
 ])
 
 py_library(
