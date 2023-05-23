@@ -19,23 +19,30 @@
 #include "rcutils/logging.h"
 
 #include "ros2/test/pluginlib/regular_polygon.h"
-#include "ros2/test/pluginlib/square_ament_setup.hpp"
-#include "ros2/test/pluginlib/triangle_ament_setup.hpp"
+#include "ros2/test/pluginlib/square_ament_setup/ament_setup.h"
+#include "ros2/test/pluginlib/triangle_ament_setup/ament_setup.h"
 
 using ::testing::DoubleNear;
 using ::testing::Eq;
 
-TEST(TestAmentSetup, PluginLoadingDoesNotWorkUntilAmentPrefixPathIsSet) {
-  rcutils_logging_set_default_logger_level(RCUTILS_LOG_SEVERITY_DEBUG);
-  console_bridge::setLogLevel(console_bridge::CONSOLE_BRIDGE_LOG_DEBUG);
+class TestAmentSetup : public ::testing::Test {
+ public:
+  void SetUp() override {
+    rcutils_logging_set_default_logger_level(RCUTILS_LOG_SEVERITY_DEBUG);
+    console_bridge::setLogLevel(console_bridge::CONSOLE_BRIDGE_LOG_DEBUG);
+  }
 
+  void TearDown() override { unsetenv("AMENT_PREFIX_PATH"); }
+};
+
+TEST_F(TestAmentSetup, PluginLoadingDoesNotWorkUntilAmentPrefixPathIsSet) {
   EXPECT_ANY_THROW(
       pluginlib::ClassLoader<polygon_base::RegularPolygon> poly_loader(
           "polygon_base", "polygon_base::RegularPolygon"));
 }
 
-TEST(TestAmentSetup, SetupSingleAmentPrefixPath) {
-  ::ros2_test_pluginlib_triangle_ament_setup::setup_ament_prefix_path();
+TEST_F(TestAmentSetup, SetupSingleAmentPrefixPath) {
+  ::triangle_ament_setup::SetUpAmentPrefixPath();
   pluginlib::ClassLoader<polygon_base::RegularPolygon> poly_loader(
       "polygon_base", "polygon_base::RegularPolygon");
 
@@ -48,10 +55,10 @@ TEST(TestAmentSetup, SetupSingleAmentPrefixPath) {
   EXPECT_ANY_THROW(poly_loader.createSharedInstance("square::Square"));
 }
 
-TEST(TestAmentSetup, AppendAmentPrefixPath) {
-  ::ros2_test_pluginlib_triangle_ament_setup::setup_ament_prefix_path();
-  ::ros2_test_pluginlib_square_ament_setup::setup_ament_prefix_path(
-      /* append = */ true);
+TEST_F(TestAmentSetup, AppendAmentPrefixPath) {
+  ::triangle_ament_setup::SetUpAmentPrefixPath();
+  ::square_ament_setup::SetUpAmentPrefixPath(
+      /* allow_append = */ true);
 
   {
     pluginlib::ClassLoader<polygon_base::RegularPolygon> poly_loader(
@@ -71,7 +78,7 @@ TEST(TestAmentSetup, AppendAmentPrefixPath) {
   }
 
   // this will reset the AMENT_PREFIX_PATH to only contain the triangle library.
-  ::ros2_test_pluginlib_triangle_ament_setup::setup_ament_prefix_path();
+  ::triangle_ament_setup::SetUpAmentPrefixPath();
   {
     pluginlib::ClassLoader<polygon_base::RegularPolygon> poly_loader(
         "polygon_base", "polygon_base::RegularPolygon");
@@ -79,7 +86,7 @@ TEST(TestAmentSetup, AppendAmentPrefixPath) {
   }
 
   // and now only the square library
-  ::ros2_test_pluginlib_square_ament_setup::setup_ament_prefix_path();
+  ::square_ament_setup::SetUpAmentPrefixPath();
   {
     pluginlib::ClassLoader<polygon_base::RegularPolygon> poly_loader(
         "polygon_base", "polygon_base::RegularPolygon");

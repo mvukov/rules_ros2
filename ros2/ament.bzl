@@ -392,29 +392,27 @@ def sh_launcher(name, deps, idl_deps = None, **kwargs):
         **kwargs
     )
 
-def _ros2_ament_cpp_library_impl(ctx):
-    src_output = ctx.actions.declare_file(ctx.attr.basename + ".cpp")
-    hdr_output = ctx.actions.declare_file(ctx.attr.basename + ".hpp")
-    ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path or ""
+def _cpp_ament_setup_impl(ctx):
+    src_output = ctx.actions.declare_file(ctx.attr.basename + "/ament_setup.cc")
+    hdr_output = ctx.actions.declare_file(ctx.attr.basename + "/ament_setup.h")
+    ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path
 
-    substitutions = dicts.add(
-        ctx.attr.substitutions,
-        {
-            "{{ament_prefix_path}}": ament_prefix_path,
-            "{{header}}": hdr_output.short_path,
-        },
-    )
+    substitutions = {
+        "{{ament_prefix_path}}": ament_prefix_path,
+        "{{header}}": hdr_output.short_path,
+        "{{namespace}}": ctx.attr.basename,
+    }
 
     expand_template_impl(
         ctx,
-        template = ctx.file.src_template,
+        template = ctx.file._src_template,
         output = src_output,
         substitutions = substitutions,
         is_executable = False,
     )
     expand_template_impl(
         ctx,
-        template = ctx.file.hdr_template,
+        template = ctx.file._hdr_template,
         output = hdr_output,
         substitutions = substitutions,
         is_executable = False,
@@ -427,28 +425,29 @@ def _ros2_ament_cpp_library_impl(ctx):
         ),
     ]
 
-ros2_ament_cpp_library_src = rule(
+cpp_ament_setup = rule(
     attrs = {
         "ament_setup": attr.label(
             mandatory = True,
             providers = [Ros2AmentSetupInfo],
         ),
-        "basename": attr.string(mandatory = True),
+        "basename": attr.string(
+            mandatory = True,
+        ),
         "data": attr.label_list(allow_files = True),
-        "hdr_template": attr.label(
-            mandatory = True,
+        "_hdr_template": attr.label(
             allow_single_file = True,
+            default = "@com_github_mvukov_rules_ros2//ros2:ament_setup.h.tpl",
         ),
-        "src_template": attr.label(
-            mandatory = True,
+        "_src_template": attr.label(
             allow_single_file = True,
+            default = "@com_github_mvukov_rules_ros2//ros2:ament_setup.cc.tpl",
         ),
-        "substitutions": attr.string_dict(mandatory = True),
     },
-    implementation = _ros2_ament_cpp_library_impl,
+    implementation = _cpp_ament_setup_impl,
 )
 
-def ros2_ament_setup_library(name, deps, idl_deps = None, **kwargs):
+def cpp_ament_setup_library(name, deps, idl_deps = None, **kwargs):
     ament_setup = name + "_ament_setup"
     testonly = kwargs.get("testonly", False)
     ros2_ament_setup(
@@ -460,13 +459,11 @@ def ros2_ament_setup_library(name, deps, idl_deps = None, **kwargs):
         testonly = testonly,
     )
     cpp_namespace = native.package_name().replace("/", "_") + "_" + name
-    ros2_ament_cpp_library_src(
+    cpp_ament_setup(
         name = name + "_srcs",
         basename = name,
         ament_setup = ament_setup,
-        src_template = "@com_github_mvukov_rules_ros2//ros2:ament_setup.cpp.tpl",
-        hdr_template = "@com_github_mvukov_rules_ros2//ros2:ament_setup.hpp.tpl",
-        substitutions = {"{{namespace}}": cpp_namespace},
+        tags = ["manual"],
     )
 
     cc_library(

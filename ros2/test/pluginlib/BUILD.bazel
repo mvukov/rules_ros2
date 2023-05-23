@@ -1,4 +1,4 @@
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "ros2_ament_setup_library")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "cpp_ament_setup_library")
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_test")
 load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
 load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_binary", "ros2_py_test")
@@ -126,14 +126,14 @@ sh_test(
     ],
 )
 
-ros2_ament_setup_library(
+cpp_ament_setup_library(
     name = "triangle_ament_setup",
     deps = [
         ":triangle",
     ],
 )
 
-ros2_ament_setup_library(
+cpp_ament_setup_library(
     name = "square_ament_setup",
     deps = [
         ":square",
@@ -141,8 +141,8 @@ ros2_ament_setup_library(
 )
 
 cc_test(
-    name = "ament_setup_library_test",
-    srcs = ["ament_setup_library_test.cc"],
+    name = "ament_setup_library_tests",
+    srcs = ["ament_setup_library_tests.cc"],
     deps = [
         ":polygon_base",
         ":square_ament_setup",
