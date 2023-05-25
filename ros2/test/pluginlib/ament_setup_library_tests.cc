@@ -27,7 +27,7 @@ using ::testing::Eq;
 
 class TestAmentSetup : public ::testing::Test {
  public:
-  void SetUp() override {
+  static void SetUpTestSuite() {
     rcutils_logging_set_default_logger_level(RCUTILS_LOG_SEVERITY_DEBUG);
     console_bridge::setLogLevel(console_bridge::CONSOLE_BRIDGE_LOG_DEBUG);
   }
@@ -52,7 +52,7 @@ TEST_F(TestAmentSetup, SetupSingleAmentPrefixPath) {
 
   EXPECT_THAT(triangle->area(), DoubleNear(43.3013, 1e-4));
 
-  EXPECT_ANY_THROW(poly_loader.createSharedInstance("square::Square"));
+  EXPECT_ANY_THROW(poly_loader.createSharedInstance("square_plugin::Square"));
 }
 
 TEST_F(TestAmentSetup, AppendAmentPrefixPath) {

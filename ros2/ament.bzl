@@ -393,14 +393,15 @@ def sh_launcher(name, deps, idl_deps = None, **kwargs):
     )
 
 def _cpp_ament_setup_impl(ctx):
-    src_output = ctx.actions.declare_file(ctx.attr.basename + "/ament_setup.cc")
-    hdr_output = ctx.actions.declare_file(ctx.attr.basename + "/ament_setup.h")
+    basename = ctx.attr.basename or ctx.label.name
+    src_output = ctx.actions.declare_file(basename + "/ament_setup.cc")
+    hdr_output = ctx.actions.declare_file(basename + "/ament_setup.h")
     ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path
 
     substitutions = {
         "{{ament_prefix_path}}": ament_prefix_path,
         "{{header}}": hdr_output.short_path,
-        "{{namespace}}": ctx.attr.basename,
+        "{{namespace}}": basename,
     }
 
     expand_template_impl(
@@ -432,7 +433,7 @@ cpp_ament_setup = rule(
             providers = [Ros2AmentSetupInfo],
         ),
         "basename": attr.string(
-            mandatory = True,
+            default = "",
         ),
         "data": attr.label_list(allow_files = True),
         "_hdr_template": attr.label(
@@ -451,9 +452,14 @@ def cpp_ament_setup_library(name, deps, idl_deps = None, **kwargs):
     """ Generates a C++ library that contains the ament setup code for a ROS2 package.
 
     This can be useful in contexts where using a wrapper script (as is the case with the regular ros2_xxx rules)
-    is not desirable. The generated function can be called with an optional allow_append argument, which causes the
+    is not desirable. The generated library can be included as `#include <package_name>/<name>/ament_setup.h` and
+    contains a single function called `SetUpAmentPrefixPath` in the namespace `<name>`. That function needs to be
+    called before any ament resource is used.
+
+    The generated function can be called with an optional boolean allow_append argument, which causes the
     function to append to the AMENT_PREFIX_PATH instead of overwriting it. Beware that when using this mode when
-    different versions of the same plugin exist, the behavior might be unexpected.
+    a different version of the same plugin may exist in the existing AMENT_PREFIX_PATH, the behavior might be
+    unexpected.
 
     Args:
         name: The name of the target.
