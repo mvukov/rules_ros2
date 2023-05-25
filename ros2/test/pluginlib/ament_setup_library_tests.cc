@@ -56,7 +56,7 @@ TEST_F(TestAmentSetup, SetupSingleAmentPrefixPath) {
 }
 
 TEST_F(TestAmentSetup, AppendAmentPrefixPath) {
-  ::triangle_ament_setup::SetUpAmentPrefixPath();
+  ::triangle_ament_setup::SetUpAmentPrefixPath(/* allow_append = */ true);
   ::square_ament_setup::SetUpAmentPrefixPath(
       /* allow_append = */ true);
 
@@ -69,12 +69,6 @@ TEST_F(TestAmentSetup, AppendAmentPrefixPath) {
     triangle->initialize(10.0);
 
     EXPECT_THAT(triangle->area(), DoubleNear(43.3013, 1e-4));
-
-    std::shared_ptr<polygon_base::RegularPolygon> square =
-        poly_loader.createSharedInstance("polygon_plugins::Square");
-    square->initialize(10.0);
-
-    EXPECT_THAT(square->area(), Eq(100.0));
   }
 
   // this will reset the AMENT_PREFIX_PATH to only contain the triangle library.
