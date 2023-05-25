@@ -47,12 +47,12 @@ TEST_F(TestAmentSetup, SetupSingleAmentPrefixPath) {
       "polygon_base", "polygon_base::RegularPolygon");
 
   std::shared_ptr<polygon_base::RegularPolygon> triangle =
-      poly_loader.createSharedInstance("triangle_plugin::Triangle");
+      poly_loader.createSharedInstance("polygon_plugins::Triangle");
   triangle->initialize(10.0);
 
   EXPECT_THAT(triangle->area(), DoubleNear(43.3013, 1e-4));
 
-  EXPECT_ANY_THROW(poly_loader.createSharedInstance("square_plugin::Square"));
+  EXPECT_ANY_THROW(poly_loader.createSharedInstance("polygon_plugins::Square"));
 }
 
 TEST_F(TestAmentSetup, AppendAmentPrefixPath) {
@@ -65,13 +65,13 @@ TEST_F(TestAmentSetup, AppendAmentPrefixPath) {
         "polygon_base", "polygon_base::RegularPolygon");
 
     std::shared_ptr<polygon_base::RegularPolygon> triangle =
-        poly_loader.createSharedInstance("triangle_plugin::Triangle");
+        poly_loader.createSharedInstance("polygon_plugins::Triangle");
     triangle->initialize(10.0);
 
     EXPECT_THAT(triangle->area(), DoubleNear(43.3013, 1e-4));
 
     std::shared_ptr<polygon_base::RegularPolygon> square =
-        poly_loader.createSharedInstance("square_plugin::Square");
+        poly_loader.createSharedInstance("polygon_plugins::Square");
     square->initialize(10.0);
 
     EXPECT_THAT(square->area(), Eq(100.0));
@@ -82,7 +82,8 @@ TEST_F(TestAmentSetup, AppendAmentPrefixPath) {
   {
     pluginlib::ClassLoader<polygon_base::RegularPolygon> poly_loader(
         "polygon_base", "polygon_base::RegularPolygon");
-    EXPECT_ANY_THROW(poly_loader.createSharedInstance("square_plugin::Square"));
+    EXPECT_ANY_THROW(
+        poly_loader.createSharedInstance("polygon_plugins::Square"));
   }
 
   // and now only the square library
@@ -90,6 +91,7 @@ TEST_F(TestAmentSetup, AppendAmentPrefixPath) {
   {
     pluginlib::ClassLoader<polygon_base::RegularPolygon> poly_loader(
         "polygon_base", "polygon_base::RegularPolygon");
-    EXPECT_NO_THROW(poly_loader.createSharedInstance("square_plugin::Square"));
+    EXPECT_NO_THROW(
+        poly_loader.createSharedInstance("polygon_plugins::Square"));
   }
 }

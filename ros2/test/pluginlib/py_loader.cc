@@ -26,7 +26,7 @@ void LoadPlugins() {
   pluginlib::ClassLoader<polygon_base::RegularPolygon> poly_loader(
       "polygon_base", "polygon_base::RegularPolygon");
   std::shared_ptr<polygon_base::RegularPolygon> triangle =
-      poly_loader.createSharedInstance("triangle_plugin::Triangle");
+      poly_loader.createSharedInstance("polygon_plugins::Triangle");
 }
 
 PYBIND11_MODULE(py_loader, m) { m.def("load_plugins", &LoadPlugins); }

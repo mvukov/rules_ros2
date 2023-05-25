@@ -15,7 +15,7 @@ ros2_plugin(
     plugin_specs = [
         {
             "base_class_type": "polygon_base::RegularPolygon",
-            "class_type": "square_plugin::Square",
+            "class_type": "polygon_plugins::Square",
         },
     ],
     deps = [
@@ -30,7 +30,7 @@ ros2_plugin(
     plugin_specs = [
         {
             "base_class_type": "polygon_base::RegularPolygon",
-            "class_type": "triangle_plugin::Triangle",
+            "class_type": "polygon_plugins::Triangle",
         },
     ],
     deps = [

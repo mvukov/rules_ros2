@@ -18,7 +18,7 @@
 
 #include "ros2/test/pluginlib/regular_polygon.h"
 
-namespace square_plugin {
+namespace polygon_plugins {
 
 class Square : public polygon_base::RegularPolygon {
  public:
@@ -30,6 +30,6 @@ class Square : public polygon_base::RegularPolygon {
   double side_length_;
 };
 
-}  // namespace square_plugin
+}  // namespace polygon_plugins
 
-PLUGINLIB_EXPORT_CLASS(square_plugin::Square, polygon_base::RegularPolygon)
+PLUGINLIB_EXPORT_CLASS(polygon_plugins::Square, polygon_base::RegularPolygon)
