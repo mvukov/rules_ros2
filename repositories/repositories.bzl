@@ -77,6 +77,7 @@ def ros2_repositories():
         sha256 = "81964fe578e9bd7c94dfdb09c8e4d6e6759e19967e397dbea48d1c10e45d0df2",
         strip_prefix = "googletest-release-1.12.1",
         url = "https://github.com/google/googletest/archive/refs/tags/release-1.12.1.tar.gz",
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:gtest_fix_fetch.patch"],
     )
 
     maybe(
