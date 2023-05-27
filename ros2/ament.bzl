@@ -479,7 +479,6 @@ def cpp_ament_setup_library(name, deps, idl_deps = None, **kwargs):
         name = ament_setup,
         deps = deps,
         idl_deps = idl_deps,
-        package_name = native.package_name(),
         tags = ["manual"],
         testonly = testonly,
     )
