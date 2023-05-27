@@ -1,7 +1,7 @@
 """ Defines tests.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_test")
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_test")
 load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
     "py_ros2_interface_library",
@@ -52,4 +52,17 @@ ros2_cpp_test(
     size = "small",
     srcs = ["test_rclcpp.cpp"],
     deps = ["@ros2_rclcpp//:rclcpp"],
+)
+
+ros2_cpp_binary(
+    name = "run",
+    srcs = ["run.cc"],
+    idl_deps = [
+        "@ros2_common_interfaces//:std_msgs",
+    ],
+    set_up_ament = "True",
+    deps = [
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
 )

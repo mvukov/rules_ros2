@@ -49,5 +49,8 @@ def generate_launch_description():
             parameters=[
                 PARAMS_TO_DEFAULT_VALUES,
             ],
+            prefix=[
+                'gdb -ex "break abort" -ex "thread apply all bt" -ex "run" -ex "bt" --args'  # noqa
+            ],  # noqa
         ),
     ])
