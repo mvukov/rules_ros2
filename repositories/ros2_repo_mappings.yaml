@@ -69,6 +69,7 @@ repositories:
       - "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_fix-maybe-uninitialized-warning.patch"
       # https://github.com/mvukov/rules_ros2/pull/47
       - "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_move_ts_lib_to_subscription_base.patch"
+      - "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_move_ts_lib_to_publisher_base.patch"
   rclpy:
     name: ros2_rclpy
     build_file: "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel"
