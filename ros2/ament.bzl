@@ -488,7 +488,6 @@ def cpp_ament_setup_library(name, deps, idl_deps = None, **kwargs):
     cc_library(
         name = name,
         srcs = [":{}_srcs".format(name)],
-        deps = [],
         data = [ament_setup],
         testonly = testonly,
         **kwargs

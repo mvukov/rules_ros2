@@ -71,7 +71,7 @@ TEST_F(TestAmentSetup, AppendAmentPrefixPath) {
     EXPECT_THAT(triangle->area(), DoubleNear(43.3013, 1e-4));
   }
 
-  // this will reset the AMENT_PREFIX_PATH to only contain the triangle library.
+  // This will reset the AMENT_PREFIX_PATH to only contain the triangle library.
   ::triangle_ament_setup::SetUpAmentPrefixPath();
   {
     pluginlib::ClassLoader<polygon_base::RegularPolygon> poly_loader(
@@ -80,7 +80,7 @@ TEST_F(TestAmentSetup, AppendAmentPrefixPath) {
         poly_loader.createSharedInstance("polygon_plugins::Square"));
   }
 
-  // and now only the square library
+  // Only now we can use the square library.
   ::square_ament_setup::SetUpAmentPrefixPath();
   {
     pluginlib::ClassLoader<polygon_base::RegularPolygon> poly_loader(
