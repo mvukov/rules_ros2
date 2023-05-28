@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
     publisher.reset();
 
     // New: Create a timer that gets immediately out of scope (should never
-    // fire) to trigger cleanup of the publisher
+    // fire) to trigger cleanup of the publisher.
     node->create_wall_timer(std::chrono::seconds(1), []() {});
   });
 
