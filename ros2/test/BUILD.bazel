@@ -53,3 +53,15 @@ ros2_cpp_test(
     srcs = ["test_rclcpp.cpp"],
     deps = ["@ros2_rclcpp//:rclcpp"],
 )
+
+ros2_cpp_test(
+    name = "generic_publisher_tests",
+    srcs = ["generic_publisher_tests.cc"],
+    idl_deps = [
+        "@ros2_common_interfaces//:std_msgs",
+    ],
+    set_up_ament = "True",
+    deps = [
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)

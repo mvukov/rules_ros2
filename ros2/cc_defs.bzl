@@ -64,7 +64,7 @@ def ros2_c_binary(name, ros2_package_name = None, **kwargs):
     """
     _ros2_cc_target(cc_binary, "c", name, ros2_package_name, **kwargs)
 
-def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False, **kwargs):
+def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, idl_deps, **kwargs):
     if set_up_ament == False:
         _ros2_cc_target(target, "cpp", name, ros2_package_name, **kwargs)
         return
@@ -85,6 +85,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False,
         },
         tags = ["manual"],
         data = [target_impl],
+        idl_deps = idl_deps,
         testonly = is_test,
     )
 
@@ -96,7 +97,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False,
         **launcher_target_kwargs
     )
 
-def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, **kwargs):
+def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, idl_deps = None, **kwargs):
     """ Defines a ROS 2 C++ binary.
 
     Adds common ROS 2 C++ definitions on top of a cc_binary.
@@ -108,9 +109,9 @@ def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, **kwar
         set_up_ament: If true, sets up ament file tree for the binary target.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
-    _ros2_cpp_exec(cc_binary, name, ros2_package_name, set_up_ament, **kwargs)
+    _ros2_cpp_exec(cc_binary, name, ros2_package_name, set_up_ament, idl_deps, **kwargs)
 
-def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, **kwargs):
+def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, idl_deps = None, **kwargs):
     """ Defines a ROS 2 C++ test.
 
     Adds common ROS 2 C++ definitions on top of a cc_test.
@@ -125,4 +126,4 @@ def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, **kwargs)
               otherwise to $TEST_TMPDIR, see https://bazel.build/reference/test-encyclopedia#initial-conditions)
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
     """
-    _ros2_cpp_exec(cc_test, name, ros2_package_name, set_up_ament, **kwargs)
+    _ros2_cpp_exec(cc_test, name, ros2_package_name, set_up_ament, idl_deps, **kwargs)
