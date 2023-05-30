@@ -29,7 +29,6 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, idl_deps = N
             "{launch_file}": "$(rootpath {})".format(launch_file),
         },
         data = [launch_file],
-        idl_deps = idl_deps,
         tags = ["manual"],
     )
 
