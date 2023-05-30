@@ -23,6 +23,7 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, idl_deps = N
     launch_script = py_launcher(
         launcher,
         deps = nodes,
+        idl_deps = idl_deps,
         template = "@com_github_mvukov_rules_ros2//ros2:launch.py.tpl",
         substitutions = {
             "{launch_file}": "$(rootpath {})".format(launch_file),

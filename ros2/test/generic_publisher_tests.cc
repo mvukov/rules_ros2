@@ -15,6 +15,9 @@
 
 #include "rclcpp/rclcpp.hpp"
 
+// Inspired by an example in https://github.com/ros2/rclcpp/issues/2146
+// For this to work, a rclcpp path from
+// https://github.com/mvukov/rules_ros2/pull/117 is required.
 int main(int argc, char* argv[]) {
   rclcpp::init(argc, argv);
 
@@ -27,7 +30,7 @@ int main(int argc, char* argv[]) {
     publisher.reset();
 
     // New: Create a timer that gets immediately out of scope (should never
-    // fire) to trigger cleanup of the publisher
+    // fire) to trigger cleanup of the publisher.
     node->create_wall_timer(std::chrono::seconds(1), []() {});
   });
 

@@ -67,7 +67,7 @@ repositories:
     patches:
       # https://github.com/ros2/rclcpp/commit/37adc03c11171f67c213ee72f7ce43fdcbda7b9e
       - "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_fix-maybe-uninitialized-warning.patch"
-      # TBD.
+      # https://github.com/mvukov/rules_ros2/pull/117
       - "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_ts_libs_ownership.patch"
   rclpy:
     name: ros2_rclpy

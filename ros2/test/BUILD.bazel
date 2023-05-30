@@ -60,7 +60,6 @@ ros2_cpp_test(
     idl_deps = [
         "@ros2_common_interfaces//:std_msgs",
     ],
-    set_up_ament = "True",
     deps = [
         "@ros2_rclcpp//:rclcpp",
     ],
