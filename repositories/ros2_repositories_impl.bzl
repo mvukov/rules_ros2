@@ -62,7 +62,7 @@ def ros2_repositories_impl():
     maybe(
         http_archive,
         name = "iceoryx",
-        strip_prefix = "iceoryx-2.0.2",
+        strip_prefix = "iceoryx-2.0.3",
         build_file = "@com_github_mvukov_rules_ros2//repositories:iceoryx.BUILD.bazel",
         sha256 = "8f391696daf2e63da9437aab8d7154371df630fc93876479f2e84c693fc1ba5a",
         url = "https://github.com/eclipse-iceoryx/iceoryx/archive/refs/tags/v2.0.3.tar.gz",
@@ -173,7 +173,7 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel",
         patch_cmds = ["patch"],
         patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_fix-maybe-uninitialized-warning.patch", "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_move_ts_lib_to_subscription_base.patch"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_fix-maybe-uninitialized-warning.patch", "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_move_ts_lib_to_subscription_base.patch", "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_move_ts_lib_to_publisher_base.patch"],
         sha256 = "50bf8b420c502571aba792f4bce9d9521404e4d15dfff352ce242a205e31caad",
         strip_prefix = "rclcpp-16.0.4",
         url = "https://github.com/ros2/rclcpp/archive/refs/tags/16.0.4.tar.gz",

@@ -23,6 +23,7 @@ load(
     "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
     "expand_template_impl",
 )
+load("@rules_cc//cc:defs.bzl", "cc_library")
 
 _AMENT_SETUP_MODULE = "ament_setup"
 
@@ -291,12 +292,12 @@ py_launcher_rule = rule(
             mandatory = True,
             providers = [Ros2AmentSetupInfo],
         ),
+        "data": attr.label_list(allow_files = True),
+        "substitutions": attr.string_dict(mandatory = True),
         "template": attr.label(
             mandatory = True,
             allow_single_file = True,
         ),
-        "substitutions": attr.string_dict(mandatory = True),
-        "data": attr.label_list(allow_files = True),
     },
     implementation = _py_launcher_rule_impl,
 )
@@ -334,8 +335,8 @@ def _sh_launcher_rule_impl(ctx):
     substitutions = dicts.add(
         ctx.attr.substitutions,
         {
-            "{{bash_bin}}": ctx.toolchains[SH_TOOLCHAIN].path,
             "{{ament_prefix_path}}": ament_prefix_path,
+            "{{bash_bin}}": ctx.toolchains[SH_TOOLCHAIN].path,
         },
     )
 
@@ -363,12 +364,12 @@ sh_launcher_rule = rule(
             mandatory = True,
             providers = [Ros2AmentSetupInfo],
         ),
+        "data": attr.label_list(allow_files = True),
+        "substitutions": attr.string_dict(mandatory = True),
         "template": attr.label(
             mandatory = True,
             allow_single_file = True,
         ),
-        "substitutions": attr.string_dict(mandatory = True),
-        "data": attr.label_list(allow_files = True),
     },
     implementation = _sh_launcher_rule_impl,
     toolchains = [SH_TOOLCHAIN],
@@ -388,5 +389,106 @@ def sh_launcher(name, deps, idl_deps = None, **kwargs):
     sh_launcher_rule(
         name = name,
         ament_setup = ament_setup,
+        **kwargs
+    )
+
+def _cpp_ament_setup_impl(ctx):
+    basename = ctx.attr.basename or ctx.label.name
+    src_output = ctx.actions.declare_file(basename + "/ament_setup.cc")
+    hdr_output = ctx.actions.declare_file(basename + "/ament_setup.h")
+    ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path
+
+    substitutions = {
+        "{{ament_prefix_path}}": ament_prefix_path,
+        "{{header}}": hdr_output.short_path,
+        "{{namespace}}": basename,
+    }
+
+    expand_template_impl(
+        ctx,
+        template = ctx.file._src_template,
+        output = src_output,
+        substitutions = substitutions,
+        is_executable = False,
+    )
+    expand_template_impl(
+        ctx,
+        template = ctx.file._hdr_template,
+        output = hdr_output,
+        substitutions = substitutions,
+        is_executable = False,
+    )
+
+    files = depset([src_output, hdr_output])
+    return [
+        DefaultInfo(
+            files = files,
+        ),
+    ]
+
+cpp_ament_setup = rule(
+    attrs = {
+        "ament_setup": attr.label(
+            mandatory = True,
+            providers = [Ros2AmentSetupInfo],
+        ),
+        "basename": attr.string(
+            default = "",
+        ),
+        "data": attr.label_list(allow_files = True),
+        "_hdr_template": attr.label(
+            allow_single_file = True,
+            default = "@com_github_mvukov_rules_ros2//ros2:ament_setup.h.tpl",
+        ),
+        "_src_template": attr.label(
+            allow_single_file = True,
+            default = "@com_github_mvukov_rules_ros2//ros2:ament_setup.cc.tpl",
+        ),
+    },
+    implementation = _cpp_ament_setup_impl,
+)
+
+def cpp_ament_setup_library(name, deps, idl_deps = None, **kwargs):
+    """ Generates a C++ library that contains the ament setup code for a ROS2 package.
+
+    This can be useful in contexts where using a wrapper script (as is the case with the regular ros2_xxx rules)
+    is not desirable. The generated library can be included as `#include <package_name>/<name>/ament_setup.h` and
+    contains a single function called `SetUpAmentPrefixPath` in the namespace `<name>`. That function needs to be
+    called before any ament resource is used.
+
+    The generated function can be called with an optional boolean allow_append argument, which causes the
+    function to append to the AMENT_PREFIX_PATH instead of overwriting it. Beware that when using this mode when
+    a different version of the same plugin may exist in the existing AMENT_PREFIX_PATH, the behavior might be
+    unexpected.
+
+    Args:
+        name: The name of the target.
+        deps: The dependencies, typically targets of type ros2_plugin.
+        idl_deps: any IDL deps.
+        kwargs: Forwarded to the cc_library rule.
+    """
+    ament_setup = name + "_ament_setup"
+    testonly = kwargs.get("testonly", False)
+    ros2_ament_setup(
+        name = ament_setup,
+        deps = deps,
+        idl_deps = idl_deps,
+        package_name = native.package_name(),
+        tags = ["manual"],
+        testonly = testonly,
+    )
+
+    cpp_ament_setup(
+        name = name + "_srcs",
+        basename = name,
+        ament_setup = ament_setup,
+        tags = ["manual"],
+    )
+
+    cc_library(
+        name = name,
+        srcs = [":{}_srcs".format(name)],
+        data = [ament_setup],
+        testonly = testonly,
         **kwargs
     )
