@@ -183,7 +183,7 @@ def ros2_repositories():
 
     native.new_local_repository(
         name = "foxglove_bridge",
-        path = "../ros-foxglove-bridge",
+        path = "../../../dev/ros-foxglove-bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
     )
 
