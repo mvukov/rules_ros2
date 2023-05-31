@@ -30,4 +30,8 @@ def generate_launch_description():
                 third_party.foxglove_bridge.params.PARAMS_TO_DEFAULT_VALUES,
             ],
         ),
+        launch_ros.actions.Node(
+            executable='foxglove_bridge/publisher',
+            output='screen',
+        ),
     ])

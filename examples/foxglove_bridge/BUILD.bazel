@@ -1,4 +1,15 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
 load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
+
+ros2_cpp_binary(
+    name = "publisher",
+    srcs = ["publisher.cc"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2_common_interfaces//:cpp_geometry_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
 
 ros2_launch(
     name = "foxglove_bridge",
@@ -10,6 +21,7 @@ ros2_launch(
     ],
     launch_file = "launch.py",
     nodes = [
+        ":publisher",
         "@com_github_mvukov_rules_ros2//third_party/foxglove_bridge:foxglove_bridge_node",
     ],
     deps = [
