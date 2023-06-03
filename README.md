@@ -31,6 +31,7 @@ Available features:
   - `ros2_param` for handling parameters
   - `ros2_service` for handling services
   - `ros2_topic` for handling topics
+- [`foxglove_bridge`](https://github.com/foxglove/ros-foxglove-bridge) for visualization and debugging
 
 Please take a look at the [examples](examples) folder to get started.
 
