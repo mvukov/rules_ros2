@@ -64,7 +64,9 @@ def ros2_c_binary(name, ros2_package_name = None, **kwargs):
     """
     _ros2_cc_target(cc_binary, "c", name, ros2_package_name, **kwargs)
 
-def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False, **kwargs):
+def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, idl_deps, **kwargs):
+    if idl_deps != None and len(idl_deps) > 0:
+        set_up_ament = True
     if set_up_ament == False:
         _ros2_cc_target(target, "cpp", name, ros2_package_name, **kwargs)
         return
@@ -85,6 +87,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False,
         },
         tags = ["manual"],
         data = [target_impl],
+        idl_deps = idl_deps,
         testonly = is_test,
     )
 
@@ -96,7 +99,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name = None, set_up_ament = False,
         **launcher_target_kwargs
     )
 
-def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, **kwargs):
+def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, idl_deps = None, **kwargs):
     """ Defines a ROS 2 C++ binary.
 
     Adds common ROS 2 C++ definitions on top of a cc_binary.
@@ -106,11 +109,12 @@ def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, **kwar
         ros2_package_name: If given, defines a ROS package name for the target.
             Otherwise, the `name` is used as the package name.
         set_up_ament: If true, sets up ament file tree for the binary target.
+        idl_deps: Additional IDL deps that are used as runtime plugins.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
-    _ros2_cpp_exec(cc_binary, name, ros2_package_name, set_up_ament, **kwargs)
+    _ros2_cpp_exec(cc_binary, name, ros2_package_name, set_up_ament, idl_deps, **kwargs)
 
-def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, **kwargs):
+def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, idl_deps = None, **kwargs):
     """ Defines a ROS 2 C++ test.
 
     Adds common ROS 2 C++ definitions on top of a cc_test.
@@ -123,6 +127,7 @@ def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, **kwargs)
             * Sets AMENT_PREFIX_PATH to point to a generated ament file tree
             * Defaults ROS_HOME and ROS_LOG_DIR to $TEST_UNDECLARED_OUTPUTS_DIR (if set,
               otherwise to $TEST_TMPDIR, see https://bazel.build/reference/test-encyclopedia#initial-conditions)
+        idl_deps: Additional IDL deps that are used as runtime plugins.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
     """
-    _ros2_cpp_exec(cc_test, name, ros2_package_name, set_up_ament, **kwargs)
+    _ros2_cpp_exec(cc_test, name, ros2_package_name, set_up_ament, idl_deps, **kwargs)

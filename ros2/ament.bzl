@@ -464,8 +464,8 @@ def cpp_ament_setup_library(name, deps, idl_deps = None, **kwargs):
     Args:
         name: The name of the target.
         deps: The dependencies, typically targets of type ros2_plugin.
-        idl_deps: any IDL deps.
-        kwargs: Forwarded to the cc_library rule.
+        idl_deps: Additional IDL deps that are used as runtime plugins.
+        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes
     """
     ament_setup = name + "_ament_setup"
     testonly = kwargs.get("testonly", False)
