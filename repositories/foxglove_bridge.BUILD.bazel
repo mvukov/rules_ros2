@@ -20,8 +20,8 @@ expand_template(
 
 cc_library(
     name = "foxglove_bridge_base",
-    srcs = glob(["foxglove_bridge_base/src/*.cpp"]) + [":version_cpp"],
-    hdrs = glob(["foxglove_bridge_base/include/foxglove_bridge/*.hpp"]),
+    srcs = glob(["foxglove_bridge_base/src/**/*.cpp"]) + [":version_cpp"],
+    hdrs = glob(["foxglove_bridge_base/include/foxglove_bridge/**/*.hpp"]),
     copts = ["-std=c++17"],
     includes = ["foxglove_bridge_base/include"],
     deps = [
