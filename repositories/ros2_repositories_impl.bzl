@@ -62,7 +62,7 @@ def ros2_repositories_impl():
     maybe(
         http_archive,
         name = "iceoryx",
-        strip_prefix = "iceoryx-2.0.2",
+        strip_prefix = "iceoryx-2.0.3",
         build_file = "@com_github_mvukov_rules_ros2//repositories:iceoryx.BUILD.bazel",
         sha256 = "8f391696daf2e63da9437aab8d7154371df630fc93876479f2e84c693fc1ba5a",
         url = "https://github.com/eclipse-iceoryx/iceoryx/archive/refs/tags/v2.0.3.tar.gz",
