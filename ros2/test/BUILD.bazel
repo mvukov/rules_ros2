@@ -1,7 +1,7 @@
 """ Defines tests.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_test")
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_test")
 load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
     "py_ros2_interface_library",
@@ -61,6 +61,7 @@ ros2_cpp_test(
         "@ros2_common_interfaces//:std_msgs",
     ],
     deps = [
+        "@com_google_googletest//:gtest",
         "@ros2_rclcpp//:rclcpp",
     ],
 )

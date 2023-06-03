@@ -13,14 +13,14 @@
 // limitations under the License.
 #include <thread>
 
+#include "gtest/gtest.h"
 #include "rclcpp/rclcpp.hpp"
 
 // Inspired by an example in https://github.com/ros2/rclcpp/issues/2146
-// For this to work, a rclcpp path from
+// For this to work, a rclcpp patch from
 // https://github.com/mvukov/rules_ros2/pull/117 is required.
-int main(int argc, char* argv[]) {
-  rclcpp::init(argc, argv);
-
+TEST(TestGenericPublisher,
+     WhenPublisherDeletedInThread_EnsureCleanNodeCleanup) {
   auto node = rclcpp::Node::make_shared("pub_node");
   auto publisher =
       node->create_generic_publisher("pub_topic", "std_msgs/String", 10);
@@ -37,7 +37,14 @@ int main(int argc, char* argv[]) {
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(node);
   executor.spin_until_future_complete(reset_publisher);
+}
 
-  rclcpp::shutdown();
+int main(int argc, char** argv) {
+  rclcpp::init(argc, argv);
+  testing::InitGoogleTest(&argc, argv);
+  const int result = RUN_ALL_TESTS();
+  if (!rclcpp::shutdown() || result) {
+    return EXIT_FAILURE;
+  }
   return EXIT_SUCCESS;
 }
