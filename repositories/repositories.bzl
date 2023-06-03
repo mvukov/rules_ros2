@@ -181,20 +181,15 @@ def ros2_repositories():
         urls = ["https://github.com/swri-robotics/gps_umd/archive/fc782811804fafb12ee479a48a2aa2e9ee942e2d.tar.gz"],
     )
 
-    native.new_local_repository(
+    # Needs https://github.com/foxglove/ros-foxglove-bridge/pull/228.
+    maybe(
+        http_archive,
         name = "foxglove_bridge",
-        path = "../../../dev/ros-foxglove-bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
+        sha256 = "264095fff9e51a6a880588e25ecb58fc4d19d0c3da4da21ca3ff2223a0a536ce",
+        strip_prefix = "ros-foxglove-bridge-eb0217174750ab6ea7e52aadaf3ff59a022bf153",
+        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/eb0217174750ab6ea7e52aadaf3ff59a022bf153.tar.gz"],
     )
-
-    # maybe(
-    #     http_archive,
-    #     name = "foxglove_bridge",
-    #     build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
-    #     sha256 = "5d3cf2dabc9614d055042ab9a537425c811b91b374a0dc6c9cdf63bf73b2d9b1",
-    #     strip_prefix = "ros-foxglove-bridge-0.5.3",
-    #     urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.5.3.tar.gz"],
-    # )
 
     maybe(
         http_archive,
@@ -230,4 +225,16 @@ def ros2_repositories():
         sha256 = "f89199be8b23ca45fc7cb9f1d8d3ee67312318286ad030f5316aca6462db6c96",
         strip_prefix = "openssl-1.1.1m",
         urls = ["https://www.openssl.org/source/openssl-1.1.1m.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "zlib",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:zlib.BUILD.bazel",
+        sha256 = "d14c38e313afc35a9a8760dadf26042f51ea0f5d154b0630a31da0540107fb98",
+        strip_prefix = "zlib-1.2.13",
+        urls = [
+            "https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.xz",
+            "https://zlib.net/zlib-1.2.13.tar.xz",
+        ],
     )

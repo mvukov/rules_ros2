@@ -11,13 +11,10 @@ cc_library(
     linkopts = [
         "-lpthread",
         "-lrt",
-        "-lz",
     ],
     visibility = ["//visibility:public"],
     deps = [
         "@asio",
-        # "@zlib",
-        # ssl, crypto from openssl
-        # system, thread from boost
+        "@zlib",
     ],
 )
