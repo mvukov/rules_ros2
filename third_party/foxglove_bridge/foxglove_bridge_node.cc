@@ -40,5 +40,6 @@ int main(int argc, char* argv[]) {
   auto node = std::make_shared<foxglove_bridge::FoxgloveBridge>();
   executor.add_node(node);
   executor.spin();
-  return rclcpp::shutdown() ? EXIT_SUCCESS : EXIT_FAILURE;
+  rclcpp::shutdown();
+  return EXIT_SUCCESS;
 }
