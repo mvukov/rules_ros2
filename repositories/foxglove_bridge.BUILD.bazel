@@ -1,0 +1,51 @@
+""" Builds foxglove_bridge.
+"""
+
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
+load(
+    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "expand_template",
+)
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+expand_template(
+    name = "version_cpp",
+    out = "foxglove_bridge/src/version.cpp",
+    substitutions = {
+        "@FOXGLOVE_BRIDGE_VERSION@": "N/A",
+        "@FOXGLOVE_BRIDGE_GIT_HASH@": "N/A",
+    },
+    template = "foxglove_bridge_base/src/version.cpp.in",
+)
+
+cc_library(
+    name = "foxglove_bridge_base",
+    srcs = glob(["foxglove_bridge_base/src/**/*.cpp"]) + [":version_cpp"],
+    hdrs = glob(["foxglove_bridge_base/include/foxglove_bridge/**/*.hpp"]),
+    copts = ["-std=c++17"],
+    includes = ["foxglove_bridge_base/include"],
+    deps = [
+        "@nlohmann_json",
+        "@websocketpp",
+    ],
+)
+
+ros2_cpp_library(
+    name = "foxglove_bridge_component",
+    srcs = [
+        "ros2_foxglove_bridge/src/generic_client.cpp",
+        "ros2_foxglove_bridge/src/message_definition_cache.cpp",
+        "ros2_foxglove_bridge/src/param_utils.cpp",
+        "ros2_foxglove_bridge/src/parameter_interface.cpp",
+        "ros2_foxglove_bridge/src/ros2_foxglove_bridge.cpp",
+    ],
+    hdrs = glob(["ros2_foxglove_bridge/include/foxglove_bridge/*.hpp"]),
+    includes = ["ros2_foxglove_bridge/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":foxglove_bridge_base",
+        "@ros2_rcl_interfaces//:cpp_rosgraph_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rclcpp//:rclcpp_components",
+    ],
+)
