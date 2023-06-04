@@ -74,10 +74,12 @@ def ros2_repositories():
     maybe(
         http_archive,
         name = "com_google_googletest",
-        sha256 = "81964fe578e9bd7c94dfdb09c8e4d6e6759e19967e397dbea48d1c10e45d0df2",
-        strip_prefix = "googletest-release-1.12.1",
-        url = "https://github.com/google/googletest/archive/refs/tags/release-1.12.1.tar.gz",
+        sha256 = "ad7fdba11ea011c1d925b3289cf4af2c66a352e18d4c7264392fead75e919363",
+        strip_prefix = "googletest-1.13.0",
+        url = "https://github.com/google/googletest/archive/refs/tags/v1.13.0.tar.gz",
     )
+
+    _googletest_deps()
 
     maybe(
         http_archive,
@@ -237,4 +239,31 @@ def ros2_repositories():
             "https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.xz",
             "https://zlib.net/zlib-1.2.13.tar.xz",
         ],
+    )
+
+def _googletest_deps():
+    """Lists implicit googletest deps.
+
+    Necessary such that e.g. `bazel fetch //...` can work.
+    The versions below taken from https://github.com/google/googletest/blob/v1.13.0/WORKSPACE.
+
+    TODO(mvukov) More recent commits in googletest have googletest_deps.bzl.
+        Integrate once a new release is available.
+    """
+    maybe(
+        http_archive,
+        name = "com_google_absl",  # 2023-01-10T21:08:25Z
+        sha256 = "f9a4e749f42c386a32a90fddf0e2913ed408d10c42f7f33ccf4c59ac4f0d1d05",
+        strip_prefix = "abseil-cpp-52835439ca90d86b27bf8cd1708296e95604d724",
+        urls = ["https://github.com/abseil/abseil-cpp/archive/52835439ca90d86b27bf8cd1708296e95604d724.zip"],
+    )
+
+    # Note this must use a commit from the `abseil` branch of the RE2 project.
+    # https://github.com/google/re2/tree/abseil
+    maybe(
+        http_archive,
+        name = "com_googlesource_code_re2",  # 2022-12-21T14:29:10Z
+        sha256 = "b9ce3a51beebb38534d11d40f8928d40509b9e18a735f6a4a97ad3d014c87cb5",
+        strip_prefix = "re2-d0b1f8f2ecc2ea74956c7608b6f915175314ff0e",
+        urls = ["https://github.com/google/re2/archive/d0b1f8f2ecc2ea74956c7608b6f915175314ff0e.zip"],
     )
