@@ -250,6 +250,43 @@ def ros2_repositories():
         urls = ["https://github.com/ros/xacro/archive/refs/tags/2.0.9.tar.gz"],
     )
 
+    # Version copied from https://github.com/ros2/orocos_kdl_vendor/blob/0.2.5/orocos_kdl_vendor/CMakeLists.txt#L58.
+    maybe(
+        http_archive,
+        name = "orocos_kdl",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:orocos_kdl.BUILD.bazel",
+        sha256 = "22df47f63d91d014af2675029c23da83748575c12a6481fda3ed9235907cc259",
+        strip_prefix = "orocos_kinematics_dynamics-507de66205e14b12c8c65f25eafc05c4dc66e21e",
+        urls = ["https://github.com/orocos/orocos_kinematics_dynamics/archive/507de66205e14b12c8c65f25eafc05c4dc66e21e.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "com_github_nelhage_rules_boost",
+        sha256 = "7f8756501eb183867c295868989bbc8901c9671773c23b6de69ebedf1245155b",
+        strip_prefix = "rules_boost-583ae5761d3f01e86b5866c83f9c51331b259a3d",
+        url = "https://github.com/nelhage/rules_boost/archive/583ae5761d3f01e86b5866c83f9c51331b259a3d.tar.gz",
+    )
+
+    maybe(
+        http_archive,
+        name = "tinyxml",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:tinyxml.BUILD.bazel",
+        sha256 = "15bdfdcec58a7da30adc87ac2b078e4417dbe5392f3afb719f9ba6d062645593",
+        urls = [
+            "http://archive.ubuntu.com/ubuntu/pool/universe/t/tinyxml/tinyxml_2.6.2.orig.tar.gz",
+        ],
+    )
+
+    maybe(
+        http_archive,
+        name = "ros2_urdf",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:urdf.BUILD.bazel",
+        sha256 = "a762eb57dc7f60b9ada0240fd7c609f0dc5028ef0b4b65972daf91e009e52cf6",
+        strip_prefix = "urdf-2.6.0",
+        urls = ["https://github.com/ros2/urdf/archive/refs/tags/2.6.0.tar.gz"],
+    )
+
 def _googletest_deps():
     """Lists implicit googletest deps.
 

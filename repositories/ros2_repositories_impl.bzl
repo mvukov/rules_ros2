@@ -79,6 +79,15 @@ def ros2_repositories_impl():
 
     maybe(
         http_archive,
+        name = "ros2_kdl_parser",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:kdl_parser.BUILD.bazel",
+        sha256 = "f28da9bd7eaa8995f4b67bc9c8321d7467043aa43e01b918aa239b8b9971bf56",
+        strip_prefix = "kdl_parser-2.6.4",
+        url = "https://github.com/ros/kdl_parser/archive/refs/tags/2.6.4.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_keyboard_handler",
         build_file = "@com_github_mvukov_rules_ros2//repositories:keyboard_handler.BUILD.bazel",
         sha256 = "36e64e9e1927a6026e1b45cafc4c8efd32db274bfab5da0edd273a583f3c73f4",
@@ -248,6 +257,15 @@ def ros2_repositories_impl():
 
     maybe(
         http_archive,
+        name = "ros2_robot_state_publisher",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:robot_state_publisher.BUILD.bazel",
+        sha256 = "f349756d8db6d6fc79dcc869acaa749175f2ad20ea74c738ed72cd1f96cd97b6",
+        strip_prefix = "robot_state_publisher-3.0.2",
+        url = "https://github.com/ros/robot_state_publisher/archive/refs/tags/3.0.2.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_tracing",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2_tracing.BUILD.bazel",
         sha256 = "261672e689e583c90b35d97ccea90ffec649ac55a0f045da46cbc3f69b657c5a",
@@ -342,4 +360,22 @@ def ros2_repositories_impl():
         sha256 = "ccedcb7c2b6d927fc4f654cceab299a8cb55082953867754795c6ea2ccdd68a9",
         strip_prefix = "unique_identifier_msgs-2.2.1",
         url = "https://github.com/ros2/unique_identifier_msgs/archive/refs/tags/2.2.1.tar.gz",
+    )
+
+    maybe(
+        http_archive,
+        name = "ros2_urdfdom",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:urdfdom.BUILD.bazel",
+        sha256 = "1072b2a304295eb299ed70d99914eb2fbf8843c3257e5e51defc5dd457ee6211",
+        strip_prefix = "urdfdom-3.0.2",
+        url = "https://github.com/ros/urdfdom/archive/refs/tags/3.0.2.tar.gz",
+    )
+
+    maybe(
+        http_archive,
+        name = "ros2_urdfdom_headers",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:urdfdom_headers.BUILD.bazel",
+        sha256 = "1acd50b976f642de9dc0fde532eb8d77ea09f4de12ebfbd9d88b0cd2891278fd",
+        strip_prefix = "urdfdom_headers-1.0.6",
+        url = "https://github.com/ros/urdfdom_headers/archive/refs/tags/1.0.6.tar.gz",
     )

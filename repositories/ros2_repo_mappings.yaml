@@ -24,11 +24,14 @@ repositories:
       - "@com_github_mvukov_rules_ros2//repositories/patches:geometry2_fix-use-after-free-bug.patch"
   iceoryx:
     name: iceoryx
-    strip_prefix: iceoryx-2.0.2
+    strip_prefix: iceoryx-2.0.3
     build_file: "@com_github_mvukov_rules_ros2//repositories:iceoryx.BUILD.bazel"
   image_common:
     name: ros2_image_common
     build_file: "@com_github_mvukov_rules_ros2//repositories:image_common.BUILD.bazel"
+  kdl_parser:
+    name: ros2_kdl_parser
+    build_file: "@com_github_mvukov_rules_ros2//repositories:kdl_parser.BUILD.bazel"
   keyboard_handler:
     name: ros2_keyboard_handler
     build_file: "@com_github_mvukov_rules_ros2//repositories:keyboard_handler.BUILD.bazel"
@@ -96,6 +99,9 @@ repositories:
     patch_args: ["-p1"]
     patches:
       - "@com_github_mvukov_rules_ros2//repositories/patches:rmw_implementation_library_path.patch"
+  robot_state_publisher:
+    name: ros2_robot_state_publisher
+    build_file: "@com_github_mvukov_rules_ros2//repositories:robot_state_publisher.BUILD.bazel"
   ros2_tracing:
     name: ros2_tracing
     build_file: "@com_github_mvukov_rules_ros2//repositories:ros2_tracing.BUILD.bazel"
@@ -138,3 +144,9 @@ repositories:
   unique_identifier_msgs:
     name: ros2_unique_identifier_msgs
     build_file: "@com_github_mvukov_rules_ros2//repositories:unique_identifier_msgs.BUILD.bazel"
+  urdfdom:
+    name: ros2_urdfdom
+    build_file: "@com_github_mvukov_rules_ros2//repositories:urdfdom.BUILD.bazel"
+  urdfdom_headers:
+    name: ros2_urdfdom_headers
+    build_file: "@com_github_mvukov_rules_ros2//repositories:urdfdom_headers.BUILD.bazel"
