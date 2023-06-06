@@ -1,0 +1,6 @@
+load("//ros2:xacro.bzl", "xacro")
+
+xacro(
+    name = "test_urdf",
+    srcs = ["test.xacro"],
+)

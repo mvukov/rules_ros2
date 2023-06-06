@@ -23,6 +23,7 @@ exports_files([
     "test.bzl",
     "test.py.tpl",
     "topic.bzl",
+    "xacro.bzl",
 ])
 
 py_library(

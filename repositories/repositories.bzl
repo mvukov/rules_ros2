@@ -241,6 +241,15 @@ def ros2_repositories():
         ],
     )
 
+    maybe(
+        http_archive,
+        name = "ros2_xacro",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:xacro.BUILD.bazel",
+        sha256 = "a8802a5b48f7479bae1238e822ac4ebb47660221eb9bc40a608e899d60f3f7e4",
+        strip_prefix = "xacro-2.0.9",
+        urls = ["https://github.com/ros/xacro/archive/refs/tags/2.0.9.tar.gz"],
+    )
+
 def _googletest_deps():
     """Lists implicit googletest deps.
 
