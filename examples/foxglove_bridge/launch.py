@@ -13,10 +13,11 @@
 # limitations under the License.
 import launch.actions
 import launch_ros.actions
-from foxglove_bridge import data_paths
 
 import third_party.foxglove_bridge.node_path
 import third_party.foxglove_bridge.params
+
+from foxglove_bridge import data_paths  # noreorder
 
 
 def generate_launch_description():
