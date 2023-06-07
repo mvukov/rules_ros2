@@ -23,7 +23,6 @@ cc_library(
     strip_include_prefix = "orocos_kdl/src",
     visibility = ["//visibility:public"],
     deps = [
-        "@boost//:smart_ptr",
         "@eigen",
     ],
 )
@@ -36,7 +35,7 @@ expand_template(
         "@KDL_VERSION_MINOR@": "5",
         "@KDL_VERSION_PATCH@": "1",
         "#cmakedefine HAVE_STL_CONTAINER_INCOMPLETE_TYPES": "#define HAVE_STL_CONTAINER_INCOMPLETE_TYPES",
-        "#cmakedefine KDL_USE_NEW_TREE_INTERFACE": "#define KDL_USE_NEW_TREE_INTERFACE",
+        "#cmakedefine KDL_USE_NEW_TREE_INTERFACE": "//#define KDL_USE_NEW_TREE_INTERFACE",
     },
     template = "orocos_kdl/src/config.h.in",
 )

@@ -262,14 +262,6 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "com_github_nelhage_rules_boost",
-        sha256 = "7f8756501eb183867c295868989bbc8901c9671773c23b6de69ebedf1245155b",
-        strip_prefix = "rules_boost-583ae5761d3f01e86b5866c83f9c51331b259a3d",
-        url = "https://github.com/nelhage/rules_boost/archive/583ae5761d3f01e86b5866c83f9c51331b259a3d.tar.gz",
-    )
-
-    maybe(
-        http_archive,
         name = "tinyxml",
         build_file = "@com_github_mvukov_rules_ros2//repositories:tinyxml.BUILD.bazel",
         sha256 = "15bdfdcec58a7da30adc87ac2b078e4417dbe5392f3afb719f9ba6d062645593",

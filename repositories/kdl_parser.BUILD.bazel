@@ -11,6 +11,7 @@ cc_library(
         "kdl_parser/include/kdl_parser/visibility_control.hpp",
     ],
     includes = ["kdl_parser/include"],
+    visibility = ["//visibility:public"],
     deps = [
         "@orocos_kdl",
         "@ros2_rcutils//:rcutils",
