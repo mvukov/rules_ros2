@@ -1,13 +1,46 @@
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
 load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
+load("@com_github_mvukov_rules_ros2//ros2:xacro.bzl", "xacro")
+load(
+    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "expand_template",
+)
+load("@rules_python//python:defs.bzl", "py_library")
 
 ros2_cpp_binary(
     name = "publisher",
     srcs = ["publisher.cc"],
-    visibility = ["//visibility:public"],
     deps = [
         "@ros2_common_interfaces//:cpp_geometry_msgs",
         "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+xacro(
+    name = "sam_bot",
+    srcs = ["sam_bot.xacro"],
+)
+
+expand_template(
+    name = "data_paths_py",
+    out = "data_paths.py",
+    data = [
+        ":sam_bot",
+        "@ros2_robot_state_publisher//:robot_state_publisher_node",
+    ],
+    substitutions = {
+        "{robot_state_publisher_node_path}": "$(rootpath @ros2_robot_state_publisher//:robot_state_publisher_node)",
+        "{sam_bot_urdf_path}": "$(rootpath :sam_bot)",
+    },
+    template = "data_paths.py.tpl",
+)
+
+py_library(
+    name = "data_paths",
+    srcs = [":data_paths_py"],
+    data = [
+        ":sam_bot",
+        "@ros2_robot_state_publisher//:robot_state_publisher_node",
     ],
 )
 
@@ -18,6 +51,7 @@ ros2_launch(
         "@ros2_rcl_interfaces//:rcl_interfaces",
         "@ros2_common_interfaces//:geometry_msgs",
         "@ros2_common_interfaces//:std_msgs",
+        "@ros2_geometry2//:tf2_msgs",
     ],
     launch_file = "launch.py",
     nodes = [
@@ -25,6 +59,7 @@ ros2_launch(
         "@com_github_mvukov_rules_ros2//third_party/foxglove_bridge:foxglove_bridge_node",
     ],
     deps = [
+        ":data_paths",
         "@com_github_mvukov_rules_ros2//third_party/foxglove_bridge:utils",
     ],
 )

@@ -13,16 +13,27 @@
 # limitations under the License.
 import launch.actions
 import launch_ros.actions
+from foxglove_bridge import data_paths
 
 import third_party.foxglove_bridge.node_path
 import third_party.foxglove_bridge.params
 
 
 def generate_launch_description():
+    with open(data_paths.SAM_BOT_URDF_PATH, 'r', encoding='utf-8') as stream:
+        sam_bot_urdf = stream.read()
+
     return launch.LaunchDescription([
         # ROS_DISTRO is necessary for correct operation of the Foxglove Studio.
         launch.actions.SetEnvironmentVariable(name='ROS_DISTRO',
                                               value='humble'),
+        launch_ros.actions.Node(
+            executable=data_paths.ROBOT_STATE_PUBLISHER_NODE_PATH,
+            output='screen',
+            parameters=[{
+                'robot_description': sam_bot_urdf,
+            }],
+        ),
         launch_ros.actions.Node(
             executable=third_party.foxglove_bridge.node_path.NODE_PATH,
             output='screen',
