@@ -1,0 +1,13 @@
+diff --git a/urdf/src/model.cpp b/urdf/src/model.cpp
+index 0817ea1..2e7d394 100644
+--- a/urdf/src/model.cpp
++++ b/urdf/src/model.cpp
+@@ -61,7 +61,7 @@ class ModelImplementation final
+ {
+ public:
+   ModelImplementation()
+-  : loader_("urdf_parser_plugin", "urdf::URDFParser")
++  : loader_("urdf", "urdf::URDFParser")
+   {
+   }
+ 

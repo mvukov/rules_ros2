@@ -277,6 +277,8 @@ def ros2_repositories():
         sha256 = "a762eb57dc7f60b9ada0240fd7c609f0dc5028ef0b4b65972daf91e009e52cf6",
         strip_prefix = "urdf-2.6.0",
         urls = ["https://github.com/ros2/urdf/archive/refs/tags/2.6.0.tar.gz"],
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:urdf_plugin_loader_fix.patch"],
     )
 
 def _googletest_deps():
