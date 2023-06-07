@@ -1,0 +1,54 @@
+""" Builds robot_state_publisher.
+"""
+
+load(
+    "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_cpp_binary",
+    "ros2_cpp_library",
+)
+
+ros2_cpp_library(
+    name = "robot_state_publisher",
+    srcs = glob(["src/*.cpp"]),
+    hdrs = glob(["include/robot_state_publisher/*.hpp"]),
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@orocos_kdl",
+        "@ros2_common_interfaces//:cpp_geometry_msgs",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_geometry2//:tf2_ros",
+        "@ros2_kdl_parser//:kdl_parser",
+        "@ros2_rcl_interfaces//:cpp_builtin_interfaces",
+        "@ros2_rcl_interfaces//:cpp_rcl_interfaces",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rclcpp//:rclcpp_components",
+        "@ros2_urdf//:urdf",
+    ],
+)
+
+genrule(
+    name = "robot_state_publisher_node_cc",
+    outs = ["robot_state_publisher_node.cc"],
+    cmd = """cat > $@ << EOL
+#include "robot_state_publisher/robot_state_publisher.hpp"
+#include "rclcpp/rclcpp.hpp"
+
+int main(int argc, char* argv[]) {
+  rclcpp::init(argc, argv);
+  rclcpp::spin(std::make_shared<robot_state_publisher::RobotStatePublisher>(
+      rclcpp::NodeOptions{}));
+  rclcpp::shutdown();
+  return EXIT_SUCCESS;
+}
+EOL
+""",
+)
+
+ros2_cpp_binary(
+    name = "robot_state_publisher_node",
+    srcs = ["robot_state_publisher_node_cc"],
+    visibility = ["//visibility:public"],
+    deps = [":robot_state_publisher"],
+)
