@@ -205,3 +205,33 @@ c_ros2_interface_library(
     visibility = ["//visibility:public"],
     deps = [":trajectory_msgs"],
 )
+
+ros2_interface_library(
+    name = "diagnostic_msgs",
+    srcs = glob([
+        "diagnostic_msgs/msg/*.msg",
+        "diagnostic_msgs/srv/*.srv",
+    ]),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":std_msgs",
+    ],
+)
+
+c_ros2_interface_library(
+    name = "c_diagnostic_msgs",
+    visibility = ["//visibility:public"],
+    deps = [":diagnostic_msgs"],
+)
+
+cpp_ros2_interface_library(
+    name = "cpp_diagnostic_msgs",
+    visibility = ["//visibility:public"],
+    deps = [":diagnostic_msgs"],
+)
+
+py_ros2_interface_library(
+    name = "py_diagnostic_msgs",
+    visibility = ["//visibility:public"],
+    deps = [":diagnostic_msgs"],
+)
