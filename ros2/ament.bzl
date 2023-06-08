@@ -197,6 +197,7 @@ def _ros2_ament_setup_rule_impl(ctx):
         if package_name not in registered_packages:
             outputs.append(_write_package_xml(ctx, prefix_path, package_name))
             registered_packages.append(package_name)
+        idl_manifest_contents = []
         for src in idl.srcs:
             if src.extension != "msg":
                 continue
@@ -208,10 +209,20 @@ def _ros2_ament_setup_rule_impl(ctx):
                 target_file = src,
             )
             outputs.append(src_file)
+            idl_manifest_contents.append(paths.join("msg", src.basename))
+
+        idl_manifest = ctx.actions.declare_file(
+            paths.join(prefix_path, _RESOURCE_INDEX_PATH, "rosidl_interfaces", package_name),
+        )
+        ctx.actions.write(idl_manifest, "\n".join([p for p in idl_manifest_contents]))
+        outputs.append(idl_manifest)
 
     ament_prefix_path = None
     if outputs:
-        ament_prefix_path = paths.join(ctx.attr.package_name, prefix_path)
+        manifest = ctx.actions.declare_file(paths.join(prefix_path, "manifest.txt"))
+        ctx.actions.write(manifest, "\n".join([p.short_path for p in outputs]))
+        ament_prefix_path = paths.dirname(manifest.short_path)
+        outputs.append(manifest)
 
     outputs_depset = depset(outputs)
     return [
@@ -240,9 +251,6 @@ ros2_ament_setup = rule(
                 ros2_idl_plugin_aspect,
             ],
             providers = [Ros2InterfaceInfo],
-        ),
-        "package_name": attr.string(
-            mandatory = True,
         ),
     },
     implementation = _ros2_ament_setup_rule_impl,
@@ -309,7 +317,6 @@ def py_launcher(name, deps, idl_deps = None, **kwargs):
         name = ament_setup,
         deps = deps,
         idl_deps = idl_deps,
-        package_name = native.package_name(),
         tags = ["manual"],
         testonly = testonly,
     )
@@ -382,7 +389,6 @@ def sh_launcher(name, deps, idl_deps = None, **kwargs):
         name = ament_setup,
         deps = deps,
         idl_deps = idl_deps,
-        package_name = native.package_name(),
         tags = ["manual"],
         testonly = testonly,
     )
@@ -464,8 +470,8 @@ def cpp_ament_setup_library(name, deps, idl_deps = None, **kwargs):
     Args:
         name: The name of the target.
         deps: The dependencies, typically targets of type ros2_plugin.
-        idl_deps: any IDL deps.
-        kwargs: Forwarded to the cc_library rule.
+        idl_deps: Additional IDL deps that are used as runtime plugins.
+        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes
     """
     ament_setup = name + "_ament_setup"
     testonly = kwargs.get("testonly", False)
@@ -473,7 +479,6 @@ def cpp_ament_setup_library(name, deps, idl_deps = None, **kwargs):
         name = ament_setup,
         deps = deps,
         idl_deps = idl_deps,
-        package_name = native.package_name(),
         tags = ["manual"],
         testonly = testonly,
     )

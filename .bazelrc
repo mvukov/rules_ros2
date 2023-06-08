@@ -4,6 +4,12 @@
 # This is a mandatory flag.
 build --incompatible_default_to_explicit_init_py
 
+# All code will be compiled with C++17 flag.
+# Users can naturally override copts for cc_* targets.
+# NOTE: googletest >=v1.13.0 requires min C++14.
+# This is a mandatory flag.
+build --cxxopt=-std=c++17
+
 # Ensure that you don't accidentally make non-hermetic actions/tests
 # which depend on remote services. Tag an individual target with
 # tags=["requires-network"] to opt-out of the enforcement.

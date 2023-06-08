@@ -1,0 +1,36 @@
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make")
+
+filegroup(
+    name = "all_srcs",
+    srcs = glob(
+        ["**"],
+        [
+            "apps/**",
+            "demos/**",
+            "doc/**",
+            "test/**",
+            "VMS/**",
+        ],
+    ),
+)
+
+configure_make(
+    name = "openssl",
+    args = ["-j4"],
+    configure_command = "config",
+    configure_options = [
+        "no-shared",
+        "--libdir=lib",
+    ],
+    lib_source = ":all_srcs",
+    linkopts = ["-ldl"],
+    out_static_libs = [
+        "libssl.a",
+        "libcrypto.a",
+    ],
+    targets = [
+        "build_libs",
+        "install_dev",
+    ],
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,66 @@
+""" Builds foxglove_bridge utils.
+"""
+
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_test")
+load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
+load(
+    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "expand_template",
+)
+load("@rules_python//python:defs.bzl", "py_library")
+
+ros2_cpp_binary(
+    name = "foxglove_bridge_node",
+    srcs = ["foxglove_bridge_node.cc"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@foxglove_bridge//:foxglove_bridge_component",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+expand_template(
+    name = "node_path",
+    out = "node_path.py",
+    data = [":foxglove_bridge_node"],
+    substitutions = {
+        "{node_path}": "$(rootpath :foxglove_bridge_node)",
+    },
+    template = "node_path.py.tpl",
+)
+
+py_library(
+    name = "utils",
+    srcs = [
+        "params.py",
+        ":node_path",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+ros2_cpp_binary(
+    name = "foxglove_bridge_tests",
+    srcs = ["foxglove_bridge_tests.cc"],
+    deps = [
+        "@com_google_googletest//:gtest",
+        "@foxglove_bridge//:foxglove_bridge_component",
+        "@ros2_common_interfaces//:cpp_std_msgs",
+    ],
+)
+
+ros2_test(
+    name = "tests",
+    size = "small",
+    idl_deps = [
+        "@ros2_rcl_interfaces//:rcl_interfaces",
+        "@ros2_common_interfaces//:std_msgs",
+    ],
+    launch_file = "tests.py",
+    nodes = [
+        # TODO(mvukov) Make tests running with foxglove_bridge_node.
+        # ":foxglove_bridge_node",
+        ":foxglove_bridge_tests",
+    ],
+    tags = ["cpu:2"],
+    deps = [":utils"],
+)

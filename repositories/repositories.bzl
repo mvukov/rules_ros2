@@ -74,10 +74,12 @@ def ros2_repositories():
     maybe(
         http_archive,
         name = "com_google_googletest",
-        sha256 = "81964fe578e9bd7c94dfdb09c8e4d6e6759e19967e397dbea48d1c10e45d0df2",
-        strip_prefix = "googletest-release-1.12.1",
-        url = "https://github.com/google/googletest/archive/refs/tags/release-1.12.1.tar.gz",
+        sha256 = "ad7fdba11ea011c1d925b3289cf4af2c66a352e18d4c7264392fead75e919363",
+        strip_prefix = "googletest-1.13.0",
+        url = "https://github.com/google/googletest/archive/refs/tags/v1.13.0.tar.gz",
     )
+
+    _googletest_deps()
 
     maybe(
         http_archive,
@@ -179,4 +181,89 @@ def ros2_repositories():
         sha256 = "64a96f93053d0d59e8fcccceab5408a7d666dd813d4c12df139ef24d916f49ab",
         strip_prefix = "gps_umd-fc782811804fafb12ee479a48a2aa2e9ee942e2d",
         urls = ["https://github.com/swri-robotics/gps_umd/archive/fc782811804fafb12ee479a48a2aa2e9ee942e2d.tar.gz"],
+    )
+
+    # Needs https://github.com/foxglove/ros-foxglove-bridge/pull/228.
+    maybe(
+        http_archive,
+        name = "foxglove_bridge",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
+        sha256 = "264095fff9e51a6a880588e25ecb58fc4d19d0c3da4da21ca3ff2223a0a536ce",
+        strip_prefix = "ros-foxglove-bridge-eb0217174750ab6ea7e52aadaf3ff59a022bf153",
+        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/eb0217174750ab6ea7e52aadaf3ff59a022bf153.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "nlohmann_json",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:nlohmann_json.BUILD.bazel",
+        strip_prefix = "single_include",
+        sha256 = "9c15ca7806f863872452bfbc85fee6d1c9868117e3ea5e00a204ae961a2e1ae7",
+        urls = ["https://github.com/nlohmann/json/releases/download/v3.11.1/include.zip"],
+    )
+
+    maybe(
+        http_archive,
+        name = "websocketpp",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:websocketpp.BUILD.bazel",
+        sha256 = "6ce889d85ecdc2d8fa07408d6787e7352510750daa66b5ad44aacb47bea76755",
+        strip_prefix = "websocketpp-0.8.2",
+        urls = ["https://github.com/zaphoyd/websocketpp/archive/refs/tags/0.8.2.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "asio",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:asio.BUILD.bazel",
+        sha256 = "b31c63867daaba0e460ee2c85dc508a52c81db0a7318e0d2147f444b26f80ed7",
+        strip_prefix = "asio-asio-1-27-0/asio",
+        urls = ["https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-27-0.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "openssl",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:openssl.BUILD.bazel",
+        sha256 = "f89199be8b23ca45fc7cb9f1d8d3ee67312318286ad030f5316aca6462db6c96",
+        strip_prefix = "openssl-1.1.1m",
+        urls = ["https://www.openssl.org/source/openssl-1.1.1m.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "zlib",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:zlib.BUILD.bazel",
+        sha256 = "d14c38e313afc35a9a8760dadf26042f51ea0f5d154b0630a31da0540107fb98",
+        strip_prefix = "zlib-1.2.13",
+        urls = [
+            "https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.xz",
+            "https://zlib.net/zlib-1.2.13.tar.xz",
+        ],
+    )
+
+def _googletest_deps():
+    """Lists implicit googletest deps.
+
+    Necessary such that e.g. `bazel fetch //...` can work.
+    The versions below taken from https://github.com/google/googletest/blob/v1.13.0/WORKSPACE.
+
+    TODO(mvukov) More recent commits in googletest have googletest_deps.bzl.
+        Integrate once a new release is available.
+    """
+    maybe(
+        http_archive,
+        name = "com_google_absl",  # 2023-01-10T21:08:25Z
+        sha256 = "f9a4e749f42c386a32a90fddf0e2913ed408d10c42f7f33ccf4c59ac4f0d1d05",
+        strip_prefix = "abseil-cpp-52835439ca90d86b27bf8cd1708296e95604d724",
+        urls = ["https://github.com/abseil/abseil-cpp/archive/52835439ca90d86b27bf8cd1708296e95604d724.zip"],
+    )
+
+    # Note this must use a commit from the `abseil` branch of the RE2 project.
+    # https://github.com/google/re2/tree/abseil
+    maybe(
+        http_archive,
+        name = "com_googlesource_code_re2",  # 2022-12-21T14:29:10Z
+        sha256 = "b9ce3a51beebb38534d11d40f8928d40509b9e18a735f6a4a97ad3d014c87cb5",
+        strip_prefix = "re2-d0b1f8f2ecc2ea74956c7608b6f915175314ff0e",
+        urls = ["https://github.com/google/re2/archive/d0b1f8f2ecc2ea74956c7608b6f915175314ff0e.zip"],
     )
