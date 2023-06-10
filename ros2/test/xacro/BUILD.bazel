@@ -1,6 +1,33 @@
+load("@rules_python//python:defs.bzl", "py_test")
 load("//ros2:xacro.bzl", "xacro")
 
 xacro(
     name = "test_urdf",
     srcs = ["test.xacro"],
+)
+
+xacro(
+    name = "test_include",
+    srcs = [
+        "sample1.xacro",
+    ],
+    main = "sample2.xacro",
+)
+
+xacro(
+    name = "test_with_params",
+    srcs = [
+        "params.yaml",
+    ],
+    main = "test_with_params.xacro",
+)
+
+py_test(
+    name = "tests",
+    srcs = ["tests.py"],
+    data = [
+        ":test_include",
+        ":test_urdf",
+        ":test_with_params",
+    ],
 )

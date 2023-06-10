@@ -4,16 +4,16 @@
 def _xacro_impl(ctx):
     output = ctx.actions.declare_file(ctx.attr.name + "/model.urdf")
     srcs = ctx.files.srcs
-    main = ctx.attr.main
+    main = ctx.files.main
 
-    if len(main.elems()) == 0:
-        main = srcs[0]
+    if len(main) == 0:
+        main = [srcs[0]]
     elif main not in srcs:
-        srcs = srcs + [main]
+        srcs = srcs + main
 
     args = ctx.actions.args()
     args.add_all(ctx.attr.args)
-    args.add(main)
+    args.add_all(main)
     args.add(output, format = "--output=%s")
 
     ctx.actions.run(
@@ -33,10 +33,12 @@ def _xacro_impl(ctx):
 xacro = rule(
     attrs = {
         "srcs": attr.label_list(
-            allow_files = [".xacro"],
+            allow_files = [".xacro", ".yaml"],
             mandatory = True,
         ),
-        "main": attr.string(),
+        "main": attr.label(
+            allow_files = [".xacro"],
+        ),
         "args": attr.string_list(),
         "_xacro": attr.label(
             default = Label("@ros2_xacro//:app"),
