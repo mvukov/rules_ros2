@@ -14,6 +14,8 @@ from this example deployment.
 
 Interesting panels to use with this example:
 
+- [3D](https://foxglove.dev/docs/studio/panels/3d) to display a sample
+  robot URDF model.
 - [Log](https://foxglove.dev/docs/studio/panels/log) to display ROS log messages.
 - [Plot](https://foxglove.dev/docs/studio/panels/plot) to e.g. plot data from
   `/point` topic.

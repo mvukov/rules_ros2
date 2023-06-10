@@ -36,7 +36,7 @@ def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **
     launcher = "{}_launch".format(name)
     launch_script = py_launcher(
         launcher,
-        deps = nodes,
+        deps = nodes + (deps or []),
         idl_deps = idl_deps,
         template = "@com_github_mvukov_rules_ros2//ros2:test.py.tpl",
         substitutions = {
@@ -64,7 +64,7 @@ def _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, idl_deps, **k
     launcher = "{}_launch".format(name)
     launch_script = py_launcher(
         launcher,
-        deps = nodes,
+        deps = nodes + (deps or []),
         idl_deps = idl_deps,
         template = "@com_github_mvukov_rules_ros2//ros2:pytest_wrapper.py.tpl",
         substitutions = {},

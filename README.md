@@ -25,13 +25,14 @@ Available features:
 - Only CycloneDDS middleware can be used at the moment.
   - Zero copy transport via shared memory backend ([iceoryx](https://github.com/eclipse-iceoryx/iceoryx)) for CycloneDDS.
 - Utilities:
+  - [`foxglove_bridge`](https://github.com/foxglove/ros-foxglove-bridge) for visualization and debugging
   - `ros2_bag` for handling rosbags
   - `ros2_lifecycle` for handling node lifecycle
   - `ros2_node` for handling nodes
   - `ros2_param` for handling parameters
   - `ros2_service` for handling services
   - `ros2_topic` for handling topics
-- [`foxglove_bridge`](https://github.com/foxglove/ros-foxglove-bridge) for visualization and debugging
+  - `xacro` for Xacro to URDF conversion
 
 Please take a look at the [examples](examples) folder to get started.
 

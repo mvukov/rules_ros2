@@ -1,0 +1,37 @@
+""" Builds urdfdom.
+"""
+
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+
+cc_library(
+    name = "urdf_parser",
+    srcs = [
+        "urdf_parser/src/joint.cpp",
+        "urdf_parser/src/link.cpp",
+        "urdf_parser/src/model.cpp",
+        "urdf_parser/src/pose.cpp",
+        "urdf_parser/src/twist.cpp",
+        "urdf_parser/src/urdf_model_state.cpp",
+        "urdf_parser/src/world.cpp",
+    ],
+    hdrs = glob(["urdf_parser/include/urdf_parser/*.h"]),
+    includes = ["urdf_parser/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@console_bridge",
+        "@ros2_urdfdom_headers//:urdfdom_headers",
+        "@tinyxml",
+    ],
+)
+
+cc_binary(
+    name = "check_urdf",
+    srcs = ["urdf_parser/src/check_urdf.cpp"],
+    deps = [":urdf_parser"],
+)
+
+cc_binary(
+    name = "urdf_to_graphviz",
+    srcs = ["urdf_parser/src/urdf_to_graphviz.cpp"],
+    deps = [":urdf_parser"],
+)

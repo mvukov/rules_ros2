@@ -1,0 +1,21 @@
+""" Builds kdl_parser.
+"""
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "kdl_parser",
+    srcs = ["kdl_parser/src/kdl_parser.cpp"],
+    hdrs = [
+        "kdl_parser/include/kdl_parser/kdl_parser.hpp",
+        "kdl_parser/include/kdl_parser/visibility_control.hpp",
+    ],
+    includes = ["kdl_parser/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@orocos_kdl",
+        "@ros2_rcutils//:rcutils",
+        "@ros2_urdf//:urdf",
+        "@ros2_urdfdom_headers//:urdfdom_headers",
+    ],
+)

@@ -1,0 +1,68 @@
+""" Builds urdf.
+"""
+
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
+load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
+load(
+    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "expand_template",
+)
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "urdf_parser_plugin",
+    hdrs = ["urdf_parser_plugin/include/urdf_parser_plugin/parser.h"],
+    includes = ["urdf_parser_plugin/include"],
+    visibility = ["//visibility:public"],
+    deps = ["@ros2_urdfdom_headers//:urdfdom_headers"],
+)
+
+ros2_cpp_library(
+    name = "urdf",
+    srcs = ["urdf/src/model.cpp"],
+    hdrs = [
+        "urdf/include/urdf/model.h",
+        "urdf/include/urdf/visibility_control.hpp",
+        ":urdfdom_compatibility_h",
+    ],
+    data = [
+        ":urdf_xml_parser_plugin",
+    ],
+    includes = ["urdf/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":urdf_parser_plugin",
+        "@ros2_pluginlib//:pluginlib",
+        "@ros2_urdfdom//:urdf_parser",
+        "@ros2_urdfdom_headers//:urdfdom_headers",
+    ],
+)
+
+expand_template(
+    name = "urdfdom_compatibility_h",
+    out = "urdf/urdfdom_compatibility.h",
+    substitutions = {
+        "@URDFDOM_HEADERS_MAJOR_VERSION@": "1",
+        "@URDFDOM_HEADERS_MINOR_VERSION@": "0",
+        "@URDFDOM_HEADERS_REVISION_VERSION@": "1.0.6",
+    },
+    template = "urdf/urdfdom_compatibility.h.in",
+)
+
+ros2_plugin(
+    name = "urdf_xml_parser_plugin",
+    srcs = ["urdf/src/urdf_plugin.cpp"],
+    plugin_specs = [
+        {
+            "class_name": "urdf_xml_parser/URDFXMLParser",
+            "class_type": "urdf::URDFXMLParser",
+            "base_class_type": "urdf::URDFParser",
+        },
+    ],
+    deps = [
+        ":urdf_parser_plugin",
+        "@ros2_pluginlib//:pluginlib",
+        "@ros2_urdfdom//:urdf_parser",
+        "@tinyxml2",
+    ],
+)
