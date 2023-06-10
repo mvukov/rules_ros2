@@ -16,6 +16,7 @@ ros2_cpp_binary(
     ],
 )
 
+# Creates a URDF representation from the given xacro file.
 xacro(
     name = "sam_bot",
     srcs = ["sam_bot.xacro"],
@@ -57,7 +58,6 @@ ros2_launch(
     nodes = [
         ":publisher",
         "@com_github_mvukov_rules_ros2//third_party/foxglove_bridge:foxglove_bridge_node",
-        "@ros2_robot_state_publisher//:robot_state_publisher_node",
     ],
     deps = [
         ":data_paths",
