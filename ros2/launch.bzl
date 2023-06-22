@@ -16,9 +16,6 @@ def ros2_launch(name, nodes, launch_file, deps = None, data = None, idl_deps = N
         idl_deps: Additional IDL deps that are used as runtime plugins.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
-    if not nodes:
-        fail("A list of nodes must be given!")
-
     launcher = "{}_launch".format(name)
     launch_script = py_launcher(
         launcher,
