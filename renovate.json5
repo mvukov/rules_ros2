@@ -2,7 +2,9 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: ["config:base"],
   dependencyDashboard: true,
-  enabledManagers: ["bazel", "bazelisk", "github-actions", "pre-commit"],
+  "pre-commit": {
+    enabled: true,
+  },
   packageRules: [
     {
       matchPaths: [
