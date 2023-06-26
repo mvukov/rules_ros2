@@ -1,0 +1,38 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:base"],
+  dependencyDashboard: true,
+  bazel: {
+    ignorePaths: ["repositories/ros2_repositories_impl.bzl"],
+  },
+  pip_requirements: {
+    enabled: false,
+  },
+  "pre-commit": {
+    enabled: true,
+  },
+  packageRules: [
+    {
+      matchManagers: ["bazel"],
+      matchPackagePatterns: ["*"],
+      enabled: false,
+    },
+    {
+      matchManagers: ["bazel"],
+      matchPackageNames: [
+        "bazel_skylib",
+        "com_google_googletest",
+        "eigen",
+        "nlohmann_json",
+        "pybind11",
+        "rules_foreign_cc",
+        "rules_python",
+        "tinyxml2",
+        "websocketpp",
+        "zstd",
+      ],
+      enabled: true,
+    },
+  ],
+  schedule: ["every weekend"],
+}
