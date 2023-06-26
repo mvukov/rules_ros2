@@ -5,6 +5,7 @@
   "pre-commit": {
     enabled: true,
   },
+  enabledManagers: ["bazel", "bazelisk", "github-actions", "pre-commit"],
   packageRules: [
     {
       matchPaths: [
