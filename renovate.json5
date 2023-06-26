@@ -14,6 +14,11 @@
   packageRules: [
     {
       matchDatasources: ["bazel"],
+      matchPackagePatterns: ["*"],
+      enabled: false,
+    },
+    {
+      matchDatasources: ["bazel"],
       matchPackageNames: [
         "bazel_skylib",
         "nlohmann_json",
@@ -21,6 +26,7 @@
         "rules_python",
         "zstd",
       ],
+      enabled: true,
     },
   ],
   schedule: ["every weekend"],
