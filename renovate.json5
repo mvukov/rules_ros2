@@ -1,0 +1,22 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:base"],
+  dependencyDashboard: true,
+  enabledManagers: ["bazel", "bazelisk", "github-actions", "pre-commit"],
+  packageRules: [
+    {
+      packagePatterns: ["*"],
+      enabled: false,
+    },
+    {
+      paths: [
+        ".github/workflows/main.yml",
+        "repositories/repositories.bzl",
+        ".bazelversion",
+        ".pre-commit-config.yaml",
+      ],
+      enabled: true,
+    },
+  ],
+  schedule: ["every weekend"],
+}
