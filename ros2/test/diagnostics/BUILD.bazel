@@ -33,5 +33,6 @@ ros2_test(
         ":diagnostic_publisher",
         "@ros2_diagnostics//:aggregator_node",
     ],
+    tags = ["cpu:2"],
     deps = [requirement("pyyaml")],
 )
