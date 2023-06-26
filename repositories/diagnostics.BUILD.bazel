@@ -1,0 +1,94 @@
+load(
+    "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_cpp_binary",
+    "ros2_cpp_library",
+)
+load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
+load("@rules_python//python:defs.bzl", "py_library")
+
+ros2_cpp_library(
+    name = "cpp_diagnostic_updater",
+    hdrs = glob(["diagnostic_updater/include/**/*.hpp"]),
+    includes = ["diagnostic_updater/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2_common_interfaces//:cpp_diagnostic_msgs",
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+py_library(
+    name = "py_diagnostic_updater",
+    srcs = glob(["diagnostic_updater/diagnostic_updater/*.py"]),
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2_common_interfaces//:py_diagnostic_msgs",
+        "@ros2_rclpy//:rclpy",
+    ],
+)
+
+ros2_cpp_library(
+    name = "diagnostic_aggregator",
+    srcs = [
+        "diagnostic_aggregator/src/aggregator.cpp",
+        "diagnostic_aggregator/src/analyzer_group.cpp",
+        "diagnostic_aggregator/src/status_item.cpp",
+    ],
+    hdrs = glob(["diagnostic_aggregator/include/**/*.hpp"]),
+    includes = ["diagnostic_aggregator/include"],
+    deps = [
+        "@ros2_common_interfaces//:c_diagnostic_msgs",
+        "@ros2_common_interfaces//:cpp_diagnostic_msgs",
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_pluginlib//:pluginlib",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_plugin(
+    name = "diagnostic_aggregator_analyzers",
+    srcs = [
+        "diagnostic_aggregator/src/discard_analyzer.cpp",
+        "diagnostic_aggregator/src/generic_analyzer.cpp",
+        "diagnostic_aggregator/src/ignore_analyzer.cpp",
+    ],
+    hdrs = glob(["diagnostic_aggregator/include/**/*.hpp"]),
+    includes = ["diagnostic_aggregator/include"],
+    plugin_specs = [
+        {
+            "class_name": "diagnostic_aggregator/GenericAnalyzer",
+            "class_type": "diagnostic_aggregator::GenericAnalyzer",
+            "base_class_type": "diagnostic_aggregator::Analyzer",
+        },
+        {
+            "class_name": "diagnostic_aggregator/IgnoreAnalyzer",
+            "class_type": "diagnostic_aggregator::IgnoreAnalyzer",
+            "base_class_type": "diagnostic_aggregator::Analyzer",
+        },
+        {
+            "class_name": "diagnostic_aggregator/AnalyzerGroup",
+            "class_type": "diagnostic_aggregator::AnalyzerGroup",
+            "base_class_type": "diagnostic_aggregator::Analyzer",
+        },
+    ],
+    deps = [
+        ":diagnostic_aggregator",
+        "@ros2_common_interfaces//:c_diagnostic_msgs",
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_pluginlib//:pluginlib",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "aggregator_node",
+    srcs = ["diagnostic_aggregator/src/aggregator_node.cpp"],
+    data = [":diagnostic_aggregator_analyzers"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":diagnostic_aggregator",
+        "@ros2_common_interfaces//:c_diagnostic_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)

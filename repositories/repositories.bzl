@@ -281,6 +281,15 @@ def ros2_repositories():
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:urdf_plugin_loader_fix.patch"],
     )
 
+    maybe(
+        http_archive,
+        name = "ros2_diagnostics",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:diagnostics.BUILD.bazel",
+        sha256 = "a723dae7acf0f00ee643c076c7c81299be0254919f29225ec7a89dc14cb8ea6f",
+        strip_prefix = "diagnostics-9f402787ea2c9b3dd4d7e51a9986810e8a3400ba",
+        urls = ["https://github.com/ros/diagnostics/archive/9f402787ea2c9b3dd4d7e51a9986810e8a3400ba.zip"],
+    )
+
 def _googletest_deps():
     """Lists implicit googletest deps.
 
