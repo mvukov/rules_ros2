@@ -13,12 +13,12 @@
   },
   packageRules: [
     {
-      matchDatasources: ["bazel"],
+      matchManagers: ["bazel"],
       matchPackagePatterns: ["*"],
       enabled: false,
     },
     {
-      matchDatasources: ["bazel"],
+      matchManagers: ["bazel"],
       matchPackageNames: [
         "bazel_skylib",
         "nlohmann_json",
