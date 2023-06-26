@@ -3,7 +3,7 @@
   extends: ["config:base"],
   dependencyDashboard: true,
   bazel: {
-    fileMatch: ["repositories/repositories.bzl"],
+    ignorePaths: ["repositories/ros2_repositories_impl.bzl"],
   },
   pip_requirements: {
     enabled: false,
