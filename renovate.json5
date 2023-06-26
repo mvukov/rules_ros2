@@ -8,7 +8,7 @@
   enabledManagers: ["bazel", "bazelisk", "github-actions", "pre-commit"],
   packageRules: [
     {
-      matchPaths: [
+      matchFiles: [
         ".github/workflows/main.yml",
         "repositories/repositories.bzl",
         ".bazelversion",
