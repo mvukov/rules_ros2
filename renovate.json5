@@ -5,17 +5,12 @@
   enabledManagers: ["bazel", "bazelisk", "github-actions", "pre-commit"],
   packageRules: [
     {
-      packagePatterns: ["*"],
-      enabled: false,
-    },
-    {
-      paths: [
+      matchPaths: [
         ".github/workflows/main.yml",
         "repositories/repositories.bzl",
         ".bazelversion",
         ".pre-commit-config.yaml",
       ],
-      enabled: true,
     },
   ],
   schedule: ["every weekend"],
