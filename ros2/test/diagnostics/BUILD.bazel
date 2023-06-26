@@ -21,22 +21,12 @@ ros2_bag(
     ],
 )
 
-filegroup(
-    name = "aggregator_config",
-    srcs = ["aggregator_config.yaml"],
-)
-
 ros2_test(
     name = "diagnostic_heartbeat_test",
     size = "small",
     data = [
-        ":aggregator_config",
+        "aggregator_config.yaml",
         ":bag",
-    ],
-    idl_deps = [
-        "@ros2_common_interfaces//:diagnostic_msgs",
-        "@ros2_rcl_interfaces//:rcl_interfaces",
-        "@ros2_rosbag2//:rosbag2_interfaces",
     ],
     launch_file = "tests.py",
     nodes = [

@@ -88,13 +88,13 @@ class TestHeartbeatDiagnostic(unittest.TestCase):
 
         self.assertEqual(len(bag_metadata['topics_with_message_count']), 2)
 
-        # are any heartbeat messages sent?
+        # Are any heartbeat messages sent?
         diag_topic = bag_metadata['topics_with_message_count'][0]
         self.assertEqual(diag_topic['topic_metadata']['name'], '/diagnostics')
         self.assertGreaterEqual(diag_topic['message_count'],
                                 min_num_received_msgs)
 
-        # does the aggregator work (i.e. are plugins loaded)?
+        # Does the aggregator work (i.e. are plugins loaded)?
         agg_topic = bag_metadata['topics_with_message_count'][1]
         self.assertEqual(agg_topic['topic_metadata']['name'],
                          '/diagnostics_agg')
