@@ -11,5 +11,17 @@
   "pre-commit": {
     enabled: true,
   },
+  packageRules: [
+    {
+      matchDatasources: ["bazel"],
+      matchPackageNames: [
+        "bazel_skylib",
+        "nlohmann_json",
+        "pybind11",
+        "rules_python",
+        "zstd",
+      ],
+    },
+  ],
   schedule: ["every weekend"],
 }
