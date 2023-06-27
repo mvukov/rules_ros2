@@ -33,6 +33,11 @@
       ],
       enabled: true,
     },
+    {
+      matchManagers: ["pre-commit"],
+      matchPackagePatterns: ["*"],
+      groupName: "pre-commit-deps",
+    },
   ],
   schedule: ["every weekend"],
 }
