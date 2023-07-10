@@ -58,9 +58,9 @@ def ros2_repositories():
         http_archive,
         name = "pybind11",
         build_file = "@com_github_mvukov_rules_ros2//repositories:pybind11.BUILD.bazel",
-        sha256 = "c6160321dc98e6e1184cc791fbeadd2907bb4a0ce0e447f2ea4ff8ab56550913",
-        strip_prefix = "pybind11-2.9.1",
-        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.9.1.tar.gz"],
+        sha256 = "832e2f309c57da9c1e6d4542dedd34b24e4192ecb4d62f6f4866a737454c9970",
+        strip_prefix = "pybind11-2.10.4",
+        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.10.4.tar.gz"],
     )
 
     maybe(
