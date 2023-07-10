@@ -198,8 +198,8 @@ def ros2_repositories():
         name = "nlohmann_json",
         build_file = "@com_github_mvukov_rules_ros2//repositories:nlohmann_json.BUILD.bazel",
         strip_prefix = "single_include",
-        sha256 = "9c15ca7806f863872452bfbc85fee6d1c9868117e3ea5e00a204ae961a2e1ae7",
-        urls = ["https://github.com/nlohmann/json/releases/download/v3.11.1/include.zip"],
+        sha256 = "e5c7a9f49a16814be27e4ed0ee900ecd0092bfb7dbfca65b5a421b774dccaaed",
+        urls = ["https://github.com/nlohmann/json/releases/download/v3.11.2/include.zip"],
     )
 
     maybe(
