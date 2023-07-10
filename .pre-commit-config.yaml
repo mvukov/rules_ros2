@@ -23,7 +23,7 @@ repos:
         files: *buildifier_external_files
         args: *buildifier_external_args
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.4.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -35,12 +35,12 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/google/yapf
-    rev: v0.32.0
+    rev: v0.40.1
     hooks:
       - id: yapf
         args: [-i, --style, .style.yapf]
   - repo: https://github.com/myint/autoflake.git
-    rev: v1.5.3
+    rev: v1.7.8
     hooks:
       - id: autoflake
         args:
@@ -50,7 +50,7 @@ repos:
             --in-place,
           ]
   - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.8.2
+    rev: v3.10.0
     hooks:
       - id: reorder-python-imports
         args: [--py37-plus]
