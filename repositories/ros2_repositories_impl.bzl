@@ -297,9 +297,9 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosbag2.BUILD.bazel",
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosbag2_relax_plugin_errors.patch"],
-        sha256 = "dbab0d105bfaae028e7097da75e5ef1b842d204b7157223e831bb6bfdde83451",
-        strip_prefix = "rosbag2-0.15.5",
-        url = "https://github.com/ros2/rosbag2/archive/refs/tags/0.15.5.tar.gz",
+        sha256 = "9b8dae3ab2003f1e921685d5da782a75cbdc0e99852ea8e863c03346254633f5",
+        strip_prefix = "rosbag2-0.15.6",
+        url = "https://github.com/ros2/rosbag2/archive/refs/tags/0.15.6.tar.gz",
     )
 
     maybe(
