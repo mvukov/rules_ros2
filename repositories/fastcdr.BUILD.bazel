@@ -1,0 +1,34 @@
+""" Builds FastCDR.
+"""
+
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+
+filegroup(
+    name = "all_srcs",
+    srcs = glob(["**"]),
+)
+
+cache_entries = {
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
+    "BUILD_SHARED_LIBS": "OFF",
+    # FastCDR specific options.
+    "EPROSIMA_INSTALLER": "OFF",
+    "EPROSIMA_BUILD": "OFF",
+    "EPROSIMA_BUILD_TESTS": "OFF",
+    "APPEND_PROJECT_NAME_TO_INCLUDEDIR": "OFF",
+    "BUILD_DOCUMENTATION": "OFF",
+    "CHECK_DOCUMENTATION": "OFF",
+}
+
+cmake(
+    name = "fastcdr",
+    build_args = [
+        "--",
+        "-j4",
+    ],
+    cache_entries = cache_entries,
+    lib_source = ":all_srcs",
+    out_static_libs = ["libfastcdr.a"],
+    visibility = ["//visibility:public"],
+)

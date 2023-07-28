@@ -91,6 +91,8 @@ ros2_cpp_library(
         "@ros2_rosidl//:rosidl_runtime_cpp",
         "@ros2_rosidl_typesupport//:rosidl_typesupport_c",
         "@ros2_rosidl_typesupport//:rosidl_typesupport_cpp",
+        "@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_c",
+        "@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_cpp",
         "@ros2_tracing//:tracetools",
     ],
 )

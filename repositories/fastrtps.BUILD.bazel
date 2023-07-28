@@ -1,0 +1,53 @@
+""" Builds FastDDS.
+"""
+
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+
+filegroup(
+    name = "all_srcs",
+    srcs = glob(["**"]),
+)
+
+cache_entries = {
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
+    "BUILD_SHARED_LIBS": "OFF",
+    # FastDDS specific options.
+    "SECURITY": "OFF",
+    "NO_TLS": "ON",
+    "SHM_TRANSPORT_DEFAULT": "OFF",
+    "COMPILE_TOOLS": "OFF",
+    "INSTALL_TOOLS": "OFF",
+    "FASTDDS_STATISTICS": "OFF",
+    "COMPILE_EXAMPLES": "OFF",
+    "INSTALL_EXAMPLES": "OFF",
+    "BUILD_DOCUMENTATION": "OFF",
+    "CHECK_DOCUMENTATION": "OFF",
+}
+
+cmake(
+    name = "fastrtps",
+    build_args = [
+        "--",
+        "-j4",
+    ],
+    cache_entries = cache_entries,
+    lib_source = ":all_srcs",
+    linkopts = select(
+        {
+            "@platforms//os:linux": ["-lpthread"],
+            "@platforms//os:macos": ["-lpthread"],
+            "@platforms//os:qnx": [],
+        },
+        no_match_error = "Only Linux, macOS and QNX are supported!",
+    ),
+    out_static_libs = ["libfastrtps.a"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@fastcdr",
+        "@asio",
+        "@tinyxml2",
+        "@foonathan_memory",
+        "@openssl",
+    ],
+)

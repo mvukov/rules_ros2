@@ -1,7 +1,27 @@
 """ Builds rmw_implementation.
 """
 
+load("@bazel_skylib//lib:selects.bzl", "selects")
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
+
+string_flag(
+    name = "dds_vendor",
+    build_setting_default = "cyclonedds",
+    values = ["cyclonedds", "fastdds"],
+)
+
+config_setting(
+    name = "use_cyclonedds",
+    flag_values = {":dds_vendor": "cyclonedds"},
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "use_fastdds",
+    flag_values = {":dds_vendor": "fastdds"},
+    visibility = ["//visibility:public"],
+)
 
 ros2_cpp_library(
     name = "rmw_implementation",
@@ -11,13 +31,21 @@ ros2_cpp_library(
         "rmw_implementation/src/visibility_control.h",
     ],
     copts = ["-w"],
-    data = [
-        "@ros2_rmw_cyclonedds//:rmw_cyclonedds",
-    ],
+    data = select(
+        {
+            ":use_cyclonedds": ["@ros2_rmw_cyclonedds//:rmw_cyclonedds"],
+            ":use_fastdds": ["@ros2_rmw_fastrtps//:rmw_fastrtps"],
+        },
+        no_match_error = "Unsupported dds vendor",
+    ),
     includes = ["include"],
-    local_defines = [
-        "RMW_LIBRARY_PATH=\\\"$(rootpath @ros2_rmw_cyclonedds//:rmw_cyclonedds)\\\"",
-    ],
+    local_defines = select(
+        {
+            ":use_cyclonedds": ["RMW_LIBRARY_PATH=\\\"$(rootpath @ros2_rmw_cyclonedds//:rmw_cyclonedds)\\\""],
+            ":use_fastdds": ["RMW_LIBRARY_PATH=\\\"$(rootpath @ros2_rmw_fastrtps//:rmw_fastrtps)\\\""],
+        },
+        no_match_error = "Unsupported dds vendor",
+    ),
     visibility = ["//visibility:public"],
     deps = [
         "@ros2_rcpputils//:rcpputils",

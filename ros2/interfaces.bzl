@@ -454,6 +454,14 @@ c_generator_aspect = aspect(
         "_typesupport_templates": attr.label(
             default = Label("@ros2_rosidl_typesupport//:rosidl_typesupport_generator_c_templates"),
         ),
+        "_typesupport_fastrtps_generator": attr.label(
+            default = Label("@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_generator_c_app"),
+            executable = True,
+            cfg = "exec",
+        ),
+        "_typesupport_fastrtps_templates": attr.label(
+            default = Label("@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_generator_c_templates"),
+        ),
         "_typesupport_introspection_generator": attr.label(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_generator_c"),
             executable = True,
@@ -474,6 +482,7 @@ c_generator_aspect = aspect(
                 Label("@ros2_rosidl//:rosidl_runtime_c"),
                 Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
                 Label("@ros2_rosidl_typesupport//:rosidl_typesupport_c"),
+                Label("@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_c"),
             ],
             providers = [CcInfo],
         ),
@@ -617,6 +626,14 @@ cpp_generator_aspect = aspect(
         "_typesupport_templates": attr.label(
             default = Label("@ros2_rosidl_typesupport//:rosidl_typesupport_generator_cpp_templates"),
         ),
+        "_typesupport_fastrtps_generator": attr.label(
+            default = Label("@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_generator_cpp_app"),
+            executable = True,
+            cfg = "exec",
+        ),
+        "_typesupport_fastrtps_templates": attr.label(
+            default = Label("@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_generator_cpp_templates"),
+        ),
         "_typesupport_introspection_generator": attr.label(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_generator_cpp"),
             executable = True,
@@ -634,6 +651,7 @@ cpp_generator_aspect = aspect(
                 Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
                 Label("@ros2_rosidl//:rosidl_typesupport_introspection_cpp"),
                 Label("@ros2_rosidl_typesupport//:rosidl_typesupport_cpp"),
+                Label("@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_cpp"),
             ],
             providers = [CcInfo],
         ),
