@@ -16,6 +16,7 @@ import asyncio
 import logging
 import os
 import pathlib
+import string
 import sys
 import tempfile
 import urllib
@@ -127,6 +128,11 @@ def dump_http_archives(repos):
         http_archives='\n'.join(http_archives)).rstrip() + '\n'
 
 
+def is_git_hash(version: str) -> bool:
+    """Check if version is a full length SHA-1 (git) hash."""
+    return len(version) == 40 and set(version).issubset(string.hexdigits)
+
+
 def main():
     if 'BUILD_WORKSPACE_DIRECTORY' not in os.environ:
         sys.exit("""
@@ -159,7 +165,8 @@ bazel run //repositories/private:resolver
         url = info['url'][:-suffix_len]
         version = info['version']
         if is_github_url(url):
-            archive_url = f'{url}/archive/refs/tags/{version}.tar.gz'
+            ref = version if is_git_hash(version) else f'refs/tags/{version}'
+            archive_url = f'{url}/archive/{ref}.tar.gz'
         elif is_gitlab_url(url):
             archive_url = (f'{url}/-/archive/{version}/'
                            f'{get_gitlab_project_name(url)}-{version}.tar.gz')
