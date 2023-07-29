@@ -27,22 +27,22 @@ ros2_cpp_library(
     ],
 )
 
-
 ros2_cpp_binary(
-    name = "rmw_fastrtps",
+    name = "rmw_fastrtps_dynamic_cpp",
     srcs = glob([
-        "rmw_fastrtps_cpp/include/**/*.h",
-        "rmw_fastrtps_cpp/include/**/*.hpp",
-        "rmw_fastrtps_cpp/src/*.cpp",
-        "rmw_fastrtps_cpp/src/*.hpp",
+        "rmw_fastrtps_dynamic_cpp/include/**/*.h",
+        "rmw_fastrtps_dynamic_cpp/include/**/*.hpp",
+        "rmw_fastrtps_dynamic_cpp/src/*.cpp",
+        "rmw_fastrtps_dynamic_cpp/src/*.hpp",
     ]),
     copts = ["-fvisibility=hidden"],
-    includes = ["rmw_fastrtps_cpp/include"],
+    includes = ["rmw_fastrtps_dynamic_cpp/include"],
     linkopts = ["-fvisibility=hidden"],
     linkshared = True,
     visibility = ["//visibility:public"],
     deps = [
         ":rmw_fastrtps_shared_cpp",
+        "@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_c",
         "@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_cpp",
     ],
 )

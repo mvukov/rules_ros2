@@ -264,11 +264,6 @@ _INTERFACE_GENERATOR_C_OUTPUT_MAPPING = [
 
 _TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING = ["%s__type_support.c"]
 
-_TYPESUPPORT_FASTRTPS_GENERATOR_C_OUTPUT_MAPPING = [
-    "fastrtps/%s__rosidl_typesupport_fastrtps_c.h",
-    "fastrtps/%s__type_support_c.cpp",
-]
-
 _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING = [
     "detail/%s__rosidl_typesupport_introspection_c.h",
     "detail/%s__type_support.c",
@@ -395,24 +390,12 @@ def _c_generator_aspect_impl(target, ctx):
         _TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING,
         visibility_control_template = ctx.file._typesupport_introspection_visibility_control_template,
         extra_generator_args = [
-            # TODO(mvukov) There are also rosidl_typesupport_connext_c
+            # TODO(mvukov) There are also rosidl_typesupport_connext_c and
+            # rosidl_typesupport_fastrtps_c.
             "--typesupports=rosidl_typesupport_introspection_c",
-            "--typesupports=rosidl_typesupport_fastrtps_c",
         ],
         mnemonic = "Ros2IdlTypeSupportC",
         progress_message = "Generating C type support for %{label}",
-    )
-
-    typesupport_fastrtps_outputs, _ = _run_generator(
-        ctx,
-        srcs,
-        package_name,
-        adapter,
-        ctx.executable._typesupport_fastrtps_generator,
-        ctx.attr._typesupport_fastrtps_templates,
-        _TYPESUPPORT_FASTRTPS_GENERATOR_C_OUTPUT_MAPPING,
-        mnemonic = "Ros2IdlTypeSupportFastrtpsC",
-        progress_message = "Generating C type fastrtps support for %{label}",
     )
 
     typesupport_introspection_outputs, _ = _run_generator(
@@ -428,12 +411,7 @@ def _c_generator_aspect_impl(target, ctx):
         progress_message = "Generating C type introspection support for %{label}",
     )
 
-    all_outputs = (
-        interface_outputs
-        + typesupport_outputs
-        + typesupport_fastrtps_outputs
-        + typesupport_introspection_outputs
-    )
+    all_outputs = interface_outputs + typesupport_outputs + typesupport_introspection_outputs
     hdrs = _get_hdrs(all_outputs)
     srcs = _get_srcs(all_outputs)
 
@@ -476,14 +454,6 @@ c_generator_aspect = aspect(
         "_typesupport_templates": attr.label(
             default = Label("@ros2_rosidl_typesupport//:rosidl_typesupport_generator_c_templates"),
         ),
-        "_typesupport_fastrtps_generator": attr.label(
-            default = Label("@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_generator_c_app"),
-            executable = True,
-            cfg = "exec",
-        ),
-        "_typesupport_fastrtps_templates": attr.label(
-            default = Label("@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_generator_c_templates"),
-        ),
         "_typesupport_introspection_generator": attr.label(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_generator_c"),
             executable = True,
@@ -504,7 +474,6 @@ c_generator_aspect = aspect(
                 Label("@ros2_rosidl//:rosidl_runtime_c"),
                 Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
                 Label("@ros2_rosidl_typesupport//:rosidl_typesupport_c"),
-                Label("@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_c"),
             ],
             providers = [CcInfo],
         ),
@@ -555,11 +524,6 @@ _TYPESUPPORT_GENERATOR_CPP_OUTPUT_MAPPING = [
     "%s__type_support.cpp",
 ]
 
-_TYPESUPPORT_FASTRTPS_GENERATOR_CPP_OUTPUT_MAPPING = [
-    "fastrtps/%s__rosidl_typesupport_fastrtps_cpp.hpp",
-    "fastrtps/%s__type_support.cpp",
-]
-
 _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING = [
     "detail/%s__rosidl_typesupport_introspection_cpp.hpp",
     "detail/%s__type_support.cpp",
@@ -591,24 +555,12 @@ def _cpp_generator_aspect_impl(target, ctx):
         ctx.attr._typesupport_templates,
         _TYPESUPPORT_GENERATOR_CPP_OUTPUT_MAPPING,
         extra_generator_args = [
-            # TODO(mvukov) There are also rosidl_typesupport_connext_cpp
+            # TODO(mvukov) There are also rosidl_typesupport_connext_cpp and
+            # rosidl_typesupport_fastrtps_cpp.
             "--typesupports=rosidl_typesupport_introspection_cpp",
-            "--typesupports=rosidl_typesupport_fastrtps_cpp",
         ],
         mnemonic = "Ros2IdlTypeSupportCpp",
         progress_message = "Generating C++ type support for %{label}",
-    )
-
-    typesupport_fastrtps_outputs, _ = _run_generator(
-        ctx,
-        srcs,
-        package_name,
-        adapter,
-        ctx.executable._typesupport_fastrtps_generator,
-        ctx.attr._typesupport_fastrtps_templates,
-        _TYPESUPPORT_FASTRTPS_GENERATOR_CPP_OUTPUT_MAPPING,
-        mnemonic = "Ros2IdlTypeSupportFastrtpsCpp",
-        progress_message = "Generating C++ type fastrtps support for %{label}",
     )
 
     typesupport_introspection_outputs, _ = _run_generator(
@@ -623,12 +575,7 @@ def _cpp_generator_aspect_impl(target, ctx):
         progress_message = "Generating C++ type introspection support for %{label}",
     )
 
-    all_outputs = (
-        interface_outputs
-        + typesupport_outputs
-        + typesupport_fastrtps_outputs
-        + typesupport_introspection_outputs
-    )
+    all_outputs = interface_outputs + typesupport_outputs + typesupport_introspection_outputs
     hdrs = _get_hdrs(all_outputs)
     srcs = _get_srcs(all_outputs)
 
@@ -670,14 +617,6 @@ cpp_generator_aspect = aspect(
         "_typesupport_templates": attr.label(
             default = Label("@ros2_rosidl_typesupport//:rosidl_typesupport_generator_cpp_templates"),
         ),
-        "_typesupport_fastrtps_generator": attr.label(
-            default = Label("@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_generator_cpp_app"),
-            executable = True,
-            cfg = "exec",
-        ),
-        "_typesupport_fastrtps_templates": attr.label(
-            default = Label("@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_generator_cpp_templates"),
-        ),
         "_typesupport_introspection_generator": attr.label(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_generator_cpp"),
             executable = True,
@@ -695,8 +634,6 @@ cpp_generator_aspect = aspect(
                 Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
                 Label("@ros2_rosidl//:rosidl_typesupport_introspection_cpp"),
                 Label("@ros2_rosidl_typesupport//:rosidl_typesupport_cpp"),
-                Label("@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_c"),
-                Label("@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_cpp"),
             ],
             providers = [CcInfo],
         ),

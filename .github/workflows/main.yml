@@ -45,22 +45,11 @@ jobs:
         toolchain:
           - "gcc"
           - "clang"
-        dds_vendor:
-          - "cyclonedds"
-          - "fastdds"
         include:
           - toolchain: "gcc"
-            dds_vendor: "cyclonedds"
             config_option: ""
           - toolchain: "clang"
-            dds_vendor: "cyclonedds"
             config_option: "--config=clang"
-          - toolchain: "gcc"
-            dds_vendor: "fastdds"
-            config_option: "--config=fastdds"
-          - toolchain: "clang"
-            dds_vendor: "fastdds"
-            config_option: "--config=clang --config=fastdds"
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
