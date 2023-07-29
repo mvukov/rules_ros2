@@ -30,6 +30,10 @@ build:clang --repo_env=CC=clang
 build:clang --repo_env=CXX=clang++
 build:clang --linkopt="-fuse-ld=lld"
 
+# To cross-compile towards aarch64, invoke Bazel with `--config=aarch64_linux_gcc`.
+build:platform_build --incompatible_enable_cc_toolchain_resolution
+build:aarch64_linux_gcc --config=platform_build --platforms=@aspect_gcc_toolchain//platforms:aarch64_linux
+
 # Load any settings specific to the current user.
 # user.bazelrc should appear in .gitignore so that settings are not shared with
 # team members. This needs to be last statement in this config,

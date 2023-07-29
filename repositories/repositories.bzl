@@ -290,6 +290,8 @@ def ros2_repositories():
         urls = ["https://github.com/ros/diagnostics/archive/9f402787ea2c9b3dd4d7e51a9986810e8a3400ba.zip"],
     )
 
+
+
 def _googletest_deps():
     """Lists implicit googletest deps.
 
