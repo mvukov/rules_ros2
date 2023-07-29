@@ -55,7 +55,7 @@ repos:
       - id: reorder-python-imports
         args: [--py37-plus]
   - repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
+    rev: 6.1.0
     hooks:
       - id: flake8
         args: [--max-line-length=80]
