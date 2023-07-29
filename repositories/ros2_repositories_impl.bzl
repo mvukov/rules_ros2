@@ -61,9 +61,9 @@ def ros2_repositories_impl():
         http_archive,
         name = "fastrtps",
         build_file = "@com_github_mvukov_rules_ros2//repositories:fastrtps.BUILD.bazel",
-        sha256 = "0dca5e455e939c6aeeeb0c82d78ad94f2103b44c188c647f0940d827dd0819b4",
-        strip_prefix = "Fast-DDS-2.7.1",
-        url = "https://github.com/eProsima/Fast-DDS/archive/refs/tags/v2.7.1.tar.gz",
+        sha256 = "463af750b4d956710611d58179e02817de65f3f9beb94c600c74d826b0746a84",
+        strip_prefix = "Fast-DDS-2.6.2",
+        url = "https://github.com/eProsima/Fast-DDS/archive/refs/tags/v2.6.2.tar.gz",
     )
 
     maybe(
