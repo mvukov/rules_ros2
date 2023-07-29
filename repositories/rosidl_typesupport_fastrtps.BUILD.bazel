@@ -9,13 +9,12 @@ load(
 )
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 
-
 ros2_cpp_library(
     name = "rosidl_typesupport_fastrtps_c",
-    srcs = glob(["rosidl_typesupport_fastrtps_c/src/*.cpp",]),
+    srcs = glob(["rosidl_typesupport_fastrtps_c/src/*.cpp"]),
     hdrs = glob([
         "rosidl_typesupport_fastrtps_c/include/**/*.h",
-        "rosidl_typesupport_fastrtps_c/include/**/*.hpp"
+        "rosidl_typesupport_fastrtps_c/include/**/*.hpp",
     ]),
     includes = ["rosidl_typesupport_fastrtps_c/include"],
     visibility = ["//visibility:public"],
@@ -28,10 +27,10 @@ ros2_cpp_library(
 
 ros2_cpp_library(
     name = "rosidl_typesupport_fastrtps_cpp",
-    srcs = glob(["rosidl_typesupport_fastrtps_cpp/src/*.cpp",]),
+    srcs = glob(["rosidl_typesupport_fastrtps_cpp/src/*.cpp"]),
     hdrs = glob([
         "rosidl_typesupport_fastrtps_cpp/include/**/*.h",
-        "rosidl_typesupport_fastrtps_cpp/include/**/*.hpp"
+        "rosidl_typesupport_fastrtps_cpp/include/**/*.hpp",
     ]),
     includes = ["rosidl_typesupport_fastrtps_cpp/include"],
     visibility = ["//visibility:public"],

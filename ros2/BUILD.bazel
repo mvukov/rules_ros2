@@ -71,7 +71,10 @@ py_binary(
 string_flag(
     name = "dds_vendor",
     build_setting_default = "cyclonedds",
-    values = ["cyclonedds", "fastdds"],
+    values = [
+        "cyclonedds",
+        "fastdds",
+    ],
 )
 
 config_setting(

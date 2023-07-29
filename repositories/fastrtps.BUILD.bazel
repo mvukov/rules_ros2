@@ -44,10 +44,10 @@ cmake(
     out_static_libs = ["libfastrtps.a"],
     visibility = ["//visibility:public"],
     deps = [
-        "@fastcdr",
         "@asio",
-        "@tinyxml2",
+        "@fastcdr",
         "@foonathan_memory",
         "@openssl",
+        "@tinyxml2",
     ],
 )

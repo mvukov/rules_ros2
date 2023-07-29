@@ -1,8 +1,11 @@
 """ Builds rmw_fastrtps.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
-    "ros2_cpp_binary", "ros2_cpp_library")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_cpp_binary",
+    "ros2_cpp_library",
+)
 
 ros2_cpp_library(
     name = "rmw_fastrtps_shared_cpp",
