@@ -47,7 +47,6 @@ cmake(
         "@asio",
         "@fastcdr",
         "@foonathan_memory",
-        "@openssl",
         "@tinyxml2",
     ],
 )
