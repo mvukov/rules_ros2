@@ -1,0 +1,21 @@
+diff --git a/rmw_fastrtps_dynamic_cpp/src/type_support_common.cpp b/rmw_fastrtps_dynamic_cpp/src/type_support_common.cpp
+index d602069..62e4362 100644
+--- a/rmw_fastrtps_dynamic_cpp/src/type_support_common.cpp
++++ b/rmw_fastrtps_dynamic_cpp/src/type_support_common.cpp
+@@ -25,12 +25,13 @@
+ bool
+ using_introspection_c_typesupport(const char * typesupport_identifier)
+ {
+-  return typesupport_identifier == rosidl_typesupport_introspection_c__identifier;
++  return !std::string(typesupport_identifier)
++         .compare(rosidl_typesupport_introspection_c__identifier);
+ }
+ 
+ bool
+ using_introspection_cpp_typesupport(const char * typesupport_identifier)
+ {
+-  return typesupport_identifier ==
+-         rosidl_typesupport_introspection_cpp::typesupport_identifier;
++  return !std::string(typesupport_identifier)
++         .compare(rosidl_typesupport_introspection_cpp::typesupport_identifier);
+ }

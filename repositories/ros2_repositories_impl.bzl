@@ -284,6 +284,8 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rmw_fastrtps",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_fastrtps.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_fastrtps-fix-typesupport-conditions-bug.patch"],
         sha256 = "a0145b414207a2528fd56e98a56bd6d4c3f0353dcd58f4b3a65224af8bd52284",
         strip_prefix = "rmw_fastrtps-6.2.3",
         url = "https://github.com/ros2/rmw_fastrtps/archive/refs/tags/6.2.3.tar.gz",
