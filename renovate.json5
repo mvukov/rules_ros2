@@ -23,6 +23,7 @@
         "bazel_skylib",
         "com_google_googletest",
         "eigen",
+        "foxglove_bridge",
         "nlohmann_json",
         "pybind11",
         "rules_foreign_cc",

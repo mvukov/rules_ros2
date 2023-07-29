@@ -1,0 +1,35 @@
+""" Builds curl.
+"""
+
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+
+filegroup(
+    name = "all_srcs",
+    # TODO(mvukov) Minimize srcs.
+    srcs = glob(["**"]),
+)
+
+cmake(
+    name = "curl",
+    build_args = [
+        "--",
+        "-j4",
+    ],
+    cache_entries = {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
+        "BUILD_SHARED_LIBS": "OFF",
+        # curl specific options.
+        "BUILD_CURL_EXE": "OFF",
+        "CMAKE_PREFIX_PATH": "$EXT_BUILD_DEPS/openssl",
+        "CURL_DISABLE_LDAP": "ON",
+        "CURL_ENABLE_SSL": "ON",
+        "CURL_USE_LIBPSL": "OFF",
+        # TODO(mvukov) Fine-tune other options.
+    },
+    generate_args = ["-GNinja"],
+    lib_source = ":all_srcs",
+    out_static_libs = ["libcurl.a"],
+    visibility = ["//visibility:public"],
+    deps = ["@openssl"],
+)

@@ -81,6 +81,9 @@ repositories:
   rcutils:
     name: ros2_rcutils
     build_file: "@com_github_mvukov_rules_ros2//repositories:rcutils.BUILD.bazel"
+  resource_retriever:
+    name: ros2_resource_retriever
+    build_file: "@com_github_mvukov_rules_ros2//repositories:resource_retriever.BUILD.bazel"
   rmw:
     name: ros2_rmw
     build_file: "@com_github_mvukov_rules_ros2//repositories:rmw.BUILD.bazel"

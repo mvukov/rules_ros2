@@ -217,6 +217,15 @@ def ros2_repositories_impl():
 
     maybe(
         http_archive,
+        name = "ros2_resource_retriever",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:resource_retriever.BUILD.bazel",
+        sha256 = "a7de4f63babcdaafa7c8af69942ce31105c763ae8a4467ed77a69b4ab80d2dc8",
+        strip_prefix = "resource_retriever-3.1.1",
+        url = "https://github.com/ros/resource_retriever/archive/refs/tags/3.1.1.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_rmw",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw.BUILD.bazel",
         sha256 = "3042de743e86ca36997ecd3b3da8319e6d3853dd5366d4ae4055dd6ad38e89b3",

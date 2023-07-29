@@ -183,14 +183,13 @@ def ros2_repositories():
         urls = ["https://github.com/swri-robotics/gps_umd/archive/fc782811804fafb12ee479a48a2aa2e9ee942e2d.tar.gz"],
     )
 
-    # Needs https://github.com/foxglove/ros-foxglove-bridge/pull/228.
     maybe(
         http_archive,
         name = "foxglove_bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
-        sha256 = "264095fff9e51a6a880588e25ecb58fc4d19d0c3da4da21ca3ff2223a0a536ce",
-        strip_prefix = "ros-foxglove-bridge-eb0217174750ab6ea7e52aadaf3ff59a022bf153",
-        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/eb0217174750ab6ea7e52aadaf3ff59a022bf153.tar.gz"],
+        sha256 = "ca29a3d79e41fb4c9fd620f9906350be34bfe4b7ec1bbec47cd984fbfa21fa5a",
+        strip_prefix = "ros-foxglove-bridge-0.7.0",
+        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.0.tar.gz"],
     )
 
     maybe(
@@ -288,6 +287,23 @@ def ros2_repositories():
         sha256 = "a723dae7acf0f00ee643c076c7c81299be0254919f29225ec7a89dc14cb8ea6f",
         strip_prefix = "diagnostics-9f402787ea2c9b3dd4d7e51a9986810e8a3400ba",
         urls = ["https://github.com/ros/diagnostics/archive/9f402787ea2c9b3dd4d7e51a9986810e8a3400ba.zip"],
+    )
+
+    maybe(
+        http_archive,
+        name = "com_github_nelhage_rules_boost",
+        sha256 = "b375550dde177abb48d9fc6edf63a7850aec350cdb4dc3360a456ea0fbd7d45c",
+        strip_prefix = "rules_boost-45015796689f17e9fc7972073eb7830784c40ee9",
+        urls = ["https://github.com/nelhage/rules_boost/archive/45015796689f17e9fc7972073eb7830784c40ee9.zip"],
+    )
+
+    maybe(
+        http_archive,
+        name = "curl",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:curl.BUILD.bazel",
+        sha256 = "230d61a4b1eb3346930f2d601cc8fe5237957163e16befbe15e0ef40c56767a2",
+        strip_prefix = "curl-curl-8_2_1",
+        urls = ["https://github.com/curl/curl/archive/refs/tags/curl-8_2_1.tar.gz"],
     )
 
 def _googletest_deps():
