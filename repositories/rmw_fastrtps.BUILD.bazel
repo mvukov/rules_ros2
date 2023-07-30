@@ -16,6 +16,7 @@ ros2_cpp_library(
         "rmw_fastrtps_shared_cpp/src/**/*.hpp",
     ]),
     includes = ["rmw_fastrtps_shared_cpp/include"],
+    visibility = ["//visibility:public"],
     deps = [
         "@fastrtps",
         "@ros2_rcpputils//:rcpputils",
