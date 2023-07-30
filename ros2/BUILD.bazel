@@ -67,7 +67,6 @@ py_binary(
     ],
 )
 
-# DDS vendor settings
 string_flag(
     name = "dds_vendor",
     build_setting_default = "cyclonedds",
@@ -84,7 +83,7 @@ config_setting(
 )
 
 config_setting(
-    name = "use_fastdds",
+    name = "use_fastdds_dynamic",
     flag_values = {":dds_vendor": "fastdds"},
     visibility = ["//visibility:public"],
 )

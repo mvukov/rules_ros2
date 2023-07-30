@@ -1,7 +1,67 @@
 """ Builds FastDDS.
 """
 
+load("@bazel_skylib//lib:dicts.bzl", "dicts")
+load("@bazel_skylib//lib:selects.bzl", "selects")
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+
+bool_flag(
+    name = "enable_shm",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "enable_shm_on",
+    flag_values = {":enable_shm": "True"},
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "enable_shm_off",
+    flag_values = {":enable_shm": "False"},
+    visibility = ["//visibility:public"],
+)
+
+selects.config_setting_group(
+    name = "linux_or_macos",
+    match_any = [
+        "@platforms//os:linux",
+        "@platforms//os:macos",
+    ],
+)
+
+selects.config_setting_group(
+    name = "linux_or_macos_with_shm",
+    match_all = [
+        ":linux_or_macos",
+        ":enable_shm_on",
+    ],
+)
+
+selects.config_setting_group(
+    name = "qnx_with_shm",
+    match_all = [
+        "@platforms//os:qnx",
+        ":enable_shm_on",
+    ],
+)
+
+selects.config_setting_group(
+    name = "linux_or_macos_without_shm",
+    match_all = [
+        ":linux_or_macos",
+        ":enable_shm_off",
+    ],
+)
+
+selects.config_setting_group(
+    name = "qnx_without_shm",
+    match_all = [
+        "@platforms//os:qnx",
+        ":enable_shm_off",
+    ],
+)
 
 filegroup(
     name = "all_srcs",
@@ -13,16 +73,24 @@ cache_entries = {
     "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
     "BUILD_SHARED_LIBS": "OFF",
     # FastDDS specific options.
-    "SECURITY": "OFF",
-    "NO_TLS": "ON",
-    "SHM_TRANSPORT_DEFAULT": "ON",
-    "COMPILE_TOOLS": "OFF",
-    "INSTALL_TOOLS": "OFF",
-    "FASTDDS_STATISTICS": "OFF",
-    "COMPILE_EXAMPLES": "OFF",
-    "INSTALL_EXAMPLES": "OFF",
     "BUILD_DOCUMENTATION": "OFF",
     "CHECK_DOCUMENTATION": "OFF",
+    "COMPILE_EXAMPLES": "OFF",
+    "COMPILE_TOOLS": "OFF",
+    "FASTDDS_STATISTICS": "OFF",
+    "INSTALL_EXAMPLES": "OFF",
+    "INSTALL_TOOLS": "OFF",
+    "NO_TLS": "ON",
+    "SECURITY": "OFF",
+    "SHM_TRANSPORT_DEFAULT": "ON",
+}
+
+cache_entries_with_shm = {
+    "SHM_TRANSPORT_DEFAULT": "ON",
+}
+
+cache_entries_without_shm = {
+    "SHM_TRANSPORT_DEFAULT": "OFF",
 }
 
 cmake(
@@ -31,13 +99,29 @@ cmake(
         "--",
         "-j4",
     ],
-    cache_entries = cache_entries,
+    cache_entries = select(
+        {
+            ":enable_shm_on": dicts.add(
+                cache_entries,
+                cache_entries_with_shm,
+            ),
+            ":enable_shm_off": dicts.add(
+                cache_entries,
+                cache_entries_without_shm,
+            ),
+        },
+        no_match_error = "Unsupported build configuration",
+    ),
     lib_source = ":all_srcs",
     linkopts = select(
         {
-            "@platforms//os:linux": ["-lpthread"],
-            "@platforms//os:macos": ["-lpthread"],
-            "@platforms//os:qnx": [],
+            ":linux_or_macos_with_shm": [
+                "-lpthread",
+                "-lrt",
+            ],
+            ":qnx_with_shm": ["-lrt"],
+            ":linux_or_macos_without_shm": ["-lpthread"],
+            ":qnx_without_shm": [],
         },
         no_match_error = "Only Linux, macOS and QNX are supported!",
     ),

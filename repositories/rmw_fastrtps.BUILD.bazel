@@ -10,10 +10,12 @@ load(
 ros2_cpp_library(
     name = "rmw_fastrtps_shared_cpp",
     srcs = glob([
-        "rmw_fastrtps_shared_cpp/include/**/*.h",
-        "rmw_fastrtps_shared_cpp/include/**/*.hpp",
         "rmw_fastrtps_shared_cpp/src/*.cpp",
         "rmw_fastrtps_shared_cpp/src/**/*.hpp",
+    ]),
+    hdrs = glob([
+        "rmw_fastrtps_shared_cpp/include/**/*.h",
+        "rmw_fastrtps_shared_cpp/include/**/*.hpp",
     ]),
     includes = ["rmw_fastrtps_shared_cpp/include"],
     visibility = ["//visibility:public"],

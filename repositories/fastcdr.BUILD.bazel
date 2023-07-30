@@ -13,12 +13,12 @@ cache_entries = {
     "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
     "BUILD_SHARED_LIBS": "OFF",
     # FastCDR specific options.
-    "EPROSIMA_INSTALLER": "OFF",
-    "EPROSIMA_BUILD": "OFF",
-    "EPROSIMA_BUILD_TESTS": "OFF",
     "APPEND_PROJECT_NAME_TO_INCLUDEDIR": "OFF",
     "BUILD_DOCUMENTATION": "OFF",
     "CHECK_DOCUMENTATION": "OFF",
+    "EPROSIMA_BUILD": "OFF",
+    "EPROSIMA_BUILD_TESTS": "OFF",
+    "EPROSIMA_INSTALLER": "OFF",
 }
 
 cmake(

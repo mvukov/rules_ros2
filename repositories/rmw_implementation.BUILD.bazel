@@ -14,7 +14,7 @@ ros2_cpp_library(
     data = select(
         {
             "@com_github_mvukov_rules_ros2//ros2:use_cyclonedds": ["@ros2_rmw_cyclonedds//:rmw_cyclonedds"],
-            "@com_github_mvukov_rules_ros2//ros2:use_fastdds": ["@ros2_rmw_fastrtps//:rmw_fastrtps_dynamic_cpp"],
+            "@com_github_mvukov_rules_ros2//ros2:use_fastdds_dynamic": ["@ros2_rmw_fastrtps//:rmw_fastrtps_dynamic_cpp"],
         },
         no_match_error = "Unsupported dds vendor",
     ),
@@ -22,7 +22,7 @@ ros2_cpp_library(
     local_defines = select(
         {
             "@com_github_mvukov_rules_ros2//ros2:use_cyclonedds": ["RMW_LIBRARY_PATH=\\\"$(rootpath @ros2_rmw_cyclonedds//:rmw_cyclonedds)\\\""],
-            "@com_github_mvukov_rules_ros2//ros2:use_fastdds": ["RMW_LIBRARY_PATH=\\\"$(rootpath @ros2_rmw_fastrtps//:rmw_fastrtps_dynamic_cpp)\\\""],
+            "@com_github_mvukov_rules_ros2//ros2:use_fastdds_dynamic": ["RMW_LIBRARY_PATH=\\\"$(rootpath @ros2_rmw_fastrtps//:rmw_fastrtps_dynamic_cpp)\\\""],
         },
         no_match_error = "Unsupported dds vendor",
     ),
