@@ -82,14 +82,15 @@ cache_entries = {
     "INSTALL_TOOLS": "OFF",
     "NO_TLS": "ON",
     "SECURITY": "OFF",
-    "SHM_TRANSPORT_DEFAULT": "ON",
 }
 
 cache_entries_with_shm = {
+    "FASTDDS_SHM_TRANSPORT_DISABLED": "OFF",
     "SHM_TRANSPORT_DEFAULT": "ON",
 }
 
 cache_entries_without_shm = {
+    "FASTDDS_SHM_TRANSPORT_DISABLED": "ON",
     "SHM_TRANSPORT_DEFAULT": "OFF",
 }
 
