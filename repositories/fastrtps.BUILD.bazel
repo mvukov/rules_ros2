@@ -15,7 +15,7 @@ cache_entries = {
     # FastDDS specific options.
     "SECURITY": "OFF",
     "NO_TLS": "ON",
-    "SHM_TRANSPORT_DEFAULT": "OFF",
+    "SHM_TRANSPORT_DEFAULT": "ON",
     "COMPILE_TOOLS": "OFF",
     "INSTALL_TOOLS": "OFF",
     "FASTDDS_STATISTICS": "OFF",
