@@ -17,7 +17,6 @@ cmake(
     ],
     cache_entries = {
         "BUILD_SHARED_LIBS": "OFF",
-        "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
         "YAML_CPP_BUILD_CONTRIB": "ON",
         "YAML_CPP_BUILD_TESTS": "OFF",
