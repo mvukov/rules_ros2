@@ -168,6 +168,7 @@ ros2_c_library(
     srcs = glob(["rosidl_typesupport_introspection_c/src/*.c"]),
     hdrs = glob(["rosidl_typesupport_introspection_c/include/**/*.h"]),
     includes = ["rosidl_typesupport_introspection_c/include"],
+    linkstatic = False,
     visibility = ["//visibility:public"],
 )
 
@@ -179,6 +180,7 @@ ros2_cpp_library(
         "rosidl_typesupport_introspection_cpp/include/**/*.h",
     ]),
     includes = ["rosidl_typesupport_introspection_cpp/include"],
+    linkstatic = False,
     visibility = ["//visibility:public"],
     deps = [
         ":rosidl_runtime_c",

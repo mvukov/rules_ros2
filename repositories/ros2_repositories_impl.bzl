@@ -70,6 +70,8 @@ def ros2_repositories_impl():
         http_archive,
         name = "foonathan_memory",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foonathan_memory.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:foonathan_memory_remove_dbg_suffix.patch"],
         sha256 = "4203d15db22a94a3978eeb1afb59a37d35c57c0f148733f0f1a53a6281cb74dd",
         strip_prefix = "memory-0.7-3",
         url = "https://github.com/foonathan/memory/archive/refs/tags/v0.7-3.tar.gz",

@@ -85,12 +85,10 @@ cache_entries = {
 }
 
 cache_entries_with_shm = {
-    "FASTDDS_SHM_TRANSPORT_DISABLED": "OFF",
     "SHM_TRANSPORT_DEFAULT": "ON",
 }
 
 cache_entries_without_shm = {
-    "FASTDDS_SHM_TRANSPORT_DISABLED": "ON",
     "SHM_TRANSPORT_DEFAULT": "OFF",
 }
 

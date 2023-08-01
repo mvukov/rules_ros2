@@ -24,6 +24,9 @@ repositories:
   foonathan_memory:
     name: foonathan_memory
     build_file: "@com_github_mvukov_rules_ros2//repositories:foonathan_memory.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:foonathan_memory_remove_dbg_suffix.patch"
   geometry2:
     name: ros2_geometry2
     build_file: "@com_github_mvukov_rules_ros2//repositories:geometry2.BUILD.bazel"
