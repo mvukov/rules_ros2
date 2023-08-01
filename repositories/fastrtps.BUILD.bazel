@@ -69,7 +69,6 @@ filegroup(
 )
 
 cache_entries = {
-    "CMAKE_BUILD_TYPE": "Release",
     "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
     "BUILD_SHARED_LIBS": "OFF",
     # FastDDS specific options.
