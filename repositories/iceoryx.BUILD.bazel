@@ -12,7 +12,6 @@ filegroup(
 cache_entries = {
     "BUILD_SHARED_LIBS": "OFF",
     "CCACHE": "OFF",
-    "CMAKE_BUILD_TYPE": "Release",
 }
 
 cache_entries_qnx = {
