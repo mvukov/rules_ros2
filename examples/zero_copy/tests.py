@@ -18,9 +18,11 @@ import launch.actions
 import launch_ros.actions
 import launch_testing.actions
 import launch_testing.asserts
+import launch_testing.markers
 import zero_copy.roudi
 
 
+@launch_testing.markers.keep_alive
 def generate_test_description():
     talker_tests_node = launch_ros.actions.Node(
         executable='zero_copy/talker_tests',

@@ -20,11 +20,13 @@ import launch_ros.actions
 import launch_ros.events.lifecycle
 import launch_testing.actions
 import launch_testing.asserts
+import launch_testing.markers
 import lifecycle_msgs.msg
 
 _Transition = lifecycle_msgs.msg.Transition
 
 
+@launch_testing.markers.keep_alive
 def generate_test_description():
     talker_node = launch_ros.actions.LifecycleNode(
         executable='lifecycle/lifecycle_talker',

@@ -56,6 +56,7 @@ ros2_cpp_test(
 
 ros2_cpp_test(
     name = "generic_publisher_tests",
+    size = "small",
     srcs = ["generic_publisher_tests.cc"],
     idl_deps = [
         "@ros2_common_interfaces//:std_msgs",

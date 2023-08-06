@@ -41,6 +41,7 @@ ros2_plugin(
 
 ros2_cpp_test(
     name = "tests",
+    size = "small",
     srcs = ["plugin_tests.cc"],
     data = [
         ":square",
@@ -67,6 +68,7 @@ ros2_cpp_binary(
 
 ros2_py_test(
     name = "py_loader_tests",
+    size = "small",
     srcs = [
         "py_loader_tests.py",
     ],
@@ -96,6 +98,7 @@ ros2_cpp_binary(
 
 sh_test(
     name = "ros2_cpp_binary_test",
+    size = "small",
     srcs = ["ros2_cpp_binary_test.sh"],
     data = [
         ":plugin_tests_binary",
@@ -118,6 +121,7 @@ ros2_py_binary(
 
 sh_test(
     name = "ros2_py_library_test",
+    size = "small",
     srcs = [
         "ros2_py_binary_test.sh",
     ],
@@ -142,6 +146,7 @@ cpp_ament_setup_library(
 
 cc_test(
     name = "ament_setup_library_tests",
+    size = "small",
     srcs = ["ament_setup_library_tests.cc"],
     deps = [
         ":polygon_base",
