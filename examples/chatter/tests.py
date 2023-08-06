@@ -17,10 +17,12 @@ import unittest
 import launch
 import launch_ros.actions
 import launch_testing.actions
+import launch_testing.markers
 import rclpy
 import std_msgs.msg
 
 
+@launch_testing.markers.keep_alive
 def generate_test_description():
     talker_node = launch_ros.actions.Node(executable='chatter/talker',
                                           parameters=[

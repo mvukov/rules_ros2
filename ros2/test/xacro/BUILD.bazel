@@ -24,6 +24,7 @@ xacro(
 
 py_test(
     name = "tests",
+    size = "small",
     srcs = ["tests.py"],
     data = [
         ":test_include",

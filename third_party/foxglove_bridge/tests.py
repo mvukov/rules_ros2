@@ -17,8 +17,10 @@ import launch.actions
 import launch_ros.actions
 import launch_testing.actions
 import launch_testing.asserts
+import launch_testing.markers
 
 
+@launch_testing.markers.keep_alive
 def generate_test_description():
     test_node = launch_ros.actions.Node(
         executable='third_party/foxglove_bridge/foxglove_bridge_tests',

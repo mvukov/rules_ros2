@@ -53,6 +53,7 @@ ros2_bag(
             ":publisher",
             ":recorder",
         ],
+        tags = ["cpu:2"],
         deps = [requirement("pyyaml")],
     )
     for storage_id in [
@@ -63,6 +64,7 @@ ros2_bag(
 
 ros2_py_test(
     name = "write_to_bag_tests",
+    size = "small",
     srcs = ["write_to_bag_tests.py"],
     main = "write_to_bag_tests.py",
     set_up_ament = True,
