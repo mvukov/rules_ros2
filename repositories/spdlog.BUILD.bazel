@@ -4,13 +4,21 @@
 load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS")
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
-# NOTE: Uses fmt library bundled with spdlog.
 cc_library(
     name = "spdlog",
-    srcs = glob(["src/*.cpp"]),
-    hdrs = glob(["include/**/*.h"]),
-    copts = CPP_COPTS,
-    defines = ["SPDLOG_COMPILED_LIB"],
+    srcs = glob(
+        ["src/**/*.cpp"],
+        exclude = ["src/fmt.cpp"],
+    ) + ["include/spdlog/fmt/fmt.h"],
+    hdrs = glob(
+        ["include/**/*.h"],
+        exclude = ["include/spdlog/fmt/*.h"],
+    ),
+    copts = CPP_COPTS + ["-w"],
+    defines = [
+        "SPDLOG_COMPILED_LIB",
+        "SPDLOG_FMT_EXTERNAL",
+    ],
     includes = ["include"],
     linkopts = select(
         {
@@ -21,4 +29,5 @@ cc_library(
         no_match_error = "Only Linux, macOS and QNX are supported!",
     ),
     visibility = ["//visibility:public"],
+    deps = ["@fmt"],
 )

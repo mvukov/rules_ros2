@@ -26,7 +26,6 @@
         "foxglove_bridge",
         "nlohmann_json",
         "pybind11",
-        "spdlog",
         "rules_foreign_cc",
         "rules_python",
         "tinyxml2",

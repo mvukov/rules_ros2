@@ -29,11 +29,20 @@ def ros2_repositories():
 
     maybe(
         http_archive,
+        name = "fmt",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:fmt.BUILD.bazel",
+        sha256 = "5cae7072042b3043e12d53d50ef404bbb76949dad1de368d7f993a15c8c05ecc",
+        strip_prefix = "fmt-7.1.3",
+        url = "https://github.com/fmtlib/fmt/archive/7.1.3.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "spdlog",
         build_file = "@com_github_mvukov_rules_ros2//repositories:spdlog.BUILD.bazel",
-        sha256 = "4dccf2d10f410c1e2feaff89966bfc49a1abb29ef6f08246335b110e001e09a9",
-        strip_prefix = "spdlog-1.12.0",
-        url = "https://github.com/gabime/spdlog/archive/v1.12.0.tar.gz",
+        sha256 = "944d0bd7c763ac721398dca2bb0f3b5ed16f67cef36810ede5061f35a543b4b8",
+        strip_prefix = "spdlog-1.8.5",
+        url = "https://github.com/gabime/spdlog/archive/v1.8.5.tar.gz",
     )
 
     maybe(
