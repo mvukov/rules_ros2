@@ -12,7 +12,7 @@ cc_library(
     ) + ["include/spdlog/fmt/fmt.h"],
     hdrs = glob(
         ["include/**/*.h"],
-        exclude = ["include/spdlog/fmt/*.h"],
+        exclude = ["include/spdlog/fmt/bundled/*.h"],
     ),
     copts = CPP_COPTS + ["-w"],
     defines = [
