@@ -1,0 +1,17 @@
+""" Builds fmt
+"""
+
+load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "fmt",
+    srcs = glob(
+        ["src/**/*.cc"],
+        exclude = ["src/fmt.cc"],
+    ),
+    hdrs = glob(["include/**/*.h"]),
+    copts = CPP_COPTS + ["-w"],
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+)
