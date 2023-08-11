@@ -28,6 +28,7 @@
         "pybind11",
         "rules_foreign_cc",
         "rules_python",
+        "spdlog",
         "tinyxml2",
         "websocketpp",
         "zstd",
