@@ -2,6 +2,7 @@
 """
 
 load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS")
+load("@bazel_skylib//lib:selects.bzl", "selects")
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
@@ -20,13 +21,12 @@ cc_library(
         "SPDLOG_FMT_EXTERNAL",
     ],
     includes = ["include"],
-    linkopts = select(
+    linkopts = selects.with_or(
         {
-            "@platforms//os:linux": ["-lpthread"],
-            "@platforms//os:macos": ["-lpthread"],
-            "@platforms//os:qnx": [],
+            ("@platforms//os:linux", "@platforms//os:macos"): ["-lpthread"],
+            ("@platforms//os:qnx", "@platforms//os:android"): [],
         },
-        no_match_error = "Only Linux, macOS and QNX are supported!",
+        no_match_error = "Only Linux, macOS , QNX and Android are supported!",
     ),
     visibility = ["//visibility:public"],
     deps = ["@fmt"],

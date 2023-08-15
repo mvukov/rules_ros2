@@ -6,6 +6,7 @@ load(
     "logging_macros",
 )
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_c_library")
+load("@bazel_skylib//lib:selects.bzl", "selects")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
@@ -43,23 +44,25 @@ ros2_c_library(
             "src/*.h",
         ],
         exclude = ["src/time_*.c"],
-    ) + select(
+    ) + selects.with_or(
         {
-            "@platforms//os:linux": ["src/time_unix.c"],
-            "@platforms//os:macos": ["src/time_unix.c"],
-            "@platforms//os:qnx": ["src/time_unix.c"],
+            (
+                "@platforms//os:linux",
+                "@platforms//os:macos",
+                "@platforms//os:qnx",
+                "@platforms//os:android",
+            ): ["src/time_unix.c"],
         },
-        no_match_error = "Only Linux, macOS and QNX are supported!",
+        no_match_error = "Only Linux, macOS , QNX and Android are supported!",
     ),
     hdrs = glob(["include/**/*.h"]) + [":logging_macros"],
     includes = ["include"],
-    linkopts = select(
+    linkopts = selects.with_or(
         {
-            "@platforms//os:linux": ["-ldl"],
-            "@platforms//os:macos": ["-ldl"],
-            "@platforms//os:qnx": [],
+            ("@platforms//os:linux", "@platforms//os:macos"): ["-ldl"],
+            ("@platforms//os:qnx", "@platforms//os:android"): [],
         },
-        no_match_error = "Only Linux, macOS and QNX are supported!",
+        no_match_error = "Only Linux, macOS , QNX and Android are supported!",
     ),
     local_defines = select({
         "@platforms//os:linux": ["_GNU_SOURCE"],
