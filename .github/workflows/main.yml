@@ -19,7 +19,7 @@ concurrency:
 jobs:
   pre-commit:
     name: Pre-commit checks
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -34,7 +34,7 @@ jobs:
         uses: pre-commit/action@v3.0.0
   test:
     name: Run tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     # Run bazel test with gcc and clang in each workspace
     strategy:
