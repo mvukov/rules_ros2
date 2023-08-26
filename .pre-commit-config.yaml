@@ -4,7 +4,7 @@ exclude: (.*\.patch)
 
 repos:
   - repo: https://github.com/keith/pre-commit-buildifier
-    rev: 6.1.0.2
+    rev: 6.3.3
     hooks:
       - id: buildifier
         args:
