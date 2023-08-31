@@ -22,7 +22,7 @@ pip_parse(
     name = "rules_ros2_pip_deps",
     annotations = PIP_ANNOTATIONS,
     python_interpreter_target = python_interpreter_target,
-    requirements_lock = "@com_github_mvukov_rules_ros2//:requirements_lock.txt",
+    requirements_lock = "@rules_ros2//:requirements_lock.txt",
 )
 
 load(

@@ -1,8 +1,8 @@
 """ Defines launch_ros-like ROS 2 deployment.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
 load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_ros2//ros2:ament.bzl", "py_launcher")
 
 def ros2_launch(name, launch_file, nodes = None, deps = None, data = None, idl_deps = None, **kwargs):
     """ Defines a ROS 2 deployment.
@@ -23,7 +23,7 @@ def ros2_launch(name, launch_file, nodes = None, deps = None, data = None, idl_d
         launcher,
         deps = nodes + deps,
         idl_deps = idl_deps,
-        template = "@com_github_mvukov_rules_ros2//ros2:launch.py.tpl",
+        template = "@rules_ros2//ros2:launch.py.tpl",
         substitutions = {
             "{launch_file}": "$(rootpath {})".format(launch_file),
         },

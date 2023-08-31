@@ -1,13 +1,13 @@
 """ Builds urdf.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
-load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
+load("@rules_ros2//ros2:plugin.bzl", "ros2_plugin")
 load(
-    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "@rules_ros2//third_party:expand_template.bzl",
     "expand_template",
 )
-load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
     name = "urdf_parser_plugin",

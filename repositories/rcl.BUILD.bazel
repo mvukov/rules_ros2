@@ -1,7 +1,7 @@
 """ Builds rcl.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_c_library")
+load("@rules_ros2//ros2:cc_defs.bzl", "ros2_c_library")
 
 ros2_c_library(
     name = "rcl_yaml_param_parser",

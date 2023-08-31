@@ -1,0 +1,72 @@
+FROM ubuntu:22.04
+
+ARG USERNAME=developer
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+# installing basic dependencies
+RUN apt update && apt install -y --no-install-recommends \
+    wget \
+    ca-certificates \
+    gnupg2 \
+    gpg-agent \
+    locales \
+    git \
+    curl \
+    unzip
+
+# adding apt repositories for clang, python and ros
+
+# clang for ubuntu 22.04
+RUN echo "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-17 main" \
+    "deb-src http://apt.llvm.org/jammy/ llvm-toolchain-jammy-17 main" \
+    > /etc/apt/sources.list.d/llvm.list && \
+    wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+
+# python for ubuntu 22.04
+RUN echo "deb http://ppa.launchpad.net/deadsnakes/ppa/ubuntu jammy main\n"\
+    "# deb-src http://ppa.launchpad.net/deadsnakes/ppa/ubuntu jammy main\n"\
+    > /etc/apt/sources.list.d/deadsnakes-ubuntu-ppa-jammy.list && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
+    apt update
+
+# ros for ubuntu 22.04
+# RUN  curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ ros-archive-keyring.gpg && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+# installing dependencies
+RUN apt update && apt install -y --no-install-recommends \
+    jq \
+    sudo \
+    python3.10 \
+    python3-pip \
+    clang-format \
+    clang-17 \
+    patch \
+    file && \
+    locale-gen en_US.UTF-8 && \
+    update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+
+# installing pre-commit
+RUN pip3 install pre-commit
+
+# installing poetry for python
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# installing bazelisk
+RUN if [ "$(arch)" = "x86_64" ]; then \
+    wget https://github.com/bazelbuild/bazelisk/releases/download/v1.16.0/bazelisk-linux-amd64 -O /usr/local/bin/bazel; \
+    else \
+    wget https://github.com/bazelbuild/bazelisk/releases/download/v1.16.0/bazelisk-linux-arm64 -O /usr/local/bin/bazel; \
+    fi && \
+    chmod +x /usr/local/bin/bazel;
+
+# setting up python3.10 as default python3 (later can be used to switch between python versions)
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 && \
+    update-alternatives --set python3 /usr/bin/python3.10
+
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -ms /bin/bash $USERNAME \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
+
+USER developer

@@ -3,14 +3,15 @@
 
 load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@bazel_skylib//lib:paths.bzl", "paths")
+load("@rules_cc//cc:defs.bzl", "cc_library")
 load(
-    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "@rules_ros2//ros2:interfaces.bzl",
     "Ros2InterfaceInfo",
     "cpp_generator_aspect",
     "idl_adapter_aspect",
 )
 load(
-    "@com_github_mvukov_rules_ros2//ros2:plugin_aspects.bzl",
+    "@rules_ros2//ros2:plugin_aspects.bzl",
     "Ros2IdlPluginAspectInfo",
     "Ros2InterfaceCollectorAspectInfo",
     "Ros2PluginCollectorAspectInfo",
@@ -20,10 +21,9 @@ load(
     "ros2_plugin_collector_aspect",
 )
 load(
-    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "@rules_ros2//third_party:expand_template.bzl",
     "expand_template_impl",
 )
-load("@rules_cc//cc:defs.bzl", "cc_library")
 
 _AMENT_SETUP_MODULE = "ament_setup"
 
@@ -444,11 +444,11 @@ cpp_ament_setup = rule(
         "data": attr.label_list(allow_files = True),
         "_hdr_template": attr.label(
             allow_single_file = True,
-            default = "@com_github_mvukov_rules_ros2//ros2:ament_setup.h.tpl",
+            default = "@rules_ros2//ros2:ament_setup.h.tpl",
         ),
         "_src_template": attr.label(
             allow_single_file = True,
-            default = "@com_github_mvukov_rules_ros2//ros2:ament_setup.cc.tpl",
+            default = "@rules_ros2//ros2:ament_setup.cc.tpl",
         ),
     },
     implementation = _cpp_ament_setup_impl,

@@ -14,10 +14,10 @@ def ros2_service(name, deps, **kwargs):
     """
     py_binary(
         name = name,
-        srcs = ["@com_github_mvukov_rules_ros2//ros2:ros2_service.py"],
-        main = "@com_github_mvukov_rules_ros2//ros2:ros2_service.py",
+        srcs = ["@rules_ros2//ros2:ros2_service.py"],
+        main = "@rules_ros2//ros2:ros2_service.py",
         deps = [
-            "@com_github_mvukov_rules_ros2//ros2:ros2_cmd",
+            "@rules_ros2//ros2:ros2_cmd",
             "@ros2cli//:ros2service",
             "@ros2cli",
         ] + deps,

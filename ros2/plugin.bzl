@@ -14,9 +14,10 @@
 """ ROS 2 plugin definitions.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
+load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
+load("@rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
 load(
-    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "@rules_ros2//ros2:interfaces.bzl",
     "CppGeneratorAspectInfo",
     "IdlAdapterAspectInfo",
     "Ros2InterfaceInfo",
@@ -24,11 +25,10 @@ load(
     "idl_adapter_aspect",
 )
 load(
-    "@com_github_mvukov_rules_ros2//ros2:plugin_aspects.bzl",
+    "@rules_ros2//ros2:plugin_aspects.bzl",
     "Ros2PluginInfo",
     "create_dynamic_library",
 )
-load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 def _ros2_plugin_impl(ctx):
     target_name = ctx.attr.name

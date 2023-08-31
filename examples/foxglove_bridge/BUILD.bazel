@@ -1,11 +1,11 @@
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
-load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
-load("@com_github_mvukov_rules_ros2//ros2:xacro.bzl", "xacro")
+load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load("@rules_ros2//ros2:launch.bzl", "ros2_launch")
+load("@rules_ros2//ros2:xacro.bzl", "xacro")
 load(
-    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
+    "@rules_ros2//third_party:expand_template.bzl",
     "expand_template",
 )
-load("@rules_python//python:defs.bzl", "py_library")
 
 ros2_cpp_binary(
     name = "publisher",
@@ -57,10 +57,10 @@ ros2_launch(
     launch_file = "launch.py",
     nodes = [
         ":publisher",
-        "@com_github_mvukov_rules_ros2//third_party/foxglove_bridge:foxglove_bridge_node",
+        "@rules_ros2//third_party/foxglove_bridge:foxglove_bridge_node",
     ],
     deps = [
         ":data_paths",
-        "@com_github_mvukov_rules_ros2//third_party/foxglove_bridge:utils",
+        "@rules_ros2//third_party/foxglove_bridge:utils",
     ],
 )

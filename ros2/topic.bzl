@@ -14,10 +14,10 @@ def ros2_topic(name, deps, **kwargs):
     """
     py_binary(
         name = name,
-        srcs = ["@com_github_mvukov_rules_ros2//ros2:ros2_topic.py"],
-        main = "@com_github_mvukov_rules_ros2//ros2:ros2_topic.py",
+        srcs = ["@rules_ros2//ros2:ros2_topic.py"],
+        main = "@rules_ros2//ros2:ros2_topic.py",
         deps = [
-            "@com_github_mvukov_rules_ros2//ros2:ros2_cmd",
+            "@rules_ros2//ros2:ros2_cmd",
             "@ros2cli//:ros2topic",
             "@ros2cli",
         ] + deps,

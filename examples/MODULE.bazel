@@ -1,0 +1,12 @@
+"""Module Declaration for rules_ros2 examples."""
+
+module(
+    name = "rules_ros2_examples",
+    version = "0.1.0",
+)
+
+bazel_dep(name = "rules_ros2", version = "0.1.0")
+local_path_override(
+    module_name = "rules_ros2",
+    path = "..",
+)

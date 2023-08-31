@@ -1,9 +1,9 @@
 """ Defines commonly used Python macros.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
-load("@com_github_mvukov_rules_ros2//third_party:symlink.bzl", "symlink")
 load("@rules_python//python:defs.bzl", "py_binary", "py_test")
+load("@rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
+load("@rules_ros2//third_party:symlink.bzl", "symlink")
 
 def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
     if set_up_ament == False:
@@ -28,7 +28,7 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
     sh_launcher(
         launcher,
         deps = [target_impl],
-        template = "@com_github_mvukov_rules_ros2//ros2:launch.sh.tpl",
+        template = "@rules_ros2//ros2:launch.sh.tpl",
         substitutions = {
             "{entry_point}": "$(rootpath {})".format(target_impl_symlink),
         },

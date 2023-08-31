@@ -1,9 +1,9 @@
 """ Defines commonly used C/C++ macros.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
-load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS", "C_COPTS")
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
+load("@rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
+load("@rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS", "C_COPTS")
 
 def _ros2_cc_target(target, lang, name, ros2_package_name, **kwargs):
     if lang == "c":
@@ -81,7 +81,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, idl_deps, **kw
     sh_launcher(
         launcher,
         deps = [target_impl],
-        template = "@com_github_mvukov_rules_ros2//ros2:launch.sh.tpl",
+        template = "@rules_ros2//ros2:launch.sh.tpl",
         substitutions = {
             "{entry_point}": "$(rootpath {})".format(target_impl),
         },

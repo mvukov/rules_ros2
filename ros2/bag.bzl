@@ -2,8 +2,8 @@
 """
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
 load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_ros2//ros2:ament.bzl", "py_launcher")
 
 def ros2_bag(name, idl_deps = None, **kwargs):
     """ Defines a binary target for a bag app.
@@ -18,7 +18,7 @@ def ros2_bag(name, idl_deps = None, **kwargs):
         launcher,
         deps = ["@ros2_rosbag2//:ros2bag"],
         idl_deps = idl_deps,
-        template = "@com_github_mvukov_rules_ros2//ros2:bag.py.tpl",
+        template = "@rules_ros2//ros2:bag.py.tpl",
         substitutions = {},
         tags = ["manual"],
     )
@@ -29,7 +29,7 @@ def ros2_bag(name, idl_deps = None, **kwargs):
         srcs = [launcher],
         main = launch_script,
         deps = [
-            "@com_github_mvukov_rules_ros2//ros2:ros2_cmd",
+            "@rules_ros2//ros2:ros2_cmd",
             "@ros2_rosbag2//:ros2bag",
         ] + deps,
         **kwargs

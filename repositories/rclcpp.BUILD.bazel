@@ -1,19 +1,19 @@
 """ Builds rclcpp.
 """
 
+load("@rules_python//python:defs.bzl", "py_binary")
 load(
-    "@com_github_mvukov_rules_ros2//repositories:logging_macros.bzl",
+    "@rules_ros2//repositories:logging_macros.bzl",
     "logging_macros",
 )
 load(
-    "@com_github_mvukov_rules_ros2//repositories:rclcpp_interfaces.bzl",
+    "@rules_ros2//repositories:rclcpp_interfaces.bzl",
     "rclcpp_interfaces",
 )
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
-load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
-_GENERATE_LOGGING_MACROS_PY = "@com_github_mvukov_rules_ros2//repositories:generate_rclcpp_logging_macros.py"
+_GENERATE_LOGGING_MACROS_PY = "@rules_ros2//repositories:generate_rclcpp_logging_macros.py"
 
 py_binary(
     name = "generate_logging_macros",
@@ -38,7 +38,7 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
-_GENERATE_RCLCPP_INTERFACE_PY = "@com_github_mvukov_rules_ros2//repositories:generate_rclcpp_interface.py"
+_GENERATE_RCLCPP_INTERFACE_PY = "@rules_ros2//repositories:generate_rclcpp_interface.py"
 
 py_binary(
     name = "generate_rclcpp_interface",

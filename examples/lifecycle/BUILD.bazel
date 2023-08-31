@@ -1,6 +1,6 @@
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
-load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
-load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
+load("@rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load("@rules_ros2//ros2:launch.bzl", "ros2_launch")
+load("@rules_ros2//ros2:test.bzl", "ros2_test")
 
 ros2_cpp_binary(
     name = "lifecycle_talker",

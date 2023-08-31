@@ -1,0 +1,63 @@
+"""Module Declaration for rules_ros2."""
+
+module(
+    name = "rules_ros2",
+    version = "0.1.0",
+    compatibility_level = 1,
+)
+
+# bazel_dep(
+#     name = "hermetic_cc_toolchain",
+#     version = "v2.0.0"
+# )
+
+# git_override(
+#     module_name = "hermetic_cc_toolchain",
+#     remote = "https://github.com/uber/hermetic_cc_toolchain",
+#     commit = "9a7a9e09bc7c23d603e3cca17d27d0da74e73266"
+# )
+
+# toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
+
+# use_repo(toolchains, "zig_sdk")
+
+# register_toolchains(
+#     "@zig_sdk//toolchain:linux_amd64_gnu.2.31",
+#     "@zig_sdk//toolchain:linux_arm64_gnu.2.31",
+#     "@zig_sdk//toolchain:darwin_amd64",
+#     "@zig_sdk//toolchain:darwin_arm64",
+#     "@zig_sdk//toolchain:windows_amd64",
+#     "@zig_sdk//toolchain:windows_arm64",
+# )
+
+# loading skylib
+bazel_dep(name = "bazel_skylib", version = "1.4.2")
+
+# Loading rules_foreign_cc
+bazel_dep(name = "rules_foreign_cc", version = "0.9.0")
+
+# Loading rules_python
+bazel_dep(name = "rules_python", version = "0.21.0")
+
+python = use_extension("@rules_python//python:extensions.bzl", "python")
+python.toolchain(
+    name = "python3_10",
+    python_version = "3.10",
+)
+use_repo(python, "python3_10_toolchains")
+
+register_toolchains("@python3_10_toolchains//:all")
+
+# Loading rules_poetry
+bazel_dep(name = "rules_poetry", version = "0.2.0")
+
+poetry = use_extension("@rules_poetry//python:extensions.bzl", "poetry")
+poetry.parse(
+    name = "poetry",
+    lock = ":poetry.lock",
+)
+use_repo(poetry, "poetry")
+
+# Loading non_bzlmod_deps
+non_module_dependencies = use_extension("//third_party:extensions.bzl", "non_module_dependencies")
+use_repo(non_module_dependencies, "ros2cli")

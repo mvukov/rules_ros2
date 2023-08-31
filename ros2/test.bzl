@@ -1,8 +1,8 @@
 """ Defines ROS 2 testing functionality.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
 load("@rules_python//python:defs.bzl", "py_test")
+load("@rules_ros2//ros2:ament.bzl", "py_launcher")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_deps = None, use_pytest = False, **kwargs):
@@ -36,7 +36,7 @@ def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **
         launcher,
         deps = nodes + deps,
         idl_deps = idl_deps,
-        template = "@com_github_mvukov_rules_ros2//ros2:test.py.tpl",
+        template = "@rules_ros2//ros2:test.py.tpl",
         substitutions = {
             "{launch_file}": "$(rootpath {})".format(launch_file),
         },
@@ -64,7 +64,7 @@ def _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, idl_deps, **k
         launcher,
         deps = nodes + deps,
         idl_deps = idl_deps,
-        template = "@com_github_mvukov_rules_ros2//ros2:pytest_wrapper.py.tpl",
+        template = "@rules_ros2//ros2:pytest_wrapper.py.tpl",
         substitutions = {},
         testonly = True,
         tags = ["manual"],

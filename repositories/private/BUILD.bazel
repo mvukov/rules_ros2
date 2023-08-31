@@ -18,9 +18,9 @@ py_binary(
         "--output=$(rootpath //repositories:ros2_repositories_impl.bzl)",
     ],
     data = [
-        "@com_github_mvukov_rules_ros2//repositories:ros2_repo_mappings.yaml",
-        "@com_github_mvukov_rules_ros2//repositories:ros2_repositories_impl.bzl",
         "@ros2//:repos",
+        "@rules_ros2//repositories:ros2_repo_mappings.yaml",
+        "@rules_ros2//repositories:ros2_repositories_impl.bzl",
     ],
     deps = [
         requirement("aiofile"),
@@ -34,7 +34,7 @@ py_test(
     name = "tests",
     size = "small",
     srcs = ["ros2_repo_mappings_tests.py"],
-    data = ["@com_github_mvukov_rules_ros2//repositories:ros2_repo_mappings.yaml"],
+    data = ["@rules_ros2//repositories:ros2_repo_mappings.yaml"],
     main = "ros2_repo_mappings_tests.py",
     deps = [requirement("pyyaml")],
 )

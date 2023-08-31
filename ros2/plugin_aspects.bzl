@@ -14,13 +14,13 @@
 """ ROS 2 plugin providers and aspects.
 """
 
+load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 load(
-    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "@rules_ros2//ros2:interfaces.bzl",
     "CppGeneratorAspectInfo",
     "IdlAdapterAspectInfo",
     "Ros2InterfaceInfo",
 )
-load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 Ros2PluginInfo = provider(
     "Provides necessary info for plugin routing.",

@@ -1,0 +1,27 @@
+{
+  "name": "rules_ros2",
+  "build": {
+    "dockerfile": "Dockerfile.vscode"
+  },
+  "mounts": [
+    {
+      "source": "rules_ros2-build-cache",
+      "target": "/home/developer/.cache",
+      "type": "volume"
+    }
+  ],
+  "runArgs": ["--net=host"],
+  "privileged": true,
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "BazelBuild.vscode-bazel",
+        "eamodio.gitlens",
+        "bungcip.better-toml",
+        "devondcarew.bazel-code",
+        "StackBuild.bazel-stack-vscode"
+      ]
+    }
+  },
+  "postCreateCommand": ". ./.devcontainer/postCreateCommand.sh"
+}
