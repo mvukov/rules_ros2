@@ -1,12 +1,12 @@
 """ Builds rcutils.
 """
 
+load("@bazel_skylib//lib:selects.bzl", "selects")
 load(
     "@com_github_mvukov_rules_ros2//repositories:logging_macros.bzl",
     "logging_macros",
 )
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_c_library")
-load("@bazel_skylib//lib:selects.bzl", "selects")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 

@@ -1,8 +1,8 @@
 """ Builds spdlog.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS")
 load("@bazel_skylib//lib:selects.bzl", "selects")
+load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS")
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
