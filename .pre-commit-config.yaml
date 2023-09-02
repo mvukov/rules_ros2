@@ -40,7 +40,7 @@ repos:
       - id: yapf
         args: [-i, --style, .style.yapf]
   - repo: https://github.com/myint/autoflake.git
-    rev: v2.2.0
+    rev: v2.2.1
     hooks:
       - id: autoflake
         args:
@@ -69,6 +69,6 @@ repos:
       - id: cpplint
         args: ["--filter=-build/c++11,-build/c++14"]
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.2
+    rev: v3.0.3
     hooks:
       - id: prettier
