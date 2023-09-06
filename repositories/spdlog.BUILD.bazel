@@ -24,9 +24,9 @@ cc_library(
     linkopts = selects.with_or(
         {
             ("@platforms//os:linux", "@platforms//os:macos"): ["-lpthread"],
-            ("@platforms//os:qnx", "@platforms//os:android"): [],
+            ("@platforms//os:android", "@platforms//os:qnx"): [],
         },
-        no_match_error = "Only Linux, macOS , QNX and Android are supported!",
+        no_match_error = "Supported OSs: Android, Linux, macOS, QNX",
     ),
     visibility = ["//visibility:public"],
     deps = ["@fmt"],

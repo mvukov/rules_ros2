@@ -27,12 +27,12 @@ cmake(
     cache_entries = selects.with_or(
         {
             ("@platforms//os:linux", "@platforms//os:macos"): cache_entries,
-            ("@platforms//os:qnx", "@platforms//os:android"): dicts.add(
+            ("@platforms//os:android", "@platforms//os:qnx"): dicts.add(
                 cache_entries,
                 cache_entries_qnx,
             ),
         },
-        no_match_error = "Only Linux, macOS , QNX and Android are supported!",
+        no_match_error = "Supported OSs: Android, Linux, macOS, QNX",
     ),
     generate_args = ["-GNinja"],
     lib_source = ":all_srcs",
@@ -44,9 +44,9 @@ cmake(
                 "-lpthread",
                 "-lrt",
             ],
-            ("@platforms//os:qnx", "@platforms//os:android"): ["-latomic"],
+            ("@platforms//os:android", "@platforms//os:qnx"): ["-latomic"],
         },
-        no_match_error = "Only Linux, macOS , QNX and Android are supported!",
+        no_match_error = "Supported OSs: Android, Linux, macOS, QNX",
     ),
     out_binaries = ["iox-roudi"],
     out_data_dirs = ["lib/cmake"],

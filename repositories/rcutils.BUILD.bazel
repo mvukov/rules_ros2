@@ -47,22 +47,22 @@ ros2_c_library(
     ) + selects.with_or(
         {
             (
+                "@platforms//os:android",
                 "@platforms//os:linux",
                 "@platforms//os:macos",
                 "@platforms//os:qnx",
-                "@platforms//os:android",
             ): ["src/time_unix.c"],
         },
-        no_match_error = "Only Linux, macOS , QNX and Android are supported!",
+        no_match_error = "Supported OSs: Android, Linux, macOS, QNX",
     ),
     hdrs = glob(["include/**/*.h"]) + [":logging_macros"],
     includes = ["include"],
     linkopts = selects.with_or(
         {
             ("@platforms//os:linux", "@platforms//os:macos"): ["-ldl"],
-            ("@platforms//os:qnx", "@platforms//os:android"): [],
+            ("@platforms//os:android", "@platforms//os:qnx"): [],
         },
-        no_match_error = "Only Linux, macOS , QNX and Android are supported!",
+        no_match_error = "Supported OSs: Android, Linux, macOS, QNX",
     ),
     local_defines = select({
         "@platforms//os:linux": ["_GNU_SOURCE"],

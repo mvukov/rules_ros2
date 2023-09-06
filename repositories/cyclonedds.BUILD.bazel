@@ -42,8 +42,8 @@ selects.config_setting_group(
 selects.config_setting_group(
     name = "qnx_or_android",
     match_any = [
-        "@platforms//os:qnx",
         "@platforms//os:android",
+        "@platforms//os:qnx",
     ],
 )
 
@@ -157,7 +157,7 @@ cmake(
             ":linux_or_macos": ["-lpthread"],
             ":qnx_or_android": [],
         },
-        no_match_error = "Only Linux, macOS , QNX and Android are supported!",
+        no_match_error = "Supported OSs: Android, Linux, macOS, QNX",
     ),
     out_static_libs = ["libddsc.a"],
     visibility = ["//visibility:public"],
