@@ -14,7 +14,7 @@ cache_entries = {
 }
 
 cache_entries_qnx = {
-    "CMAKE_SYSTEM_NAME": "QNX_OR_ANDROID",
+    "CMAKE_SYSTEM_NAME": "ANDROID_OR_QNX",
 }
 
 # Depends on libacl. On Ubuntu install as `sudo apt-get install libacl1-dev`.

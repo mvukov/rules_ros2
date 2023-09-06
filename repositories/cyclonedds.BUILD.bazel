@@ -40,7 +40,7 @@ selects.config_setting_group(
 )
 
 selects.config_setting_group(
-    name = "qnx_or_android",
+    name = "android_or_qnx",
     match_any = [
         "@platforms//os:android",
         "@platforms//os:qnx",
@@ -48,9 +48,9 @@ selects.config_setting_group(
 )
 
 selects.config_setting_group(
-    name = "qnx_or_android_with_shm",
+    name = "android_or_qnx_with_shm",
     match_all = [
-        ":qnx_or_android",
+        ":android_or_qnx",
         ":enable_shm_on",
     ],
 )
@@ -64,9 +64,9 @@ selects.config_setting_group(
 )
 
 selects.config_setting_group(
-    name = "qnx_or_android_without_shm",
+    name = "android_or_qnx_without_shm",
     match_all = [
-        ":qnx_or_android",
+        ":android_or_qnx",
         ":enable_shm_off",
     ],
 )
@@ -107,7 +107,7 @@ cache_entries_linux_and_macos = {
 cache_entries_qnx = {
     "ENABLE_SOURCE_SPECIFIC_MULTICAST": "OFF",
     "ENABLE_IPV6": "OFF",
-    "CMAKE_SYSTEM_NAME": "QNX_OR_ANDROID",
+    "CMAKE_SYSTEM_NAME": "ANDROID_OR_QNX",
 }
 
 cache_entries_with_shm = {
@@ -132,7 +132,7 @@ cmake(
                 cache_entries_linux_and_macos,
                 cache_entries_with_shm,
             ),
-            ":qnx_or_android_with_shm": dicts.add(
+            ":android_or_qnx_with_shm": dicts.add(
                 cache_entries,
                 cache_entries_qnx,
                 cache_entries_with_shm,
@@ -142,7 +142,7 @@ cmake(
                 cache_entries_linux_and_macos,
                 cache_entries_without_shm,
             ),
-            ":qnx_or_android_without_shm": dicts.add(
+            ":android_or_qnx_without_shm": dicts.add(
                 cache_entries,
                 cache_entries_qnx,
                 cache_entries_without_shm,
@@ -155,7 +155,7 @@ cmake(
     linkopts = select(
         {
             ":linux_or_macos": ["-lpthread"],
-            ":qnx_or_android": [],
+            ":android_or_qnx": [],
         },
         no_match_error = "Supported OSs: Android, Linux, macOS, QNX",
     ),
