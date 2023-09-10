@@ -1,6 +1,7 @@
 """ Builds rcutils.
 """
 
+load("@bazel_skylib//lib:selects.bzl", "selects")
 load(
     "@com_github_mvukov_rules_ros2//repositories:logging_macros.bzl",
     "logging_macros",
@@ -43,23 +44,25 @@ ros2_c_library(
             "src/*.h",
         ],
         exclude = ["src/time_*.c"],
-    ) + select(
+    ) + selects.with_or(
         {
-            "@platforms//os:linux": ["src/time_unix.c"],
-            "@platforms//os:macos": ["src/time_unix.c"],
-            "@platforms//os:qnx": ["src/time_unix.c"],
+            (
+                "@platforms//os:android",
+                "@platforms//os:linux",
+                "@platforms//os:macos",
+                "@platforms//os:qnx",
+            ): ["src/time_unix.c"],
         },
-        no_match_error = "Only Linux, macOS and QNX are supported!",
+        no_match_error = "Supported OSs: Android, Linux, macOS, QNX",
     ),
     hdrs = glob(["include/**/*.h"]) + [":logging_macros"],
     includes = ["include"],
-    linkopts = select(
+    linkopts = selects.with_or(
         {
-            "@platforms//os:linux": ["-ldl"],
-            "@platforms//os:macos": ["-ldl"],
-            "@platforms//os:qnx": [],
+            ("@platforms//os:linux", "@platforms//os:macos"): ["-ldl"],
+            ("@platforms//os:android", "@platforms//os:qnx"): [],
         },
-        no_match_error = "Only Linux, macOS and QNX are supported!",
+        no_match_error = "Supported OSs: Android, Linux, macOS, QNX",
     ),
     local_defines = select({
         "@platforms//os:linux": ["_GNU_SOURCE"],
