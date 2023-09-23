@@ -35,7 +35,7 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/google/yapf
-    rev: v0.40.1
+    rev: v0.40.2
     hooks:
       - id: yapf
         args: [-i, --style, .style.yapf]
