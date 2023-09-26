@@ -43,6 +43,8 @@ def ros2_repositories_impl():
         http_archive,
         name = "cyclonedds",
         build_file = "@com_github_mvukov_rules_ros2//repositories:cyclonedds.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:cyclonedds_remove_flto.patch"],
         sha256 = "b2ae16fa6a1812e453f5bf31e4dcb7ce263e486279c0530565a33a49c71c74b8",
         strip_prefix = "cyclonedds-0.9.1",
         url = "https://github.com/eclipse-cyclonedds/cyclonedds/archive/refs/tags/0.9.1.tar.gz",

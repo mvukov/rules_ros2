@@ -1,4 +1,39 @@
+load("@bazel_skylib//lib:selects.bzl", "selects")
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make")
+
+# support cross-compilation
+# otherwise openssl will configure towards the host system
+selects.config_setting_group(
+    name = "linux_aarch64",
+    match_all = [
+        "@platforms//os:linux",
+        "@platforms//cpu:aarch64",
+    ],
+)
+
+selects.config_setting_group(
+    name = "linux_x86_64",
+    match_all = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+selects.config_setting_group(
+    name = "macos_x86_64",
+    match_all = [
+        "@platforms//os:macos",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+selects.config_setting_group(
+    name = "macos_aarch64",
+    match_all = [
+        "@platforms//os:macos",
+        "@platforms//cpu:aarch64",
+    ],
+)
 
 filegroup(
     name = "all_srcs",
@@ -17,11 +52,17 @@ filegroup(
 configure_make(
     name = "openssl",
     args = ["-j4"],
-    configure_command = "config",
+    configure_command = "Configure",
     configure_options = [
         "no-shared",
         "--libdir=lib",
-    ],
+    ] + select({
+        ":linux_x86_64": ["linux-x86_64"],
+        ":linux_aarch64": ["linux-aarch64"],
+        ":macos_x86_64": ["darwin64-x86_64-cc"],
+        ":macos_aarch64": ["darwin64-arm64-cc"],
+        "//conditions:default":  [],
+    }),
     lib_source = ":all_srcs",
     linkopts = ["-ldl"],
     out_static_libs = [
