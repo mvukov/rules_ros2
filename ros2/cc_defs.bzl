@@ -14,6 +14,15 @@ def _ros2_cc_target(target, lang, name, ros2_package_name, **kwargs):
         fail("lang must be set to c or cpp!")
     all_copts = all_copts + kwargs.pop("copts", [])
 
+    if target == cc_binary or target == cc_test:
+        all_linkopts = ["-Wl,--dynamic-list=$(location @com_github_mvukov_rules_ros2//ros2:exported_symbols.lds)"] + kwargs.pop("linkopts", [])
+        all_additional_linker_inputs = ["@com_github_mvukov_rules_ros2//ros2:exported_symbols.lds"] + kwargs.pop("additional_linker_inputs", [])
+
+        kwargs["linkopts"] = all_linkopts
+
+        # TODO(mvukov) This will be available in Bazel 6.4.0 for cc_library.
+        kwargs["additional_linker_inputs"] = all_additional_linker_inputs
+
     ros2_package_name = ros2_package_name or name
     all_local_defines = ["ROS_PACKAGE_NAME=\\\"{}\\\"".format(ros2_package_name)]
     all_local_defines = all_local_defines + kwargs.pop("local_defines", [])
