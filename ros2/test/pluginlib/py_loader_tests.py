@@ -11,6 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from ros2.test.pluginlib import py_loader
+import os
+import sys
+
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
+
+from ros2.test.pluginlib import py_loader  # noqa: E402
 
 py_loader.load_plugins()

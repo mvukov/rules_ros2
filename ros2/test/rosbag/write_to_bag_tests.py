@@ -11,10 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import pathlib
+import sys
 
-import pytest
-import rosbag2_py
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
+
+import pytest  # noqa: E402
+import rosbag2_py  # noqa: E402
 
 SQLITE3_STORAGE_ID = 'sqlite3'
 MCAP_STORAGE_ID = 'mcap'
