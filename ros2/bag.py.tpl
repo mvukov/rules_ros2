@@ -1,6 +1,8 @@
 import os
 import sys
 
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
+
 import ros2.ros2_cmd
 import ros2bag.verb.convert
 import ros2bag.verb.info

@@ -11,18 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import sys
 
-import ros2cli.cli
-import ros2param.verb.delete
-import ros2param.verb.describe
-import ros2param.verb.dump
-import ros2param.verb.get
-import ros2param.verb.list
-import ros2param.verb.load
-import ros2param.verb.set
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)  # noqa
 
-import ros2.ros2_cmd
+import ros2cli.cli  # noqa: E402
+import ros2param.verb.delete  # noqa: E402
+import ros2param.verb.describe  # noqa: E402
+import ros2param.verb.dump  # noqa: E402
+import ros2param.verb.get  # noqa: E402
+import ros2param.verb.list  # noqa: E402
+import ros2param.verb.load  # noqa: E402
+import ros2param.verb.set  # noqa: E402
+
+import ros2.ros2_cmd  # noqa: E402
 
 COMMAND_EXTENSIONS = {
     'delete': ros2param.verb.delete.DeleteVerb(),

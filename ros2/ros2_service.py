@@ -11,15 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import sys
 
-import ros2cli.cli
-import ros2service.verb.call
-import ros2service.verb.find
-import ros2service.verb.list
-import ros2service.verb.type
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)  # noqa
 
-import ros2.ros2_cmd
+import ros2cli.cli  # noqa: E402
+import ros2service.verb.call  # noqa: E402
+import ros2service.verb.find  # noqa: E402
+import ros2service.verb.list  # noqa: E402
+import ros2service.verb.type  # noqa: E402
+
+import ros2.ros2_cmd  # noqa: E402
 
 COMMAND_EXTENSIONS = {
     'call': ros2service.verb.call.CallVerb(),

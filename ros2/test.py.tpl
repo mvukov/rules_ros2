@@ -2,6 +2,8 @@ import contextlib
 import os
 import sys
 
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
+
 import domain_coordinator
 import launch_testing.launch_test
 import launch_testing_ros

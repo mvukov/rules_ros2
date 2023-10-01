@@ -11,20 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import sys
 
-import ros2cli.cli
-import ros2topic.verb.bw
-import ros2topic.verb.delay
-import ros2topic.verb.echo
-import ros2topic.verb.find
-import ros2topic.verb.hz
-import ros2topic.verb.info
-import ros2topic.verb.list
-import ros2topic.verb.pub
-import ros2topic.verb.type
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)  # noqa
 
-import ros2.ros2_cmd
+import ros2cli.cli  # noqa: E402
+import ros2topic.verb.bw  # noqa: E402
+import ros2topic.verb.delay  # noqa: E402
+import ros2topic.verb.echo  # noqa: E402
+import ros2topic.verb.find  # noqa: E402
+import ros2topic.verb.hz  # noqa: E402
+import ros2topic.verb.info  # noqa: E402
+import ros2topic.verb.list  # noqa: E402
+import ros2topic.verb.pub  # noqa: E402
+import ros2topic.verb.type  # noqa: E402
+
+import ros2.ros2_cmd  # noqa: E402
 
 COMMAND_EXTENSIONS = {
     'bw': ros2topic.verb.bw.BwVerb(),
