@@ -14,14 +14,20 @@ def _ros2_cc_target(target, lang, name, ros2_package_name, **kwargs):
         fail("lang must be set to c or cpp!")
     all_copts = all_copts + kwargs.pop("copts", [])
 
-    if target == cc_binary or target == cc_test:
-        all_linkopts = ["-Wl,--dynamic-list=$(location @com_github_mvukov_rules_ros2//ros2:exported_symbols.lds)"] + kwargs.pop("linkopts", [])
-        all_additional_linker_inputs = ["@com_github_mvukov_rules_ros2//ros2:exported_symbols.lds"] + kwargs.pop("additional_linker_inputs", [])
+    # TODO(mvukov) We'll need special linkopts for cc_library as well. For this
+    # to work we'll need Bazel 6.4.0 such that additional_linker_inputs is
+    # available in cc_library.
+    # if target == cc_binary or target == cc_test:
+    #     all_linkopts = ["-Wl,--dynamic-list=$(location @com_github_mvukov_rules_ros2//ros2:exported_symbols.lds)"] + kwargs.pop("linkopts", [])
+    #     all_additional_linker_inputs = ["@com_github_mvukov_rules_ros2//ros2:exported_symbols.lds"] + kwargs.pop("additional_linker_inputs", [])
 
-        kwargs["linkopts"] = all_linkopts
+    #     kwargs["linkopts"] = all_linkopts
+    #     kwargs["additional_linker_inputs"] = all_additional_linker_inputs
 
-        # TODO(mvukov) This will be available in Bazel 6.4.0 for cc_library.
-        kwargs["additional_linker_inputs"] = all_additional_linker_inputs
+    # This is a tmp solution until Bazel 6.4.0 is out.
+    # https://github.com/bazelbuild/bazel/issues/17788
+    all_linkopts = ["-Wl,--export-dynamic"] + kwargs.pop("linkopts", [])
+    kwargs["linkopts"] = all_linkopts
 
     ros2_package_name = ros2_package_name or name
     all_local_defines = ["ROS_PACKAGE_NAME=\\\"{}\\\"".format(ros2_package_name)]
