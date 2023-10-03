@@ -148,9 +148,9 @@ bazel run //repositories/private:resolver
 
     logging.basicConfig(level=logging.INFO)
 
-    with open(args.repos, 'r', encoding='utf-8') as stream:
+    with open(args.repos, encoding='utf-8') as stream:
         repos = yaml.load(stream, Loader=yaml.Loader)['repositories']
-    with open(args.repo_mappings, 'r', encoding='utf-8') as stream:
+    with open(args.repo_mappings, encoding='utf-8') as stream:
         repo_mappings = yaml.load(stream, Loader=yaml.Loader)['repositories']
 
     all_repos_ok = all([info['type'] == 'git' for info in repos.values()])

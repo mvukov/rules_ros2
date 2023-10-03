@@ -39,26 +39,16 @@ repos:
     hooks:
       - id: yapf
         args: [-i, --style, .style.yapf]
-  - repo: https://github.com/myint/autoflake.git
-    rev: v2.2.1
-    hooks:
-      - id: autoflake
-        args:
-          [
-            --remove-all-unused-imports,
-            --ignore-init-module-imports,
-            --in-place,
-          ]
   - repo: https://github.com/asottile/reorder_python_imports
     rev: v3.11.0
     hooks:
       - id: reorder-python-imports
         args: [--py37-plus]
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.1.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.292
     hooks:
-      - id: flake8
-        args: [--max-line-length=80]
+      - id: ruff
+        args: [--fix, --show-fixes, --exit-non-zero-on-fix]
   - repo: https://github.com/pre-commit/mirrors-clang-format
     rev: v16.0.6
     hooks:
