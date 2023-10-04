@@ -21,7 +21,7 @@ from foxglove_bridge import data_paths  # noreorder
 
 
 def generate_launch_description():
-    with open(data_paths.SAM_BOT_URDF_PATH, 'r', encoding='utf-8') as stream:
+    with open(data_paths.SAM_BOT_URDF_PATH, encoding='utf-8') as stream:
         sam_bot_urdf = stream.read()
 
     return launch.LaunchDescription([

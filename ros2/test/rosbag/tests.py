@@ -71,7 +71,7 @@ class TestRecorder(unittest.TestCase):
         self.assertTrue(os.path.exists(bag_db_file))
         self.assertTrue(os.path.exists(bag_metadata_file))
 
-        with open(bag_metadata_file, 'r', encoding='utf-8') as stream:
+        with open(bag_metadata_file, encoding='utf-8') as stream:
             bag_metadata = yaml.load(
                 stream, Loader=yaml.Loader)['rosbag2_bagfile_information']
 
