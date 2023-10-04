@@ -17,8 +17,9 @@ import sys
 
 sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
 
-import pytest  # noqa: E402
-import rosbag2_py  # noqa: E402
+# ruff: noqa: E402
+import pytest
+import rosbag2_py
 
 SQLITE3_STORAGE_ID = 'sqlite3'
 MCAP_STORAGE_ID = 'mcap'
