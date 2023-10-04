@@ -14,15 +14,16 @@
 import os
 import sys
 
-sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)  # noqa
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
 
-import ros2cli.cli  # noqa: E402
-import ros2service.verb.call  # noqa: E402
-import ros2service.verb.find  # noqa: E402
-import ros2service.verb.list  # noqa: E402
-import ros2service.verb.type  # noqa: E402
+# ruff: noqa: E402
+import ros2cli.cli
+import ros2service.verb.call
+import ros2service.verb.find
+import ros2service.verb.list
+import ros2service.verb.type
 
-import ros2.ros2_cmd  # noqa: E402
+import ros2.ros2_cmd
 
 COMMAND_EXTENSIONS = {
     'call': ros2service.verb.call.CallVerb(),

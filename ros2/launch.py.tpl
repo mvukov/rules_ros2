@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)  # noqa
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
 
 from ros2cli import cli
 from ros2launch.command import launch

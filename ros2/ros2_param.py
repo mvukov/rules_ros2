@@ -14,18 +14,19 @@
 import os
 import sys
 
-sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)  # noqa
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
 
-import ros2cli.cli  # noqa: E402
-import ros2param.verb.delete  # noqa: E402
-import ros2param.verb.describe  # noqa: E402
-import ros2param.verb.dump  # noqa: E402
-import ros2param.verb.get  # noqa: E402
-import ros2param.verb.list  # noqa: E402
-import ros2param.verb.load  # noqa: E402
-import ros2param.verb.set  # noqa: E402
+# ruff: noqa: E402
+import ros2cli.cli
+import ros2param.verb.delete
+import ros2param.verb.describe
+import ros2param.verb.dump
+import ros2param.verb.get
+import ros2param.verb.list
+import ros2param.verb.load
+import ros2param.verb.set
 
-import ros2.ros2_cmd  # noqa: E402
+import ros2.ros2_cmd
 
 COMMAND_EXTENSIONS = {
     'delete': ros2param.verb.delete.DeleteVerb(),

@@ -14,13 +14,14 @@
 import os
 import sys
 
-sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)  # noqa
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
 
-import ros2cli.cli  # noqa: E402
-import ros2node.verb.info  # noqa: E402
-import ros2node.verb.list  # noqa: E402
+# ruff: noqa: E402
+import ros2cli.cli
+import ros2node.verb.info
+import ros2node.verb.list
 
-import ros2.ros2_cmd  # noqa: E402
+import ros2.ros2_cmd
 
 COMMAND_EXTENSIONS = {
     'info': ros2node.verb.info.InfoVerb(),
