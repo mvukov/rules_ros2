@@ -6,6 +6,7 @@ exports_files([
     "generate_rclcpp_interface.py",
     "generate_rclcpp_logging_macros.py",
     "generate_rcutils_logging_macros.py",
+    "pip_annotations.bzl",
     "rclcpp_interfaces.bzl",
     "repositories.bzl",
     "ros2_repo_mappings.yaml",
