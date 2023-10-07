@@ -4,11 +4,13 @@ load("//repositories:repositories.bzl", "ros2_repositories")
 
 ros2_repositories()
 
-load("//repositories:deps.bzl", "PIP_ANNOTATIONS", "ros2_deps")
+load("//repositories:deps.bzl", "ros2_deps")
 
 ros2_deps()
 
-load("@rules_python//python:repositories.bzl", "python_register_toolchains")
+load("@rules_python//python:repositories.bzl", "py_repositories", "python_register_toolchains")
+
+py_repositories()
 
 python_register_toolchains(
     name = "rules_ros2_python",
@@ -17,6 +19,7 @@ python_register_toolchains(
 
 load("@rules_python//python:pip.bzl", "pip_parse")
 load("@rules_ros2_python//:defs.bzl", python_interpreter_target = "interpreter")
+load("//repositories:pip_annotations.bzl", "PIP_ANNOTATIONS")
 
 pip_parse(
     name = "rules_ros2_pip_deps",
