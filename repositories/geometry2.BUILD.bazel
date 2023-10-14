@@ -158,6 +158,19 @@ ros2_cpp_binary(
     ],
 )
 
+ros2_cpp_library(
+    name = "cpp_tf2_geometry_msgs",
+    hdrs = ["tf2_geometry_msgs/include/tf2_geometry_msgs/tf2_geometry_msgs.hpp"],
+    includes = ["tf2_geometry_msgs/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":tf2",
+        ":tf2_ros",
+        "@orocos_kdl",
+        "@ros2_common_interfaces//:cpp_geometry_msgs",
+    ],
+)
+
 py_library(
     name = "tf2_py",
     srcs = [
