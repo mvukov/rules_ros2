@@ -11,18 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import threading
 import unittest
-from threading import Event
-from threading import Thread
 
+import diagnostic_msgs.msg
 import launch.actions
 import launch_ros.actions
 import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import rclpy
-from diagnostic_msgs.msg import DiagnosticArray
-from rclpy import node
 
 
 @launch_testing.markers.keep_alive
@@ -46,17 +44,19 @@ def generate_test_description():
     ])
 
 
-class DiagnosticsListener(node.Node):
+class DiagnosticsListener(rclpy.node.Node):
 
     def __init__(self):
         super().__init__('diagnostics_listener')
 
         self.diagnostics_subscription = self.create_subscription(
-            DiagnosticArray, '/diagnostics', self._on_diagnostics, 10)
+            diagnostic_msgs.msg.DiagnosticArray, '/diagnostics',
+            self._on_diagnostics, 10)
         self.diagnostics_agg_subscription = self.create_subscription(
-            DiagnosticArray, '/diagnostics_agg', self._on_diagnostics_agg, 10)
+            diagnostic_msgs.msg.DiagnosticArray, '/diagnostics_agg',
+            self._on_diagnostics_agg, 10)
         self.messages = {}
-        self.both_messages_received = Event()
+        self.both_messages_received = threading.Event()
 
     def _on_diagnostics(self, msg):
         self.messages['/diagnostics'] = msg
@@ -78,8 +78,8 @@ class TestHeartbeatDiagnostic(unittest.TestCase):
         try:
             # Start listener node and wait for messages to be received.
             diagnostics_listener = DiagnosticsListener()
-            thread = Thread(target=lambda node: rclpy.spin(node),
-                            args=(diagnostics_listener,))
+            thread = threading.Thread(target=lambda node: rclpy.spin(node),
+                                      args=(diagnostics_listener,))
             thread.start()
             event_triggered = diagnostics_listener.both_messages_received.wait(
                 timeout=10.0)
