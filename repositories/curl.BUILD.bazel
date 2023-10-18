@@ -104,7 +104,7 @@ cp ${BUILD_TMPDIR}/lib/libcurl.a ${INSTALLDIR}/lib
     """,
     visibility = ["//visibility:public"],
     deps = [
-        "@openssl",
+        "@openssl//:ssl",
         "@zlib",
     ],
 )
