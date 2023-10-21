@@ -76,7 +76,7 @@ cmake(
         "CURL_USE_BEARSSL": "OFF",
         "CURL_USE_NSS": "OFF",
         "CURL_USE_WOLFSSL": "OFF",
-        "CURL_USE_OPENSSL": "OFF",
+        "CURL_USE_OPENSSL": "ON",
         "CURL_DISABLE_OPENSSL_AUTO_LOAD_CONFIG": "OFF",
         "CURL_BROTLI": "OFF",
         "CURL_ZSTD": "OFF",

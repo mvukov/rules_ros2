@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <chrono>
 #include <memory>
 
 #include "diagnostic_updater/diagnostic_updater.hpp"
@@ -25,21 +24,17 @@ class Publisher : public rclcpp::Node {
     diagnostic_updater_.setHardwareID("none");
     diagnostic_updater_.add("", &diagnostic_heartbeat_,
                             &diagnostic_updater::Heartbeat::run);
-
-    auto timer_callback{[this]() {
-      // do nothing
-    }};
-    timer_ = create_wall_timer(std::chrono::milliseconds(20), timer_callback);
   }
 
  private:
   diagnostic_updater::Updater diagnostic_updater_;
   diagnostic_updater::Heartbeat diagnostic_heartbeat_{};
-  rclcpp::TimerBase::SharedPtr timer_;
 };
 
 int main(int argc, char* argv[]) {
   rclcpp::init(argc, argv);
   rclcpp::spin(std::make_shared<Publisher>());
-  return rclcpp::shutdown() ? EXIT_SUCCESS : EXIT_FAILURE;
+  rclcpp::shutdown();  // will return false if already shutdown due to SIGINT,
+                       // so ignore return value
+  return EXIT_SUCCESS;
 }
