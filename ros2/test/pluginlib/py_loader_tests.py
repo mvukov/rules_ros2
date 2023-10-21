@@ -14,7 +14,7 @@
 import os
 import sys
 
-sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_NOW)
 
 from ros2.test.pluginlib import py_loader  # noqa: E402
 

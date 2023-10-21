@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_NOW)
 
 import ros2.ros2_cmd
 import ros2bag.verb.convert

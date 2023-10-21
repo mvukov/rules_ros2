@@ -14,7 +14,7 @@
 import os
 import sys
 
-sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_NOW)
 
 # ruff: noqa: E402
 import ros2cli.cli
