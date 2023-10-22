@@ -219,7 +219,9 @@ def ros2_repositories():
         urls = ["https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-27-0.tar.gz"],
     )
 
-    # We're pointing at hedronvision's mirror of google/boringssl:master-with-bazel to get Renovate auto-update. Otherwise, Renovate will keep moving us back to master, which doesn't support Bazel. See https://github.com/renovatebot/renovate/issues/18492
+    # We're pointing at hedronvision's mirror of google/boringssl:main-with-bazel to get
+    # Renovate auto-update. Otherwise, Renovate will keep moving us back to main, which doesn't
+    # support Bazel.
     maybe(
         http_archive,
         name = "openssl",
