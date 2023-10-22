@@ -1,5 +1,5 @@
 {
   rosidl_typesupport_introspection_c__identifier;
   *rosidl_typesupport_introspection_cpp*typesupport_identifier*;
-  *class_loader*impl*AbstractMetaObject*;  # TODO(mvukov) To be tested.
+  *class_loader*impl*;
 };
