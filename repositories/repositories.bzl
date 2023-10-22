@@ -219,13 +219,15 @@ def ros2_repositories():
         urls = ["https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-27-0.tar.gz"],
     )
 
+    # We're pointing at hedronvision's mirror of google/boringssl:main-with-bazel to get
+    # Renovate auto-update. Otherwise, Renovate will keep moving us back to main, which doesn't
+    # support Bazel.
     maybe(
         http_archive,
         name = "openssl",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:openssl.BUILD.bazel",
-        sha256 = "f89199be8b23ca45fc7cb9f1d8d3ee67312318286ad030f5316aca6462db6c96",
-        strip_prefix = "openssl-1.1.1m",
-        urls = ["https://www.openssl.org/source/openssl-1.1.1m.tar.gz"],
+        sha256 = "e2d8e5ed850a917e74a249d3bef3356c7e4c40622457d5a34871b73a18c92e3b",
+        strip_prefix = "boringssl-207f9c208a08ca6e931b30b5b89a2e0f02c5ee41",
+        urls = ["https://github.com/hedronvision/boringssl/archive/207f9c208a08ca6e931b30b5b89a2e0f02c5ee41.tar.gz"],
     )
 
     maybe(
