@@ -66,9 +66,9 @@ def ros2_repositories():
     maybe(
         http_archive,
         name = "rules_foreign_cc",
-        sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
-        strip_prefix = "rules_foreign_cc-0.9.0",
-        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
+        sha256 = "476303bd0f1b04cc311fc258f1708a5f6ef82d3091e53fd1977fa20383425a6a",
+        strip_prefix = "rules_foreign_cc-0.10.1",
+        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.10.1.tar.gz",
     )
 
     maybe(
@@ -187,9 +187,9 @@ def ros2_repositories():
         http_archive,
         name = "foxglove_bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
-        sha256 = "23acb21ea8c075f224c70e960b55cb46db40d8071e51deaa8ee0bb4bfe3a13f9",
-        strip_prefix = "ros-foxglove-bridge-0.7.2",
-        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.2.tar.gz"],
+        sha256 = "a0297d2e7e1657c5bcb4b88af040d9a46fcfa8208bf3a599b8d5a91e9b2071ca",
+        strip_prefix = "ros-foxglove-bridge-0.7.3",
+        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.3.tar.gz"],
     )
 
     maybe(
@@ -225,9 +225,9 @@ def ros2_repositories():
     maybe(
         http_archive,
         name = "openssl",
-        sha256 = "277712f2e66a52d0ee3c48408940917d9c07d96c239ca8efb519b4804601f805",
-        strip_prefix = "boringssl-8b0fd5819204a9f9502bf8dfb4c518b5d8122a92",
-        urls = ["https://github.com/hedronvision/boringssl/archive/8b0fd5819204a9f9502bf8dfb4c518b5d8122a92.tar.gz"],
+        sha256 = "cadf60fa16e6e63d553cf724db7768e56ee0ef6ea9ff0293922bfb32aa49757f",
+        strip_prefix = "boringssl-3ef596812bc6e0deecce291215923060455bf662",
+        urls = ["https://github.com/hedronvision/boringssl/archive/3ef596812bc6e0deecce291215923060455bf662.tar.gz"],
     )
 
     maybe(
