@@ -187,9 +187,9 @@ def ros2_repositories():
         http_archive,
         name = "foxglove_bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
-        sha256 = "23acb21ea8c075f224c70e960b55cb46db40d8071e51deaa8ee0bb4bfe3a13f9",
-        strip_prefix = "ros-foxglove-bridge-0.7.2",
-        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.2.tar.gz"],
+        sha256 = "a0297d2e7e1657c5bcb4b88af040d9a46fcfa8208bf3a599b8d5a91e9b2071ca",
+        strip_prefix = "ros-foxglove-bridge-0.7.3",
+        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.3.tar.gz"],
     )
 
     maybe(
