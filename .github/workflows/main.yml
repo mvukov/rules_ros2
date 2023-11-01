@@ -35,6 +35,7 @@ jobs:
   test:
     name: Run tests
     runs-on: ubuntu-22.04
+    container: mvukov/bazel-builder:commit-5e4745c94c121400da07ceafafecf679b62958f5
 
     # Run bazel test with gcc and clang in each workspace
     strategy:
