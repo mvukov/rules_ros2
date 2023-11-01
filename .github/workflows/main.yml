@@ -37,9 +37,12 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       uid_gid: ${{ steps.get-user.outputs.uid_gid }}
+      user_name: ${{ steps.get-user-name.outputs.user_name }}
     steps:
       - id: get-user
         run: echo "::set-output name=uid_gid::$(id -u):$(id -g)"
+      - id: get-user-name
+        run: echo "::set-output name=user_name::$(whoami)"
   test:
     name: Run tests
     needs: configure
@@ -93,5 +96,6 @@ jobs:
           XDG_CACHE_HOME: ~/.cache/bazel-repo
           BAZEL_ARGS: ${{ matrix.config_option }}
           BUILDBUDDY_ORG_API_KEY: ${{ secrets.BUILDBUDDY_ORG_API_KEY }}
+          USER: ${{ needs.configure.outputs.user_name }}
         working-directory: ${{ matrix.folder }}
         run: ${GITHUB_WORKSPACE}/.github/workflows/test.sh
