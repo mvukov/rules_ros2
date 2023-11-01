@@ -32,10 +32,21 @@ jobs:
           python-version: 3.8
       - name: Run pre-commit checks
         uses: pre-commit/action@v3.0.0
+  # https://github.com/actions/runner/issues/691
+  configure:
+    runs-on: ubuntu-latest
+    outputs:
+      uid_gid: ${{ steps.get-user.outputs.uid_gid }}
+    steps:
+      - id: get-user
+        run: echo "::set-output name=uid_gid::$(id -u):$(id -g)"
   test:
     name: Run tests
+    needs: configure
     runs-on: ubuntu-22.04
-    container: mvukov/bazel-builder:commit-5e4745c94c121400da07ceafafecf679b62958f5
+    container:
+      image: mvukov/bazel-builder:commit-5e4745c94c121400da07ceafafecf679b62958f5
+      options: --user ${{ needs.configure.outputs.uid_gid }}
 
     # Run bazel test with gcc and clang in each workspace
     strategy:
