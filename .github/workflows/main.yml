@@ -94,4 +94,4 @@ jobs:
           BAZEL_ARGS: ${{ matrix.config_option }}
           BUILDBUDDY_ORG_API_KEY: ${{ secrets.BUILDBUDDY_ORG_API_KEY }}
         working-directory: ${{ matrix.folder }}
-        run: .github/workflows/test.sh
+        run: pwd && ls && .github/workflows/test.sh
