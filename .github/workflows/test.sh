@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 if [[ ! -z "${BUILDBUDDY_ORG_API_KEY}" ]]; then
   BAZEL_REMOTE_CONFIG=(
