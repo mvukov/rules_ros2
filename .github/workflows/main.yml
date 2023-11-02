@@ -48,7 +48,7 @@ jobs:
     needs: configure
     runs-on: ubuntu-22.04
     container:
-      image: mvukov/bazel-builder:commit-209807a3c1ed3b67e4999ab8ca2459201696f072
+      image: mvukov/bazel-builder:commit-8b1d07f800cc2b9a47a010da5b42c3f29294506e
       credentials:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
