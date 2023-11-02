@@ -40,9 +40,9 @@ jobs:
       user_name: ${{ steps.get-user-name.outputs.user_name }}
     steps:
       - id: get-user
-        run: echo "::set-output name=uid_gid::$(id -u):$(id -g)"
+        run: echo "uid_gid=$(id -u):$(id -g)" >> $GITHUB_OUTPUT
       - id: get-user-name
-        run: echo "::set-output name=user_name::$(whoami)"
+        run: echo "user_name=$(whoami)" >> $GITHUB_OUTPUT
   test:
     name: Run tests
     needs: configure
