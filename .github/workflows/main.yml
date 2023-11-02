@@ -97,8 +97,7 @@ jobs:
         env:
           # Bazelisk will download bazel to here, ensure it is cached between runs.
           XDG_CACHE_HOME: ~/.cache/bazel-repo
-          BAZEL_ARGS: ${{ matrix.config_option }}
           BUILDBUDDY_ORG_API_KEY: ${{ secrets.BUILDBUDDY_ORG_API_KEY }}
           USER: ${{ needs.configure.outputs.user_name }}
         working-directory: ${{ matrix.folder }}
-        run: ${GITHUB_WORKSPACE}/.github/workflows/test.sh
+        run: ${GITHUB_WORKSPACE}/.github/workflows/test.sh ${{ matrix.config_option }}
