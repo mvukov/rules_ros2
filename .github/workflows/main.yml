@@ -19,7 +19,7 @@ concurrency:
 jobs:
   pre-commit:
     name: Pre-commit checks
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,12 +29,30 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: "3.10"
       - name: Run pre-commit checks
         uses: pre-commit/action@v3.0.0
+  # https://github.com/actions/runner/issues/691
+  configure:
+    runs-on: ubuntu-latest
+    outputs:
+      uid_gid: ${{ steps.get-user.outputs.uid_gid }}
+      user_name: ${{ steps.get-user-name.outputs.user_name }}
+    steps:
+      - id: get-user
+        run: echo "::set-output name=uid_gid::$(id -u):$(id -g)"
+      - id: get-user-name
+        run: echo "::set-output name=user_name::$(whoami)"
   test:
     name: Run tests
-    runs-on: ubuntu-20.04
+    needs: configure
+    runs-on: ubuntu-22.04
+    container:
+      image: mvukov/bazel-builder:commit-8b1d07f800cc2b9a47a010da5b42c3f29294506e
+      credentials:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      options: --user ${{ needs.configure.outputs.uid_gid }}
 
     # Run bazel test with gcc and clang in each workspace
     strategy:
@@ -80,13 +98,6 @@ jobs:
           # Bazelisk will download bazel to here, ensure it is cached between runs.
           XDG_CACHE_HOME: ~/.cache/bazel-repo
           BUILDBUDDY_ORG_API_KEY: ${{ secrets.BUILDBUDDY_ORG_API_KEY }}
+          USER: ${{ needs.configure.outputs.user_name }}
         working-directory: ${{ matrix.folder }}
-        run: |
-          if [[ ! -z "${BUILDBUDDY_ORG_API_KEY}" ]]; then
-            BAZEL_REMOTE_CONFIG=(
-              --config=remote
-              --remote_header=x-buildbuddy-api-key="${BUILDBUDDY_ORG_API_KEY}"
-            )
-          fi
-          bazel --bazelrc=$GITHUB_WORKSPACE/.github/workflows/ci.bazelrc --bazelrc=.bazelrc \
-              test "${BAZEL_REMOTE_CONFIG[@]}" ${{ matrix.config_option }} //...
+        run: ${GITHUB_WORKSPACE}/.github/workflows/test.sh ${{ matrix.config_option }}
