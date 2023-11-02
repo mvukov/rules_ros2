@@ -14,7 +14,7 @@ py_repositories()
 
 python_register_toolchains(
     name = "rules_ros2_python",
-    python_version = "3.8.13",
+    python_version = "3.10",
 )
 
 load("@rules_python//python:pip.bzl", "pip_parse")
