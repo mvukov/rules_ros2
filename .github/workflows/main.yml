@@ -48,7 +48,10 @@ jobs:
     needs: configure
     runs-on: ubuntu-22.04
     container:
-      image: mvukov/bazel-builder:commit-294933ae307943dedf54b0be5f024a7935e41baa
+      image: mvukov/bazel-builder:commit-209807a3c1ed3b67e4999ab8ca2459201696f072
+      credentials:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
       options: --user ${{ needs.configure.outputs.uid_gid }}
 
     # Run bazel test with gcc and clang in each workspace
