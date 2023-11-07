@@ -43,10 +43,6 @@ To run the sample deployment in a Docker container, run
 bazel run //chatter:chatter_image
 ```
 
-The base docker image is defined in [this](https://github.com/mvukov/rules_ros/blob/main/docker/base/base.Dockerfile) Dockerfile.
-The compressed size of this deployment
-container (compiled with `--config=opt`) is less than 50 MB (see [here](https://hub.docker.com/layers/mvukov/chatter/demo_ros2/images/sha256-c87e229e75ea5a8e2983f8e63b2357ec856edc2918bd9619a065e1b8449cf23f?context=repo)).
-
 Alternatively, you can run nodes without the launch mechanism. In a terminal run
 
 ```sh

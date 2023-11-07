@@ -81,6 +81,7 @@ load(
     "container_pull",
 )
 
+# The base docker image is defined in [mvukov/bazel_deploy_base](https://github.com/mvukov/bazel_deploy_base) repo.
 container_pull(
     name = "ros_deploy_base",
     digest = "sha256:322c3900f36c4078f4a7831026bd1782c859d27f0a8fc909c9928e59bdd764bb",
