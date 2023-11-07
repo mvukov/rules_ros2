@@ -81,9 +81,10 @@ load(
     "container_pull",
 )
 
+# The base docker image is defined in https://github.com/mvukov/bazel_deploy_base repo.
 container_pull(
     name = "ros_deploy_base",
-    digest = "sha256:54967c8f59e8607cd4a40c0d614b3391bf71112482f2e344d93ff455f60b3723",
+    digest = "sha256:322c3900f36c4078f4a7831026bd1782c859d27f0a8fc909c9928e59bdd764bb",
     registry = "docker.io",
-    repository = "mvukov/ros-deploy-base",
+    repository = "mvukov/bazel-deploy-base",
 )
