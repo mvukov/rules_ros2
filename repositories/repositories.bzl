@@ -225,9 +225,9 @@ def ros2_repositories():
     maybe(
         http_archive,
         name = "openssl",
-        sha256 = "1084c21ea5e5ddc9ff56c85cb49f90fb2ed4df0dc486b4a42bf81248c91bc08b",
-        strip_prefix = "boringssl-6214c2786a1b076dd159a8281e206dca2478d540",
-        urls = ["https://github.com/hedronvision/boringssl/archive/6214c2786a1b076dd159a8281e206dca2478d540.tar.gz"],
+        sha256 = "c5da21bd65e5dd4ed6e43a1fdbb1b18b2621b1f8432ab1d358dd1d7ce774931b",
+        strip_prefix = "boringssl-be9f381101c33b110796dedcea2872462b7df2a5",
+        urls = ["https://github.com/hedronvision/boringssl/archive/be9f381101c33b110796dedcea2872462b7df2a5.tar.gz"],
     )
 
     maybe(
