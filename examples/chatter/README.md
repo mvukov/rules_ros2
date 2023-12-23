@@ -37,12 +37,6 @@ You can run tests with
 bazel test //chatter:tests  # To see the logs run with `--test_output=all`.
 ```
 
-To run the sample deployment in a Docker container, run
-
-```sh
-bazel run //chatter:chatter_image
-```
-
 Alternatively, you can run nodes without the launch mechanism. In a terminal run
 
 ```sh

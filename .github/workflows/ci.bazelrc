@@ -17,7 +17,7 @@ build:remote --experimental_remote_cache_compression
 # buildbuddy suggestions:
 build:remote --experimental_profile_include_primary_output
 build:remote --experimental_profile_include_target_label
-build:remote --experimental_remote_build_event_upload=minimal
+build:remote --remote_build_event_upload=minimal
 build:remote --noslim_profile
 
 # Don't spam CI logs.
