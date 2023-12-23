@@ -3,8 +3,6 @@ load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
 load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
 load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
 load("@com_github_mvukov_rules_ros2//ros2:topic.bzl", "ros2_topic")
-load("@io_bazel_rules_docker//container:container.bzl", "container_push")
-load("@io_bazel_rules_docker//lang:image.bzl", container_image = "app_layer")
 load("@rules_python//python:defs.bzl", "py_binary")
 
 ros2_cpp_binary(
@@ -69,20 +67,4 @@ ros2_bag(
         "@ros2_rcl_interfaces//:rcl_interfaces",
         "@ros2_rosbag2//:rosbag2_interfaces",
     ],
-)
-
-container_image(
-    name = "chatter_image",
-    base = "@ros_deploy_base//image",
-    binary = ":chatter",
-    docker_run_flags = "-it --rm --network=host",
-)
-
-container_push(
-    name = "chatter_publish",
-    format = "Docker",
-    image = ":chatter_image",
-    registry = "docker.io",
-    repository = "mvukov/chatter",
-    tag = "demo_ros2",
 )

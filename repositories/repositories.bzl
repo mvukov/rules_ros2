@@ -15,16 +15,16 @@ def ros2_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "9d04041ac92a0985e344235f5d946f71ac543f1b1565f2cdbc9a2aaee8adf55b",
-        strip_prefix = "rules_python-0.26.0",
-        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.26.0.tar.gz",
+        sha256 = "e85ae30de33625a63eca7fc40a94fea845e641888e52f32b6beea91e8b1b2793",
+        strip_prefix = "rules_python-0.27.1",
+        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.27.1.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "bazel_skylib",
-        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.4.2/bazel-skylib-1.4.2.tar.gz"],
-        sha256 = "66ffd9315665bfaafc96b52278f57c7e2dd09f5ede279ea6d39b2be471e7e3aa",
+        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.5.0/bazel-skylib-1.5.0.tar.gz"],
+        sha256 = "cd55a062e763b9349921f0f5db8c3933288dc8ba4f76dd9416aac68acee3cb94",
     )
 
     maybe(
@@ -187,18 +187,16 @@ def ros2_repositories():
         http_archive,
         name = "foxglove_bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
-        sha256 = "a0297d2e7e1657c5bcb4b88af040d9a46fcfa8208bf3a599b8d5a91e9b2071ca",
-        strip_prefix = "ros-foxglove-bridge-0.7.3",
-        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.3.tar.gz"],
+        sha256 = "dbb0fd90f64324590b63119a3265b03c629e07b7c13f14a3df3bc28eff1e8147",
+        strip_prefix = "ros-foxglove-bridge-0.7.4",
+        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.4.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "nlohmann_json",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:nlohmann_json.BUILD.bazel",
-        strip_prefix = "single_include",
-        sha256 = "e5c7a9f49a16814be27e4ed0ee900ecd0092bfb7dbfca65b5a421b774dccaaed",
-        urls = ["https://github.com/nlohmann/json/releases/download/v3.11.2/include.zip"],
+        sha256 = "a22461d13119ac5c78f205d3df1db13403e58ce1bb1794edc9313677313f4a9d",
+        urls = ["https://github.com/nlohmann/json/releases/download/v3.11.3/include.zip"],
     )
 
     maybe(
@@ -225,9 +223,9 @@ def ros2_repositories():
     maybe(
         http_archive,
         name = "openssl",
-        sha256 = "fd2a5dc6c3bcd614689de80fd14ca122978678b52a2e9851d88199cad27142f9",
-        strip_prefix = "boringssl-e4978c569883d747cd1e2807a107362bd6ff7f93",
-        urls = ["https://github.com/hedronvision/boringssl/archive/e4978c569883d747cd1e2807a107362bd6ff7f93.tar.gz"],
+        sha256 = "fc8024e639e6483a563437396a6ff670771f4f3588ac02cd81df616cc51168a4",
+        strip_prefix = "boringssl-24704944bc10c1527c26e2994743246d5a42b4aa",
+        urls = ["https://github.com/hedronvision/boringssl/archive/24704944bc10c1527c26e2994743246d5a42b4aa.tar.gz"],
     )
 
     maybe(
