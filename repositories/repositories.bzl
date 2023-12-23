@@ -187,9 +187,9 @@ def ros2_repositories():
         http_archive,
         name = "foxglove_bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
-        sha256 = "a0297d2e7e1657c5bcb4b88af040d9a46fcfa8208bf3a599b8d5a91e9b2071ca",
-        strip_prefix = "ros-foxglove-bridge-0.7.3",
-        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.3.tar.gz"],
+        sha256 = "dbb0fd90f64324590b63119a3265b03c629e07b7c13f14a3df3bc28eff1e8147",
+        strip_prefix = "ros-foxglove-bridge-0.7.4",
+        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.4.tar.gz"],
     )
 
     maybe(
@@ -225,9 +225,9 @@ def ros2_repositories():
     maybe(
         http_archive,
         name = "openssl",
-        sha256 = "e45f9b8cb7bfd10684434b56b791f2ee098786b3450562175ea5f6bc54d4ef4f",
-        strip_prefix = "boringssl-077931c230cc9d96ee6be17d52df9e9ae5f4bb75",
-        urls = ["https://github.com/hedronvision/boringssl/archive/077931c230cc9d96ee6be17d52df9e9ae5f4bb75.tar.gz"],
+        sha256 = "fc8024e639e6483a563437396a6ff670771f4f3588ac02cd81df616cc51168a4",
+        strip_prefix = "boringssl-24704944bc10c1527c26e2994743246d5a42b4aa",
+        urls = ["https://github.com/hedronvision/boringssl/archive/24704944bc10c1527c26e2994743246d5a42b4aa.tar.gz"],
     )
 
     maybe(
