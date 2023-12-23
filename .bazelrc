@@ -1,5 +1,7 @@
 # See e.g. https://blog.aspect.dev/bazelrc-flags
 
+build --noenable_bzlmod
+
 # https://github.com/bazelbuild/rules_foreign_cc/issues/1129
 build --noincompatible_sandbox_hermetic_tmp
 
