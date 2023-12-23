@@ -25,7 +25,7 @@ cc_library(
     copts = ["-std=c++17"],
     includes = ["foxglove_bridge_base/include"],
     deps = [
-        "@nlohmann_json",
+        "@nlohmann_json//:json",
         "@websocketpp",
     ],
 )
