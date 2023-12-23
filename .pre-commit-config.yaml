@@ -4,7 +4,7 @@ exclude: (.*\.patch)
 
 repos:
   - repo: https://github.com/keith/pre-commit-buildifier
-    rev: 6.3.3
+    rev: 6.4.0
     hooks:
       - id: buildifier
         args:
@@ -45,7 +45,7 @@ repos:
       - id: reorder-python-imports
         args: [--py37-plus]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.7
+    rev: v0.1.9
     hooks:
       - id: ruff
         args: [--fix, --show-fixes, --exit-non-zero-on-fix]
