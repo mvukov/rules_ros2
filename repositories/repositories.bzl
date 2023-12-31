@@ -85,9 +85,9 @@ def ros2_repositories():
         http_archive,
         name = "tinyxml2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:tinyxml2.BUILD.bazel",
-        sha256 = "cc2f1417c308b1f6acc54f88eb70771a0bf65f76282ce5c40e54cfe52952702c",
-        strip_prefix = "tinyxml2-9.0.0",
-        urls = ["https://github.com/leethomason/tinyxml2/archive/refs/tags/9.0.0.tar.gz"],
+        sha256 = "3bdf15128ba16686e69bce256cc468e76c7b94ff2c7f391cc5ec09e40bff3839",
+        strip_prefix = "tinyxml2-10.0.0",
+        urls = ["https://github.com/leethomason/tinyxml2/archive/refs/tags/10.0.0.tar.gz"],
     )
 
     maybe(
