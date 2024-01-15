@@ -2,9 +2,9 @@ catkin_pkg
 coverage
 empy
 lark-parser
-netifaces
 numpy
 packaging
+psutil
 pytest
 pytest-cov
 pyyaml
