@@ -1,3 +1,7 @@
+default_language_version:
+  python: python3.10
+  node: 18.16.0
+
 default_stages: [commit]
 
 exclude: (.*\.patch)
