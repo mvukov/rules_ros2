@@ -11,8 +11,8 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         "@ros2_rclpy//:rclpy",
-        requirement("netifaces"),
         requirement("packaging"),
+        requirement("psutil"),
         requirement("types-pkg-resources"),
     ],
 )
