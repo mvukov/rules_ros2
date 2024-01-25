@@ -10,7 +10,6 @@ cc_library(
     includes = ["resource_retriever/include"],
     visibility = ["//visibility:public"],
     deps = [
-        "@boost//:shared_ptr",
         "@curl",
         "@ros2_ament_index//:ament_index_cpp",
     ],
