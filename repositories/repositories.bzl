@@ -291,14 +291,6 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "com_github_nelhage_rules_boost",
-        sha256 = "b375550dde177abb48d9fc6edf63a7850aec350cdb4dc3360a456ea0fbd7d45c",
-        strip_prefix = "rules_boost-45015796689f17e9fc7972073eb7830784c40ee9",
-        urls = ["https://github.com/nelhage/rules_boost/archive/45015796689f17e9fc7972073eb7830784c40ee9.zip"],
-    )
-
-    maybe(
-        http_archive,
         name = "curl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:curl.BUILD.bazel",
         sha256 = "230d61a4b1eb3346930f2d601cc8fe5237957163e16befbe15e0ef40c56767a2",
