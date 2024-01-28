@@ -1,6 +1,8 @@
 workspace(name = "com_github_mvukov_rules_ros2")
 
-load("//repositories:repositories.bzl", "ros2_repositories")
+load("//repositories:repositories.bzl", "ros2_repositories", "rules_ros2_workspace_deps")
+
+rules_ros2_workspace_deps()
 
 ros2_repositories()
 

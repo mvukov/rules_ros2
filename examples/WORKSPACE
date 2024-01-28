@@ -16,7 +16,9 @@ local_repository(
 #     url = "https://github.com/mvukov/rules_ros2/archive/<git commit SHA>.tar.gz",
 # )
 
-load("@com_github_mvukov_rules_ros2//repositories:repositories.bzl", "ros2_repositories")
+load("@com_github_mvukov_rules_ros2//repositories:repositories.bzl", "ros2_repositories", "rules_ros2_workspace_deps")
+
+rules_ros2_workspace_deps()
 
 ros2_repositories()
 
