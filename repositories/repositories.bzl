@@ -15,9 +15,9 @@ def ros2_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "e85ae30de33625a63eca7fc40a94fea845e641888e52f32b6beea91e8b1b2793",
-        strip_prefix = "rules_python-0.27.1",
-        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.27.1.tar.gz",
+        sha256 = "d71d2c67e0bce986e1c5a7731b4693226867c45bfe0b7c5e0067228a536fc580",
+        strip_prefix = "rules_python-0.29.0",
+        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.29.0.tar.gz",
     )
 
     maybe(
@@ -40,9 +40,9 @@ def ros2_repositories():
         http_archive,
         name = "spdlog",
         build_file = "@com_github_mvukov_rules_ros2//repositories:spdlog.BUILD.bazel",
-        sha256 = "4dccf2d10f410c1e2feaff89966bfc49a1abb29ef6f08246335b110e001e09a9",
-        strip_prefix = "spdlog-1.12.0",
-        url = "https://github.com/gabime/spdlog/archive/v1.12.0.tar.gz",
+        sha256 = "534f2ee1a4dcbeb22249856edfb2be76a1cf4f708a20b0ac2ed090ee24cfdbc9",
+        strip_prefix = "spdlog-1.13.0",
+        url = "https://github.com/gabime/spdlog/archive/v1.13.0.tar.gz",
     )
 
     maybe(
@@ -85,9 +85,9 @@ def ros2_repositories():
         http_archive,
         name = "tinyxml2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:tinyxml2.BUILD.bazel",
-        sha256 = "cc2f1417c308b1f6acc54f88eb70771a0bf65f76282ce5c40e54cfe52952702c",
-        strip_prefix = "tinyxml2-9.0.0",
-        urls = ["https://github.com/leethomason/tinyxml2/archive/refs/tags/9.0.0.tar.gz"],
+        sha256 = "3bdf15128ba16686e69bce256cc468e76c7b94ff2c7f391cc5ec09e40bff3839",
+        strip_prefix = "tinyxml2-10.0.0",
+        urls = ["https://github.com/leethomason/tinyxml2/archive/refs/tags/10.0.0.tar.gz"],
     )
 
     maybe(
@@ -187,9 +187,9 @@ def ros2_repositories():
         http_archive,
         name = "foxglove_bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
-        sha256 = "dbb0fd90f64324590b63119a3265b03c629e07b7c13f14a3df3bc28eff1e8147",
-        strip_prefix = "ros-foxglove-bridge-0.7.4",
-        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.4.tar.gz"],
+        sha256 = "083940a629c225640e4f4a4a9f43512907c98c5c468ae93c75429d8447a97c69",
+        strip_prefix = "ros-foxglove-bridge-0.7.5",
+        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.5.tar.gz"],
     )
 
     maybe(
@@ -223,9 +223,9 @@ def ros2_repositories():
     maybe(
         http_archive,
         name = "openssl",
-        sha256 = "fc8024e639e6483a563437396a6ff670771f4f3588ac02cd81df616cc51168a4",
-        strip_prefix = "boringssl-24704944bc10c1527c26e2994743246d5a42b4aa",
-        urls = ["https://github.com/hedronvision/boringssl/archive/24704944bc10c1527c26e2994743246d5a42b4aa.tar.gz"],
+        sha256 = "cf1cfe0adb443ef96197b109292847c0a97304058af21f3488a323b51984608a",
+        strip_prefix = "boringssl-e762bd792ab7fecb170bdb1cd96a0bfb0c9d3238",
+        urls = ["https://github.com/hedronvision/boringssl/archive/e762bd792ab7fecb170bdb1cd96a0bfb0c9d3238.tar.gz"],
     )
 
     maybe(
@@ -287,14 +287,6 @@ def ros2_repositories():
         sha256 = "a723dae7acf0f00ee643c076c7c81299be0254919f29225ec7a89dc14cb8ea6f",
         strip_prefix = "diagnostics-9f402787ea2c9b3dd4d7e51a9986810e8a3400ba",
         urls = ["https://github.com/ros/diagnostics/archive/9f402787ea2c9b3dd4d7e51a9986810e8a3400ba.zip"],
-    )
-
-    maybe(
-        http_archive,
-        name = "com_github_nelhage_rules_boost",
-        sha256 = "b375550dde177abb48d9fc6edf63a7850aec350cdb4dc3360a456ea0fbd7d45c",
-        strip_prefix = "rules_boost-45015796689f17e9fc7972073eb7830784c40ee9",
-        urls = ["https://github.com/nelhage/rules_boost/archive/45015796689f17e9fc7972073eb7830784c40ee9.zip"],
     )
 
     maybe(

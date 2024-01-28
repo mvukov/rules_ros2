@@ -34,7 +34,7 @@ jobs:
         uses: pre-commit/action@v3.0.0
   # https://github.com/actions/runner/issues/691
   configure:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       uid_gid: ${{ steps.get-user.outputs.uid_gid }}
       user_name: ${{ steps.get-user-name.outputs.user_name }}
@@ -49,9 +49,6 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: mvukov/bazel-builder:commit-8b1d07f800cc2b9a47a010da5b42c3f29294506e
-      credentials:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
       options: --user ${{ needs.configure.outputs.uid_gid }}
 
     # Run bazel test with gcc and clang in each workspace
@@ -87,7 +84,7 @@ jobs:
       # previously built artifacts to minimize build time. The more precise you are with
       # hashFiles sources the less work bazel will have to do.
       - name: Mount bazel caches
-        uses: actions/cache@v3.3.2
+        uses: actions/cache@v4.0.0
         with:
           path: |
             ~/.cache/bazel-repo
