@@ -29,7 +29,7 @@ ros2_cpp_library(
         "@ros2_pluginlib//:pluginlib",
         "@ros2_rcpputils//:rcpputils",
         "@ros2_rcutils//:rcutils",
-        "@yaml_cpp",
+        "@yaml-cpp",
     ],
 )
 
@@ -54,7 +54,7 @@ ros2_plugin(
         "@ros2_rcpputils//:rcpputils",
         "@ros2_rcutils//:rcutils",
         "@sqlite",
-        "@yaml_cpp",
+        "@yaml-cpp",
     ],
 )
 
@@ -142,7 +142,7 @@ ros2_cpp_library(
         "@ros2_rosidl//:rosidl_runtime_cpp",
         "@ros2_rosidl//:rosidl_typesupport_introspection_cpp",
         "@ros2_rosidl_typesupport//:rosidl_typesupport_cpp",
-        "@yaml_cpp",
+        "@yaml-cpp",
     ],
 )
 
@@ -232,7 +232,7 @@ ros2_cpp_library(
         "@readerwriterqueue",
         "@ros2_keyboard_handler//:keyboard_handler",
         "@ros2_rmw//:rmw_cpp",
-        "@yaml_cpp",
+        "@yaml-cpp",
     ],
 )
 
