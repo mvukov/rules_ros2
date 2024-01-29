@@ -48,8 +48,8 @@ ros2_cpp_test(
     ],
     tags = ["cpu:2"],
     deps = [
-        "@com_google_googletest//:gtest",
         "@foxglove_bridge//:foxglove_bridge_component",
+        "@googletest//:gtest",
         "@ros2_common_interfaces//:cpp_std_msgs",
     ],
 )

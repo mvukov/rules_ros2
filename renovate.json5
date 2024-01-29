@@ -21,7 +21,7 @@
       matchManagers: ["bazel"],
       matchPackageNames: [
         "bazel_skylib",
-        "com_google_googletest",
+        "googletest",
         "eigen",
         "foxglove_bridge",
         "nlohmann_json",

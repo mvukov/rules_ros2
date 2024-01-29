@@ -1,4 +1,4 @@
-""" Builds yaml_cpp.
+""" Builds yaml-cpp.
 """
 
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
@@ -10,7 +10,7 @@ filegroup(
 )
 
 cmake(
-    name = "yaml_cpp",
+    name = "yaml-cpp",
     build_args = [
         "--",
         "-j4",
