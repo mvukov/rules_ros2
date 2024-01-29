@@ -62,7 +62,7 @@ ros2_cpp_test(
         "@ros2_common_interfaces//:std_msgs",
     ],
     deps = [
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
         "@ros2_rclcpp//:rclcpp",
     ],
 )
