@@ -110,8 +110,8 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "sqlite",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:sqlite.BUILD.bazel",
+        name = "sqlite3",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:sqlite3.BUILD.bazel",
         sha256 = "ad68c1216c3a474cf360c7581a4001e952515b3649342100f2d7ca7c8e313da6",
         strip_prefix = "sqlite-amalgamation-3240000",
         urls = ["https://www.sqlite.org/2018/sqlite-amalgamation-3240000.zip"],

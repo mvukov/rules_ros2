@@ -53,7 +53,7 @@ ros2_plugin(
         "@ros2_pluginlib//:pluginlib",
         "@ros2_rcpputils//:rcpputils",
         "@ros2_rcutils//:rcutils",
-        "@sqlite",
+        "@sqlite3",
         "@yaml-cpp",
     ],
 )
