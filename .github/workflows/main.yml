@@ -87,9 +87,10 @@ jobs:
         uses: actions/cache@v4.0.0
         with:
           path: |
+            ~/.cache/bazel
             ~/.cache/bazel-repo
-          key: v3-bazel-repo-cache-${{ hashFiles('.bazelversion', 'examples/WORKSPACE', 'repositories/**', 'requirements_lock.txt', 'WORKSPACE') }}
-          restore-keys: v3-bazel-repo-cache-
+          key: v3-bazel-repo-cache-${{ matrix.toolchain }}-${{ hashFiles('.bazelversion', 'examples/WORKSPACE', 'repositories/**', 'requirements_lock.txt', 'WORKSPACE') }}
+          restore-keys: v3-bazel-repo-cache-${{ matrix.toolchain }}-
       - name: bazel test ${{ matrix.config_option }} //...
         env:
           # Bazelisk will download bazel to here, ensure it is cached between runs.

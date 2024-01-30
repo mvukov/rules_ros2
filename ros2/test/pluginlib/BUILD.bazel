@@ -50,7 +50,7 @@ ros2_cpp_test(
     set_up_ament = True,
     deps = [
         ":polygon_base",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
         "@ros2_pluginlib//:pluginlib",
     ],
 )
@@ -91,7 +91,7 @@ ros2_cpp_binary(
     set_up_ament = True,
     deps = [
         ":polygon_base",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
         "@ros2_pluginlib//:pluginlib",
     ],
 )
@@ -152,7 +152,7 @@ cc_test(
         ":polygon_base",
         ":square_ament_setup",
         ":triangle_ament_setup",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
         "@ros2_pluginlib//:pluginlib",
     ],
 )

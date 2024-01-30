@@ -73,7 +73,7 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "com_google_googletest",
+        name = "googletest",
         sha256 = "8ad598c73ad796e0d8280b082cebd82a630d73e73cd3c70057938a6501bba5d7",
         strip_prefix = "googletest-1.14.0",
         url = "https://github.com/google/googletest/archive/refs/tags/v1.14.0.tar.gz",
@@ -110,8 +110,8 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "sqlite",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:sqlite.BUILD.bazel",
+        name = "sqlite3",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:sqlite3.BUILD.bazel",
         sha256 = "ad68c1216c3a474cf360c7581a4001e952515b3649342100f2d7ca7c8e313da6",
         strip_prefix = "sqlite-amalgamation-3240000",
         urls = ["https://www.sqlite.org/2018/sqlite-amalgamation-3240000.zip"],
@@ -146,8 +146,8 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "yaml_cpp",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:yaml_cpp.BUILD.bazel",
+        name = "yaml-cpp",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:yaml-cpp.BUILD.bazel",
         sha256 = "43e6a9fcb146ad871515f0d0873947e5d497a1c9c60c58cb102a97b47208b7c3",
         strip_prefix = "yaml-cpp-yaml-cpp-0.7.0",
         urls = ["https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.7.0.tar.gz"],
