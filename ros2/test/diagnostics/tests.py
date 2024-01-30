@@ -20,7 +20,11 @@ import launch_ros.actions
 import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
+import python.runfiles
 import rclpy
+
+AGGREGATOR_NODE_PATH = python.runfiles.Runfiles.Create().Rlocation(
+    'ros2_diagnostics/aggregator_node')
 
 
 @launch_testing.markers.keep_alive
@@ -32,7 +36,7 @@ def generate_test_description():
     )
 
     aggregator_node = launch_ros.actions.Node(
-        executable='../ros2_diagnostics/aggregator_node',
+        executable=AGGREGATOR_NODE_PATH,
         name='diagnostic_aggregator',
         parameters=['ros2/test/diagnostics/aggregator_config.yaml'],
     )
