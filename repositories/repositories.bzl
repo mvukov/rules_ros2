@@ -222,7 +222,7 @@ def ros2_repositories():
     # support Bazel.
     maybe(
         http_archive,
-        name = "openssl",
+        name = "boringssl",
         sha256 = "0746b073903927720436c2041e4026761d40022fe24ea6d7d8674c9dac87054e",
         strip_prefix = "boringssl-ce71b7ff95ce43a3e64acded8535691ac141d5ad",
         urls = ["https://github.com/hedronvision/boringssl/archive/ce71b7ff95ce43a3e64acded8535691ac141d5ad.tar.gz"],
