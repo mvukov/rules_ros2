@@ -1,0 +1,111 @@
+module(name = "com_github_mvukov_rules_ros2")
+
+bazel_dep(name = "asio", version = "1.28.2")
+bazel_dep(name = "bazel_skylib", version = "1.5.0")
+bazel_dep(name = "boringssl", version = "0.0.0-20240126-22d349c")
+bazel_dep(name = "eigen", version = "3.4.0")
+bazel_dep(name = "fmt", version = "10.2.1")
+bazel_dep(name = "googletest", version = "1.14.0.bcr.1")
+bazel_dep(name = "libyaml", version = "0.2.5")
+bazel_dep(name = "lz4", version = "1.9.4")
+bazel_dep(name = "nlohmann_json", version = "3.11.3")
+bazel_dep(name = "platforms", version = "0.0.8")
+bazel_dep(name = "readerwriterqueue", version = "1.0.6")
+bazel_dep(name = "rules_cc", version = "0.0.9")
+bazel_dep(name = "rules_foreign_cc", version = "0.10.1")
+bazel_dep(name = "rules_python", version = "0.29.0")
+bazel_dep(name = "spdlog", version = "1.12.0")
+bazel_dep(name = "sqlite3", version = "3.42.0.bcr.1")
+bazel_dep(name = "tinyxml2", version = "10.0.0")
+bazel_dep(name = "websocketpp", version = "0.8.2")
+bazel_dep(name = "yaml-cpp", version = "0.8.0")
+bazel_dep(name = "zlib", version = "1.3")
+bazel_dep(name = "zstd", version = "1.5.5.bcr.1")
+
+python = use_extension("@rules_python//python:extensions.bzl", "python")
+python.toolchain(
+    is_default = True,
+    python_version = "3.11",
+)
+use_repo(python, "python_versions")
+
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+pip.whl_mods(
+    # Keep this in sync with repositories/pip_annotations.bzl
+    additive_build_content = """\
+cc_library(
+    name = "headers",
+    hdrs = glob(["site-packages/numpy/core/include/numpy/**/*.h"]),
+    includes = ["site-packages/numpy/core/include"],
+    deps = ["@rules_python//python/cc:current_py_cc_headers"],
+)
+""",
+    hub_name = "whl_mods_hub",
+    whl_name = "numpy",
+)
+use_repo(pip, "whl_mods_hub")
+pip.parse(
+    hub_name = "rules_ros2_pip_deps",
+    python_version = "3.11",
+    requirements_lock = "//:requirements_lock.txt",
+    whl_modifications = {"@whl_mods_hub//:numpy.json": "numpy"},
+)
+use_repo(pip, "rules_ros2_pip_deps")
+use_repo(pip, "rules_ros2_pip_deps_311_numpy")
+pip.parse(
+    hub_name = "rules_ros2_resolver_deps",
+    python_version = "3.11",
+    requirements_lock = "//repositories/private:resolver_requirements_lock.txt",
+)
+use_repo(pip, "rules_ros2_resolver_deps")
+
+non_module_deps = use_extension("@com_github_mvukov_rules_ros2//:extensions.bzl", "non_module_deps")
+use_repo(
+    non_module_deps,
+    "cyclonedds",
+    "foxglove_bridge",
+    "iceoryx",
+    "osrf_pycommon",
+    "pybind11",
+    "ros2_ament_cmake_ros",
+    "ros2_ament_index",
+    "ros2_class_loader",
+    "ros2_common_interfaces",
+    "ros2_diagnostics",
+    "ros2_geometry2",
+    "ros2_image_common",
+    "ros2_kdl_parser",
+    "ros2_keyboard_handler",
+    "ros2_launch",
+    "ros2_launch_ros",
+    "ros2_libstatistics_collector",
+    "ros2_message_filters",
+    "ros2_pluginlib",
+    "ros2_rcl",
+    "ros2_rcl_interfaces",
+    "ros2_rcl_logging",
+    "ros2_rclcpp",
+    "ros2_rclpy",
+    "ros2_rcpputils",
+    "ros2_rcutils",
+    "ros2_resource_retriever",
+    "ros2_rmw",
+    "ros2_rmw_cyclonedds",
+    "ros2_rmw_dds_common",
+    "ros2_rmw_implementation",
+    "ros2_robot_state_publisher",
+    "ros2_ros_testing",
+    "ros2_rosbag2",
+    "ros2_rosidl",
+    "ros2_rosidl_python",
+    "ros2_rosidl_runtime_py",
+    "ros2_rosidl_typesupport",
+    "ros2_rpyutils",
+    "ros2_tracing",
+    "ros2_unique_identifier_msgs",
+    "ros2_urdfdom",
+    "ros2_urdfdom_headers",
+    "ros2_xacro",
+    "ros2cli",
+    "ros2",
+)

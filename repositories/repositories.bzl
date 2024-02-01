@@ -8,11 +8,33 @@ load(
     "ros2_repositories_impl",
 )
 
+def rules_ros2_workspace_and_bazelmod_common_deps():
+    """Import http_archive dependencies needed for both the WORKSPACE and MODULE.bazel version of rules_ros2."""
+    maybe(
+        http_archive,
+        name = "pybind11",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:pybind11.BUILD.bazel",
+        sha256 = "d475978da0cdc2d43b73f30910786759d593a9d8ee05b1b6846d1eb16c6d2e0c",
+        strip_prefix = "pybind11-2.11.1",
+        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.11.1.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "curl",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:curl.BUILD.bazel",
+        sha256 = "230d61a4b1eb3346930f2d601cc8fe5237957163e16befbe15e0ef40c56767a2",
+        strip_prefix = "curl-curl-8_2_1",
+        urls = ["https://github.com/curl/curl/archive/refs/tags/curl-8_2_1.tar.gz"],
+    )
+
 def ros2_workspace_repositories():
     """Imports dependent third-party repositories for the non-blzmod (hence, workspace-) version of the repository.
 
     In particular, imports third-party package repositories excluding ROS 2 packages. ROS 2-specific repositories are imported with `ros2_repositories()` macro.
     """
+    rules_ros2_workspace_and_bazelmod_common_deps()
+
     maybe(
         http_archive,
         name = "rules_python",
@@ -32,9 +54,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "fmt",
         build_file = "@com_github_mvukov_rules_ros2//repositories:fmt.BUILD.bazel",
-        sha256 = "5dea48d1fcddc3ec571ce2058e13910a0d4a6bab4cc09a809d8b1dd1c88ae6f2",
-        strip_prefix = "fmt-9.1.0",
-        url = "https://github.com/fmtlib/fmt/archive/9.1.0.tar.gz",
+        sha256 = "1250e4cc58bf06ee631567523f48848dc4596133e163f02615c97f78bab6c811",
+        strip_prefix = "fmt-10.2.1",
+        url = "https://github.com/fmtlib/fmt/archive/10.2.1.tar.gz",
     )
 
     maybe(
@@ -53,15 +75,6 @@ def ros2_workspace_repositories():
         sha256 = "c642ae9b75fee120b2d96c712538bd2cf283228d2337df2cf2988e3c02678ef4",
         strip_prefix = "yaml-0.2.5",
         urls = ["https://github.com/yaml/libyaml/releases/download/0.2.5/yaml-0.2.5.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
-        name = "pybind11",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:pybind11.BUILD.bazel",
-        sha256 = "bf8f242abd1abcd375d516a7067490fb71abd79519a282d22b6e4d19282185a7",
-        strip_prefix = "pybind11-2.12.0",
-        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.12.0.tar.gz"],
     )
 
     maybe(
@@ -129,9 +142,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "asio",
         build_file = "@com_github_mvukov_rules_ros2//repositories:asio.BUILD.bazel",
-        sha256 = "b31c63867daaba0e460ee2c85dc508a52c81db0a7318e0d2147f444b26f80ed7",
-        strip_prefix = "asio-asio-1-27-0/asio",
-        urls = ["https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-27-0.tar.gz"],
+        sha256 = "5705a0e403017eba276625107160498518838064a6dd7fd8b00b2e30c0ffbdee",
+        strip_prefix = "asio-asio-1-28-2/asio/include",
+        urls = ["https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-28-2.tar.gz"],
     )
 
     # We're pointing at hedronvision's mirror of google/boringssl:main-with-bazel to get
@@ -149,12 +162,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "zlib",
         build_file = "@com_github_mvukov_rules_ros2//repositories:zlib.BUILD.bazel",
-        sha256 = "d14c38e313afc35a9a8760dadf26042f51ea0f5d154b0630a31da0540107fb98",
-        strip_prefix = "zlib-1.2.13",
-        urls = [
-            "https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.xz",
-            "https://zlib.net/zlib-1.2.13.tar.xz",
-        ],
+        sha256 = "8a9ba2898e1d0d774eca6ba5b4627a11e5588ba85c8851336eb38de4683050a7",
+        strip_prefix = "zlib-1.3",
+        urls = ["https://github.com/madler/zlib/releases/download/v1.3/zlib-1.3.tar.xz"],
     )
 
     maybe(
@@ -165,15 +175,6 @@ def ros2_workspace_repositories():
         urls = [
             "http://archive.ubuntu.com/ubuntu/pool/universe/t/tinyxml/tinyxml_2.6.2.orig.tar.gz",
         ],
-    )
-
-    maybe(
-        http_archive,
-        name = "curl",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:curl.BUILD.bazel",
-        sha256 = "230d61a4b1eb3346930f2d601cc8fe5237957163e16befbe15e0ef40c56767a2",
-        strip_prefix = "curl-curl-8_2_1",
-        urls = ["https://github.com/curl/curl/archive/refs/tags/curl-8_2_1.tar.gz"],
     )
 
     maybe(
@@ -189,18 +190,18 @@ def ros2_workspace_repositories():
         http_archive,
         name = "lz4",
         build_file = "@com_github_mvukov_rules_ros2//repositories:lz4.BUILD.bazel",
-        sha256 = "4ec935d99aa4950eadfefbd49c9fad863185ac24c32001162c44a683ef61b580",
-        strip_prefix = "lz4-1.9.3",
-        urls = ["https://github.com/lz4/lz4/archive/refs/tags/v1.9.3.zip"],
+        sha256 = "0b0e3aa07c8c063ddf40b082bdf7e37a1562bda40a0ff5272957f3e987e0e54b",
+        strip_prefix = "lz4-1.9.4",
+        urls = ["https://github.com/lz4/lz4/archive/refs/tags/v1.9.4.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "yaml-cpp",
         build_file = "@com_github_mvukov_rules_ros2//repositories:yaml-cpp.BUILD.bazel",
-        sha256 = "43e6a9fcb146ad871515f0d0873947e5d497a1c9c60c58cb102a97b47208b7c3",
-        strip_prefix = "yaml-cpp-yaml-cpp-0.7.0",
-        urls = ["https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.7.0.tar.gz"],
+        sha256 = "fbe74bbdcee21d656715688706da3c8becfd946d92cd44705cc6098bb23b3a16",
+        strip_prefix = "yaml-cpp-0.8.0",
+        urls = ["https://github.com/jbeder/yaml-cpp/archive/refs/tags/0.8.0.tar.gz"],
     )
 
     maybe(
