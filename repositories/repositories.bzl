@@ -49,9 +49,9 @@ def ros2_repositories():
         http_archive,
         name = "libyaml",
         build_file = "@com_github_mvukov_rules_ros2//repositories:libyaml.BUILD.bazel",
-        sha256 = "2c103fc473e904c6fe7580277f1fa16b6d716e54d5e3f32a8913c4850ae03b3f",
-        strip_prefix = "libyaml-acd6f6f014c25e46363e718381e0b35205df2d83",
-        urls = ["https://github.com/yaml/libyaml/archive/acd6f6f014c25e46363e718381e0b35205df2d83.tar.gz"],
+        sha256 = "c642ae9b75fee120b2d96c712538bd2cf283228d2337df2cf2988e3c02678ef4",
+        strip_prefix = "yaml-0.2.5",
+        urls = ["https://github.com/yaml/libyaml/releases/download/0.2.5/yaml-0.2.5.tar.gz"],
     )
 
     maybe(
