@@ -50,6 +50,8 @@ jobs:
     container:
       image: mvukov/bazel-builder:commit-8b1d07f800cc2b9a47a010da5b42c3f29294506e
       options: --user ${{ needs.configure.outputs.uid_gid }}
+    env:
+      BUILDBUDDY_ORG_API_KEY: ${{ secrets.BUILDBUDDY_ORG_API_KEY }}
 
     # Run bazel test with gcc and clang in each workspace
     strategy:
@@ -73,13 +75,12 @@ jobs:
           ref: ${{github.event.pull_request.head.sha}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
 
+      - name: Use BuildBuddy RW API key instead of public readonly key
+        run: sed -i.bak 's#x-buildbuddy-api-key=.*#x-buildbuddy-api-key=${{ env.BUILDBUDDY_ORG_API_KEY }}#' .bazelrc
+        if: ${{ env.BUILDBUDDY_ORG_API_KEY }}
+
       - name: bazel test //...
         env:
           USER: ${{ needs.configure.outputs.user_name }}
         working-directory: ${{ matrix.folder }}
-        run: >
-          bazel test
-          --config=ci
-          --remote_header=x-buildbuddy-api-key="${{secrets.BUILDBUDDY_ORG_API_KEY}}"
-          ${{ matrix.config_option }}
-          //...
+        run: bazel test --config=ci ${{ matrix.config_option }} //...
