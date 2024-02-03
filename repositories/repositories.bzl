@@ -15,34 +15,34 @@ def ros2_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "84aec9e21cc56fbc7f1335035a71c850d1b9b5cc6ff497306f84cced9a769841",
-        strip_prefix = "rules_python-0.23.1",
-        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.23.1.tar.gz",
+        sha256 = "d71d2c67e0bce986e1c5a7731b4693226867c45bfe0b7c5e0067228a536fc580",
+        strip_prefix = "rules_python-0.29.0",
+        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.29.0.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "bazel_skylib",
-        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.4.2/bazel-skylib-1.4.2.tar.gz"],
-        sha256 = "66ffd9315665bfaafc96b52278f57c7e2dd09f5ede279ea6d39b2be471e7e3aa",
+        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.5.0/bazel-skylib-1.5.0.tar.gz"],
+        sha256 = "cd55a062e763b9349921f0f5db8c3933288dc8ba4f76dd9416aac68acee3cb94",
     )
 
     maybe(
         http_archive,
         name = "fmt",
         build_file = "@com_github_mvukov_rules_ros2//repositories:fmt.BUILD.bazel",
-        sha256 = "5cae7072042b3043e12d53d50ef404bbb76949dad1de368d7f993a15c8c05ecc",
-        strip_prefix = "fmt-7.1.3",
-        url = "https://github.com/fmtlib/fmt/archive/7.1.3.tar.gz",
+        sha256 = "5dea48d1fcddc3ec571ce2058e13910a0d4a6bab4cc09a809d8b1dd1c88ae6f2",
+        strip_prefix = "fmt-9.1.0",
+        url = "https://github.com/fmtlib/fmt/archive/9.1.0.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "spdlog",
         build_file = "@com_github_mvukov_rules_ros2//repositories:spdlog.BUILD.bazel",
-        sha256 = "944d0bd7c763ac721398dca2bb0f3b5ed16f67cef36810ede5061f35a543b4b8",
-        strip_prefix = "spdlog-1.8.5",
-        url = "https://github.com/gabime/spdlog/archive/v1.8.5.tar.gz",
+        sha256 = "534f2ee1a4dcbeb22249856edfb2be76a1cf4f708a20b0ac2ed090ee24cfdbc9",
+        strip_prefix = "spdlog-1.13.0",
+        url = "https://github.com/gabime/spdlog/archive/v1.13.0.tar.gz",
     )
 
     maybe(
@@ -58,25 +58,25 @@ def ros2_repositories():
         http_archive,
         name = "pybind11",
         build_file = "@com_github_mvukov_rules_ros2//repositories:pybind11.BUILD.bazel",
-        sha256 = "c6160321dc98e6e1184cc791fbeadd2907bb4a0ce0e447f2ea4ff8ab56550913",
-        strip_prefix = "pybind11-2.9.1",
-        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.9.1.tar.gz"],
+        sha256 = "d475978da0cdc2d43b73f30910786759d593a9d8ee05b1b6846d1eb16c6d2e0c",
+        strip_prefix = "pybind11-2.11.1",
+        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.11.1.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "rules_foreign_cc",
-        sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
-        strip_prefix = "rules_foreign_cc-0.9.0",
-        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
+        sha256 = "476303bd0f1b04cc311fc258f1708a5f6ef82d3091e53fd1977fa20383425a6a",
+        strip_prefix = "rules_foreign_cc-0.10.1",
+        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.10.1.tar.gz",
     )
 
     maybe(
         http_archive,
-        name = "com_google_googletest",
-        sha256 = "ad7fdba11ea011c1d925b3289cf4af2c66a352e18d4c7264392fead75e919363",
-        strip_prefix = "googletest-1.13.0",
-        url = "https://github.com/google/googletest/archive/refs/tags/v1.13.0.tar.gz",
+        name = "googletest",
+        sha256 = "8ad598c73ad796e0d8280b082cebd82a630d73e73cd3c70057938a6501bba5d7",
+        strip_prefix = "googletest-1.14.0",
+        url = "https://github.com/google/googletest/archive/refs/tags/v1.14.0.tar.gz",
     )
 
     _googletest_deps()
@@ -85,9 +85,9 @@ def ros2_repositories():
         http_archive,
         name = "tinyxml2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:tinyxml2.BUILD.bazel",
-        sha256 = "cc2f1417c308b1f6acc54f88eb70771a0bf65f76282ce5c40e54cfe52952702c",
-        strip_prefix = "tinyxml2-9.0.0",
-        urls = ["https://github.com/leethomason/tinyxml2/archive/refs/tags/9.0.0.tar.gz"],
+        sha256 = "3bdf15128ba16686e69bce256cc468e76c7b94ff2c7f391cc5ec09e40bff3839",
+        strip_prefix = "tinyxml2-10.0.0",
+        urls = ["https://github.com/leethomason/tinyxml2/archive/refs/tags/10.0.0.tar.gz"],
     )
 
     maybe(
@@ -110,8 +110,8 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "sqlite",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:sqlite.BUILD.bazel",
+        name = "sqlite3",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:sqlite3.BUILD.bazel",
         sha256 = "ad68c1216c3a474cf360c7581a4001e952515b3649342100f2d7ca7c8e313da6",
         strip_prefix = "sqlite-amalgamation-3240000",
         urls = ["https://www.sqlite.org/2018/sqlite-amalgamation-3240000.zip"],
@@ -121,9 +121,9 @@ def ros2_repositories():
         http_archive,
         name = "zstd",
         build_file = "@com_github_mvukov_rules_ros2//repositories:zstd.BUILD.bazel",
-        sha256 = "7c42d56fac126929a6a85dbc73ff1db2411d04f104fae9bdea51305663a83fd0",
-        strip_prefix = "zstd-1.5.2",
-        urls = ["https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz"],
+        sha256 = "9c4396cc829cfae319a6e2615202e82aad41372073482fce286fac78646d3ee4",
+        strip_prefix = "zstd-1.5.5",
+        urls = ["https://github.com/facebook/zstd/releases/download/v1.5.5/zstd-1.5.5.tar.gz"],
     )
 
     maybe(
@@ -146,8 +146,8 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "yaml_cpp",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:yaml_cpp.BUILD.bazel",
+        name = "yaml-cpp",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:yaml-cpp.BUILD.bazel",
         sha256 = "43e6a9fcb146ad871515f0d0873947e5d497a1c9c60c58cb102a97b47208b7c3",
         strip_prefix = "yaml-cpp-yaml-cpp-0.7.0",
         urls = ["https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.7.0.tar.gz"],
@@ -166,9 +166,9 @@ def ros2_repositories():
         http_archive,
         name = "ros2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
-        sha256 = "8223f8de5d4dd3e42251997d0162ad636ed6a1d01eb3e87a079f10f5dda5fdb7",
-        strip_prefix = "ros2-release-humble-20230502",
-        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-humble-20230502.tar.gz"],
+        sha256 = "6e2611392776fdf39e47205db44956b77727cd561245c012ccc3ff5b1a4cd7ad",
+        strip_prefix = "ros2-release-humble-20231122",
+        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-humble-20231122.tar.gz"],
     )
 
     ros2_repositories_impl()
@@ -183,23 +183,20 @@ def ros2_repositories():
         urls = ["https://github.com/swri-robotics/gps_umd/archive/fc782811804fafb12ee479a48a2aa2e9ee942e2d.tar.gz"],
     )
 
-    # Needs https://github.com/foxglove/ros-foxglove-bridge/pull/228.
     maybe(
         http_archive,
         name = "foxglove_bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
-        sha256 = "264095fff9e51a6a880588e25ecb58fc4d19d0c3da4da21ca3ff2223a0a536ce",
-        strip_prefix = "ros-foxglove-bridge-eb0217174750ab6ea7e52aadaf3ff59a022bf153",
-        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/eb0217174750ab6ea7e52aadaf3ff59a022bf153.tar.gz"],
+        sha256 = "083940a629c225640e4f4a4a9f43512907c98c5c468ae93c75429d8447a97c69",
+        strip_prefix = "ros-foxglove-bridge-0.7.5",
+        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.5.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "nlohmann_json",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:nlohmann_json.BUILD.bazel",
-        strip_prefix = "single_include",
-        sha256 = "9c15ca7806f863872452bfbc85fee6d1c9868117e3ea5e00a204ae961a2e1ae7",
-        urls = ["https://github.com/nlohmann/json/releases/download/v3.11.1/include.zip"],
+        sha256 = "a22461d13119ac5c78f205d3df1db13403e58ce1bb1794edc9313677313f4a9d",
+        urls = ["https://github.com/nlohmann/json/releases/download/v3.11.3/include.zip"],
     )
 
     maybe(
@@ -220,13 +217,15 @@ def ros2_repositories():
         urls = ["https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-27-0.tar.gz"],
     )
 
+    # We're pointing at hedronvision's mirror of google/boringssl:main-with-bazel to get
+    # Renovate auto-update. Otherwise, Renovate will keep moving us back to main, which doesn't
+    # support Bazel.
     maybe(
         http_archive,
         name = "openssl",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:openssl.BUILD.bazel",
-        sha256 = "f89199be8b23ca45fc7cb9f1d8d3ee67312318286ad030f5316aca6462db6c96",
-        strip_prefix = "openssl-1.1.1m",
-        urls = ["https://www.openssl.org/source/openssl-1.1.1m.tar.gz"],
+        sha256 = "cf1cfe0adb443ef96197b109292847c0a97304058af21f3488a323b51984608a",
+        strip_prefix = "boringssl-e762bd792ab7fecb170bdb1cd96a0bfb0c9d3238",
+        urls = ["https://github.com/hedronvision/boringssl/archive/e762bd792ab7fecb170bdb1cd96a0bfb0c9d3238.tar.gz"],
     )
 
     maybe(
@@ -288,6 +287,15 @@ def ros2_repositories():
         sha256 = "a723dae7acf0f00ee643c076c7c81299be0254919f29225ec7a89dc14cb8ea6f",
         strip_prefix = "diagnostics-9f402787ea2c9b3dd4d7e51a9986810e8a3400ba",
         urls = ["https://github.com/ros/diagnostics/archive/9f402787ea2c9b3dd4d7e51a9986810e8a3400ba.zip"],
+    )
+
+    maybe(
+        http_archive,
+        name = "curl",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:curl.BUILD.bazel",
+        sha256 = "230d61a4b1eb3346930f2d601cc8fe5237957163e16befbe15e0ef40c56767a2",
+        strip_prefix = "curl-curl-8_2_1",
+        urls = ["https://github.com/curl/curl/archive/refs/tags/curl-8_2_1.tar.gz"],
     )
 
 def _googletest_deps():

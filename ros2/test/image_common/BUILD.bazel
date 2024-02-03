@@ -3,10 +3,11 @@ load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
 
 ros2_cpp_test(
     name = "image_transport_plugins_tests",
+    size = "small",
     srcs = ["image_transport_plugins_tests.cc"],
     set_up_ament = True,
     deps = [
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
         "@ros2_image_common//:image_transport",
         "@ros2_pluginlib//:pluginlib",
     ],

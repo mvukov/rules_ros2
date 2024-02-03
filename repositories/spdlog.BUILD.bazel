@@ -1,6 +1,7 @@
 """ Builds spdlog.
 """
 
+load("@bazel_skylib//lib:selects.bzl", "selects")
 load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS")
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
@@ -12,7 +13,7 @@ cc_library(
     ) + ["include/spdlog/fmt/fmt.h"],
     hdrs = glob(
         ["include/**/*.h"],
-        exclude = ["include/spdlog/fmt/*.h"],
+        exclude = ["include/spdlog/fmt/bundled/*.h"],
     ),
     copts = CPP_COPTS + ["-w"],
     defines = [
@@ -20,13 +21,12 @@ cc_library(
         "SPDLOG_FMT_EXTERNAL",
     ],
     includes = ["include"],
-    linkopts = select(
+    linkopts = selects.with_or(
         {
-            "@platforms//os:linux": ["-lpthread"],
-            "@platforms//os:macos": ["-lpthread"],
-            "@platforms//os:qnx": [],
+            ("@platforms//os:linux", "@platforms//os:macos"): ["-lpthread"],
+            ("@platforms//os:android", "@platforms//os:qnx"): [],
         },
-        no_match_error = "Only Linux, macOS and QNX are supported!",
+        no_match_error = "Supported OSs: Android, Linux, macOS, QNX",
     ),
     visibility = ["//visibility:public"],
     deps = ["@fmt"],

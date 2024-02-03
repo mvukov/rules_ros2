@@ -11,18 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import os
-import signal
+import threading
 import unittest
 
+import diagnostic_msgs.msg
 import launch.actions
 import launch_ros.actions
 import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
-import yaml
+import python.runfiles
+import rclpy
 
-bag_dir = os.path.join(os.environ['TEST_TMPDIR'], 'bag')
+AGGREGATOR_NODE_PATH = python.runfiles.Runfiles.Create().Rlocation(
+    'ros2_diagnostics/aggregator_node')
 
 
 @launch_testing.markers.keep_alive
@@ -34,69 +36,76 @@ def generate_test_description():
     )
 
     aggregator_node = launch_ros.actions.Node(
-        executable='../ros2_diagnostics/aggregator_node',
+        executable=AGGREGATOR_NODE_PATH,
         name='diagnostic_aggregator',
         parameters=['ros2/test/diagnostics/aggregator_config.yaml'],
     )
 
-    recorder = launch.actions.ExecuteProcess(
-        cmd=[
-            'ros2/test/diagnostics/bag', 'record', '-o', bag_dir,
-            '/diagnostics', '/diagnostics_agg'
-        ],
-        output='screen',
-        log_cmd=True,
-    )
-
-    return (launch.LaunchDescription([
+    return launch.LaunchDescription([
         publisher_node,
         aggregator_node,
-        recorder,
-        launch.actions.TimerAction(
-            period=3.0,
-            actions=[
-                launch.actions.EmitEvent(
-                    event=launch.events.process.SignalProcess(
-                        signal_number=signal.SIGINT,
-                        process_matcher=lambda proc: proc is recorder))
-            ]),
         launch_testing.actions.ReadyToTest(),
-    ]), {
-        'recorder': recorder,
-    })
+    ])
+
+
+class DiagnosticsListener(rclpy.node.Node):
+
+    def __init__(self):
+        super().__init__('diagnostics_listener')
+
+        self.diagnostics_subscription = self.create_subscription(
+            diagnostic_msgs.msg.DiagnosticArray, '/diagnostics',
+            self._on_diagnostics, 10)
+        self.diagnostics_agg_subscription = self.create_subscription(
+            diagnostic_msgs.msg.DiagnosticArray, '/diagnostics_agg',
+            self._on_diagnostics_agg, 10)
+        self.messages = {}
+        self.both_messages_received = threading.Event()
+
+    def _on_diagnostics(self, msg):
+        self.messages['/diagnostics'] = msg
+        self._check_if_both_messages_received()
+
+    def _on_diagnostics_agg(self, msg):
+        self.messages['/diagnostics_agg'] = msg
+        self._check_if_both_messages_received()
+
+    def _check_if_both_messages_received(self):
+        if len(self.messages) == 2:
+            self.both_messages_received.set()
 
 
 class TestHeartbeatDiagnostic(unittest.TestCase):
 
-    def test_record_heartbeat_diagnostics(self, proc_info, recorder):
-        proc_info.assertWaitForShutdown(process=recorder, timeout=5)
-        launch_testing.asserts.assertExitCodes(
-            proc_info,
-            allowable_exit_codes=[launch_testing.asserts.EXIT_OK],
-            process=recorder)
-        bag_metadata_file = os.path.join(bag_dir, 'metadata.yaml')
+    def test_record_heartbeat_diagnostics(self):
+        rclpy.init()
+        try:
+            # Start listener node and wait for messages to be received.
+            diagnostics_listener = DiagnosticsListener()
+            thread = threading.Thread(target=lambda node: rclpy.spin(node),
+                                      args=(diagnostics_listener,))
+            thread.start()
+            event_triggered = diagnostics_listener.both_messages_received.wait(
+                timeout=10.0)
+            self.assertTrue(event_triggered,
+                            'timeout while waiting for messages')
 
-        self.assertTrue(os.path.exists(bag_metadata_file))
+            # Basic sanity checks of messages.
+            diagnostics_msg = diagnostics_listener.messages['/diagnostics']
+            self.assertEqual(diagnostics_msg.status[0].message, 'Alive')
 
-        with open(bag_metadata_file, 'r', encoding='utf-8') as stream:
-            bag_metadata = yaml.load(
-                stream, Loader=yaml.Loader)['rosbag2_bagfile_information']
+            diagnostics_agg_msg = diagnostics_listener.messages[
+                '/diagnostics_agg']
+            status_names = (
+                status.name for status in diagnostics_agg_msg.status)
+            self.assertTrue(
+                any('diagnostic_publisher' in name for name in status_names))
+        finally:
+            rclpy.shutdown()
 
-        min_num_received_msgs = 1
-        self.assertGreaterEqual(bag_metadata['message_count'],
-                                min_num_received_msgs)
 
-        self.assertEqual(len(bag_metadata['topics_with_message_count']), 2)
+@launch_testing.post_shutdown_test()
+class TestHeartbeatDiagnosticShutdown(unittest.TestCase):
 
-        # Are any heartbeat messages sent?
-        diag_topic = bag_metadata['topics_with_message_count'][0]
-        self.assertEqual(diag_topic['topic_metadata']['name'], '/diagnostics')
-        self.assertGreaterEqual(diag_topic['message_count'],
-                                min_num_received_msgs)
-
-        # Does the aggregator work (i.e. are plugins loaded)?
-        agg_topic = bag_metadata['topics_with_message_count'][1]
-        self.assertEqual(agg_topic['topic_metadata']['name'],
-                         '/diagnostics_agg')
-        self.assertGreaterEqual(agg_topic['message_count'],
-                                min_num_received_msgs)
+    def test_exit_codes(self, proc_info):
+        launch_testing.asserts.assertExitCodes(proc_info)

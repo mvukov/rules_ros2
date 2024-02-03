@@ -16,7 +16,6 @@ cmake(
         "-j4",
     ],
     cache_entries = {
-        "CMAKE_BUILD_TYPE": "Release",
         "ZSTD_BUILD_PROGRAMS": "OFF",
         "ZSTD_BUILD_SHARED": "OFF",
         "ZSTD_BUILD_STATIC": "ON",

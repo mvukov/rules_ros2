@@ -5,6 +5,7 @@ load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
 ros2_cpp_binary(
     name = "lifecycle_talker",
     srcs = ["lifecycle_talker.cc"],
+    set_up_ament = True,
     deps = [
         "@ros2_common_interfaces//:cpp_std_msgs",
         "@ros2_rcl_interfaces//:cpp_lifecycle_msgs",
@@ -44,6 +45,7 @@ ros2_launch(
 
 ros2_test(
     name = "tests",
+    size = "small",
     launch_file = "tests.py",
     nodes = [
         ":lifecycle_listener",

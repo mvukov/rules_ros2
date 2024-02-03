@@ -79,7 +79,7 @@ ros2_cpp_binary(
     srcs = ["talker_tests.cc"],
     deps = [
         ":cpp_chatter_interface",
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
         "@ros2_rclcpp//:rclcpp",
     ],
 )

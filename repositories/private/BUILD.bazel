@@ -32,6 +32,7 @@ py_binary(
 
 py_test(
     name = "tests",
+    size = "small",
     srcs = ["ros2_repo_mappings_tests.py"],
     data = ["@com_github_mvukov_rules_ros2//repositories:ros2_repo_mappings.yaml"],
     main = "ros2_repo_mappings_tests.py",

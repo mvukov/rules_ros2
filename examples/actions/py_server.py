@@ -91,7 +91,7 @@ class MinimalActionServer(Node):
             feedback_msg.sequence.append(feedback_msg.sequence[i] +
                                          feedback_msg.sequence[i - 1])
 
-            self.get_logger().info('Publishing feedback: {0}'.format(
+            self.get_logger().info('Publishing feedback: {}'.format(
                 feedback_msg.sequence))
 
             # Publish the feedback
@@ -106,7 +106,7 @@ class MinimalActionServer(Node):
         result = Fibonacci.Result()
         result.sequence = feedback_msg.sequence
 
-        self.get_logger().info('Returning result: {0}'.format(result.sequence))
+        self.get_logger().info(f'Returning result: {result.sequence}')
 
         return result
 

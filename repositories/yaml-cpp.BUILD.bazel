@@ -1,4 +1,4 @@
-""" Builds yaml_cpp.
+""" Builds yaml-cpp.
 """
 
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
@@ -10,14 +10,13 @@ filegroup(
 )
 
 cmake(
-    name = "yaml_cpp",
+    name = "yaml-cpp",
     build_args = [
         "--",
         "-j4",
     ],
     cache_entries = {
         "BUILD_SHARED_LIBS": "OFF",
-        "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
         "YAML_CPP_BUILD_CONTRIB": "ON",
         "YAML_CPP_BUILD_TESTS": "OFF",

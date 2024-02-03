@@ -81,6 +81,9 @@ repositories:
   rcutils:
     name: ros2_rcutils
     build_file: "@com_github_mvukov_rules_ros2//repositories:rcutils.BUILD.bazel"
+  resource_retriever:
+    name: ros2_resource_retriever
+    build_file: "@com_github_mvukov_rules_ros2//repositories:resource_retriever.BUILD.bazel"
   rmw:
     name: ros2_rmw
     build_file: "@com_github_mvukov_rules_ros2//repositories:rmw.BUILD.bazel"
@@ -108,6 +111,8 @@ repositories:
   ros2cli:
     name: ros2cli
     build_file: "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel"
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:ros2cli_replace-netifaces.patch"
   ros_testing:
     name: ros2_ros_testing
     build_file: "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel"

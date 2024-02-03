@@ -2,7 +2,6 @@
 """
 
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary", "ros2_cpp_test")
-load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
 load(
     "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
     "expand_template",
@@ -38,29 +37,19 @@ py_library(
     visibility = ["//visibility:public"],
 )
 
-ros2_cpp_binary(
-    name = "foxglove_bridge_tests",
-    srcs = ["foxglove_bridge_tests.cc"],
-    deps = [
-        "@com_google_googletest//:gtest",
-        "@foxglove_bridge//:foxglove_bridge_component",
-        "@ros2_common_interfaces//:cpp_std_msgs",
-    ],
-)
-
-ros2_test(
+ros2_cpp_test(
     name = "tests",
     size = "small",
+    srcs = ["foxglove_bridge_tests.cc"],
+    env = {"ROS_DISTRO": "humble"},
     idl_deps = [
         "@ros2_rcl_interfaces//:rcl_interfaces",
         "@ros2_common_interfaces//:std_msgs",
     ],
-    launch_file = "tests.py",
-    nodes = [
-        # TODO(mvukov) Make tests running with foxglove_bridge_node.
-        # ":foxglove_bridge_node",
-        ":foxglove_bridge_tests",
-    ],
     tags = ["cpu:2"],
-    deps = [":utils"],
+    deps = [
+        "@foxglove_bridge//:foxglove_bridge_component",
+        "@googletest//:gtest",
+        "@ros2_common_interfaces//:cpp_std_msgs",
+    ],
 )

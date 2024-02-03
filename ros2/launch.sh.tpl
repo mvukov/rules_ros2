@@ -15,7 +15,7 @@ fi
 ament_prefix_path="{{ament_prefix_path}}"
 if [ -z "${ament_prefix_path}" ]; then
   unset AMENT_PREFIX_PATH
-  {entry_point} "$@"
+  exec {entry_point} "$@"
 else
-  AMENT_PREFIX_PATH="${ament_prefix_path}" {entry_point} "$@"
+  AMENT_PREFIX_PATH="${ament_prefix_path}" exec {entry_point} "$@"
 fi
