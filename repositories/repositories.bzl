@@ -8,8 +8,11 @@ load(
     "ros2_repositories_impl",
 )
 
-def rules_ros2_workspace_deps():
-    """Import http_archive dependencies for the WORKSPACE version of rules_ros2."""
+def ros2_workspace_repositories():
+    """Imports dependent third-party repositories for the non-blzmod (hence, workspace-) version of the repository.
+
+    In particular, imports third-party package repositories excluding ROS 2 packages. ROS 2-specific repositories are imported with `ros2_repositories()` macro.
+    """
     maybe(
         http_archive,
         name = "rules_python",
