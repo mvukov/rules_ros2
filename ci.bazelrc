@@ -2,11 +2,13 @@
 # It is referenced with a --bazelrc option in the call to bazel in main.yaml
 
 # Debug where options came from
-build --announce_rc
+build:ci --announce_rc
 # This directory is configured in GitHub actions to be persisted between runs.
-build --repository_cache=~/.cache/bazel-repo
+build:ci --repository_cache=~/.cache/bazel-repo
+
 
 # Set up remote cache.
+build:ci --config=remote
 build:remote --bes_results_url=https://app.buildbuddy.io/invocation/
 build:remote --bes_backend=grpcs://remote.buildbuddy.io
 build:remote --remote_cache=grpcs://remote.buildbuddy.io
@@ -21,10 +23,8 @@ build:remote --remote_build_event_upload=minimal
 build:remote --noslim_profile
 
 # Don't spam CI logs.
-build --show_progress_rate_limit=60
+build:ci --show_progress_rate_limit=60
 
 # Don't rely on test logs being easily accessible from the test runner,
 # though it makes the log noisier.
-test --test_output=errors
-# Allows tests to run bazelisk-in-bazel, since this is the cache folder used
-test --test_env=XDG_CACHE_HOME
+test:ci --test_output=errors

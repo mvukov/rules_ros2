@@ -72,30 +72,14 @@ jobs:
         with:
           ref: ${{github.event.pull_request.head.sha}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-      # Cache build and external artifacts so that the next ci build is incremental.
-      # Because github action caches cannot be updated after a build, we need to
-      # store the contents of each build in a unique cache key, then fall back to loading
-      # it on the next ci run. We use hashFiles(...) in the key and restore-keys- with
-      # the prefix to load the most recent cache for the branch on a cache miss. You
-      # should customize the contents of hashFiles to capture any bazel input sources,
-      # although this doesn't need to be perfect. If none of the input sources change
-      # then a cache hit will load an existing cache and bazel won't have to do any work.
-      # In the case of a cache miss, you want the fallback cache to contain most of the
-      # previously built artifacts to minimize build time. The more precise you are with
-      # hashFiles sources the less work bazel will have to do.
-      - name: Mount bazel caches
-        uses: actions/cache@v4.0.0
-        with:
-          path: |
-            ~/.cache/bazel
-            ~/.cache/bazel-repo
-          key: v3-bazel-repo-cache-${{ matrix.toolchain }}-${{ hashFiles('.bazelversion', 'examples/WORKSPACE', 'repositories/**', 'requirements_lock.txt', 'WORKSPACE') }}
-          restore-keys: v3-bazel-repo-cache-${{ matrix.toolchain }}-
-      - name: bazel test ${{ matrix.config_option }} //...
+
+      - name: bazel test //...
         env:
-          # Bazelisk will download bazel to here, ensure it is cached between runs.
-          XDG_CACHE_HOME: ~/.cache/bazel-repo
-          BUILDBUDDY_ORG_API_KEY: ${{ secrets.BUILDBUDDY_ORG_API_KEY }}
           USER: ${{ needs.configure.outputs.user_name }}
         working-directory: ${{ matrix.folder }}
-        run: ${GITHUB_WORKSPACE}/.github/workflows/test.sh ${{ matrix.config_option }}
+        run: >
+          bazel test
+          --config=ci
+          --remote_header=x-buildbuddy-api-key="${{secrets.BUILDBUDDY_ORG_API_KEY}}"
+          ${{ matrix.config_option }}
+          //...
