@@ -25,7 +25,7 @@
         "eigen",
         "foxglove_bridge",
         "nlohmann_json",
-        "openssl",
+        "boringssl",
         "pybind11",
         "rules_foreign_cc",
         "rules_python",
