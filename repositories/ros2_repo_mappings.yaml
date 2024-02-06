@@ -24,7 +24,7 @@ repositories:
       - "@com_github_mvukov_rules_ros2//repositories/patches:geometry2_fix-use-after-free-bug.patch"
   iceoryx:
     name: iceoryx
-    strip_prefix: iceoryx-2.0.3
+    strip_prefix: iceoryx-2.0.5
     build_file: "@com_github_mvukov_rules_ros2//repositories:iceoryx.BUILD.bazel"
   image_common:
     name: ros2_image_common
