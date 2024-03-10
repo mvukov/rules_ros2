@@ -63,9 +63,9 @@ def add_subparsers(parser,
             if hide_extensions is not None and name in hide_extensions:
                 continue
             extension = command_extensions[name]
-            description += '{}  {}\n'.format(
-                name.ljust(max_length),
-                ros2cli.entry_points.get_first_line_doc(extension))
+            description += (
+                f'{name.ljust(max_length)}  '
+                f'{ros2cli.entry_points.get_first_line_doc(extension)}\n')
     subparser = parser.add_subparsers(
         title='Commands',
         description=description,
