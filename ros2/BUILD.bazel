@@ -10,6 +10,7 @@ exports_files([
     "bag.bzl",
     "bag.py.tpl",
     "cc_defs.bzl",
+    "exported_symbols.lds",
     "interfaces.bzl",
     "launch.bzl",
     "launch.py.tpl",

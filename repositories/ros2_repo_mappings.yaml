@@ -90,9 +90,6 @@ repositories:
   rmw_cyclonedds:
     name: ros2_rmw_cyclonedds
     build_file: "@com_github_mvukov_rules_ros2//repositories:rmw_cyclonedds.BUILD.bazel"
-    patch_args: ["-p1"]
-    patches:
-      - "@com_github_mvukov_rules_ros2//repositories/patches:rmw_cyclonedds-fix-typesupport-conditions-bug.patch"
   rmw_dds_common:
     name: ros2_rmw_dds_common
     build_file: "@com_github_mvukov_rules_ros2//repositories:rmw_dds_common.BUILD.bazel"

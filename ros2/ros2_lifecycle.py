@@ -11,8 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import sys
 
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_NOW)
+
+# ruff: noqa: E402
 import ros2cli.cli
 import ros2lifecycle.verb.get
 import ros2lifecycle.verb.list

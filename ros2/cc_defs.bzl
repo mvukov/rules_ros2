@@ -14,6 +14,15 @@ def _ros2_cc_target(target, lang, name, ros2_package_name, **kwargs):
         fail("lang must be set to c or cpp!")
     all_copts = all_copts + kwargs.pop("copts", [])
 
+    # This solution requires Bazel 6.4.0. https://github.com/bazelbuild/bazel/issues/17788
+    # all_linkopts = ["-Wl,--dynamic-list=$(location @com_github_mvukov_rules_ros2//ros2:exported_symbols.lds)"] + kwargs.pop("linkopts", [])
+    # kwargs["linkopts"] = all_linkopts
+    # all_additional_linker_inputs = ["@com_github_mvukov_rules_ros2//ros2:exported_symbols.lds"] + kwargs.pop("additional_linker_inputs", [])
+    # kwargs["additional_linker_inputs"] = all_additional_linker_inputs
+
+    all_linkopts = ["-Wl,--export-dynamic"] + kwargs.pop("linkopts", [])
+    kwargs["linkopts"] = all_linkopts
+
     ros2_package_name = ros2_package_name or name
     all_local_defines = ["ROS_PACKAGE_NAME=\\\"{}\\\"".format(ros2_package_name)]
     all_local_defines = all_local_defines + kwargs.pop("local_defines", [])

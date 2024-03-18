@@ -11,8 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import pathlib
+import sys
 
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_NOW)
+
+# ruff: noqa: E402
 import pytest
 import rosbag2_py
 

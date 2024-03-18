@@ -5,6 +5,8 @@ import os
 import pathlib
 import sys
 
+sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_NOW)
+
 import coverage
 import domain_coordinator
 import pytest
