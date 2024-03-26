@@ -1,0 +1,54 @@
+""" Builds rmw_fastrtps.
+"""
+
+load(
+    "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_cpp_binary",
+    "ros2_cpp_library",
+)
+
+ros2_cpp_library(
+    name = "rmw_fastrtps_shared_cpp",
+    srcs = glob([
+        "rmw_fastrtps_shared_cpp/src/*.cpp",
+        "rmw_fastrtps_shared_cpp/src/**/*.hpp",
+    ]),
+    hdrs = glob([
+        "rmw_fastrtps_shared_cpp/include/**/*.h",
+        "rmw_fastrtps_shared_cpp/include/**/*.hpp",
+    ]),
+    includes = ["rmw_fastrtps_shared_cpp/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@fastrtps",
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rcutils//:rcutils",
+        "@ros2_rmw//:rmw",
+        "@ros2_rmw//:rmw_cpp",
+        "@ros2_rmw_dds_common//:rmw_dds_common_lib",
+        "@ros2_rosidl//:rosidl_runtime_c",
+        "@ros2_rosidl//:rosidl_typesupport_introspection_c",
+        "@ros2_rosidl//:rosidl_typesupport_introspection_cpp",
+        "@ros2_tracing//:tracetools",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "rmw_fastrtps_dynamic_cpp",
+    srcs = glob([
+        "rmw_fastrtps_dynamic_cpp/include/**/*.h",
+        "rmw_fastrtps_dynamic_cpp/include/**/*.hpp",
+        "rmw_fastrtps_dynamic_cpp/src/*.cpp",
+        "rmw_fastrtps_dynamic_cpp/src/*.hpp",
+    ]),
+    copts = ["-fvisibility=hidden"],
+    includes = ["rmw_fastrtps_dynamic_cpp/include"],
+    linkopts = ["-fvisibility=hidden"],
+    linkshared = True,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":rmw_fastrtps_shared_cpp",
+        "@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_c",
+        "@ros2_rosidl_typesupport_fastrtps//:rosidl_typesupport_fastrtps_cpp",
+    ],
+)
