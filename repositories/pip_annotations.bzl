@@ -1,5 +1,6 @@
 load("@rules_python//python:pip.bzl", "package_annotation")
 
+# Keep this in sync with MODULE.bazel
 PIP_ANNOTATIONS = {
     "numpy": package_annotation(
         additive_build_content = """\
