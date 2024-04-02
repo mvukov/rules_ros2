@@ -19,15 +19,6 @@ def rules_ros2_workspace_and_bazelmod_common_deps():
         urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.11.1.tar.gz"],
     )
 
-    maybe(
-        http_archive,
-        name = "curl",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:curl.BUILD.bazel",
-        sha256 = "230d61a4b1eb3346930f2d601cc8fe5237957163e16befbe15e0ef40c56767a2",
-        strip_prefix = "curl-curl-8_2_1",
-        urls = ["https://github.com/curl/curl/archive/refs/tags/curl-8_2_1.tar.gz"],
-    )
-
 def ros2_workspace_repositories():
     """Imports dependent third-party repositories for the non-blzmod (hence, workspace-) version of the repository.
 
@@ -175,6 +166,15 @@ def ros2_workspace_repositories():
         urls = [
             "http://archive.ubuntu.com/ubuntu/pool/universe/t/tinyxml/tinyxml_2.6.2.orig.tar.gz",
         ],
+    )
+
+    maybe(
+        http_archive,
+        name = "curl",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:curl.BUILD.bazel",
+        sha256 = "230d61a4b1eb3346930f2d601cc8fe5237957163e16befbe15e0ef40c56767a2",
+        strip_prefix = "curl-curl-8_2_1",
+        urls = ["https://github.com/curl/curl/archive/refs/tags/curl-8_2_1.tar.gz"],
     )
 
     maybe(
