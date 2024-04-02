@@ -1,4 +1,5 @@
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+load("@rules_python//python/private:bzlmod_enabled.bzl", "BZLMOD_ENABLED")
 
 compile_pip_requirements(
     name = "python_requirements",
@@ -12,3 +13,11 @@ exports_files([
     "requirements.txt",
     "requirements_lock.txt",
 ])
+
+DEFAULT_PYTHON_VERSION = "3.10"  # keep in sync with MODULE.bazel
+
+alias(
+    name = "rules_ros2_pip_deps_numpy_headers",
+    actual = ("@rules_ros2_pip_deps_%s_numpy//:headers" % DEFAULT_PYTHON_VERSION.replace(".", "")) if BZLMOD_ENABLED else "@rules_ros2_pip_deps_numpy//:headers",
+    visibility = ["//visibility:public"],
+)

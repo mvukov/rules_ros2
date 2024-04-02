@@ -58,9 +58,9 @@ use_repo(
 bazel_dep(name = "rules_cc", version = "0.0.9")
 bazel_dep(name = "rules_python", version = "0.31.0")
 
-python = use_extension("@rules_python//python:extensions.bzl", "python")
-python.toolchain(
-    is_default = True,
-    python_version = "3.11",
-)
-use_repo(python, "python_versions")
+PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11", "3.12"]
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+[
+    python.toolchain(python_version = python_version, is_default = python_version == "3.10")
+    for python_version in PYTHON_VERSIONS
+]
