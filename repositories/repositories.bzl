@@ -8,24 +8,11 @@ load(
     "ros2_repositories_impl",
 )
 
-def rules_ros2_workspace_and_bazelmod_common_deps():
-    """Import http_archive dependencies needed for both the WORKSPACE and MODULE.bazel version of rules_ros2."""
-    maybe(
-        http_archive,
-        name = "pybind11",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:pybind11.BUILD.bazel",
-        sha256 = "d475978da0cdc2d43b73f30910786759d593a9d8ee05b1b6846d1eb16c6d2e0c",
-        strip_prefix = "pybind11-2.11.1",
-        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.11.1.tar.gz"],
-    )
-
 def ros2_workspace_repositories():
     """Imports dependent third-party repositories for the non-blzmod (hence, workspace-) version of the repository.
 
     In particular, imports third-party package repositories excluding ROS 2 packages. ROS 2-specific repositories are imported with `ros2_repositories()` macro.
     """
-    rules_ros2_workspace_and_bazelmod_common_deps()
-
     maybe(
         http_archive,
         name = "rules_python",
@@ -66,6 +53,15 @@ def ros2_workspace_repositories():
         sha256 = "c642ae9b75fee120b2d96c712538bd2cf283228d2337df2cf2988e3c02678ef4",
         strip_prefix = "yaml-0.2.5",
         urls = ["https://github.com/yaml/libyaml/releases/download/0.2.5/yaml-0.2.5.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "pybind11",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:pybind11.BUILD.bazel",
+        sha256 = "d475978da0cdc2d43b73f30910786759d593a9d8ee05b1b6846d1eb16c6d2e0c",
+        strip_prefix = "pybind11-2.11.1",
+        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.11.1.tar.gz"],
     )
 
     maybe(

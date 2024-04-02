@@ -11,10 +11,11 @@ bazel_dep(name = "libyaml", version = "0.2.5")
 bazel_dep(name = "lz4", version = "1.9.4")
 bazel_dep(name = "nlohmann_json", version = "3.11.3")
 bazel_dep(name = "platforms", version = "0.0.8")
+bazel_dep(name = "pybind11_bazel", version = "2.11.1.bzl.3")
 bazel_dep(name = "readerwriterqueue", version = "1.0.6")
 bazel_dep(name = "rules_cc", version = "0.0.9")
 bazel_dep(name = "rules_foreign_cc", version = "0.10.1")
-bazel_dep(name = "rules_python", version = "0.29.0")
+bazel_dep(name = "rules_python", version = "0.31.0")
 bazel_dep(name = "spdlog", version = "1.12.0")
 bazel_dep(name = "sqlite3", version = "3.42.0.bcr.1")
 bazel_dep(name = "tinyxml2", version = "10.0.0")
@@ -60,6 +61,9 @@ pip.parse(
 )
 use_repo(pip, "rules_ros2_resolver_deps")
 
+pybind_configure = use_extension("@pybind11_bazel//:internal_configure.bzl", "internal_configure_extension")
+use_repo(pybind_configure, "pybind11")
+
 non_module_deps = use_extension("@com_github_mvukov_rules_ros2//:extensions.bzl", "non_module_deps")
 use_repo(
     non_module_deps,
@@ -67,7 +71,6 @@ use_repo(
     "foxglove_bridge",
     "iceoryx",
     "osrf_pycommon",
-    "pybind11",
     "ros2_ament_cmake_ros",
     "ros2_ament_index",
     "ros2_class_loader",
