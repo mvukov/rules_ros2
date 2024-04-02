@@ -71,6 +71,7 @@ use_repo(
     "foxglove_bridge",
     "iceoryx",
     "osrf_pycommon",
+    "ros2",
     "ros2_ament_cmake_ros",
     "ros2_ament_index",
     "ros2_class_loader",
@@ -111,5 +112,4 @@ use_repo(
     "ros2_urdfdom_headers",
     "ros2_xacro",
     "ros2cli",
-    "ros2",
 )
