@@ -42,10 +42,15 @@ use_repo(pip, "whl_mods_hub")
 
 # If you change the DEFAULT_PYTHON_VERSION, make sure to update the `//:rules_ros2_pip_deps_numpy_headers` alias
 DEFAULT_PYTHON_VERSION = "3.10"
+
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+
 [
     (
-        python.toolchain(python_version = python_version, is_default = python_version == DEFAULT_PYTHON_VERSION),
+        python.toolchain(
+            is_default = python_version == DEFAULT_PYTHON_VERSION,
+            python_version = python_version,
+        ),
         pip.parse(
             hub_name = "rules_ros2_pip_deps",
             python_version = python_version,
@@ -59,8 +64,15 @@ python = use_extension("@rules_python//python/extensions:python.bzl", "python")
             requirements_lock = "//repositories/private:resolver_requirements_lock.txt",
         ),
     )
-    for python_version in ["3.8", "3.9", DEFAULT_PYTHON_VERSION, "3.11", "3.12"]
+    for python_version in [
+        "3.8",
+        "3.9",
+        DEFAULT_PYTHON_VERSION,
+        "3.11",
+        "3.12",
+    ]
 ]
+
 use_repo(pip, "rules_ros2_pip_deps")
 use_repo(pip, "rules_ros2_resolver_deps")
 
