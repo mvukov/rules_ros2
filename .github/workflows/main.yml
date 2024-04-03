@@ -84,7 +84,7 @@ jobs:
       # previously built artifacts to minimize build time. The more precise you are with
       # hashFiles sources the less work bazel will have to do.
       - name: Mount bazel caches
-        uses: actions/cache@v4.0.1
+        uses: actions/cache@v4.0.2
         with:
           path: |
             ~/.cache/bazel
