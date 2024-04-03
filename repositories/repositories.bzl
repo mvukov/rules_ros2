@@ -1,7 +1,6 @@
 """Handles imports of external/third-party repositories.
 """
 
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 load(
@@ -9,15 +8,17 @@ load(
     "ros2_repositories_impl",
 )
 
-def ros2_repositories():
-    """Imports external/third-party repositories.
+def ros2_workspace_repositories():
+    """Imports dependent third-party repositories for the non-blzmod (hence, workspace-) version of the repository.
+
+    In particular, imports third-party package repositories excluding ROS 2 packages. ROS 2-specific repositories are imported with `ros2_repositories()` macro.
     """
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "d71d2c67e0bce986e1c5a7731b4693226867c45bfe0b7c5e0067228a536fc580",
-        strip_prefix = "rules_python-0.29.0",
-        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.29.0.tar.gz",
+        sha256 = "c68bdc4fbec25de5b5493b8819cfc877c4ea299c0dcb15c244c5a00208cde311",
+        strip_prefix = "rules_python-0.31.0",
+        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.31.0.tar.gz",
     )
 
     maybe(
@@ -49,18 +50,18 @@ def ros2_repositories():
         http_archive,
         name = "libyaml",
         build_file = "@com_github_mvukov_rules_ros2//repositories:libyaml.BUILD.bazel",
-        sha256 = "2c103fc473e904c6fe7580277f1fa16b6d716e54d5e3f32a8913c4850ae03b3f",
-        strip_prefix = "libyaml-acd6f6f014c25e46363e718381e0b35205df2d83",
-        urls = ["https://github.com/yaml/libyaml/archive/acd6f6f014c25e46363e718381e0b35205df2d83.tar.gz"],
+        sha256 = "c642ae9b75fee120b2d96c712538bd2cf283228d2337df2cf2988e3c02678ef4",
+        strip_prefix = "yaml-0.2.5",
+        urls = ["https://github.com/yaml/libyaml/releases/download/0.2.5/yaml-0.2.5.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "pybind11",
         build_file = "@com_github_mvukov_rules_ros2//repositories:pybind11.BUILD.bazel",
-        sha256 = "d475978da0cdc2d43b73f30910786759d593a9d8ee05b1b6846d1eb16c6d2e0c",
-        strip_prefix = "pybind11-2.11.1",
-        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.11.1.tar.gz"],
+        sha256 = "bf8f242abd1abcd375d516a7067490fb71abd79519a282d22b6e4d19282185a7",
+        strip_prefix = "pybind11-2.12.0",
+        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.12.0.tar.gz"],
     )
 
     maybe(
@@ -73,7 +74,7 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "com_google_googletest",
+        name = "googletest",
         sha256 = "8ad598c73ad796e0d8280b082cebd82a630d73e73cd3c70057938a6501bba5d7",
         strip_prefix = "googletest-1.14.0",
         url = "https://github.com/google/googletest/archive/refs/tags/v1.14.0.tar.gz",
@@ -92,15 +93,6 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "console_bridge",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:console_bridge.BUILD.bazel",
-        sha256 = "303a619c01a9e14a3c82eb9762b8a428ef5311a6d46353872ab9a904358be4a4",
-        strip_prefix = "console_bridge-1.0.2",
-        urls = ["https://github.com/ros/console_bridge/archive/1.0.2.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
         name = "readerwriterqueue",
         build_file = "@com_github_mvukov_rules_ros2//repositories:readerwriterqueue.BUILD.bazel",
         sha256 = "fc68f55bbd49a8b646462695e1777fb8f2c0b4f342d5e6574135211312ba56c1",
@@ -110,86 +102,11 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "sqlite",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:sqlite.BUILD.bazel",
+        name = "sqlite3",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:sqlite3.BUILD.bazel",
         sha256 = "ad68c1216c3a474cf360c7581a4001e952515b3649342100f2d7ca7c8e313da6",
         strip_prefix = "sqlite-amalgamation-3240000",
         urls = ["https://www.sqlite.org/2018/sqlite-amalgamation-3240000.zip"],
-    )
-
-    maybe(
-        http_archive,
-        name = "zstd",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:zstd.BUILD.bazel",
-        sha256 = "9c4396cc829cfae319a6e2615202e82aad41372073482fce286fac78646d3ee4",
-        strip_prefix = "zstd-1.5.5",
-        urls = ["https://github.com/facebook/zstd/releases/download/v1.5.5/zstd-1.5.5.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
-        name = "lz4",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:lz4.BUILD.bazel",
-        sha256 = "4ec935d99aa4950eadfefbd49c9fad863185ac24c32001162c44a683ef61b580",
-        strip_prefix = "lz4-1.9.3",
-        urls = ["https://github.com/lz4/lz4/archive/refs/tags/v1.9.3.zip"],
-    )
-
-    maybe(
-        http_archive,
-        name = "mcap",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:mcap.BUILD.bazel",
-        sha256 = "2833f72344308ea58639f3b363a0cf17669580ae7ab435f43f3b104cff6ef548",
-        strip_prefix = "mcap-releases-cpp-v0.8.0/cpp/mcap",
-        urls = ["https://github.com/foxglove/mcap/archive/refs/tags/releases/cpp/v0.8.0.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
-        name = "yaml_cpp",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:yaml_cpp.BUILD.bazel",
-        sha256 = "43e6a9fcb146ad871515f0d0873947e5d497a1c9c60c58cb102a97b47208b7c3",
-        strip_prefix = "yaml-cpp-yaml-cpp-0.7.0",
-        urls = ["https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.7.0.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
-        name = "eigen",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:eigen.BUILD.bazel",
-        sha256 = "8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72",
-        strip_prefix = "eigen-3.4.0",
-        urls = ["https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
-        name = "ros2",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
-        sha256 = "57495eab51338591a0117b6763827607808e26344d134d6666ded66e479bdf8b",
-        strip_prefix = "ros2-release-humble-20230925",
-        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-humble-20230925.tar.gz"],
-    )
-
-    ros2_repositories_impl()
-
-    # ros2-devel branch
-    maybe(
-        http_archive,
-        name = "ros2_gps_umd",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:gps_umd.BUILD.bazel",
-        sha256 = "64a96f93053d0d59e8fcccceab5408a7d666dd813d4c12df139ef24d916f49ab",
-        strip_prefix = "gps_umd-fc782811804fafb12ee479a48a2aa2e9ee942e2d",
-        urls = ["https://github.com/swri-robotics/gps_umd/archive/fc782811804fafb12ee479a48a2aa2e9ee942e2d.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
-        name = "foxglove_bridge",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
-        sha256 = "083940a629c225640e4f4a4a9f43512907c98c5c468ae93c75429d8447a97c69",
-        strip_prefix = "ros-foxglove-bridge-0.7.5",
-        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.5.tar.gz"],
     )
 
     maybe(
@@ -222,10 +139,10 @@ def ros2_repositories():
     # support Bazel.
     maybe(
         http_archive,
-        name = "openssl",
-        sha256 = "cf1cfe0adb443ef96197b109292847c0a97304058af21f3488a323b51984608a",
-        strip_prefix = "boringssl-e762bd792ab7fecb170bdb1cd96a0bfb0c9d3238",
-        urls = ["https://github.com/hedronvision/boringssl/archive/e762bd792ab7fecb170bdb1cd96a0bfb0c9d3238.tar.gz"],
+        name = "boringssl",
+        sha256 = "2f5f3bda71bbf255bbd508f69c8e542da7dbe9b1880326f29dbccdbb74ba961f",
+        strip_prefix = "boringssl-8cbad750216f61cf9140007adc420bc2e5cd5dae",
+        urls = ["https://github.com/hedronvision/boringssl/archive/8cbad750216f61cf9140007adc420bc2e5cd5dae.tar.gz"],
     )
 
     maybe(
@@ -238,6 +155,94 @@ def ros2_repositories():
             "https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.xz",
             "https://zlib.net/zlib-1.2.13.tar.xz",
         ],
+    )
+
+    maybe(
+        http_archive,
+        name = "tinyxml",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:tinyxml.BUILD.bazel",
+        sha256 = "15bdfdcec58a7da30adc87ac2b078e4417dbe5392f3afb719f9ba6d062645593",
+        urls = [
+            "http://archive.ubuntu.com/ubuntu/pool/universe/t/tinyxml/tinyxml_2.6.2.orig.tar.gz",
+        ],
+    )
+
+    maybe(
+        http_archive,
+        name = "curl",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:curl.BUILD.bazel",
+        sha256 = "230d61a4b1eb3346930f2d601cc8fe5237957163e16befbe15e0ef40c56767a2",
+        strip_prefix = "curl-curl-8_2_1",
+        urls = ["https://github.com/curl/curl/archive/refs/tags/curl-8_2_1.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "zstd",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:zstd.BUILD.bazel",
+        sha256 = "8c29e06cf42aacc1eafc4077ae2ec6c6fcb96a626157e0593d5e82a34fd403c1",
+        strip_prefix = "zstd-1.5.6",
+        urls = ["https://github.com/facebook/zstd/releases/download/v1.5.6/zstd-1.5.6.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "lz4",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:lz4.BUILD.bazel",
+        sha256 = "4ec935d99aa4950eadfefbd49c9fad863185ac24c32001162c44a683ef61b580",
+        strip_prefix = "lz4-1.9.3",
+        urls = ["https://github.com/lz4/lz4/archive/refs/tags/v1.9.3.zip"],
+    )
+
+    maybe(
+        http_archive,
+        name = "yaml-cpp",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:yaml-cpp.BUILD.bazel",
+        sha256 = "43e6a9fcb146ad871515f0d0873947e5d497a1c9c60c58cb102a97b47208b7c3",
+        strip_prefix = "yaml-cpp-yaml-cpp-0.7.0",
+        urls = ["https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.7.0.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "eigen",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:eigen.BUILD.bazel",
+        sha256 = "8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72",
+        strip_prefix = "eigen-3.4.0",
+        urls = ["https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz"],
+    )
+
+def ros2_repositories():
+    """Import ROS 2 repositories."""
+
+    maybe(
+        http_archive,
+        name = "ros2",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
+        sha256 = "6e2611392776fdf39e47205db44956b77727cd561245c012ccc3ff5b1a4cd7ad",
+        strip_prefix = "ros2-release-humble-20231122",
+        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-humble-20231122.tar.gz"],
+    )
+
+    ros2_repositories_impl()
+
+    # ros2-devel branch
+    maybe(
+        http_archive,
+        name = "ros2_gps_umd",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:gps_umd.BUILD.bazel",
+        sha256 = "64a96f93053d0d59e8fcccceab5408a7d666dd813d4c12df139ef24d916f49ab",
+        strip_prefix = "gps_umd-fc782811804fafb12ee479a48a2aa2e9ee942e2d",
+        urls = ["https://github.com/swri-robotics/gps_umd/archive/fc782811804fafb12ee479a48a2aa2e9ee942e2d.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "foxglove_bridge",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
+        sha256 = "3de53c66c69f1d0c949ae1257dcfcdc5cbb9a202d6522643c0cd8623017d9aa6",
+        strip_prefix = "ros-foxglove-bridge-0.7.6",
+        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.6.tar.gz"],
     )
 
     maybe(
@@ -257,16 +262,6 @@ def ros2_repositories():
         sha256 = "22df47f63d91d014af2675029c23da83748575c12a6481fda3ed9235907cc259",
         strip_prefix = "orocos_kinematics_dynamics-507de66205e14b12c8c65f25eafc05c4dc66e21e",
         urls = ["https://github.com/orocos/orocos_kinematics_dynamics/archive/507de66205e14b12c8c65f25eafc05c4dc66e21e.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
-        name = "tinyxml",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:tinyxml.BUILD.bazel",
-        sha256 = "15bdfdcec58a7da30adc87ac2b078e4417dbe5392f3afb719f9ba6d062645593",
-        urls = [
-            "http://archive.ubuntu.com/ubuntu/pool/universe/t/tinyxml/tinyxml_2.6.2.orig.tar.gz",
-        ],
     )
 
     maybe(
@@ -291,15 +286,24 @@ def ros2_repositories():
 
     maybe(
         http_archive,
-        name = "curl",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:curl.BUILD.bazel",
-        sha256 = "230d61a4b1eb3346930f2d601cc8fe5237957163e16befbe15e0ef40c56767a2",
-        strip_prefix = "curl-curl-8_2_1",
-        urls = ["https://github.com/curl/curl/archive/refs/tags/curl-8_2_1.tar.gz"],
+        name = "console_bridge",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:console_bridge.BUILD.bazel",
+        sha256 = "303a619c01a9e14a3c82eb9762b8a428ef5311a6d46353872ab9a904358be4a4",
+        strip_prefix = "console_bridge-1.0.2",
+        urls = ["https://github.com/ros/console_bridge/archive/1.0.2.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "mcap",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:mcap.BUILD.bazel",
+        sha256 = "2833f72344308ea58639f3b363a0cf17669580ae7ab435f43f3b104cff6ef548",
+        strip_prefix = "mcap-releases-cpp-v0.8.0/cpp/mcap",
+        urls = ["https://github.com/foxglove/mcap/archive/refs/tags/releases/cpp/v0.8.0.tar.gz"],
     )
 
 def _googletest_deps():
-    """Lists implicit googletest deps.
+    """Lists implicit googletest WORKSPACE deps.
 
     Necessary such that e.g. `bazel fetch //...` can work.
     The versions below taken from https://github.com/google/googletest/blob/v1.13.0/WORKSPACE.

@@ -24,7 +24,7 @@ repositories:
       - "@com_github_mvukov_rules_ros2//repositories/patches:geometry2_fix-use-after-free-bug.patch"
   iceoryx:
     name: iceoryx
-    strip_prefix: iceoryx-2.0.3
+    strip_prefix: iceoryx-2.0.5
     build_file: "@com_github_mvukov_rules_ros2//repositories:iceoryx.BUILD.bazel"
   image_common:
     name: ros2_image_common
@@ -108,6 +108,8 @@ repositories:
   ros2cli:
     name: ros2cli
     build_file: "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel"
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:ros2cli_replace-netifaces.patch"
   ros_testing:
     name: ros2_ros_testing
     build_file: "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel"

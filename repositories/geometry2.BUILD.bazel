@@ -119,6 +119,17 @@ ros2_cpp_binary(
     ],
 )
 
+ros2_cpp_binary(
+    name = "tf2_echo",
+    srcs = ["tf2_ros/src/tf2_echo.cpp"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":tf2",
+        ":tf2_ros",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
 ros2_cpp_library(
     name = "cpp_tf2_sensor_msgs",
     srcs = [
@@ -154,7 +165,7 @@ ros2_cpp_binary(
     linkshared = True,
     deps = [
         ":tf2",
-        "@rules_ros2_python//:python_headers",
+        "@rules_python//python/cc:current_py_cc_headers",
     ],
 )
 

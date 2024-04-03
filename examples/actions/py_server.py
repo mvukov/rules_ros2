@@ -96,8 +96,8 @@ class MinimalActionServer(Node):
             feedback_msg.sequence.append(feedback_msg.sequence[i] +
                                          feedback_msg.sequence[i - 1])
 
-            self.get_logger().info('Publishing feedback: {}'.format(
-                feedback_msg.sequence))
+            self.get_logger().info(
+                f'Publishing feedback: {feedback_msg.sequence}')
 
             # Publish the feedback
             goal_handle.publish_feedback(feedback_msg)

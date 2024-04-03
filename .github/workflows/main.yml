@@ -31,7 +31,7 @@ jobs:
         with:
           python-version: "3.10"
       - name: Run pre-commit checks
-        uses: pre-commit/action@v3.0.0
+        uses: pre-commit/action@v3.0.1
   # https://github.com/actions/runner/issues/691
   configure:
     runs-on: ubuntu-22.04
@@ -84,12 +84,13 @@ jobs:
       # previously built artifacts to minimize build time. The more precise you are with
       # hashFiles sources the less work bazel will have to do.
       - name: Mount bazel caches
-        uses: actions/cache@v4.0.0
+        uses: actions/cache@v4.0.2
         with:
           path: |
+            ~/.cache/bazel
             ~/.cache/bazel-repo
-          key: v3-bazel-repo-cache-${{ hashFiles('.bazelversion', 'examples/WORKSPACE', 'repositories/**', 'requirements_lock.txt', 'WORKSPACE') }}
-          restore-keys: v3-bazel-repo-cache-
+          key: v3-bazel-repo-cache-${{ matrix.toolchain }}-${{ hashFiles('.bazelversion', 'examples/WORKSPACE', 'repositories/**', 'requirements_lock.txt', 'WORKSPACE') }}
+          restore-keys: v3-bazel-repo-cache-${{ matrix.toolchain }}-
       - name: bazel test ${{ matrix.config_option }} //...
         env:
           # Bazelisk will download bazel to here, ensure it is cached between runs.

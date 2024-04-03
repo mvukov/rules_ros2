@@ -21,11 +21,11 @@
       matchManagers: ["bazel"],
       matchPackageNames: [
         "bazel_skylib",
-        "com_google_googletest",
+        "googletest",
         "eigen",
         "foxglove_bridge",
         "nlohmann_json",
-        "openssl",
+        "boringssl",
         "pybind11",
         "rules_foreign_cc",
         "rules_python",

@@ -13,7 +13,7 @@ ros2_c_library(
     includes = ["rcl_yaml_param_parser/include"],
     visibility = ["//visibility:public"],
     deps = [
-        "@libyaml//:yaml",
+        "@libyaml",
         "@ros2_rcutils//:rcutils",
         "@ros2_rmw//:rmw",
     ],
