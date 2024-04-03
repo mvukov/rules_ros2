@@ -723,6 +723,12 @@ def _py_generator_aspect_impl(target, ctx):
         target = target,
     )
 
+    linked_dynamic_libraries = []
+    for linker_input in compilation_info.cc_info.linking_context.linker_inputs.to_list():
+        for library in linker_input.libraries:
+            if library.pic_static_library == None:
+                linked_dynamic_libraries.append(library.dynamic_library)
+
     cc_toolchain = find_cpp_toolchain(ctx)
     feature_configuration = cc_common.configure_features(
         ctx = ctx,
@@ -779,7 +785,7 @@ def _py_generator_aspect_impl(target, ctx):
             ],
         ),
         dynamic_libraries = depset(
-            direct = [dynamic_library],
+            direct = [dynamic_library] + linked_dynamic_libraries,
             transitive = [
                 dep[PyGeneratorAspectInfo].dynamic_libraries
                 for dep in ctx.rule.attr.deps

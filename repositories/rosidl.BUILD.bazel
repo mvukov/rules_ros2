@@ -7,6 +7,7 @@ load(
     "ros2_c_library",
     "ros2_cpp_library",
 )
+load("@rules_cc//cc:defs.bzl", "cc_import", "cc_library")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
@@ -163,17 +164,64 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+cc_library(
+    name = "rosidl_typesupport_introspection_c_identifier_static",
+    srcs = ["rosidl_typesupport_introspection_c/src/identifier.c"],
+    hdrs = [
+        "rosidl_typesupport_introspection_c/include/rosidl_typesupport_introspection_c/identifier.h",
+        "rosidl_typesupport_introspection_c/include/rosidl_typesupport_introspection_c/visibility_control.h",
+    ],
+    includes = ["rosidl_typesupport_introspection_c/include"],
+)
+
+cc_shared_library(
+    name = "rosidl_typesupport_introspection_c_identifier",
+    deps = [":rosidl_typesupport_introspection_c_identifier_static"],
+)
+
+cc_import(
+    name = "rosidl_typesupport_introspection_c_identifier_import",
+    shared_library = ":rosidl_typesupport_introspection_c_identifier",
+)
+
 ros2_c_library(
     name = "rosidl_typesupport_introspection_c",
-    srcs = glob(["rosidl_typesupport_introspection_c/src/*.c"]),
+    srcs = glob(
+        ["rosidl_typesupport_introspection_c/src/*.c"],
+        exclude = ["rosidl_typesupport_introspection_c/src/identifier.c"],
+    ),
     hdrs = glob(["rosidl_typesupport_introspection_c/include/**/*.h"]),
     includes = ["rosidl_typesupport_introspection_c/include"],
     visibility = ["//visibility:public"],
+    deps = [":rosidl_typesupport_introspection_c_identifier_import"],
+)
+
+cc_library(
+    name = "rosidl_typesupport_introspection_cpp_identifier_static",
+    srcs = ["rosidl_typesupport_introspection_cpp/src/identifier.cpp"],
+    hdrs = [
+        "rosidl_typesupport_introspection_cpp/include/rosidl_typesupport_introspection_cpp/identifier.hpp",
+        "rosidl_typesupport_introspection_cpp/include/rosidl_typesupport_introspection_cpp/visibility_control.h",
+    ],
+    includes = ["rosidl_typesupport_introspection_cpp/include"],
+)
+
+cc_shared_library(
+    name = "rosidl_typesupport_introspection_cpp_identifier",
+    deps = [":rosidl_typesupport_introspection_cpp_identifier_static"],
+)
+
+cc_import(
+    name = "rosidl_typesupport_introspection_cpp_identifier_import",
+    shared_library = ":rosidl_typesupport_introspection_cpp_identifier",
 )
 
 ros2_cpp_library(
     name = "rosidl_typesupport_introspection_cpp",
-    srcs = glob(["rosidl_typesupport_introspection_cpp/src/*.cpp"]),
+    srcs = glob(
+        ["rosidl_typesupport_introspection_cpp/src/*.cpp"],
+        exclude = ["rosidl_typesupport_introspection_cpp/src/identifier.cpp"],
+    ),
     hdrs = glob([
         "rosidl_typesupport_introspection_cpp/include/**/*.hpp",
         "rosidl_typesupport_introspection_cpp/include/**/*.h",
@@ -183,6 +231,7 @@ ros2_cpp_library(
     deps = [
         ":rosidl_runtime_c",
         ":rosidl_runtime_cpp",
+        ":rosidl_typesupport_introspection_cpp_identifier_import",
     ],
 )
 
