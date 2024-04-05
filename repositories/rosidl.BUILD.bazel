@@ -188,7 +188,7 @@ ros2_c_library(
     visibility = ["//visibility:public"],
 )
 
-# Global rosidl_typesupport_introspection_cpp::typesupport_identifier must have a unique address.
+# Global variable rosidl_typesupport_introspection_cpp::typesupport_identifier must have a unique address.
 ros2_cpp_binary(
     name = "rosidl_typesupport_introspection_cpp_identifier",
     srcs = [
