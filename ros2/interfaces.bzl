@@ -667,6 +667,7 @@ PyGeneratorAspectInfo = provider("TBD", fields = [
     "dynamic_libraries",
     "transitive_sources",
     "imports",
+    "linker_inputs",
 ])
 
 _INTERFACE_GENERATOR_PY_OUTPUT_MAPPING = [
@@ -799,6 +800,7 @@ def _py_generator_aspect_impl(target, ctx):
                 for dep in ctx.rule.attr.deps
             ],
         ),
+        linker_inputs = compilation_info.cc_info.linking_context.linker_inputs,
     )
     return [
         py_info,
@@ -849,6 +851,7 @@ def _merge_py_generator_aspect_infos(py_infos):
             transitive = [info.transitive_sources for info in py_infos],
         ),
         imports = depset(transitive = [info.imports for info in py_infos]),
+        linker_inputs = depset(transitive = [info.linker_inputs for info in py_infos]),
     )
 
 def _py_generator_impl(ctx):
@@ -857,12 +860,21 @@ def _py_generator_impl(ctx):
         for dep in ctx.attr.deps
     ])
 
+    linked_dynamic_libraries = []
+    for linker_input in py_info.linker_inputs.to_list():
+        for library in linker_input.libraries:
+            if library.pic_static_library == None:
+                # The sole purpose of this shenanigan is to fetch @ros2_rosidl//:rosidl_typesupport_introspection_c_identifier.
+                # For that target we know it only has a dynamic library.
+                linked_dynamic_libraries.append(library.dynamic_library)
+
     return [
         DefaultInfo(runfiles = ctx.runfiles(
             transitive_files = depset(
                 transitive = [
                     py_info.transitive_sources,
                     py_info.dynamic_libraries,
+                    depset(linked_dynamic_libraries),
                 ],
             ),
         )),

@@ -4,7 +4,9 @@
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load(
     "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_c_binary",
     "ros2_c_library",
+    "ros2_cpp_binary",
     "ros2_cpp_library",
 )
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
@@ -163,17 +165,47 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+# Global variable rosidl_typesupport_introspection_c__identifier must have a unique address.
+ros2_c_binary(
+    name = "rosidl_typesupport_introspection_c_identifier",
+    srcs = [
+        "rosidl_typesupport_introspection_c/include/rosidl_typesupport_introspection_c/identifier.h",
+        "rosidl_typesupport_introspection_c/include/rosidl_typesupport_introspection_c/visibility_control.h",
+        "rosidl_typesupport_introspection_c/src/identifier.c",
+    ],
+    includes = ["rosidl_typesupport_introspection_c/include"],
+    linkshared = True,
+)
+
 ros2_c_library(
     name = "rosidl_typesupport_introspection_c",
-    srcs = glob(["rosidl_typesupport_introspection_c/src/*.c"]),
+    srcs = glob(
+        ["rosidl_typesupport_introspection_c/src/*.c"],
+        exclude = ["rosidl_typesupport_introspection_c/src/identifier.c"],
+    ) + [":rosidl_typesupport_introspection_c_identifier"],
     hdrs = glob(["rosidl_typesupport_introspection_c/include/**/*.h"]),
     includes = ["rosidl_typesupport_introspection_c/include"],
     visibility = ["//visibility:public"],
 )
 
+# Global variable rosidl_typesupport_introspection_cpp::typesupport_identifier must have a unique address.
+ros2_cpp_binary(
+    name = "rosidl_typesupport_introspection_cpp_identifier",
+    srcs = [
+        "rosidl_typesupport_introspection_cpp/include/rosidl_typesupport_introspection_cpp/identifier.hpp",
+        "rosidl_typesupport_introspection_cpp/include/rosidl_typesupport_introspection_cpp/visibility_control.h",
+        "rosidl_typesupport_introspection_cpp/src/identifier.cpp",
+    ],
+    includes = ["rosidl_typesupport_introspection_cpp/include"],
+    linkshared = True,
+)
+
 ros2_cpp_library(
     name = "rosidl_typesupport_introspection_cpp",
-    srcs = glob(["rosidl_typesupport_introspection_cpp/src/*.cpp"]),
+    srcs = glob(
+        ["rosidl_typesupport_introspection_cpp/src/*.cpp"],
+        exclude = ["rosidl_typesupport_introspection_cpp/src/identifier.cpp"],
+    ) + [":rosidl_typesupport_introspection_cpp_identifier"],
     hdrs = glob([
         "rosidl_typesupport_introspection_cpp/include/**/*.hpp",
         "rosidl_typesupport_introspection_cpp/include/**/*.h",
