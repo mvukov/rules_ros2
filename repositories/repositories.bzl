@@ -41,9 +41,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "spdlog",
         build_file = "@com_github_mvukov_rules_ros2//repositories:spdlog.BUILD.bazel",
-        sha256 = "534f2ee1a4dcbeb22249856edfb2be76a1cf4f708a20b0ac2ed090ee24cfdbc9",
-        strip_prefix = "spdlog-1.13.0",
-        url = "https://github.com/gabime/spdlog/archive/v1.13.0.tar.gz",
+        sha256 = "1586508029a7d0670dfcb2d97575dcdc242d3868a259742b69f100801ab4e16b",
+        strip_prefix = "spdlog-1.14.1",
+        url = "https://github.com/gabime/spdlog/archive/v1.14.1.tar.gz",
     )
 
     maybe(
