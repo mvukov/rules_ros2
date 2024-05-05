@@ -302,6 +302,17 @@ def ros2_repositories():
         urls = ["https://github.com/foxglove/mcap/archive/refs/tags/releases/cpp/v0.8.0.tar.gz"],
     )
 
+    native.new_local_repository(
+        # maybe(
+        #     http_archive,
+        name = "ros2_rust",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:ros2_rust.BUILD.bazel",
+        # sha256 = "0672e69a953664794aae9a55a96edb99a100d7f33773d0d7b7931c6a0317f3ca",
+        # strip_prefix = "ros2_rust-0.4.1",
+        # urls = ["https://github.com/ros2-rust/ros2_rust/archive/refs/tags/0.4.1.tar.gz"],
+        path = "/home/madwolf/dev/ros2_rust",
+    )
+
 def _googletest_deps():
     """Lists implicit googletest WORKSPACE deps.
 

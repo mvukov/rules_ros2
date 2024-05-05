@@ -8,6 +8,7 @@ load(
     "ros2_interface_library",
 )
 load("@rules_python//python:defs.bzl", "py_test")
+load("@rules_rust//rust:defs.bzl", "rust_binary")
 
 py_test(
     name = "py_idl_no_deps_tests",
@@ -65,4 +66,11 @@ ros2_cpp_test(
         "@googletest//:gtest",
         "@ros2_rclcpp//:rclcpp",
     ],
+)
+
+rust_binary(
+    name = "pub",
+    srcs = ["pub.rs"],
+    edition = "2021",
+    deps = ["@ros2_rust//:rclrs"],
 )
