@@ -166,7 +166,7 @@ idl_adapter_aspect = aspect(
 def _get_parent_dir(path):
     return "/".join(path.split("/")[:-1])
 
-def _run_generator(
+def run_generator(
         ctx,
         srcs,
         package_name,
@@ -367,7 +367,7 @@ def _c_generator_aspect_impl(target, ctx):
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
 
-    interface_outputs, cc_include_dir = _run_generator(
+    interface_outputs, cc_include_dir = run_generator(
         ctx,
         srcs,
         package_name,
@@ -380,7 +380,7 @@ def _c_generator_aspect_impl(target, ctx):
         progress_message = "Generating C IDL interfaces for %{label}",
     )
 
-    typesupport_outputs, _ = _run_generator(
+    typesupport_outputs, _ = run_generator(
         ctx,
         srcs,
         package_name,
@@ -398,7 +398,7 @@ def _c_generator_aspect_impl(target, ctx):
         progress_message = "Generating C type support for %{label}",
     )
 
-    typesupport_introspection_outputs, _ = _run_generator(
+    typesupport_introspection_outputs, _ = run_generator(
         ctx,
         srcs,
         package_name,
@@ -534,7 +534,7 @@ def _cpp_generator_aspect_impl(target, ctx):
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
 
-    interface_outputs, cc_include_dir = _run_generator(
+    interface_outputs, cc_include_dir = run_generator(
         ctx,
         srcs,
         package_name,
@@ -546,7 +546,7 @@ def _cpp_generator_aspect_impl(target, ctx):
         progress_message = "Generating C++ IDL interfaces for %{label}",
     )
 
-    typesupport_outputs, _ = _run_generator(
+    typesupport_outputs, _ = run_generator(
         ctx,
         srcs,
         package_name,
@@ -563,7 +563,7 @@ def _cpp_generator_aspect_impl(target, ctx):
         progress_message = "Generating C++ type support for %{label}",
     )
 
-    typesupport_introspection_outputs, _ = _run_generator(
+    typesupport_introspection_outputs, _ = run_generator(
         ctx,
         srcs,
         package_name,
@@ -692,7 +692,7 @@ def _py_generator_aspect_impl(target, ctx):
         if any([f.extension == ext for f in srcs]):
             extra_generated_outputs.append("{}/__init__.py".format(ext))
 
-    interface_outputs, cc_include_dir = _run_generator(
+    interface_outputs, cc_include_dir = run_generator(
         ctx,
         srcs,
         package_name,

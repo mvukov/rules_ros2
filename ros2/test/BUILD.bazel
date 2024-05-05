@@ -9,6 +9,7 @@ load(
 )
 load("@rules_python//python:defs.bzl", "py_test")
 load("@rules_rust//rust:defs.bzl", "rust_binary")
+load("//ros2:rust_interfaces.bzl", "rust_generator")
 
 py_test(
     name = "py_idl_no_deps_tests",
@@ -73,4 +74,11 @@ rust_binary(
     srcs = ["pub.rs"],
     edition = "2021",
     deps = ["@ros2_rust//:rclrs"],
+)
+
+rust_generator(
+    name = "rust_builtin_interfaces",
+    deps = [
+        "@ros2_rcl_interfaces//:builtin_interfaces",
+    ],
 )

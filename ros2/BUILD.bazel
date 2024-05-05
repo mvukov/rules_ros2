@@ -24,6 +24,7 @@ exports_files([
     "test.py.tpl",
     "topic.bzl",
     "xacro.bzl",
+    "rust_interfaces.bzl",
 ])
 
 py_library(
