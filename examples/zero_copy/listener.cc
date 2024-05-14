@@ -27,7 +27,7 @@ class MinimalSubscriber : public rclcpp::Node {
           static uint64_t prev_count{std::numeric_limits<uint64_t>::max()};
           auto current_timestamp =
               std::chrono::duration_cast<std::chrono::microseconds>(
-                  std::chrono::steady_clock::now().time_since_epoch())
+                  std::chrono::system_clock::now().time_since_epoch())
                   .count();
           std::string str{msg->data.begin(),
                           msg->data.begin() + msg->data_length};

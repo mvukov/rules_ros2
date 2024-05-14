@@ -1,8 +1,11 @@
 use std::env;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
 
-use anyhow::{Error, Result};
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let shut_down = Arc::new(AtomicBool::new(false));
+    signal_hook::flag::register(signal_hook::consts::SIGINT, Arc::clone(&shut_down))?;
 
-fn main() -> Result<(), Error> {
     let context = rclrs::Context::new(env::args())?;
 
     let node = rclrs::create_node(&context, "minimal_publisher")?;
@@ -14,7 +17,7 @@ fn main() -> Result<(), Error> {
 
     let mut publish_count: u32 = 1;
 
-    while context.ok() {
+    while !shut_down.load(Ordering::Relaxed) && context.ok() {
         message.data = format!("Hello, world! {}", publish_count);
         println!("Publishing: [{}]", message.data);
         publisher.publish(&message)?;

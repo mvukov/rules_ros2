@@ -19,12 +19,12 @@ exports_files([
     "pytest_wrapper.py.tpl",
     "ros2_service.py",
     "ros2_topic.py",
+    "rust_interfaces.bzl",
     "service.bzl",
     "test.bzl",
     "test.py.tpl",
     "topic.bzl",
     "xacro.bzl",
-    "rust_interfaces.bzl",
 ])
 
 py_library(

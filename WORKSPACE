@@ -37,64 +37,23 @@ load(
 
 install_rules_ros2_pip_deps()
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+# Below is an optional setup for Rust support for ROS2.
 
-http_archive(
-    name = "rules_rust",
-    integrity = "sha256-JLN47ZcAbx9wEr5Jiib4HduZATGLiDgK7oUi/fvotzU=",
-    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.42.1/rules_rust-v0.42.1.tar.gz"],
-)
+load("//repositories:rust_setup_stage_1.bzl", "rust_setup_stage_1")
 
-load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
+rust_setup_stage_1()
 
-rules_rust_dependencies()
+load("//repositories:rust_setup_stage_2.bzl", "rust_setup_stage_2")
 
-rust_register_toolchains()
+rust_setup_stage_2()
 
-load("@rules_rust//crate_universe:repositories.bzl", "crate_universe_dependencies")
+load("//repositories:rust_setup_stage_3.bzl", "rust_setup_stage_3")
 
-crate_universe_dependencies()
+rust_setup_stage_3()
 
-load("@rules_rust//crate_universe:defs.bzl", "crate", "crates_repository", "render_config")
+load("//repositories:rust_setup_stage_4.bzl", "rust_setup_stage_4")
 
-crates_repository(
-    name = "rules_ros2_crate_index",
-    cargo_lockfile = "//:Cargo.lock",
-    lockfile = "//:Cargo.Bazel.lock",
-    packages = {
-        "bindgen": crate.spec(
-            version = "0.66.1",
-        ),
-        "cfg-if": crate.spec(
-            version = "1.0.0",
-        ),
-        "futures": crate.spec(
-            version = "0.3",
-        ),
-    },
-    # Setting the default package name to `""` forces the use of the macros defined in this repository
-    # to always use the root package when looking for dependencies or aliases. This should be considered
-    # optional as the repository also exposes alises for easy access to all dependencies.
-    render_config = render_config(
-        default_package_name = "",
-    ),
-)
-
-load("@rules_ros2_crate_index//:defs.bzl", rules_ros2_crate_repositories = "crate_repositories")
-
-rules_ros2_crate_repositories()
-
-load("//repositories:clang_configure.bzl", "clang_configure")
-
-clang_configure(
-    name = "rules_ros2_config_clang",
-)
-
-load("@rules_rust//bindgen:repositories.bzl", "rust_bindgen_dependencies", "rust_bindgen_register_toolchains")
-
-rust_bindgen_dependencies()
-
-register_toolchains("//:bindgen_toolchain")
+rust_setup_stage_4()
 
 # Below are internal deps.
 
