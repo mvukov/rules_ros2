@@ -16,6 +16,12 @@ bazel_dep(name = "readerwriterqueue", version = "1.0.6")
 bazel_dep(name = "rules_cc", version = "0.0.9")
 bazel_dep(name = "rules_foreign_cc", version = "0.10.1")
 bazel_dep(name = "rules_python", version = "0.31.0")
+git_override(
+    module_name = "rules_python",
+    commit = "96fa4a9d7e21ea5e0588b3f7dfee48eeba0279a8",
+    remote = "https://github.com/lalten/rules_python",
+)
+
 bazel_dep(name = "spdlog", version = "1.12.0")
 bazel_dep(name = "sqlite3", version = "3.42.0.bcr.1")
 bazel_dep(name = "tinyxml2", version = "10.0.0")
@@ -35,6 +41,7 @@ cc_library(
     deps = ["@rules_python//python/cc:current_py_cc_headers"],
 )
 """,
+    extra_targets = ["headers"],
     hub_name = "whl_mods_hub",
     whl_name = "numpy",
 )
