@@ -111,6 +111,12 @@ cpp_ros2_interface_library(
 )
 
 cpp_ros2_interface_library(
+    name = "cpp_lifecycle_msgs",
+    visibility = ["//visibility:public"],
+    deps = [":lifecycle_msgs"],
+)
+
+cpp_ros2_interface_library(
     name = "cpp_rcl_interfaces",
     visibility = ["//visibility:public"],
     deps = [":rcl_interfaces"],
@@ -164,8 +170,8 @@ py_ros2_interface_library(
     deps = [":rosgraph_msgs"],
 )
 
-cpp_ros2_interface_library(
-    name = "cpp_lifecycle_msgs",
+py_ros2_interface_library(
+    name = "py_statistics_msgs",
     visibility = ["//visibility:public"],
-    deps = [":lifecycle_msgs"],
+    deps = [":statistics_msgs"],
 )
