@@ -1,5 +1,5 @@
-load("@rules_python//python:pip.bzl", "compile_pip_requirements")
-load("@rules_python//python/private:bzlmod_enabled.bzl", "BZLMOD_ENABLED")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_python//python:pip.bzl", "compile_pip_requirements", "whl_filegroup")
 
 compile_pip_requirements(
     name = "python_requirements",
@@ -14,8 +14,16 @@ exports_files([
     "requirements_lock.txt",
 ])
 
-alias(
+whl_filegroup(
+    name = "numpy_includes",
+    pattern = "numpy/core/include/numpy",
+    whl = "@rules_ros2_pip_deps//numpy:whl",
+)
+
+cc_library(
     name = "rules_ros2_pip_deps_numpy_headers",
-    actual = "@rules_ros2_pip_deps//numpy:headers" if BZLMOD_ENABLED else "@rules_ros2_pip_deps_numpy//:headers",
+    hdrs = [":numpy_includes"],
+    includes = ["numpy_includes/numpy/core/include"],
     visibility = ["//visibility:public"],
+    deps = ["@rules_python//python/cc:current_py_cc_headers"],
 )
