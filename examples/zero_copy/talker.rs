@@ -12,6 +12,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let context = rclrs::Context::new(env::args())?;
 
     let node = rclrs::create_node(&context, "minimal_publisher")?;
+    let callback_period_ms = node
+        .declare_parameter("callback_period_ms")
+        .default(500)
+        .read_only()
+        .unwrap();
 
     let publisher = node.create_publisher::<chatter_interface::msg::rmw::Chatter>(
         "topic",
@@ -34,7 +39,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Publishing: {}", msg);
         message.publish()?;
         publish_count += 1;
-        std::thread::sleep(std::time::Duration::from_millis(500));
+        std::thread::sleep(std::time::Duration::from_millis(callback_period_ms.get() as u64));
     }
     Ok(())
 }

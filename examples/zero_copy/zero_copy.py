@@ -27,9 +27,14 @@ def generate_launch_description():
         ),
         launch.actions.SetEnvironmentVariable(name='CYCLONEDDS_URI',
                                               value='zero_copy/cyclonedds.xml'),
-        launch_ros.actions.Node(executable='zero_copy/talker',
-                                output='screen',
-                                name='talker'),
+        launch_ros.actions.Node(
+            executable='zero_copy/talker',
+            output='screen',
+            name='talker',
+            parameters=[{
+                'callback_period_ms': 'foo'
+            }],
+        ),
         launch_ros.actions.Node(executable='zero_copy/listener',
                                 output='screen',
                                 name='listener'),
