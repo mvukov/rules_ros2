@@ -42,7 +42,29 @@ load(
 
 RustGeneratorAspectInfo = provider("TBD", fields = [
     "dep_variant_info",
+    "transitive_dep_infos",
 ])
+
+def _get_crate_info(providers):
+    """Finds the CrateInfo provider in the list of providers."""
+    for provider in providers:
+        if hasattr(provider, "name"):
+            return provider
+    fail("Couldn't find a CrateInfo in the list of providers")
+
+def _get_dep_info(providers):
+    """Finds the DepInfo provider in the list of providers."""
+    for provider in providers:
+        if hasattr(provider, "direct_crates"):
+            return provider
+    fail("Couldn't find a DepInfo in the list of providers")
+
+def _get_cc_info(providers):
+    """Finds the CcInfo provider in the list of providers."""
+    for provider in providers:
+        if hasattr(provider, "linking_context"):
+            return provider
+    fail("Couldn't find a CcInfo in the list of providers")
 
 def _compile_rust_code(ctx, label, crate_name, srcs, deps):
     toolchain = find_toolchain(ctx)
@@ -69,10 +91,7 @@ def _compile_rust_code(ctx, label, crate_name, srcs, deps):
         )
         rustc_rmeta_output = generate_output_diagnostics(ctx, rust_metadata)
 
-    attr_deps_variant_infos = [dep[RustGeneratorAspectInfo].dep_variant_info for dep in ctx.rule.attr.deps]
-    deps = transform_deps(deps) + attr_deps_variant_infos
-
-    return rustc_compile_action(
+    providers = rustc_compile_action(
         ctx = ctx,
         attr = ctx.rule.attr,
         toolchain = toolchain,
@@ -82,7 +101,7 @@ def _compile_rust_code(ctx, label, crate_name, srcs, deps):
             type = crate_type,
             root = crate_root,
             srcs = depset(srcs),
-            deps = depset(deps),
+            deps = deps,
             proc_macro_deps = depset([]),
             aliases = {},
             output = rust_lib,
@@ -100,26 +119,11 @@ def _compile_rust_code(ctx, label, crate_name, srcs, deps):
         ),
     )
 
-def _get_crate_info(providers):
-    """Finds the CrateInfo provider in the list of providers."""
-    for provider in providers:
-        if hasattr(provider, "name"):
-            return provider
-    fail("Couldn't find a CrateInfo in the list of providers")
-
-def _get_dep_info(providers):
-    """Finds the DepInfo provider in the list of providers."""
-    for provider in providers:
-        if hasattr(provider, "direct_crates"):
-            return provider
-    fail("Couldn't find a DepInfo in the list of providers")
-
-def _get_cc_info(providers):
-    """Finds the CcInfo provider in the list of providers."""
-    for provider in providers:
-        if hasattr(provider, "linking_context"):
-            return provider
-    fail("Couldn't find a CcInfo in the list of providers")
+    return rust_common.dep_variant_info(
+        crate_info = _get_crate_info(providers),
+        dep_info = _get_dep_info(providers),
+        cc_info = _get_cc_info(providers),
+    )
 
 def _rust_generator_aspect_impl(target, ctx):
     package_name = target.label.name
@@ -150,20 +154,33 @@ def _rust_generator_aspect_impl(target, ctx):
         progress_message = "Generating Rust IDL interfaces for %{label}",
     )
 
-    providers = _compile_rust_code(
+    # Ideally dep_variant_info could be a depset, and all dep propagation should
+    # go via that depset. However, something in the generated dep_variant_info
+    # from the compiled code is dynamic and Bazel complains. Therefore, I opted
+    # to route dep info via transitive_dep_infos, like it's done in rust_prost_aspect.
+    runtime_deps = transform_deps(ctx.attr._rust_deps)
+    transitive_deps = []
+    for dep in ctx.rule.attr.deps:
+        dep_aspect_info = dep[RustGeneratorAspectInfo]
+        transitive_deps.append(depset(
+            [dep_aspect_info.dep_variant_info],
+            transitive = [dep_aspect_info.transitive_dep_infos],
+        ))
+
+    dep_variant_info = _compile_rust_code(
         ctx,
         label = target.label,
         crate_name = package_name,
         srcs = interface_outputs,
-        deps = ctx.attr._rust_deps,
+        deps = depset(
+            direct = runtime_deps,
+            transitive = transitive_deps,
+        ),
     )
 
     return RustGeneratorAspectInfo(
-        dep_variant_info = rust_common.dep_variant_info(
-            crate_info = _get_crate_info(providers),
-            dep_info = _get_dep_info(providers),
-            cc_info = _get_cc_info(providers),
-        ),
+        dep_variant_info = dep_variant_info,
+        transitive_dep_infos = depset(transitive = transitive_deps),
     )
 
 rust_generator_aspect = aspect(
@@ -244,7 +261,7 @@ rust_ros2_interface_library = rule(
                 c_generator_aspect,
                 rust_generator_aspect,
             ],
-            providers = [DefaultInfo],
+            providers = [Ros2InterfaceInfo],
         ),
     },
     implementation = _rust_ros2_interface_library_impl,

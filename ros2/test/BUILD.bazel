@@ -7,6 +7,7 @@ load(
     "py_ros2_interface_library",
     "ros2_interface_library",
 )
+load("@com_github_mvukov_rules_ros2//ros2:rust_interfaces.bzl", "rust_ros2_interface_library")
 load("@rules_python//python:defs.bzl", "py_test")
 
 py_test(
@@ -65,4 +66,9 @@ ros2_cpp_test(
         "@googletest//:gtest",
         "@ros2_rclcpp//:rclcpp",
     ],
+)
+
+rust_ros2_interface_library(
+    name = "rust_sensor_msgs",
+    deps = ["@ros2_common_interfaces//:sensor_msgs"],
 )
