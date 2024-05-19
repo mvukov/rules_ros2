@@ -32,7 +32,7 @@ def generate_launch_description():
             output='screen',
             name='talker',
             parameters=[{
-                'callback_period_ms': 'foo'
+                'callback_period_ms': 100
             }],
         ),
         launch_ros.actions.Node(executable='zero_copy/listener',
