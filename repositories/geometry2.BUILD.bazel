@@ -165,7 +165,7 @@ ros2_cpp_binary(
     linkshared = True,
     deps = [
         ":tf2",
-        "@rules_python//python/cc:current_py_cc_headers",
+        "@rules_ros2_python//:python_headers",
     ],
 )
 

@@ -8,5 +8,5 @@ cc_library(
     hdrs = glob(["include/pybind11/**/*.h"]),
     includes = ["include"],
     visibility = ["//visibility:public"],
-    deps = ["@rules_python//python/cc:current_py_cc_headers"],
+    deps = ["@rules_ros2_python//:python_headers"],
 )
