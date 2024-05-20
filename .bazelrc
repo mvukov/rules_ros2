@@ -4,14 +4,6 @@
 # Mandatory at the moment for Bazel 7.0.0.
 build --noincompatible_sandbox_hermetic_tmp
 
-# This is mandatory if your build env doesn't have a proper Python 3 exe
-# -- like the CI build image for this repo.
-# The build image is using a fake python exe, see
-# https://github.com/mvukov/bazel_builder/blob/main/Dockerfile.
-# If blzmod is enabled, but not used as in this repo at the moment),
-# then bazel for some reason tries to auto-detect a Python exe.
-build --noenable_bzlmod
-
 # Fix the wrong default to generate __init__.py to delimit a Python package.
 # This is a mandatory flag.
 build --incompatible_default_to_explicit_init_py
