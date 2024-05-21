@@ -4,6 +4,10 @@
 # Mandatory at the moment for Bazel 7.0.0.
 build --noincompatible_sandbox_hermetic_tmp
 
+# Don't let local Python site packages leak into the build and cause problems
+common --incompatible_strict_action_env
+common --action_env=PYTHONNOUSERSITE=1
+
 # Fix the wrong default to generate __init__.py to delimit a Python package.
 # This is a mandatory flag.
 build --incompatible_default_to_explicit_init_py
