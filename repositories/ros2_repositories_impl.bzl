@@ -54,9 +54,9 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:geometry2.BUILD.bazel",
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:geometry2_fix-use-after-free-bug.patch"],
-        sha256 = "e7b539b9d884fa1f8707a92e135495cdba9893f58818e91de86f2461c4abca54",
-        strip_prefix = "geometry2-0.25.5",
-        url = "https://github.com/ros2/geometry2/archive/refs/tags/0.25.5.tar.gz",
+        sha256 = "e2990e616d5d5c477b6b7d24f91d14c2a5f39ddbfb0bc8c340744717503ed4fa",
+        strip_prefix = "geometry2-0.25.6",
+        url = "https://github.com/ros2/geometry2/archive/refs/tags/0.25.6.tar.gz",
     )
 
     maybe(
@@ -99,9 +99,9 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_launch",
         build_file = "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel",
-        sha256 = "41ba52c876ab4b2301406e442cd7503ae877aaa33c7f5fcf86010bf2a57db606",
-        strip_prefix = "launch-1.0.4",
-        url = "https://github.com/ros2/launch/archive/refs/tags/1.0.4.tar.gz",
+        sha256 = "858b63b51f68a34cf6640ec7156a9c7ffa512258eba88880410c38cd59a29f47",
+        strip_prefix = "launch-1.0.5",
+        url = "https://github.com/ros2/launch/archive/refs/tags/1.0.5.tar.gz",
     )
 
     maybe(
@@ -192,27 +192,27 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rclpy",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel",
-        sha256 = "64b090b557aaed3a7ae22ea02fa21e8bd2ad7b2ed84a8ad9fcc0246ebf1b4cc9",
-        strip_prefix = "rclpy-3.3.11",
-        url = "https://github.com/ros2/rclpy/archive/refs/tags/3.3.11.tar.gz",
+        sha256 = "0ce9d3f353ac894686e8362e68205a660d6fa880fb54c716fe42513c160b1d81",
+        strip_prefix = "rclpy-3.3.12",
+        url = "https://github.com/ros2/rclpy/archive/refs/tags/3.3.12.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "ros2_rcpputils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel",
-        sha256 = "57524f5f0b95a55add358259b859ad44d4c7cb1ed5188d87be92eab78a765a33",
-        strip_prefix = "rcpputils-2.4.1",
-        url = "https://github.com/ros2/rcpputils/archive/refs/tags/2.4.1.tar.gz",
+        sha256 = "1fc63453815a49ca5cdb4b08eaf0bf53298fe5c5048db88b10c78b2880fd64ad",
+        strip_prefix = "rcpputils-2.4.2",
+        url = "https://github.com/ros2/rcpputils/archive/refs/tags/2.4.2.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "ros2_rcutils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcutils.BUILD.bazel",
-        sha256 = "4cce34ec5396ba0d357a76242bd362d3d9ae1729be14f3a290ea0dc144b984d7",
-        strip_prefix = "rcutils-5.1.4",
-        url = "https://github.com/ros2/rcutils/archive/refs/tags/5.1.4.tar.gz",
+        sha256 = "fc8eb20a42c0062d64247ace55a5d21815f65058e93cfd4e594a82cf274eccee",
+        strip_prefix = "rcutils-5.1.5",
+        url = "https://github.com/ros2/rcutils/archive/refs/tags/5.1.5.tar.gz",
     )
 
     maybe(
@@ -285,9 +285,9 @@ def ros2_repositories_impl():
         name = "ros2cli",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel",
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:ros2cli_replace-netifaces.patch"],
-        sha256 = "4ad54cd27a163603dfa7d85655010b43d77711f23ee175b13d94d0249c06564d",
-        strip_prefix = "ros2cli-0.18.8",
-        url = "https://github.com/ros2/ros2cli/archive/refs/tags/0.18.8.tar.gz",
+        sha256 = "05c0a424d7fe48d1b61bbb4cf0dc6deed47311223a0a28450742864d7499bfdd",
+        strip_prefix = "ros2cli-0.18.9",
+        url = "https://github.com/ros2/ros2cli/archive/refs/tags/0.18.9.tar.gz",
     )
 
     maybe(

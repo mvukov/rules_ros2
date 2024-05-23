@@ -219,9 +219,9 @@ def ros2_repositories():
         http_archive,
         name = "ros2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
-        sha256 = "6e2611392776fdf39e47205db44956b77727cd561245c012ccc3ff5b1a4cd7ad",
-        strip_prefix = "ros2-release-humble-20231122",
-        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-humble-20231122.tar.gz"],
+        sha256 = "8212feeddbe36304c4b1b8bfd6a1f1660c221b3e9d762582c968227a700da5d5",
+        strip_prefix = "ros2-release-humble-20240222",
+        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-humble-20240222.tar.gz"],
     )
 
     ros2_repositories_impl()
