@@ -13,13 +13,46 @@
 # limitations under the License.
 """Launch a talker and a listener."""
 import launch.actions
+import launch.substitutions
 import launch_ros.actions
 import zero_copy.roudi  # This is an auto-generated file, see BUILD.bazel file.
+
+CALLBACK_PERIOD_MS_ARG = 'callback_period_ms'
+TALKER_TYPE_ARG = 'talker_type'
+
+
+def set_up_talker(context, callback_period_ms_arg, talker_type_arg):
+    callback_period_ms_str = context.perform_substitution(
+        callback_period_ms_arg)
+    talker_type = context.perform_substitution(talker_type_arg)
+
+    match talker_type:
+        case 'cc':
+            exe = 'zero_copy/talker'
+        case 'rust':
+            exe = 'zero_copy/rust_talker'
+        case _:
+            raise ValueError(f'{TALKER_TYPE_ARG} must be `cc` or `rust`!')
+
+    return [
+        launch_ros.actions.Node(
+            executable=exe,
+            output='screen',
+            name='talker',
+            parameters=[{
+                CALLBACK_PERIOD_MS_ARG: int(callback_period_ms_str)
+            }],
+        )
+    ]
 
 
 def generate_launch_description():
     """Launch a talker and a listener."""
     return launch.LaunchDescription([
+        launch.actions.DeclareLaunchArgument(CALLBACK_PERIOD_MS_ARG,
+                                             default_value='100'),
+        launch.actions.DeclareLaunchArgument(TALKER_TYPE_ARG,
+                                             default_value='cc'),
         # roudi is a shared memory manager that also has to be started.
         launch.actions.ExecuteProcess(
             name='iceoryx_roudi',
@@ -27,13 +60,13 @@ def generate_launch_description():
         ),
         launch.actions.SetEnvironmentVariable(name='CYCLONEDDS_URI',
                                               value='zero_copy/cyclonedds.xml'),
-        launch_ros.actions.Node(
-            executable='zero_copy/talker',
-            output='screen',
-            name='talker',
-            parameters=[{
-                'callback_period_ms': 100
-            }],
+        launch.actions.OpaqueFunction(
+            function=set_up_talker,
+            args=[
+                launch.substitutions.LaunchConfiguration(
+                    CALLBACK_PERIOD_MS_ARG),
+                launch.substitutions.LaunchConfiguration(TALKER_TYPE_ARG),
+            ],
         ),
         launch_ros.actions.Node(executable='zero_copy/listener',
                                 output='screen',

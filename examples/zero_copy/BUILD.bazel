@@ -85,6 +85,7 @@ ros2_launch(
     launch_file = "zero_copy.py",
     nodes = [
         ":listener",
+        ":rust_talker",
         ":talker",
         "@iceoryx//:iox_roudi",
     ],
