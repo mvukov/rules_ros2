@@ -19,30 +19,44 @@ import zero_copy.roudi  # This is an auto-generated file, see BUILD.bazel file.
 
 CALLBACK_PERIOD_MS_ARG = 'callback_period_ms'
 TALKER_TYPE_ARG = 'talker_type'
+LISTENER_TYPE_ARG = 'listener_type'
 
 
-def set_up_talker(context, callback_period_ms_arg, talker_type_arg):
+def set_up_nodes(context, callback_period_ms_arg, talker_type_arg,
+                 listener_type_arg):
     callback_period_ms_str = context.perform_substitution(
         callback_period_ms_arg)
     talker_type = context.perform_substitution(talker_type_arg)
+    listener_type = context.perform_substitution(listener_type_arg)
 
     match talker_type:
         case 'cc':
-            exe = 'zero_copy/talker'
+            talker_exe = 'zero_copy/talker'
         case 'rust':
-            exe = 'zero_copy/rust_talker'
+            talker_exe = 'zero_copy/rust_talker'
         case _:
             raise ValueError(f'{TALKER_TYPE_ARG} must be `cc` or `rust`!')
 
+    match listener_type:
+        case 'cc':
+            listener_exe = 'zero_copy/listener'
+        case 'rust':
+            listener_exe = 'zero_copy/rust_listener'
+        case _:
+            raise ValueError(f'{LISTENER_TYPE_ARG} must be `cc` or `rust`!')
+
     return [
         launch_ros.actions.Node(
-            executable=exe,
+            executable=talker_exe,
             output='screen',
             name='talker',
             parameters=[{
                 CALLBACK_PERIOD_MS_ARG: int(callback_period_ms_str)
             }],
-        )
+        ),
+        launch_ros.actions.Node(executable=listener_exe,
+                                output='screen',
+                                name='listener')
     ]
 
 
@@ -53,6 +67,8 @@ def generate_launch_description():
                                              default_value='100'),
         launch.actions.DeclareLaunchArgument(TALKER_TYPE_ARG,
                                              default_value='cc'),
+        launch.actions.DeclareLaunchArgument(LISTENER_TYPE_ARG,
+                                             default_value='cc'),
         # roudi is a shared memory manager that also has to be started.
         launch.actions.ExecuteProcess(
             name='iceoryx_roudi',
@@ -61,14 +77,12 @@ def generate_launch_description():
         launch.actions.SetEnvironmentVariable(name='CYCLONEDDS_URI',
                                               value='zero_copy/cyclonedds.xml'),
         launch.actions.OpaqueFunction(
-            function=set_up_talker,
+            function=set_up_nodes,
             args=[
                 launch.substitutions.LaunchConfiguration(
                     CALLBACK_PERIOD_MS_ARG),
                 launch.substitutions.LaunchConfiguration(TALKER_TYPE_ARG),
+                launch.substitutions.LaunchConfiguration(LISTENER_TYPE_ARG),
             ],
         ),
-        launch_ros.actions.Node(executable='zero_copy/listener',
-                                output='screen',
-                                name='listener'),
     ])
