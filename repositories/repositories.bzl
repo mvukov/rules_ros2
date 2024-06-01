@@ -171,9 +171,11 @@ def ros2_workspace_repositories():
         http_archive,
         name = "curl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:curl.BUILD.bazel",
-        sha256 = "230d61a4b1eb3346930f2d601cc8fe5237957163e16befbe15e0ef40c56767a2",
-        strip_prefix = "curl-curl-8_2_1",
-        urls = ["https://github.com/curl/curl/archive/refs/tags/curl-8_2_1.tar.gz"],
+        sha256 = "77c0e1cd35ab5b45b659645a93b46d660224d0024f1185e8a95cdb27ae3d787d",
+        strip_prefix = "curl-8.8.0",
+        urls = ["https://github.com/curl/curl/releases/download/curl-8_8_0/curl-8.8.0.tar.gz"],
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:curl_fix_openssl.patch"],
     )
 
     maybe(
