@@ -63,6 +63,17 @@ rust_binary(
     ],
 )
 
+rust_binary(
+    name = "rust_listener",
+    srcs = ["listener.rs"],
+    edition = "2021",
+    deps = [
+        ":rust_chatter_interface",
+        "@examples_crate_index//:signal-hook",
+        "@ros2_rust//:rclrs",
+    ],
+)
+
 expand_template(
     name = "roudi_py",
     out = "roudi.py",
@@ -85,6 +96,8 @@ ros2_launch(
     launch_file = "zero_copy.py",
     nodes = [
         ":listener",
+        ":rust_talker",
+        ":rust_listener",
         ":talker",
         "@iceoryx//:iox_roudi",
     ],
