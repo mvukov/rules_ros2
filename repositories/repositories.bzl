@@ -16,16 +16,16 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "c68bdc4fbec25de5b5493b8819cfc877c4ea299c0dcb15c244c5a00208cde311",
-        strip_prefix = "rules_python-0.31.0",
-        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.31.0.tar.gz",
+        sha256 = "4912ced70dc1a2a8e4b86cec233b192ca053e82bc72d877b98e126156e8f228d",
+        strip_prefix = "rules_python-0.32.2",
+        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.32.2.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "bazel_skylib",
-        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.6.1/bazel-skylib-1.6.1.tar.gz"],
-        sha256 = "9f38886a40548c6e96c106b752f242130ee11aaa068a56ba7e56f4511f33e4f2",
+        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.7.0/bazel-skylib-1.7.0.tar.gz"],
+        sha256 = "d00f1389ee20b60018e92644e0948e16e350a7707219e7a390fb0a99b6ec9262",
     )
 
     maybe(
@@ -140,9 +140,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "boringssl",
-        sha256 = "3a70c886a23415c45f89000027511927626894b860a07cc969c71c7b72653339",
-        strip_prefix = "boringssl-e39ac226e3020f106600c3610fb95d83071fa42c",
-        urls = ["https://github.com/hedronvision/boringssl/archive/e39ac226e3020f106600c3610fb95d83071fa42c.tar.gz"],
+        sha256 = "6ab909a507c941e0e9e27478f0011cff148554c5cde5ba6eed50705a8804c0f0",
+        strip_prefix = "boringssl-a8ff0b5468613da4404c3e3ae180f301f1603f81",
+        urls = ["https://github.com/hedronvision/boringssl/archive/a8ff0b5468613da4404c3e3ae180f301f1603f81.tar.gz"],
     )
 
     maybe(
@@ -171,9 +171,11 @@ def ros2_workspace_repositories():
         http_archive,
         name = "curl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:curl.BUILD.bazel",
-        sha256 = "230d61a4b1eb3346930f2d601cc8fe5237957163e16befbe15e0ef40c56767a2",
-        strip_prefix = "curl-curl-8_2_1",
-        urls = ["https://github.com/curl/curl/archive/refs/tags/curl-8_2_1.tar.gz"],
+        sha256 = "77c0e1cd35ab5b45b659645a93b46d660224d0024f1185e8a95cdb27ae3d787d",
+        strip_prefix = "curl-8.8.0",
+        urls = ["https://github.com/curl/curl/releases/download/curl-8_8_0/curl-8.8.0.tar.gz"],
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:curl_fix_openssl.patch"],
     )
 
     maybe(
@@ -219,9 +221,9 @@ def ros2_repositories():
         http_archive,
         name = "ros2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
-        sha256 = "6e2611392776fdf39e47205db44956b77727cd561245c012ccc3ff5b1a4cd7ad",
-        strip_prefix = "ros2-release-humble-20231122",
-        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-humble-20231122.tar.gz"],
+        sha256 = "cb14a8b24ef890269c4be89b29ef52e8f26282326e3b811af2beb1abdc4d8806",
+        strip_prefix = "ros2-release-humble-20240523",
+        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-humble-20240523.tar.gz"],
     )
 
     ros2_repositories_impl()
@@ -240,9 +242,9 @@ def ros2_repositories():
         http_archive,
         name = "foxglove_bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
-        sha256 = "3de53c66c69f1d0c949ae1257dcfcdc5cbb9a202d6522643c0cd8623017d9aa6",
-        strip_prefix = "ros-foxglove-bridge-0.7.6",
-        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.6.tar.gz"],
+        sha256 = "31cd3b27030d7a2c8b072cd571b78dc3d04b8c0b14fe1468aaeaaf5fdcae1923",
+        strip_prefix = "ros-foxglove-bridge-0.7.7",
+        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.7.tar.gz"],
     )
 
     maybe(

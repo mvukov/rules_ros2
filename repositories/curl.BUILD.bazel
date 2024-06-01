@@ -18,6 +18,8 @@ cmake(
     cache_entries = {
         "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
         "CMAKE_PREFIX_PATH": "$EXT_BUILD_DEPS/openssl:$EXT_BUILD_DEPS/zlib",
+        "OPENSSL_CRYPTO_LIBRARY": "$EXT_BUILD_DEPS/openssl/lib/libcrypto.a",
+        "OPENSSL_SSL_LIBRARY": "$EXT_BUILD_DEPS/openssl/lib/libssl.a",
         # curl specific options.
         # For the following flags, process CMakeLists.txt with option\(([^\s]+)
         # on e.g. https://regexr.com/ .
@@ -35,7 +37,6 @@ cmake(
         "CURL_ENABLE_EXPORT_TARGET": "OFF",
         "CURL_DISABLE_ALTSVC": "OFF",
         "CURL_DISABLE_COOKIES": "OFF",
-        "CURL_DISABLE_CRYPTO_AUTH": "OFF",
         "CURL_DISABLE_DICT": "OFF",
         "CURL_DISABLE_DOH": "OFF",
         "CURL_DISABLE_FILE": "OFF",
@@ -67,14 +68,12 @@ cmake(
         "CURL_DISABLE_VERBOSE_STRINGS": "OFF",
         "HTTP_ONLY": "OFF",
         "ENABLE_IPV6": "ON",
-        "ENABLE_MANUAL": "OFF",
         "CURL_ENABLE_SSL": "ON",
         "CURL_USE_SECTRANSP": "OFF",
         "CURL_USE_SCHANNEL": "OFF",
         "CURL_WINDOWS_SSPI": "OFF",
         "CURL_USE_MBEDTLS": "OFF",
         "CURL_USE_BEARSSL": "OFF",
-        "CURL_USE_NSS": "OFF",
         "CURL_USE_WOLFSSL": "OFF",
         "CURL_USE_OPENSSL": "ON",
         "CURL_DISABLE_OPENSSL_AUTO_LOAD_CONFIG": "OFF",
@@ -85,7 +84,6 @@ cmake(
         "USE_QUICHE": "OFF",
         "USE_MSH3": "OFF",
         "USE_WIN32_LDAP": "OFF",
-        "CURL_USE_OPENLDAP": "OFF",
         "USE_LIBIDN2": "OFF",
         "USE_WIN32_IDN": "OFF",
         "CURL_USE_LIBPSL": "OFF",
