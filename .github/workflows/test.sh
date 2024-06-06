@@ -1,7 +1,5 @@
 #!/bin/bash
 
-sudo update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 100
-
 if [[ ! -z "${BUILDBUDDY_ORG_API_KEY}" ]]; then
   BAZEL_REMOTE_CONFIG=(
     --config=remote
