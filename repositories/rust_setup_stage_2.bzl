@@ -14,4 +14,6 @@ def rust_setup_stage_2():
     rust_bindgen_dependencies()
     native.register_toolchains("@com_github_mvukov_rules_ros2//repositories/rust:bindgen_toolchain")
 
-    crate_universe_dependencies()
+    crate_universe_dependencies(
+        bootstrap = True,
+    )

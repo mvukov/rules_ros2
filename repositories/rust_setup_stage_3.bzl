@@ -3,6 +3,7 @@ load("@rules_rust//crate_universe:defs.bzl", "crate", "crates_repository", "rend
 def rust_setup_stage_3():
     crates_repository(
         name = "rules_ros2_crate_index",
+        generator = "@cargo_bazel_bootstrap//:cargo-bazel",
         cargo_lockfile = "@com_github_mvukov_rules_ros2//repositories/rust:Cargo.lock",
         lockfile = "@com_github_mvukov_rules_ros2//repositories/rust:Cargo.Bazel.lock",
         packages = {
