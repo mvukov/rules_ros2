@@ -76,6 +76,7 @@ load("@rules_rust//crate_universe:defs.bzl", "crate", "crates_repository", "rend
 crates_repository(
     name = "examples_crate_index",
     cargo_lockfile = "//:examples_cargo.lock",
+    generator = "@cargo_bazel_bootstrap//:cargo-bazel",
     lockfile = "//:examples_cargo_bazel.lock",
     packages = {
         "signal-hook": crate.spec(
