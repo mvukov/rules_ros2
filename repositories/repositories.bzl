@@ -140,9 +140,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "boringssl",
-        sha256 = "9c479d9ed0616d125a6ef217022cab2625ac415db5e0199a93fbb9956ddc3399",
-        strip_prefix = "boringssl-42ce291c8037e53e4886e5c41acb5a2381f42f2b",
-        urls = ["https://github.com/hedronvision/boringssl/archive/42ce291c8037e53e4886e5c41acb5a2381f42f2b.tar.gz"],
+        sha256 = "1126a0b9ceaab2501eb86f7346c4861e49d1fb88cc99639ad46f28097e745ad1",
+        strip_prefix = "boringssl-678dde87d200b52c05f1de520577672d39bf7bce",
+        urls = ["https://github.com/hedronvision/boringssl/archive/678dde87d200b52c05f1de520577672d39bf7bce.tar.gz"],
     )
 
     maybe(
