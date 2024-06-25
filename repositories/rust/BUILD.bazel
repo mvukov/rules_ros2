@@ -1,0 +1,19 @@
+load("@rules_rust//bindgen:defs.bzl", "rust_bindgen_toolchain")
+
+exports_files([
+    "Cargo.Bazel.lock",
+    "Cargo.lock",
+])
+
+rust_bindgen_toolchain(
+    name = "bindgen_toolchain_impl",
+    bindgen = "@rules_rust//bindgen/3rdparty:bindgen",
+    clang = "@rules_ros2_config_clang//:clang",
+    libclang = "@rules_ros2_config_clang//:libclang",
+)
+
+toolchain(
+    name = "bindgen_toolchain",
+    toolchain = "bindgen_toolchain_impl",
+    toolchain_type = "@rules_rust//bindgen:toolchain_type",
+)

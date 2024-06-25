@@ -1,0 +1,51 @@
+diff --git a/rclrs/src/lib.rs b/rclrs/src/lib.rs
+index 4924b36..6e618c0 100644
+--- a/rclrs/src/lib.rs
++++ b/rclrs/src/lib.rs
+@@ -19,7 +19,6 @@ mod service;
+ mod subscription;
+ mod time;
+ mod time_source;
+-mod vendor;
+ mod wait;
+ 
+ #[cfg(test)]
+diff --git a/rclrs/src/parameter/service.rs b/rclrs/src/parameter/service.rs
+index bcbe24b..1d240b0 100644
+--- a/rclrs/src/parameter/service.rs
++++ b/rclrs/src/parameter/service.rs
+@@ -1,7 +1,7 @@
+ use std::sync::{Arc, Weak, Mutex};
+ 
+-use crate::vendor::rcl_interfaces::srv::rmw::*;
+-use crate::vendor::rcl_interfaces::msg::rmw::*;
++use rcl_interfaces::srv::rmw::*;
++use rcl_interfaces::msg::rmw::*;
+ use rosidl_runtime_rs::{Sequence, seq};
+ 
+ use crate::{rmw_request_id_t, Node, RclrsError, Service, ServiceBase};
+diff --git a/rclrs/src/time.rs b/rclrs/src/time.rs
+index 540c624..4d64234 100644
+--- a/rclrs/src/time.rs
++++ b/rclrs/src/time.rs
+@@ -1,4 +1,5 @@
+-use crate::{rcl_bindings::*, vendor::builtin_interfaces};
++use crate::rcl_bindings::*;
++use builtin_interfaces;
+ use std::{
+     num::TryFromIntError,
+     ops::{Add, Sub},
+diff --git a/rclrs/src/time_source.rs b/rclrs/src/time_source.rs
+index 143adf0..b04ee06 100644
+--- a/rclrs/src/time_source.rs
++++ b/rclrs/src/time_source.rs
+@@ -1,8 +1,8 @@
+ use crate::{
+     clock::{Clock, ClockSource, ClockType},
+-    vendor::rosgraph_msgs::msg::Clock as ClockMsg,
+     MandatoryParameter, Node, QoSProfile, Subscription, QOS_PROFILE_CLOCK,
+ };
++use rosgraph_msgs::msg::Clock as ClockMsg;
+ use std::sync::{Arc, Mutex, RwLock, Weak};
+ 
+ /// Time source for a node that drives the attached clock.

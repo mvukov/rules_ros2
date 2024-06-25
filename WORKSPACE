@@ -37,6 +37,24 @@ load(
 
 install_rules_ros2_pip_deps()
 
+# Below is an optional setup for Rust support for ROS2.
+
+load("//repositories:rust_setup_stage_1.bzl", "rust_setup_stage_1")
+
+rust_setup_stage_1()
+
+load("//repositories:rust_setup_stage_2.bzl", "rust_setup_stage_2")
+
+rust_setup_stage_2()
+
+load("//repositories:rust_setup_stage_3.bzl", "rust_setup_stage_3")
+
+rust_setup_stage_3()
+
+load("//repositories:rust_setup_stage_4.bzl", "rust_setup_stage_4")
+
+rust_setup_stage_4()
+
 # Below are internal deps.
 
 pip_parse(
