@@ -1,0 +1,14 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 0b82f0b..50c1bb9 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -13,9 +13,6 @@ set(FOONATHAN_MEMORY_VERSION "${FOONATHAN_MEMORY_VERSION_MAJOR}.${FOONATHAN_MEMO
+                              CACHE STRING "version of memory" FORCE)
+ 
+ 
+-# set a debug postfix
+-set(CMAKE_DEBUG_POSTFIX "-dbg")
+-
+ # installation destinations
+ if(UNIX OR VXWORKS)
+     include(GNUInstallDirs)

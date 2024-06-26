@@ -22,7 +22,7 @@ Available features:
 - Defining ROS 2 deployments with `ros2_launch` Bazel macro.
 - Defining ROS 2 tests with `ros2_test` Bazel macro.
 - Defining ROS 2 plugins with `ros2_plugin` Bazel macro.
-- Only CycloneDDS middleware can be used at the moment.
+- CycloneDDS (default) and FastDDS middleware are supported.
   - Zero copy transport via shared memory backend ([iceoryx](https://github.com/eclipse-iceoryx/iceoryx)) for CycloneDDS.
 - Utilities:
   - [`foxglove_bridge`](https://github.com/foxglove/ros-foxglove-bridge) for visualization and debugging

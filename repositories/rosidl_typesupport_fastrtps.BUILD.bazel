@@ -1,0 +1,42 @@
+""" Builds rosidl_typesupport_fastrtps.
+"""
+
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl",
+    "ros2_c_library",
+    "ros2_cpp_library",
+)
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+
+ros2_cpp_library(
+    name = "rosidl_typesupport_fastrtps_c",
+    srcs = glob(["rosidl_typesupport_fastrtps_c/src/*.cpp"]),
+    hdrs = glob([
+        "rosidl_typesupport_fastrtps_c/include/**/*.h",
+        "rosidl_typesupport_fastrtps_c/include/**/*.hpp",
+    ]),
+    includes = ["rosidl_typesupport_fastrtps_c/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rcutils//:rcutils",
+        "@ros2_rosidl//:rosidl_runtime_c",
+    ],
+)
+
+ros2_cpp_library(
+    name = "rosidl_typesupport_fastrtps_cpp",
+    srcs = glob(["rosidl_typesupport_fastrtps_cpp/src/*.cpp"]),
+    hdrs = glob([
+        "rosidl_typesupport_fastrtps_cpp/include/**/*.h",
+        "rosidl_typesupport_fastrtps_cpp/include/**/*.hpp",
+    ]),
+    includes = ["rosidl_typesupport_fastrtps_cpp/include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":rosidl_typesupport_fastrtps_c",
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rosidl//:rosidl_runtime_c",
+    ],
+)
