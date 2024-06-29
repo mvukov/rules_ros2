@@ -16,17 +16,16 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "ea0f3f889dd128704b4e1e65d67fe85ce003d974f703889fca5ac252a3c55ec1",
-        strip_prefix = "rules_python-b4b52fc89a58e6b7d5d0675b0661a09f932ec37e",
-        # TODO: Use latest release once https://github.com/bazelbuild/rules_python/pull/1904 is released
-        url = "https://github.com/bazelbuild/rules_python/archive/b4b52fc89a58e6b7d5d0675b0661a09f932ec37e.tar.gz",
+        sha256 = "e3f1cc7a04d9b09635afb3130731ed82b5f58eadc8233d4efb59944d92ffc06f",
+        strip_prefix = "rules_python-0.33.2",
+        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.33.2.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "bazel_skylib",
-        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.7.0/bazel-skylib-1.7.0.tar.gz"],
-        sha256 = "d00f1389ee20b60018e92644e0948e16e350a7707219e7a390fb0a99b6ec9262",
+        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.7.1/bazel-skylib-1.7.1.tar.gz"],
+        sha256 = "bc283cdfcd526a52c3201279cda4bc298652efa898b10b4db0837dc51652756f",
     )
 
     maybe(
@@ -141,9 +140,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "boringssl",
-        sha256 = "6ab909a507c941e0e9e27478f0011cff148554c5cde5ba6eed50705a8804c0f0",
-        strip_prefix = "boringssl-a8ff0b5468613da4404c3e3ae180f301f1603f81",
-        urls = ["https://github.com/hedronvision/boringssl/archive/a8ff0b5468613da4404c3e3ae180f301f1603f81.tar.gz"],
+        sha256 = "1126a0b9ceaab2501eb86f7346c4861e49d1fb88cc99639ad46f28097e745ad1",
+        strip_prefix = "boringssl-678dde87d200b52c05f1de520577672d39bf7bce",
+        urls = ["https://github.com/hedronvision/boringssl/archive/678dde87d200b52c05f1de520577672d39bf7bce.tar.gz"],
     )
 
     maybe(
