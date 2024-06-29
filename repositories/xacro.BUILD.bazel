@@ -1,8 +1,9 @@
 """ Builds xacro.
 """
 
-load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("@rules_python//python:defs.bzl", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+load("@rules_ros2_pythons//3.10:defs.bzl", "py_binary")
 
 py_library(
     name = "xacro",

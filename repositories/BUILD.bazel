@@ -1,12 +1,9 @@
-load("@rules_python//python:defs.bzl", "py_binary")
-
 exports_files([
     "deps.bzl",
     "logging_macros.bzl",
     "generate_rclcpp_interface.py",
     "generate_rclcpp_logging_macros.py",
     "generate_rcutils_logging_macros.py",
-    "pip_annotations.bzl",
     "rclcpp_interfaces.bzl",
     "repositories.bzl",
     "ros2_repo_mappings.yaml",
