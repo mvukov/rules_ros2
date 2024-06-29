@@ -1,4 +1,4 @@
-load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_ros2_pythons//3.10:defs.bzl", "py_binary")
 
 exports_files([
     "deps.bzl",

@@ -10,17 +10,18 @@ load("//repositories:deps.bzl", "ros2_deps")
 
 ros2_deps()
 
-load("@rules_python//python:repositories.bzl", "py_repositories", "python_register_toolchains")
+load("@rules_python//python:repositories.bzl", "py_repositories", "python_register_multi_toolchains")
 
 py_repositories()
 
-python_register_toolchains(
-    name = "rules_ros2_python",
-    python_version = "3.10",
+python_register_multi_toolchains(
+    name = "rules_ros2_pythons",
+    default_version = "3.10",
+    python_versions = ["3.10"],
 )
 
 load("@rules_python//python:pip.bzl", "pip_parse")
-load("@rules_ros2_python//:defs.bzl", python_interpreter_target = "interpreter")
+load("@rules_ros2_pythons//3.10:defs.bzl", python_interpreter_target = "interpreter")
 load("//repositories:pip_annotations.bzl", "PIP_ANNOTATIONS")
 
 pip_parse(

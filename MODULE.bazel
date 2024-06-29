@@ -29,30 +29,15 @@ bazel_dep(name = "zstd", version = "1.5.5.bcr.1")
 _DEFAULT_PYTHON = "3.10"
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(python_version = _DEFAULT_PYTHON)
+use_repo(python, rules_ros2_pythons = "python_versions")
 
 pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
-
-[
-    (
-        python.toolchain(
-            is_default = python_version == _DEFAULT_PYTHON,
-            python_version = python_version,
-        ),
-        pip.parse(
-            hub_name = "rules_ros2_pip_deps",
-            python_version = python_version,
-            requirements_lock = "//:requirements_lock.txt",
-        ),
-    )
-    for python_version in [
-        "3.8",
-        "3.9",
-        "3.10",
-        "3.11",
-        "3.12",
-    ]
-]
-
+pip.parse(
+    hub_name = "rules_ros2_pip_deps",
+    python_version = _DEFAULT_PYTHON,
+    requirements_lock = "//:requirements_lock.txt",
+)
 use_repo(pip, "rules_ros2_pip_deps")
 
 dev_pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip", dev_dependency = True)
