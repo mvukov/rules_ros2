@@ -1,4 +1,5 @@
-load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_python//python:pip.bzl", "compile_pip_requirements", "whl_filegroup")
 
 compile_pip_requirements(
     name = "python_requirements",
@@ -12,3 +13,17 @@ exports_files([
     "requirements.txt",
     "requirements_lock.txt",
 ])
+
+whl_filegroup(
+    name = "numpy_includes",
+    pattern = "numpy/core/include/numpy",
+    whl = "@rules_ros2_pip_deps//numpy:whl",
+)
+
+cc_library(
+    name = "rules_ros2_pip_deps_numpy_headers",
+    hdrs = [":numpy_includes"],
+    includes = ["numpy_includes/numpy/core/include"],
+    visibility = ["//visibility:public"],
+    deps = ["@rules_python//python/cc:current_py_cc_headers"],
+)
