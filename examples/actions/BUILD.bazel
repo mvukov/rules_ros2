@@ -6,7 +6,7 @@ load(
     "ros2_interface_library",
 )
 load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
-load("@rules_ros2_pythons//3.10:defs.bzl", "py_binary")
+load("@rules_python//python:defs.bzl", "py_binary")
 
 ros2_interface_library(
     name = "fibonacci_msgs",

@@ -22,6 +22,7 @@ build:remote --noslim_profile
 
 # Don't spam CI logs.
 build --show_progress_rate_limit=60
+common --color=yes
 
 # Allows tests to run bazelisk-in-bazel, since this is the cache folder used
 test --test_env=XDG_CACHE_HOME
