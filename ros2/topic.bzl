@@ -1,7 +1,7 @@
 """ Implements a macro for setting up a ROS 2 topic app.
 """
 
-load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_ros2_pythons//3.10:defs.bzl", "py_binary")
 
 def ros2_topic(name, deps, **kwargs):
     """ Defines a ROS 2 topic app for a set of deps.
