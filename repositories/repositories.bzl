@@ -129,9 +129,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "asio",
         build_file = "@com_github_mvukov_rules_ros2//repositories:asio.BUILD.bazel",
-        sha256 = "b31c63867daaba0e460ee2c85dc508a52c81db0a7318e0d2147f444b26f80ed7",
-        strip_prefix = "asio-asio-1-27-0/asio",
-        urls = ["https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-27-0.tar.gz"],
+        sha256 = "5705a0e403017eba276625107160498518838064a6dd7fd8b00b2e30c0ffbdee",
+        strip_prefix = "asio-asio-1-28-2/asio/include",
+        urls = ["https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-28-2.tar.gz"],
     )
 
     # We're pointing at hedronvision's mirror of google/boringssl:main-with-bazel to get
