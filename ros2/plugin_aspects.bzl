@@ -44,9 +44,7 @@ _py_transition_attrs = ["target", "tools"]
 _ROS2_COLLECTOR_ATTR_ASPECTS = ["data", "deps"] + _py_transition_attrs
 
 def _get_list_attr(rule_attr, attr_name):
-    if not hasattr(rule_attr, attr_name):
-        return []
-    candidate = getattr(rule_attr, attr_name)
+    candidate = getattr(rule_attr, attr_name, [])
     if type(candidate) == type([]):
         return candidate
     return [candidate]
