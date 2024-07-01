@@ -59,9 +59,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "pybind11",
         build_file = "@com_github_mvukov_rules_ros2//repositories:pybind11.BUILD.bazel",
-        sha256 = "bf8f242abd1abcd375d516a7067490fb71abd79519a282d22b6e4d19282185a7",
-        strip_prefix = "pybind11-2.12.0",
-        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.12.0.tar.gz"],
+        sha256 = "51631e88960a8856f9c497027f55c9f2f9115cafb08c0005439838a05ba17bfc",
+        strip_prefix = "pybind11-2.13.1",
+        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.13.1.tar.gz"],
     )
 
     maybe(
@@ -140,9 +140,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "boringssl",
-        sha256 = "1126a0b9ceaab2501eb86f7346c4861e49d1fb88cc99639ad46f28097e745ad1",
-        strip_prefix = "boringssl-678dde87d200b52c05f1de520577672d39bf7bce",
-        urls = ["https://github.com/hedronvision/boringssl/archive/678dde87d200b52c05f1de520577672d39bf7bce.tar.gz"],
+        sha256 = "d9e8506872b678b9104e4b6b9960f64be65393c57a3b46e7176e7d193821c63c",
+        strip_prefix = "boringssl-e9bbb8f4c22d89858b64925c3e89bc878675a166",
+        urls = ["https://github.com/hedronvision/boringssl/archive/e9bbb8f4c22d89858b64925c3e89bc878675a166.tar.gz"],
     )
 
     maybe(
