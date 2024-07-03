@@ -16,16 +16,16 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "4912ced70dc1a2a8e4b86cec233b192ca053e82bc72d877b98e126156e8f228d",
-        strip_prefix = "rules_python-0.32.2",
-        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.32.2.tar.gz",
+        sha256 = "e3f1cc7a04d9b09635afb3130731ed82b5f58eadc8233d4efb59944d92ffc06f",
+        strip_prefix = "rules_python-0.33.2",
+        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.33.2.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "bazel_skylib",
-        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.7.0/bazel-skylib-1.7.0.tar.gz"],
-        sha256 = "d00f1389ee20b60018e92644e0948e16e350a7707219e7a390fb0a99b6ec9262",
+        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.7.1/bazel-skylib-1.7.1.tar.gz"],
+        sha256 = "bc283cdfcd526a52c3201279cda4bc298652efa898b10b4db0837dc51652756f",
     )
 
     maybe(
@@ -59,9 +59,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "pybind11",
         build_file = "@com_github_mvukov_rules_ros2//repositories:pybind11.BUILD.bazel",
-        sha256 = "bf8f242abd1abcd375d516a7067490fb71abd79519a282d22b6e4d19282185a7",
-        strip_prefix = "pybind11-2.12.0",
-        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.12.0.tar.gz"],
+        sha256 = "51631e88960a8856f9c497027f55c9f2f9115cafb08c0005439838a05ba17bfc",
+        strip_prefix = "pybind11-2.13.1",
+        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.13.1.tar.gz"],
     )
 
     maybe(
@@ -140,9 +140,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "boringssl",
-        sha256 = "6ab909a507c941e0e9e27478f0011cff148554c5cde5ba6eed50705a8804c0f0",
-        strip_prefix = "boringssl-a8ff0b5468613da4404c3e3ae180f301f1603f81",
-        urls = ["https://github.com/hedronvision/boringssl/archive/a8ff0b5468613da4404c3e3ae180f301f1603f81.tar.gz"],
+        sha256 = "d9e8506872b678b9104e4b6b9960f64be65393c57a3b46e7176e7d193821c63c",
+        strip_prefix = "boringssl-e9bbb8f4c22d89858b64925c3e89bc878675a166",
+        urls = ["https://github.com/hedronvision/boringssl/archive/e9bbb8f4c22d89858b64925c3e89bc878675a166.tar.gz"],
     )
 
     maybe(
