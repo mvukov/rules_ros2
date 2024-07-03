@@ -94,7 +94,7 @@ jobs:
       - name: bazel test ${{ matrix.config_option }} //...
         env:
           # Bazelisk will download bazel to here, ensure it is cached between runs.
-          XDG_CACHE_HOME: ~/.cache/bazel-repo
+          XDG_CACHE_HOME: /github/home/.cache/bazel-repo
           BUILDBUDDY_ORG_API_KEY: ${{ secrets.BUILDBUDDY_ORG_API_KEY }}
           USER: ${{ needs.configure.outputs.user_name }}
         working-directory: ${{ matrix.folder }}
