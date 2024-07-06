@@ -67,9 +67,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "rules_foreign_cc",
-        sha256 = "476303bd0f1b04cc311fc258f1708a5f6ef82d3091e53fd1977fa20383425a6a",
-        strip_prefix = "rules_foreign_cc-0.10.1",
-        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.10.1.tar.gz",
+        sha256 = "4b33d62cf109bcccf286b30ed7121129cc34cf4f4ed9d8a11f38d9108f40ba74",
+        strip_prefix = "rules_foreign_cc-0.11.1",
+        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.11.1.tar.gz",
     )
 
     maybe(
