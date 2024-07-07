@@ -76,6 +76,9 @@ def generate_launch_description():
         ),
         launch.actions.SetEnvironmentVariable(name='CYCLONEDDS_URI',
                                               value='zero_copy/cyclonedds.xml'),
+        # https://github.com/ros2/rmw_cyclonedds/issues/469#issuecomment-1877574593
+        launch.actions.SetEnvironmentVariable(
+            name='ROS_DISABLE_LOANED_MESSAGES', value='0'),
         launch.actions.OpaqueFunction(
             function=set_up_nodes,
             args=[
