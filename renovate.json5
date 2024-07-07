@@ -19,7 +19,7 @@
     },
     {
       matchManagers: ["bazel"],
-      matchPackageNames: [
+      matchDepNames: [
         "bazel_skylib",
         "googletest",
         "eigen",
@@ -27,8 +27,10 @@
         "nlohmann_json",
         "boringssl",
         "pybind11",
+        "ros2_rust",
         "rules_foreign_cc",
         "rules_python",
+        "rules_rust",
         "spdlog",
         "tinyxml2",
         "websocketpp",
