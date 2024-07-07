@@ -65,7 +65,10 @@ rust_setup_stage_2()
 
 load("@com_github_mvukov_rules_ros2//repositories:rust_setup_stage_3.bzl", "rust_setup_stage_3")
 
-rust_setup_stage_3()
+rust_setup_stage_3(
+    # Only needed for CI here, see https://github.com/bazelbuild/rules_rust/pull/2698.
+    generator = "@com_github_mvukov_rules_ros2_cargo_bazel//:cargo-bazel",
+)
 
 load("@com_github_mvukov_rules_ros2//repositories:rust_setup_stage_4.bzl", "rust_setup_stage_4")
 
@@ -76,18 +79,14 @@ load("@rules_rust//crate_universe:defs.bzl", "crate", "crates_repository", "rend
 crates_repository(
     name = "examples_crate_index",
     cargo_lockfile = "//:examples_cargo.lock",
+    # Only needed for CI here, see https://github.com/bazelbuild/rules_rust/pull/2698.
+    generator = "@com_github_mvukov_rules_ros2_cargo_bazel//:cargo-bazel",
     lockfile = "//:examples_cargo_bazel.lock",
     packages = {
         "signal-hook": crate.spec(
             version = "0.3",
         ),
     },
-    # Setting the default package name to `""` forces the use of the macros defined in this repository
-    # to always use the root package when looking for dependencies or aliases. This should be considered
-    # optional as the repository also exposes alises for easy access to all dependencies.
-    render_config = render_config(
-        default_package_name = "",
-    ),
 )
 
 load("@examples_crate_index//:defs.bzl", "crate_repositories")

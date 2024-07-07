@@ -5,10 +5,10 @@ def rust_setup_stage_1():
     maybe(
         http_archive,
         name = "rules_rust",
-        integrity = "sha256-pt9MIrs/tDVzpMQIjvbQ+v44oOzQ+FrSH/2IiAAzcDA=",
+        sha256 = "17c53bf800b932f32d3ca19d2cb9e8ad533ce1c0d729f0d183077bfddab7ad46",
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rules_rust_fix_collect_deps.patch"],
-        urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.44.0/rules_rust-v0.44.0.tar.gz"],
+        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.46.0/rules_rust-v0.46.0.tar.gz",
     )
 
     maybe(
@@ -24,4 +24,17 @@ def rust_setup_stage_1():
             "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rosidl_generator.patch",
             "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_no_msg_vendoring.patch",
         ],
+    )
+
+    # Only needed for CI, see https://github.com/bazelbuild/rules_rust/pull/2698.
+    maybe(
+        http_archive,
+        name = "com_github_mvukov_rules_ros2_cargo_bazel",
+        build_file_content = """
+exports_files([
+    "cargo-bazel",
+])
+""",
+        sha256 = "6d6d68b898b38cb58d3c29e2e54d5795e2f652ebcac1ecf3bb0ac99fc86480e7",
+        url = "https://github.com/mvukov/rules_rust/releases/download/0.46.0-mvukov-cargo-bazel/cargo-bazel.zip",
     )
