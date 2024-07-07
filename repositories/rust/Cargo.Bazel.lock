@@ -1,5 +1,5 @@
 {
-  "checksum": "f74560aaa8935947b45b8fbdeea50f6d00c3b4f5f10669905c7a700e4ba527fb",
+  "checksum": "80b8c36735c07fb59b82cc9321a3cabf21f2d049e679346328a334d0da266834",
   "crates": {
     "autocfg 1.3.0": {
       "name": "autocfg",
@@ -73,6 +73,10 @@
             {
               "id": "serde 1.0.201",
               "target": "serde"
+            },
+            {
+              "id": "signal-hook 0.3.17",
+              "target": "signal_hook"
             }
           ],
           "selects": {}
@@ -636,6 +640,78 @@
       ],
       "license_file": "LICENSE-APACHE"
     },
+    "libc 0.2.155": {
+      "name": "libc",
+      "version": "0.2.155",
+      "package_url": "https://github.com/rust-lang/libc",
+      "repository": {
+        "Http": {
+          "url": "https://static.crates.io/crates/libc/0.2.155/download",
+          "sha256": "97b3888a4aecf77e811145cadf6eef5901f4782c53886191b2f693f24761847c"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "libc",
+            "crate_root": "src/lib.rs",
+            "srcs": {
+              "allow_empty": true,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        },
+        {
+          "BuildScript": {
+            "crate_name": "build_script_build",
+            "crate_root": "build.rs",
+            "srcs": {
+              "allow_empty": true,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        }
+      ],
+      "library_target_name": "libc",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "crate_features": {
+          "common": [
+            "default",
+            "std"
+          ],
+          "selects": {}
+        },
+        "deps": {
+          "common": [
+            {
+              "id": "libc 0.2.155",
+              "target": "build_script_build"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2015",
+        "version": "0.2.155"
+      },
+      "build_script_attrs": {
+        "data_glob": [
+          "**"
+        ]
+      },
+      "license": "MIT OR Apache-2.0",
+      "license_ids": [
+        "Apache-2.0",
+        "MIT"
+      ],
+      "license_file": "LICENSE-APACHE"
+    },
     "memchr 2.7.2": {
       "name": "memchr",
       "version": "2.7.2",
@@ -1037,6 +1113,135 @@
       ],
       "license_file": "LICENSE-APACHE"
     },
+    "signal-hook 0.3.17": {
+      "name": "signal-hook",
+      "version": "0.3.17",
+      "package_url": "https://github.com/vorner/signal-hook",
+      "repository": {
+        "Http": {
+          "url": "https://static.crates.io/crates/signal-hook/0.3.17/download",
+          "sha256": "8621587d4798caf8eb44879d42e56b9a93ea5dcd315a6487c357130095b62801"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "signal_hook",
+            "crate_root": "src/lib.rs",
+            "srcs": {
+              "allow_empty": true,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        },
+        {
+          "BuildScript": {
+            "crate_name": "build_script_build",
+            "crate_root": "build.rs",
+            "srcs": {
+              "allow_empty": true,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        }
+      ],
+      "library_target_name": "signal_hook",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "crate_features": {
+          "common": [
+            "channel",
+            "default",
+            "iterator"
+          ],
+          "selects": {}
+        },
+        "deps": {
+          "common": [
+            {
+              "id": "libc 0.2.155",
+              "target": "libc"
+            },
+            {
+              "id": "signal-hook 0.3.17",
+              "target": "build_script_build"
+            },
+            {
+              "id": "signal-hook-registry 1.4.2",
+              "target": "signal_hook_registry"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2018",
+        "version": "0.3.17"
+      },
+      "build_script_attrs": {
+        "data_glob": [
+          "**"
+        ]
+      },
+      "license": "Apache-2.0/MIT",
+      "license_ids": [
+        "Apache-2.0",
+        "MIT"
+      ],
+      "license_file": "LICENSE-APACHE"
+    },
+    "signal-hook-registry 1.4.2": {
+      "name": "signal-hook-registry",
+      "version": "1.4.2",
+      "package_url": "https://github.com/vorner/signal-hook",
+      "repository": {
+        "Http": {
+          "url": "https://static.crates.io/crates/signal-hook-registry/1.4.2/download",
+          "sha256": "a9e9e0b4211b72e7b8b6e85c807d36c212bdb33ea8587f7569562a84df5465b1"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "signal_hook_registry",
+            "crate_root": "src/lib.rs",
+            "srcs": {
+              "allow_empty": true,
+              "include": [
+                "**/*.rs"
+              ]
+            }
+          }
+        }
+      ],
+      "library_target_name": "signal_hook_registry",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "deps": {
+          "common": [
+            {
+              "id": "libc 0.2.155",
+              "target": "libc"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2015",
+        "version": "1.4.2"
+      },
+      "license": "Apache-2.0/MIT",
+      "license_ids": [
+        "Apache-2.0",
+        "MIT"
+      ],
+      "license_file": "LICENSE-APACHE"
+    },
     "slab 0.4.9": {
       "name": "slab",
       "version": "0.4.9",
@@ -1336,7 +1541,8 @@
   },
   "direct_deps": [
     "futures 0.3.30",
-    "serde 1.0.201"
+    "serde 1.0.201",
+    "signal-hook 0.3.17"
   ],
   "direct_dev_deps": []
 }

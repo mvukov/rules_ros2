@@ -58,8 +58,8 @@ rust_binary(
     edition = "2021",
     deps = [
         ":rust_chatter_interface",
-        "@examples_crate_index//:signal-hook",
         "@ros2_rust//:rclrs",
+        "@rules_ros2_crate_index//:signal-hook",
     ],
 )
 
@@ -69,8 +69,8 @@ rust_binary(
     edition = "2021",
     deps = [
         ":rust_chatter_interface",
-        "@examples_crate_index//:signal-hook",
         "@ros2_rust//:rclrs",
+        "@rules_ros2_crate_index//:signal-hook",
     ],
 )
 

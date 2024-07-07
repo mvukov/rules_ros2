@@ -53,7 +53,7 @@ load(
 
 install_rules_ros2_pip_deps()
 
-# Below is an optional setup for Rust support for ROS2.
+# Below is an optional setup for Rust support for ROS 2.
 
 load("@com_github_mvukov_rules_ros2//repositories:rust_setup_stage_1.bzl", "rust_setup_stage_1")
 
@@ -73,22 +73,3 @@ rust_setup_stage_3(
 load("@com_github_mvukov_rules_ros2//repositories:rust_setup_stage_4.bzl", "rust_setup_stage_4")
 
 rust_setup_stage_4()
-
-load("@rules_rust//crate_universe:defs.bzl", "crate", "crates_repository", "render_config")
-
-crates_repository(
-    name = "examples_crate_index",
-    cargo_lockfile = "//:examples_cargo.lock",
-    # Only needed for CI here, see https://github.com/bazelbuild/rules_rust/pull/2698.
-    generator = "@com_github_mvukov_rules_ros2_cargo_bazel//:cargo-bazel",
-    lockfile = "//:examples_cargo_bazel.lock",
-    packages = {
-        "signal-hook": crate.spec(
-            version = "0.3",
-        ),
-    },
-)
-
-load("@examples_crate_index//:defs.bzl", "crate_repositories")
-
-crate_repositories()

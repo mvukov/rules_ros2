@@ -37,7 +37,7 @@ load(
 
 install_rules_ros2_pip_deps()
 
-# Below is an optional setup for Rust support for ROS2.
+# Below is an optional setup for Rust support for ROS 2.
 
 load("//repositories:rust_setup_stage_1.bzl", "rust_setup_stage_1")
 
