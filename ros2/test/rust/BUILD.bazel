@@ -1,0 +1,56 @@
+load("@com_github_mvukov_rules_ros2//ros2:rust_interfaces.bzl", "rust_ros2_interface_library")
+load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_test")
+
+rust_ros2_interface_library(
+    name = "rust_builtin_interfaces",
+    deps = ["@ros2_rcl_interfaces//:builtin_interfaces"],
+)
+
+rust_test(
+    name = "rust_idl_no_deps_tests",
+    srcs = ["rust_idl_no_deps_tests.rs"],
+    edition = "2021",
+    deps = [":rust_builtin_interfaces"],
+)
+
+rust_ros2_interface_library(
+    name = "rust_sensor_msgs",
+    deps = ["@ros2_common_interfaces//:sensor_msgs"],
+)
+
+rust_test(
+    name = "rust_idl_with_deps_tests",
+    srcs = ["rust_idl_with_deps_tests.rs"],
+    edition = "2021",
+    deps = [":rust_sensor_msgs"],
+)
+
+rust_ros2_interface_library(
+    name = "rust_std_msgs",
+    deps = ["@ros2_common_interfaces//:std_msgs"],
+)
+
+rust_binary(
+    name = "publisher",
+    srcs = ["publisher.rs"],
+    edition = "2021",
+    deps = [
+        ":rust_std_msgs",
+        "@ros2_rust//:rclrs",
+        "@rules_ros2_crate_index//:signal-hook",
+    ],
+)
+
+ros2_test(
+    name = "tests",
+    size = "small",
+    launch_file = "tests.py",
+    nodes = [
+        ":publisher",
+    ],
+    deps = [
+        "@ros2_common_interfaces//:py_std_msgs",
+        "@ros2_rclpy//:rclpy",
+    ],
+)

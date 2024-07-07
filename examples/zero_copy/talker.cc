@@ -28,20 +28,20 @@ class MinimalPublisher : public rclcpp::Node {
 
     publisher_ = create_publisher<chatter_interface::msg::Chatter>("topic", 10);
     auto timer_callback = [this]() -> void {
-      auto message = publisher_->borrow_loaned_message();
+      auto loaned_message = publisher_->borrow_loaned_message();
+      auto& message = loaned_message.get();
       std::string str = "Hello, world! " + std::to_string(count_++);
-      auto copy_size = str.size() < message.get().data.size()
-                           ? str.size()
-                           : message.get().data.size();
-      std::memcpy(message.get().data.begin(), str.c_str(), copy_size);
-      message.get().data_length = copy_size;
-      message.get().timestamp =
+      auto copy_size =
+          str.size() < message.data.size() ? str.size() : message.data.size();
+      std::memcpy(message.data.begin(), str.c_str(), copy_size);
+      message.data_length = copy_size;
+      message.timestamp =
           std::chrono::duration_cast<std::chrono::microseconds>(
-              std::chrono::steady_clock::now().time_since_epoch())
+              std::chrono::system_clock::now().time_since_epoch())
               .count();
-      message.get().count = count_;
+      message.count = count_;
       RCLCPP_INFO(get_logger(), "Publishing: '%s'", str.c_str());
-      publisher_->publish(std::move(message));
+      publisher_->publish(std::move(loaned_message));
     };
     timer_ = create_wall_timer(std::chrono::milliseconds(callback_period_ms),
                                timer_callback);
