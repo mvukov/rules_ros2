@@ -19,7 +19,7 @@
     },
     {
       matchManagers: ["bazel"],
-      matchPackageNames: [
+      matchDepNames: [
         "bazel_skylib",
         "googletest",
         "eigen",
