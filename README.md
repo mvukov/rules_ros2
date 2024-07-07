@@ -17,8 +17,8 @@ The code is developed and tested on Ubuntu 22.04 with Python 3.10.
 
 Available features:
 
-- Building of C++ and Python nodes.
-- C/C++/Python code generation for interfaces (messages, services and actions).
+- Building of C++, Python and Rust nodes.
+- C/C++/Python/Rust code generation for interfaces (messages, services and actions).
 - Defining ROS 2 deployments with `ros2_launch` Bazel macro.
 - Defining ROS 2 tests with `ros2_test` Bazel macro.
 - Defining ROS 2 plugins with `ros2_plugin` Bazel macro.
@@ -38,10 +38,12 @@ Please take a look at the [examples](examples) folder to get started.
 
 ROS 2 packages are by default locked to versions from [release-humble-20240523](https://github.com/ros2/ros2/releases/tag/release-humble-20240523).
 
-> **NOTE**: Unlike ROS genmsg which refuses to generate code if the deps between
-> interface targets are not set correctly, code generation for ROS 2 seems to not
-> care about this. If the deps are not correctly set, you'll only see failures
-> during compilation of the generated code.
+## Notes
+
+- Unlike ROS genmsg which refuses to generate code if the deps between
+  interface targets are not set correctly, code generation for ROS 2 seems to not
+  care about this. If the deps are not correctly set, you'll only see failures
+  during compilation of the generated code.
 
 ## Alternatives
 
