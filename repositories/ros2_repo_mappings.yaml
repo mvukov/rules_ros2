@@ -15,6 +15,18 @@ repositories:
   cyclonedds:
     name: cyclonedds
     build_file: "@com_github_mvukov_rules_ros2//repositories:cyclonedds.BUILD.bazel"
+  fastcdr:
+    name: fastcdr
+    build_file: "@com_github_mvukov_rules_ros2//repositories:fastcdr.BUILD.bazel"
+  fastrtps:
+    name: fastrtps # 2.6.2
+    build_file: "@com_github_mvukov_rules_ros2//repositories:fastrtps.BUILD.bazel"
+  foonathan_memory:
+    name: foonathan_memory
+    build_file: "@com_github_mvukov_rules_ros2//repositories:foonathan_memory.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:foonathan_memory_remove_dbg_suffix.patch"
   geometry2:
     name: ros2_geometry2
     build_file: "@com_github_mvukov_rules_ros2//repositories:geometry2.BUILD.bazel"
@@ -93,6 +105,12 @@ repositories:
   rmw_dds_common:
     name: ros2_rmw_dds_common
     build_file: "@com_github_mvukov_rules_ros2//repositories:rmw_dds_common.BUILD.bazel"
+  rmw_fastrtps:
+    name: ros2_rmw_fastrtps
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rmw_fastrtps.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:rmw_fastrtps-fix-typesupport-conditions-bug.patch"
   rmw_implementation:
     name: ros2_rmw_implementation
     build_file: "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel"

@@ -42,6 +42,10 @@ build:clang --repo_env=CC=clang
 build:clang --repo_env=CXX=clang++
 build:clang --linkopt="-fuse-ld=lld"
 
+# CycloneDDS is used as DDS vendor in the ROS Middleware by default in this repo.
+# To use FastDDS, invoke Bazel with `--config=fastdds`.
+build:fastdds --@com_github_mvukov_rules_ros2//ros2:dds_vendor=fastdds
+
 # Load any settings specific to the current user.
 # user.bazelrc should appear in .gitignore so that settings are not shared with
 # team members. This needs to be last statement in this config,

@@ -50,6 +50,35 @@ def ros2_repositories_impl():
 
     maybe(
         http_archive,
+        name = "fastcdr",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:fastcdr.BUILD.bazel",
+        sha256 = "5c4b2ad5493abd30b9475b14856641a8944c98077a36bd0760c1d83c65216e67",
+        strip_prefix = "Fast-CDR-1.1.0",
+        url = "https://github.com/eProsima/Fast-CDR/archive/refs/tags/v1.1.0.tar.gz",
+    )
+
+    maybe(
+        http_archive,
+        name = "fastrtps",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:fastrtps.BUILD.bazel",
+        sha256 = "463af750b4d956710611d58179e02817de65f3f9beb94c600c74d826b0746a84",
+        strip_prefix = "Fast-DDS-2.6.2",
+        url = "https://github.com/eProsima/Fast-DDS/archive/refs/tags/v2.6.2.tar.gz",
+    )
+
+    maybe(
+        http_archive,
+        name = "foonathan_memory",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:foonathan_memory.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:foonathan_memory_remove_dbg_suffix.patch"],
+        sha256 = "4203d15db22a94a3978eeb1afb59a37d35c57c0f148733f0f1a53a6281cb74dd",
+        strip_prefix = "memory-0.7-3",
+        url = "https://github.com/foonathan/memory/archive/refs/tags/v0.7-3.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_geometry2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:geometry2.BUILD.bazel",
         patch_args = ["-p1"],
@@ -253,6 +282,17 @@ def ros2_repositories_impl():
 
     maybe(
         http_archive,
+        name = "ros2_rmw_fastrtps",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_fastrtps.BUILD.bazel",
+        #patch_args = ["-p1"],
+        #patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_fastrtps-fix-typesupport-conditions-bug.patch"],
+        sha256 = "a0145b414207a2528fd56e98a56bd6d4c3f0353dcd58f4b3a65224af8bd52284",
+        strip_prefix = "rmw_fastrtps-6.2.3",
+        url = "https://github.com/ros2/rmw_fastrtps/archive/refs/tags/6.2.3.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "ros2_rmw_implementation",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel",
         patch_args = ["-p1"],
@@ -350,6 +390,15 @@ def ros2_repositories_impl():
         sha256 = "ab4b5cbe2db3f03b2e91bc999bf618467b696bb316f91fc6002590d00cad23fd",
         strip_prefix = "rosidl_typesupport-2.0.1",
         url = "https://github.com/ros2/rosidl_typesupport/archive/refs/tags/2.0.1.tar.gz",
+    )
+
+    maybe(
+        http_archive,
+        name = "ros2_rosidl_typesupport_fastrtps",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_typesupport_fastrtps.BUILD.bazel",
+        sha256 = "41deed571ab95f7d2a191af6e4536536f13266df059b0b11f6469be8e44cf304",
+        strip_prefix = "rosidl_typesupport_fastrtps-2.2.1",
+        url = "https://github.com/ros2/rosidl_typesupport_fastrtps/archive/refs/tags/2.2.1.tar.gz",
     )
 
     maybe(
