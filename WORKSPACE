@@ -21,11 +21,9 @@ python_register_toolchains(
 
 load("@rules_python//python:pip.bzl", "pip_parse")
 load("@rules_ros2_python//:defs.bzl", python_interpreter_target = "interpreter")
-load("//repositories:pip_annotations.bzl", "PIP_ANNOTATIONS")
 
 pip_parse(
     name = "rules_ros2_pip_deps",
-    annotations = PIP_ANNOTATIONS,
     python_interpreter_target = python_interpreter_target,
     requirements_lock = "@com_github_mvukov_rules_ros2//:requirements_lock.txt",
 )
