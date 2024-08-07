@@ -5,10 +5,8 @@ def rust_setup_stage_1():
     maybe(
         http_archive,
         name = "rules_rust",
-        sha256 = "17c53bf800b932f32d3ca19d2cb9e8ad533ce1c0d729f0d183077bfddab7ad46",
-        patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rules_rust_fix_collect_deps.patch"],
-        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.46.0/rules_rust-v0.46.0.tar.gz",
+        sha256 = "bcf710126f6974dc2db56d9ec5ec4c7c6c4e2c53b0728b44c35b770a48024bc9",
+        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.49.1/rules_rust-v0.49.1.tar.gz",
     )
 
     maybe(
