@@ -1,5 +1,5 @@
 {
-  "checksum": "80b8c36735c07fb59b82cc9321a3cabf21f2d049e679346328a334d0da266834",
+  "checksum": "ceb872808bc19dea7e2bf3a800912471a769fb8aee7fbea69782a3c2d397541b",
   "crates": {
     "autocfg 1.3.0": {
       "name": "autocfg",
