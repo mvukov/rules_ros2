@@ -75,9 +75,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "googletest",
-        sha256 = "8ad598c73ad796e0d8280b082cebd82a630d73e73cd3c70057938a6501bba5d7",
-        strip_prefix = "googletest-1.14.0",
-        url = "https://github.com/google/googletest/archive/refs/tags/v1.14.0.tar.gz",
+        sha256 = "7b42b4d6ed48810c5362c265a17faebe90dc2373c885e5216439d37927f02926",
+        strip_prefix = "googletest-1.15.2",
+        url = "https://github.com/google/googletest/archive/refs/tags/v1.15.2.tar.gz",
     )
 
     _googletest_deps()
