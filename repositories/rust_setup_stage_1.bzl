@@ -5,8 +5,8 @@ def rust_setup_stage_1():
     maybe(
         http_archive,
         name = "rules_rust",
-        sha256 = "e6be6e8fb5947af59f560038e4e58f6b46eb5098a57dad0a38a1ec54b7100660",
-        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.49.2/rules_rust-v0.49.2.tar.gz",
+        sha256 = "dd006b77221d59e4d141207c0e7adf11b1fb60d1440b8fca03bf925617932a60",
+        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.49.3/rules_rust-v0.49.3.tar.gz",
     )
 
     maybe(
