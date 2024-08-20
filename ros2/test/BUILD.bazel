@@ -61,6 +61,7 @@ ros2_cpp_test(
     idl_deps = [
         "@ros2_common_interfaces//:std_msgs",
     ],
+    linkstatic = False,
     deps = [
         "@googletest//:gtest",
         "@ros2_rclcpp//:rclcpp",

@@ -11,13 +11,21 @@ ros2_cpp_library(
         "rmw_implementation/src/visibility_control.h",
     ],
     copts = ["-w"],
-    data = [
-        "@ros2_rmw_cyclonedds//:rmw_cyclonedds",
-    ],
+    data = select(
+        {
+            "@com_github_mvukov_rules_ros2//ros2:use_cyclonedds": ["@ros2_rmw_cyclonedds//:rmw_cyclonedds"],
+            "@com_github_mvukov_rules_ros2//ros2:use_fastdds_dynamic": ["@ros2_rmw_fastrtps//:rmw_fastrtps_dynamic_cpp"],
+        },
+        no_match_error = "Unsupported dds vendor",
+    ),
     includes = ["include"],
-    local_defines = [
-        "RMW_LIBRARY_PATH=\\\"$(rootpath @ros2_rmw_cyclonedds//:rmw_cyclonedds)\\\"",
-    ],
+    local_defines = select(
+        {
+            "@com_github_mvukov_rules_ros2//ros2:use_cyclonedds": ["RMW_LIBRARY_PATH=\\\"$(rootpath @ros2_rmw_cyclonedds//:rmw_cyclonedds)\\\""],
+            "@com_github_mvukov_rules_ros2//ros2:use_fastdds_dynamic": ["RMW_LIBRARY_PATH=\\\"$(rootpath @ros2_rmw_fastrtps//:rmw_fastrtps_dynamic_cpp)\\\""],
+        },
+        no_match_error = "Unsupported dds vendor",
+    ),
     visibility = ["//visibility:public"],
     deps = [
         "@ros2_rcpputils//:rcpputils",

@@ -1,6 +1,8 @@
 """ ROS 2 common definitions.
 """
 
+load("@bazel_skylib//lib:selects.bzl", "selects")
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 
 exports_files([
@@ -64,4 +66,25 @@ py_binary(
         ":ros2_cmd",
         "@ros2cli//:ros2lifecycle",
     ],
+)
+
+string_flag(
+    name = "dds_vendor",
+    build_setting_default = "cyclonedds",
+    values = [
+        "cyclonedds",
+        "fastdds",
+    ],
+)
+
+config_setting(
+    name = "use_cyclonedds",
+    flag_values = {":dds_vendor": "cyclonedds"},
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "use_fastdds_dynamic",
+    flag_values = {":dds_vendor": "fastdds"},
+    visibility = ["//visibility:public"],
 )
