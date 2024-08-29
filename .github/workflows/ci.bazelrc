@@ -4,7 +4,7 @@
 # Debug where options came from
 build --announce_rc
 # This directory is configured in GitHub actions to be persisted between runs.
-build --repository_cache=~/.cache/bazel-repo
+build --repository_cache=/github/home/.cache/bazel-repo
 
 # Set up remote cache.
 build:remote --bes_results_url=https://app.buildbuddy.io/invocation/
