@@ -23,21 +23,20 @@ class MinimalSubscriber : public rclcpp::Node {
  public:
   MinimalSubscriber() : Node("minimal_subscriber") {
     subscription_ = create_subscription<chatter_interface::msg::Chatter>(
-        "topic", 10, [this](chatter_interface::msg::Chatter::SharedPtr msg) {
+        "topic", 10, [this](const chatter_interface::msg::Chatter& msg) {
           static uint64_t prev_count{std::numeric_limits<uint64_t>::max()};
           auto current_timestamp =
               std::chrono::duration_cast<std::chrono::microseconds>(
-                  std::chrono::steady_clock::now().time_since_epoch())
+                  std::chrono::system_clock::now().time_since_epoch())
                   .count();
-          std::string str{msg->data.begin(),
-                          msg->data.begin() + msg->data_length};
+          std::string str{msg.data.begin(), msg.data.begin() + msg.data_length};
           RCLCPP_INFO(get_logger(), "Delay %lu us, I heard: '%s'",
-                      current_timestamp - msg->timestamp, str.c_str());
+                      current_timestamp - msg.timestamp, str.c_str());
           if ((prev_count != std::numeric_limits<uint64_t>::max()) &&
-              (msg->count != prev_count + 1)) {
+              (msg.count != prev_count + 1)) {
             RCLCPP_WARN(get_logger(), "Some messages are missed!");
           }
-          prev_count = msg->count;
+          prev_count = msg.count;
         });
   }
 

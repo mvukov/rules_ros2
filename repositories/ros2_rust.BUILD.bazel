@@ -1,0 +1,107 @@
+""" Builds ros2_rust.
+"""
+
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+load("@com_github_mvukov_rules_ros2//ros2:rust_interfaces.bzl", "rust_ros2_interface_library")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+load("@rules_rust//bindgen:defs.bzl", "rust_bindgen")
+load("@rules_rust//rust:defs.bzl", "rust_library")
+
+rust_library(
+    name = "rosidl_runtime_rs",
+    srcs = glob(["rosidl_runtime_rs/src/**/*.rs"]),
+    edition = "2021",
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "rcl_wrapper",
+    hdrs = ["rclrs/src/rcl_wrapper.h"],
+    deps = [
+        "@ros2_rcl//:rcl",
+        "@ros2_rcl//:rcl_yaml_param_parser",
+        "@ros2_rcutils//:rcutils",
+        "@ros2_rmw//:rmw",
+        "@ros2_rosidl//:rosidl_typesupport_introspection_c",
+    ],
+)
+
+rust_bindgen(
+    name = "rclrs/src/rcl_bindings_generated",
+    bindgen_flags = [
+        "--allowlist-type=rcl_.*",
+        "--allowlist-type=rmw_.*",
+        "--allowlist-type=rcutils_.*",
+        "--allowlist-type=rosidl_.*",
+        "--allowlist-function=rcl_.*",
+        "--allowlist-function=rmw_.*",
+        "--allowlist-function=rcutils_.*",
+        "--allowlist-function=rosidl_.*",
+        "--allowlist-var=rcl_.*",
+        "--allowlist-var=rmw_.*",
+        "--allowlist-var=rcutils_.*",
+        "--allowlist-var=rosidl_.*",
+        "--no-derive-copy",
+        "--no-layout-tests",
+        "--default-enum-style=rust",
+    ],
+    cc_lib = ":rcl_wrapper",
+    header = "rclrs/src/rcl_wrapper.h",
+)
+
+rust_ros2_interface_library(
+    name = "rust_interfaces",
+    deps = [
+        "@ros2_rcl_interfaces//:builtin_interfaces",
+        "@ros2_rcl_interfaces//:rcl_interfaces",
+        "@ros2_rcl_interfaces//:rosgraph_msgs",
+    ],
+)
+
+rust_library(
+    name = "rclrs",
+    srcs = glob(
+        ["rclrs/src/**/*.rs"],
+        exclude = ["rclrs/src/vendor/*.rs"],
+    ) + ["rclrs/src/rcl_bindings_generated.rs"],
+    edition = "2021",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":rcl_wrapper",
+        ":rosidl_runtime_rs",
+        ":rust_interfaces",
+        "@rules_ros2_crate_index//:futures",
+    ],
+)
+
+GENERATOR_APP_PY = "rosidl_generator_rs_app.py"
+
+copy_file(
+    name = "rosidl_generator_rs_copy",
+    src = "rosidl_generator_rs/bin/rosidl_generator_rs",
+    out = GENERATOR_APP_PY,
+)
+
+py_binary(
+    name = "rosidl_generator_rs_app",
+    srcs = [
+        GENERATOR_APP_PY,
+        "rosidl_generator_rs/rosidl_generator_rs/__init__.py",
+    ],
+    imports = ["rosidl_generator_rs"],
+    legacy_create_init = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        requirement("empy"),
+        "@ros2_rosidl//:rosidl_cmake",
+        "@ros2_rosidl//:rosidl_parser",
+    ],
+)
+
+filegroup(
+    name = "rosidl_generator_rs_templates",
+    srcs = glob(["rosidl_generator_rs/resource/*.em"]),
+    visibility = ["//visibility:public"],
+)
