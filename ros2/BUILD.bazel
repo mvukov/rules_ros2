@@ -1,7 +1,9 @@
 """ ROS 2 common definitions.
 """
 
+load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("@rules_python//python:pip.bzl", "whl_filegroup")
 
 exports_files([
     "ament.bzl",
@@ -64,4 +66,18 @@ py_binary(
         ":ros2_cmd",
         "@ros2cli//:ros2lifecycle",
     ],
+)
+
+whl_filegroup(
+    name = "numpy_includes",
+    pattern = "numpy/core/include/numpy",
+    whl = "@rules_ros2_pip_deps//numpy:whl",
+)
+
+cc_library(
+    name = "rules_ros2_pip_deps_numpy_headers",
+    hdrs = [":numpy_includes"],
+    includes = ["numpy_includes/numpy/core/include"],
+    visibility = ["//visibility:public"],
+    deps = ["@rules_python//python/cc:current_py_cc_headers"],
 )

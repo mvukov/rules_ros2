@@ -824,7 +824,7 @@ py_generator_aspect = aspect(
         "_py_ext_c_deps": attr.label_list(
             default = [
                 Label("@rules_python//python/cc:current_py_cc_headers"),
-                Label("@rules_ros2_pip_deps_numpy//:headers"),
+                Label("@com_github_mvukov_rules_ros2//ros2:rules_ros2_pip_deps_numpy_headers"),
             ],
             providers = [CcInfo],
         ),
