@@ -3,6 +3,10 @@
 
 # Debug where options came from
 build --announce_rc
+
+# Show what build command was used if one fails
+build --verbose_failures
+
 # This directory is configured in GitHub actions to be persisted between runs.
 build --repository_cache=/github/home/.cache/bazel-repo
 
@@ -22,9 +26,7 @@ build:remote --noslim_profile
 
 # Don't spam CI logs.
 build --show_progress_rate_limit=60
+common --color=yes
 
-# Don't rely on test logs being easily accessible from the test runner,
-# though it makes the log noisier.
-test --test_output=errors
 # Allows tests to run bazelisk-in-bazel, since this is the cache folder used
 test --test_env=XDG_CACHE_HOME
