@@ -10,20 +10,69 @@ index 4924b36..6e618c0 100644
  mod wait;
  
  #[cfg(test)]
+diff --git a/rclrs/src/parameter.rs b/rclrs/src/parameter.rs
+index c8a710e..43e9447 100644
+--- a/rclrs/src/parameter.rs
++++ b/rclrs/src/parameter.rs
+@@ -8,7 +8,7 @@ pub use range::*;
+ use service::*;
+ pub use value::*;
+ 
+-use crate::vendor::rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue};
++use rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue};
+ 
+ use crate::{call_string_getter_with_rcl_node, rcl_bindings::*, Node, RclrsError};
+ use std::{
+diff --git a/rclrs/src/parameter/range.rs b/rclrs/src/parameter/range.rs
+index 96f66d6..fb7dede 100644
+--- a/rclrs/src/parameter/range.rs
++++ b/rclrs/src/parameter/range.rs
+@@ -1,7 +1,7 @@
+ use crate::{
+-    vendor::rcl_interfaces::msg::rmw::{FloatingPointRange, IntegerRange},
+     DeclarationError, ParameterValue, ParameterVariant,
+ };
++use rcl_interfaces::msg::rmw::{FloatingPointRange, IntegerRange};
+ use rosidl_runtime_rs::{seq, BoundedSequence};
+ 
+ impl From<ParameterRange<f64>> for ParameterRanges {
 diff --git a/rclrs/src/parameter/service.rs b/rclrs/src/parameter/service.rs
-index bcbe24b..1d240b0 100644
+index 7c8ffe6..d1d95b0 100644
 --- a/rclrs/src/parameter/service.rs
 +++ b/rclrs/src/parameter/service.rs
-@@ -1,7 +1,7 @@
- use std::sync::{Arc, Weak, Mutex};
+@@ -3,7 +3,7 @@ use std::{
+     sync::{Arc, Mutex},
+ };
  
--use crate::vendor::rcl_interfaces::srv::rmw::*;
--use crate::vendor::rcl_interfaces::msg::rmw::*;
-+use rcl_interfaces::srv::rmw::*;
-+use rcl_interfaces::msg::rmw::*;
- use rosidl_runtime_rs::{Sequence, seq};
+-use crate::vendor::rcl_interfaces::{msg::rmw::*, srv::rmw::*};
++use rcl_interfaces::{msg::rmw::*, srv::rmw::*};
+ use rosidl_runtime_rs::Sequence;
  
- use crate::{rmw_request_id_t, Node, RclrsError, Service, ServiceBase};
+ use super::ParameterMap;
+@@ -306,7 +306,7 @@ impl ParameterService {
+ #[cfg(test)]
+ mod tests {
+     use crate::{
+-        vendor::rcl_interfaces::{
++        rcl_interfaces::{
+             msg::rmw::{
+                 Parameter as RmwParameter, ParameterType, ParameterValue as RmwParameterValue,
+             },
+diff --git a/rclrs/src/parameter/value.rs b/rclrs/src/parameter/value.rs
+index 9d431c0..627c406 100644
+--- a/rclrs/src/parameter/value.rs
++++ b/rclrs/src/parameter/value.rs
+@@ -3,9 +3,9 @@ use std::{ffi::CStr, sync::Arc};
+ use crate::{
+     parameter::{ParameterRange, ParameterRanges},
+     rcl_bindings::*,
+-    vendor::rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue},
+     ParameterValueError,
+ };
++use rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue};
+ 
+ /// A parameter value.
+ ///
 diff --git a/rclrs/src/time.rs b/rclrs/src/time.rs
 index 540c624..4d64234 100644
 --- a/rclrs/src/time.rs
@@ -36,14 +85,14 @@ index 540c624..4d64234 100644
      num::TryFromIntError,
      ops::{Add, Sub},
 diff --git a/rclrs/src/time_source.rs b/rclrs/src/time_source.rs
-index 143adf0..b04ee06 100644
+index a6b6008..577643f 100644
 --- a/rclrs/src/time_source.rs
 +++ b/rclrs/src/time_source.rs
 @@ -1,8 +1,8 @@
  use crate::{
      clock::{Clock, ClockSource, ClockType},
 -    vendor::rosgraph_msgs::msg::Clock as ClockMsg,
-     MandatoryParameter, Node, QoSProfile, Subscription, QOS_PROFILE_CLOCK,
+     Node, QoSProfile, ReadOnlyParameter, Subscription, QOS_PROFILE_CLOCK,
  };
 +use rosgraph_msgs::msg::Clock as ClockMsg;
  use std::sync::{Arc, Mutex, RwLock, Weak};
