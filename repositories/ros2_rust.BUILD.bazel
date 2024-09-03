@@ -65,7 +65,10 @@ rust_library(
     srcs = glob(
         ["rclrs/src/**/*.rs"],
         exclude = ["rclrs/src/vendor/*.rs"],
-    ) + ["rclrs/src/rcl_bindings_generated.rs"],
+    ) + [
+        "rclrs/src/rcl_bindings_generated.rs",
+        ":logging_generator",
+    ],
     edition = "2021",
     visibility = ["//visibility:public"],
     deps = [
@@ -74,6 +77,12 @@ rust_library(
         ":rust_interfaces",
         "@rules_ros2_crate_index//:futures",
     ],
+)
+
+copy_file(
+    name = "logging_generator",
+    src = "@com_github_mvukov_rules_ros2//third_party/ros2_rust_logging:logging.rs",
+    out = "rclrs/src/logging.rs",
 )
 
 GENERATOR_APP_PY = "rosidl_generator_rs_app.py"
