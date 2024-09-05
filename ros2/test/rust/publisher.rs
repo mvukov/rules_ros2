@@ -2,8 +2,6 @@ use std::env;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use rclrs;
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let shut_down = Arc::new(AtomicBool::new(false));
     signal_hook::flag::register(signal_hook::consts::SIGINT, Arc::clone(&shut_down))?;

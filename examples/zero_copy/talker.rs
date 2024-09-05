@@ -37,7 +37,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let msg_len = msg.len();
         message.data_length = msg_len as u64;
         message.data[..msg_len].copy_from_slice(msg.as_bytes());
-        println!("Publishing: {}", msg);
+        rclrs::log_info!(node.logger_name(), "Publishing: {}", msg);
         message.publish()?;
         publish_count += 1;
         std::thread::sleep(std::time::Duration::from_millis(callback_period_ms as u64));
