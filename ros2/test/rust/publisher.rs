@@ -15,7 +15,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut publish_count: u32 = 1;
 
     while !shut_down.load(Ordering::Relaxed) && context.ok() {
-        message.data = format!("Hello, world! {}", publish_count);
+        let msg = format!("Hello, world! {}", publish_count);
+        message.data = msg.clone();
+        rclrs::log_info!(node.logger_name(), "{}", msg);
         publisher.publish(&message)?;
         publish_count += 1;
         std::thread::sleep(std::time::Duration::from_millis(10));

@@ -23,7 +23,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .as_micros() as u64;
             let delay_us = now - msg.timestamp;
             let data_length = msg.data_length as usize;
-            println!(
+            rclrs::log_info!(node.logger_name(),
                 "Delay {} us, I heard: '{:?}'",
                 delay_us,
                 String::from_utf8(msg.data[..data_length].to_vec()).unwrap()
