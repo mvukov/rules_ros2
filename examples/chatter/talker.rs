@@ -19,7 +19,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     while !shut_down.load(Ordering::Relaxed) && context.ok() {
         message.data = format!("Hello, world! {}", publish_count);
-        println!("Publishing: [{}]", message.data);
+        rclrs::log_info!(node.logger_name(), "Publishing: {}", message.data);
         publisher.publish(&message)?;
         publish_count += 1;
         std::thread::sleep(std::time::Duration::from_millis(500));
