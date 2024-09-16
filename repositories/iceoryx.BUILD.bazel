@@ -13,8 +13,12 @@ cache_entries = {
     "CCACHE": "OFF",
 }
 
+cache_entries_android = {
+    "CMAKE_SYSTEM_NAME": "Android",
+}
+
 cache_entries_qnx = {
-    "CMAKE_SYSTEM_NAME": "ANDROID_OR_QNX",
+    "CMAKE_SYSTEM_NAME": "QNX",
 }
 
 # Depends on libacl. On Ubuntu install as `sudo apt-get install libacl1-dev`.
@@ -27,7 +31,11 @@ cmake(
     cache_entries = selects.with_or(
         {
             ("@platforms//os:linux", "@platforms//os:macos"): cache_entries,
-            ("@platforms//os:android", "@platforms//os:qnx"): dicts.add(
+            "@platforms//os:android": dicts.add(
+                cache_entries,
+                cache_entries_android,
+            ),
+            "@platforms//os:qnx": dicts.add(
                 cache_entries,
                 cache_entries_qnx,
             ),
