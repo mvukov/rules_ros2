@@ -91,9 +91,12 @@ def _compile_rust_code(ctx, label, crate_name, srcs, deps):
         )
         rustc_rmeta_output = generate_output_diagnostics(ctx, rust_metadata)
 
+    attr = ctx.rule.attr + struct(crate_features = [
+        "serde",
+    ])
     providers = rustc_compile_action(
         ctx = ctx,
-        attr = ctx.rule.attr,
+        attr = attr,
         toolchain = toolchain,
         output_hash = output_hash,
         crate_info_dict = dict(
@@ -199,6 +202,7 @@ rust_generator_aspect = aspect(
             default = [
                 "@ros2_rust//:rosidl_runtime_rs",
                 "@rules_ros2_crate_index//:serde",
+                "@rules_ros2_crate_index//:serde-big-array",
             ],
         ),
         "_cc_toolchain": attr.label(

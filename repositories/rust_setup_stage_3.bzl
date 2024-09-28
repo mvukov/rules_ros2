@@ -13,6 +13,13 @@ def rust_setup_stage_3(**kwargs):
                 features = ["derive"],
                 version = "1",
             ),
+            "serde-big-array": crate.spec(
+                version = "0.5",
+            ),
+            # Not used by rclrs, used for testing.
+            "serde_json": crate.spec(
+                version = "1",
+            ),
             # Not used by rclrs, but handy to have.
             "signal-hook": crate.spec(
                 version = "0.3",
