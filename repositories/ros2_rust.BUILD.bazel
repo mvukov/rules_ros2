@@ -12,8 +12,12 @@ load("@rules_rust//rust:defs.bzl", "rust_library")
 rust_library(
     name = "rosidl_runtime_rs",
     srcs = glob(["rosidl_runtime_rs/src/**/*.rs"]),
+    crate_features = ["serde"],
     edition = "2021",
     visibility = ["//visibility:public"],
+    deps = [
+        "@rules_ros2_crate_index//:serde",
+    ],
 )
 
 cc_library(

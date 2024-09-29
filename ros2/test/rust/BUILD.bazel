@@ -11,7 +11,10 @@ rust_test(
     name = "rust_idl_no_deps_tests",
     srcs = ["rust_idl_no_deps_tests.rs"],
     edition = "2021",
-    deps = [":rust_builtin_interfaces"],
+    deps = [
+        ":rust_builtin_interfaces",
+        "@rules_ros2_crate_index//:serde_json",
+    ],
 )
 
 rust_ros2_interface_library(
