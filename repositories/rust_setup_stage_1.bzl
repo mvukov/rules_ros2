@@ -5,17 +5,17 @@ def rust_setup_stage_1():
     maybe(
         http_archive,
         name = "rules_rust",
-        sha256 = "dd006b77221d59e4d141207c0e7adf11b1fb60d1440b8fca03bf925617932a60",
-        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.49.3/rules_rust-v0.49.3.tar.gz",
+        sha256 = "7931e7b544107b62029bf2fc72e79f9d77523ad650d442d93c3fcce9ad5ec1eb",
+        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.52.0/rules_rust-v0.52.0.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "ros2_rust",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2_rust.BUILD.bazel",
-        sha256 = "b5ce6dc04e2bced77cf90ac346da46e9f6a1c04c400fb5589cc8228cddffdea3",
-        strip_prefix = "ros2_rust-e485b1c90893bedab32ee9e54ff5e47c4f6bd004",
-        urls = ["https://github.com/ros2-rust/ros2_rust/archive/e485b1c90893bedab32ee9e54ff5e47c4f6bd004.zip"],
+        sha256 = "8311e72f517b4ad21a87a1aec0558467aa45b6d7173e03a332952a5105a4060f",
+        strip_prefix = "ros2_rust-ad9667f18151a5f35d02de8ad9889c5e26cefd04",
+        urls = ["https://github.com/ros2-rust/ros2_rust/archive/ad9667f18151a5f35d02de8ad9889c5e26cefd04.zip"],
         patch_args = ["-p1"],
         patches = [
             "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rcl_bindings.patch",
