@@ -140,9 +140,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "boringssl",
-        sha256 = "a9a69266d2a94ee14e3fbfa5640d07e3d8445f031453f5161f3f7dcc443e9975",
-        strip_prefix = "boringssl-4fc9fcefdcb638566daf36c1328ae01d69d4c246",
-        urls = ["https://github.com/hedronvision/boringssl/archive/4fc9fcefdcb638566daf36c1328ae01d69d4c246.tar.gz"],
+        sha256 = "7048ac20b097734b308b48f203266baef1c8377865935c1bfb03107eb11d14f0",
+        strip_prefix = "boringssl-8ee0841a03d5686969fc9c1ab5154252645691ce",
+        urls = ["https://github.com/hedronvision/boringssl/archive/8ee0841a03d5686969fc9c1ab5154252645691ce.tar.gz"],
     )
 
     maybe(
@@ -212,6 +212,15 @@ def ros2_workspace_repositories():
         sha256 = "8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72",
         strip_prefix = "eigen-3.4.0",
         urls = ["https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "rules_license",
+        sha256 = "26d4021f6898e23b82ef953078389dd49ac2b5618ac564ade4ef87cced147b38",
+        urls = [
+            "https://github.com/bazelbuild/rules_license/releases/download/1.0.0/rules_license-1.0.0.tar.gz",
+        ],
     )
 
 def ros2_repositories():
