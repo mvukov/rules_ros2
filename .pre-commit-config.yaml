@@ -12,7 +12,7 @@ repos:
     hooks:
       - id: buildifier
         args:
-          - &buildifier_args "--warnings=native-cc,native-py,out-of-order-load"
+          - &buildifier_args "--warnings=native-cc,native-py"
       - id: buildifier
         name: "buildifier (external build files)"
         files: &buildifier_external_files ^(.*/)?\w+\.BUILD.bazel$
