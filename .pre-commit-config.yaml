@@ -8,11 +8,11 @@ exclude: (.*\.patch)
 
 repos:
   - repo: https://github.com/keith/pre-commit-buildifier
-    rev: 6.4.0
+    rev: 7.3.1
     hooks:
       - id: buildifier
         args:
-          - &buildifier_args "--warnings=native-cc,native-py,out-of-order-load"
+          - &buildifier_args "--warnings=native-cc,native-py"
       - id: buildifier
         name: "buildifier (external build files)"
         files: &buildifier_external_files ^(.*/)?\w+\.BUILD.bazel$
@@ -54,7 +54,7 @@ repos:
       - id: ruff
         args: [--fix, --show-fixes, --exit-non-zero-on-fix]
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v18.1.8
+    rev: v19.1.1
     hooks:
       - id: clang-format
   - repo: https://github.com/cpplint/cpplint
