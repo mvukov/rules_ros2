@@ -16,6 +16,9 @@ build --noenable_bzlmod
 # This is a mandatory flag.
 build --incompatible_default_to_explicit_init_py
 
+# Don't let local Python site packages leak into the build and cause problems
+common --action_env=PYTHONNOUSERSITE=1
+
 # All code will be compiled with C++17 flag.
 # Users can naturally override copts for cc_* targets.
 # NOTE: googletest >=v1.13.0 requires min C++14.
@@ -28,7 +31,7 @@ build --cxxopt=-std=c++17
 build --sandbox_default_allow_network=false
 # Don't let environment variables like $PATH sneak into the build,
 # which can cause massive cache misses when they change.
-build --incompatible_strict_action_env
+common --incompatible_strict_action_env
 # Helps debugging when Bazel runs out of memory
 build --heap_dump_on_oom
 # Speed up all builds by not checking if output files have been modified.
@@ -36,6 +39,9 @@ build --noexperimental_check_output_files
 
 # Don't bother building targets which aren't dependencies of the tests.
 test --build_tests_only
+
+# Show all the problems
+test --test_output=errors
 
 # To use a clang compiler, invoke Bazel with `--config=clang`.
 build:clang --repo_env=CC=clang

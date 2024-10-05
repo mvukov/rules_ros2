@@ -1,0 +1,80 @@
+diff --git a/rosidl_generator_rs/resource/msg_rmw.rs.em b/rosidl_generator_rs/resource/msg_rmw.rs.em
+index c4420a6..d5d575c 100644
+--- a/rosidl_generator_rs/resource/msg_rmw.rs.em
++++ b/rosidl_generator_rs/resource/msg_rmw.rs.em
+@@ -17,12 +17,10 @@ use serde::{Deserialize, Serialize};
+ type_name = msg_spec.structure.namespaced_type.name
+ }@
+ 
+-#[link(name = "@(package_name)__rosidl_typesupport_c")]
+ extern "C" {
+     fn rosidl_typesupport_c__get_message_type_support_handle__@(package_name)__@(subfolder)__@(type_name)() -> *const std::os::raw::c_void;
+ }
+ 
+-#[link(name = "@(package_name)__rosidl_generator_c")]
+ extern "C" {
+     fn @(package_name)__@(subfolder)__@(type_name)__init(msg: *mut @(type_name)) -> bool;
+     fn @(package_name)__@(subfolder)__@(type_name)__Sequence__init(seq: *mut rosidl_runtime_rs::Sequence<@(type_name)>, size: usize) -> bool;
+diff --git a/rosidl_generator_rs/resource/srv.rs.em b/rosidl_generator_rs/resource/srv.rs.em
+index 369696f..503be91 100644
+--- a/rosidl_generator_rs/resource/srv.rs.em
++++ b/rosidl_generator_rs/resource/srv.rs.em
+@@ -23,7 +23,6 @@ TEMPLATE(
+ type_name = srv_spec.namespaced_type.name
+ }@
+ 
+-#[link(name = "@(package_name)__rosidl_typesupport_c")]
+ extern "C" {
+     fn rosidl_typesupport_c__get_service_type_support_handle__@(package_name)__@(subfolder)__@(type_name)() -> *const std::os::raw::c_void;
+ }
+@@ -61,7 +60,6 @@ TEMPLATE(
+ type_name = srv_spec.namespaced_type.name
+ }@
+ 
+-  #[link(name = "@(package_name)__rosidl_typesupport_c")]
+   extern "C" {
+       fn rosidl_typesupport_c__get_service_type_support_handle__@(package_name)__@(subfolder)__@(type_name)() -> *const std::os::raw::c_void;
+   }
+diff --git a/rosidl_generator_rs/rosidl_generator_rs/__init__.py b/rosidl_generator_rs/rosidl_generator_rs/__init__.py
+index 502d1d3..33a9645 100644
+--- a/rosidl_generator_rs/rosidl_generator_rs/__init__.py
++++ b/rosidl_generator_rs/rosidl_generator_rs/__init__.py
+@@ -17,10 +17,7 @@ import pathlib
+ 
+ from pathlib import Path
+ 
+-if os.environ['ROS_DISTRO'] <= 'humble':
+-    import rosidl_cmake as rosidl_pycommon
+-else:
+-    import rosidl_pycommon
++import rosidl_cmake as rosidl_pycommon
+ 
+ from rosidl_parser.definition import AbstractGenericString
+ from rosidl_parser.definition import Array
+@@ -127,7 +124,7 @@ def generate_rs(generator_arguments_file, typesupport_impls):
+                 generated_file = os.path.join(args['output_dir'],
+                                               generated_filename % 'msg')
+                 rosidl_pycommon.expand_template(
+-                    os.path.join(template_dir, template_file),
++                    template_file,
+                     data.copy(),
+                     generated_file,
+                     minimum_timestamp=latest_target_timestamp)
+@@ -138,7 +135,7 @@ def generate_rs(generator_arguments_file, typesupport_impls):
+                 generated_file = os.path.join(args['output_dir'],
+                                               generated_filename % 'srv')
+                 rosidl_pycommon.expand_template(
+-                    os.path.join(template_dir, template_file),
++                    template_file,
+                     data.copy(),
+                     generated_file,
+                     minimum_timestamp=latest_target_timestamp)
+@@ -152,7 +149,7 @@ def generate_rs(generator_arguments_file, typesupport_impls):
+     cargo_toml_data = {
+         'dependency_packages': dependency_packages,
+         'package_name': args['package_name'],
+-        'package_version': args['package_version'],
++        'package_version': args.get('package_version', '0.0.1'),
+     }
+     rosidl_pycommon.expand_template(
+         os.path.join(template_dir, 'Cargo.toml.em'),

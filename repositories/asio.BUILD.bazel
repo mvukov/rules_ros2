@@ -1,19 +1,17 @@
-""" Builds asio.
-"""
-
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
     name = "asio",
-    srcs = glob(["src/*.cpp"]),
-    hdrs = glob([
-        "include/**/*.hpp",
-        "include/**/*.ipp",
-    ]),
-    defines = [
-        "ASIO_SEPARATE_COMPILATION",
+    srcs = [
+        "asio/src/asio.cpp",
+        "asio/src/asio_ssl.cpp",
     ],
-    includes = ["include"],
+    hdrs = glob([
+        "asio/include/**/*.hpp",
+        "asio/include/**/*.ipp",
+    ]),
+    includes = ["asio/include"],
+    local_defines = ["ASIO_SEPARATE_COMPILATION"],
     visibility = ["//visibility:public"],
     deps = ["@boringssl//:ssl"],
 )

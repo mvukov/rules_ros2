@@ -35,13 +35,11 @@ python_register_toolchains(
     python_version = "3.10",
 )
 
-load("@com_github_mvukov_rules_ros2//repositories:pip_annotations.bzl", "PIP_ANNOTATIONS")
 load("@rules_python//python:pip.bzl", "pip_parse")
 load("@rules_ros2_python//:defs.bzl", python_interpreter_target = "interpreter")
 
 pip_parse(
     name = "rules_ros2_pip_deps",
-    annotations = PIP_ANNOTATIONS,
     python_interpreter_target = python_interpreter_target,
     requirements_lock = "@com_github_mvukov_rules_ros2//:requirements_lock.txt",
 )
@@ -52,3 +50,24 @@ load(
 )
 
 install_rules_ros2_pip_deps()
+
+# Below is an optional setup for Rust support for ROS 2.
+
+load("@com_github_mvukov_rules_ros2//repositories:rust_setup_stage_1.bzl", "rust_setup_stage_1")
+
+rust_setup_stage_1()
+
+load("@com_github_mvukov_rules_ros2//repositories:rust_setup_stage_2.bzl", "rust_setup_stage_2")
+
+rust_setup_stage_2()
+
+load("@com_github_mvukov_rules_ros2//repositories:rust_setup_stage_3.bzl", "rust_setup_stage_3")
+
+rust_setup_stage_3(
+    # Only needed for CI here, see https://github.com/bazelbuild/rules_rust/pull/2698.
+    generator = "@com_github_mvukov_rules_ros2_cargo_bazel//:cargo-bazel",
+)
+
+load("@com_github_mvukov_rules_ros2//repositories:rust_setup_stage_4.bzl", "rust_setup_stage_4")
+
+rust_setup_stage_4()

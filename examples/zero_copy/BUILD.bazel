@@ -6,12 +6,14 @@ load(
     "ros2_interface_library",
 )
 load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
+load("@com_github_mvukov_rules_ros2//ros2:rust_interfaces.bzl", "rust_ros2_interface_library")
 load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
 load(
     "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
     "expand_template",
 )
 load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_rust//rust:defs.bzl", "rust_binary")
 
 ros2_interface_library(
     name = "chatter_interface",
@@ -45,6 +47,33 @@ ros2_cpp_binary(
     ],
 )
 
+rust_ros2_interface_library(
+    name = "rust_chatter_interface",
+    deps = [":chatter_interface"],
+)
+
+rust_binary(
+    name = "rust_talker",
+    srcs = ["talker.rs"],
+    edition = "2021",
+    deps = [
+        ":rust_chatter_interface",
+        "@ros2_rust//:rclrs",
+        "@rules_ros2_crate_index//:signal-hook",
+    ],
+)
+
+rust_binary(
+    name = "rust_listener",
+    srcs = ["listener.rs"],
+    edition = "2021",
+    deps = [
+        ":rust_chatter_interface",
+        "@ros2_rust//:rclrs",
+        "@rules_ros2_crate_index//:signal-hook",
+    ],
+)
+
 expand_template(
     name = "roudi_py",
     out = "roudi.py",
@@ -67,6 +96,8 @@ ros2_launch(
     launch_file = "zero_copy.py",
     nodes = [
         ":listener",
+        ":rust_talker",
+        ":rust_listener",
         ":talker",
         "@iceoryx//:iox_roudi",
     ],
