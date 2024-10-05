@@ -19,7 +19,7 @@ concurrency:
 jobs:
   pre-commit:
     name: Pre-commit checks
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
         uses: pre-commit/action@v3.0.1
   # https://github.com/actions/runner/issues/691
   configure:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       uid_gid: ${{ steps.get-user.outputs.uid_gid }}
       user_name: ${{ steps.get-user-name.outputs.user_name }}
@@ -46,7 +46,7 @@ jobs:
   test:
     name: Run tests
     needs: configure
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     container:
       image: mvukov/bazel-builder:commit-49178bdf9c151b1fdb1fb0bac580da5d53a990fd
       options: --user ${{ needs.configure.outputs.uid_gid }}
