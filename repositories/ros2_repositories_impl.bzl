@@ -292,15 +292,6 @@ def ros2_repositories_impl():
 
     maybe(
         http_archive,
-        name = "ros2_ros_testing",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel",
-        sha256 = "f52dc8d48e3e525597e96e5316e882a03cbed6b2d3024699219c0afc0283a38b",
-        strip_prefix = "ros_testing-0.4.0",
-        url = "https://github.com/ros2/ros_testing/archive/refs/tags/0.4.0.tar.gz",
-    )
-
-    maybe(
-        http_archive,
         name = "ros2_rosbag2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosbag2.BUILD.bazel",
         patch_args = ["-p1"],

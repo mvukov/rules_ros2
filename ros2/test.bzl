@@ -51,7 +51,6 @@ def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **
         data = nodes + [launch_file] + data,
         main = launch_script,
         deps = [
-            "@ros2_ament_cmake_ros//:domain_coordinator",
             "@ros2_launch//:launch_testing",
             "@ros2_launch_ros//:launch_testing_ros",
         ] + deps,
@@ -78,7 +77,6 @@ def _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, idl_deps, **k
         args = kwargs.pop("args", []) + ["$(rootpath :%s)" % launch_file],
         deps = [
             "@ros2_launch//:launch_pytest",
-            "@ros2_ament_cmake_ros//:domain_coordinator",
             requirement("coverage"),
             requirement("pytest"),
             requirement("pytest-cov"),
