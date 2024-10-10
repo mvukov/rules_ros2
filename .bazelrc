@@ -16,9 +16,6 @@ build --noenable_bzlmod
 # This is a mandatory flag.
 build --incompatible_default_to_explicit_init_py
 
-# Don't let local Python site packages leak into the build and cause problems
-common --action_env=PYTHONNOUSERSITE=1
-
 # All code will be compiled with C++17 flag.
 # Users can naturally override copts for cc_* targets.
 # NOTE: googletest >=v1.13.0 requires min C++14.
@@ -28,7 +25,13 @@ build --cxxopt=-std=c++17
 # Ensure that you don't accidentally make non-hermetic actions/tests
 # which depend on remote services. Tag an individual target with
 # tags=["requires-network"] to opt-out of the enforcement.
+# In ROS context this is important such that each test target is executed
+# in a separate network environment.
+# This is a mandatory flag.
 build --sandbox_default_allow_network=false
+
+# Don't let local Python site packages leak into the build and cause problems
+common --action_env=PYTHONNOUSERSITE=1
 # Don't let environment variables like $PATH sneak into the build,
 # which can cause massive cache misses when they change.
 common --incompatible_strict_action_env

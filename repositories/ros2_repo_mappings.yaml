@@ -110,9 +110,6 @@ repositories:
     build_file: "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel"
     patches:
       - "@com_github_mvukov_rules_ros2//repositories/patches:ros2cli_replace-netifaces.patch"
-  ros_testing:
-    name: ros2_ros_testing
-    build_file: "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel"
   rosbag2:
     name: ros2_rosbag2
     build_file: "@com_github_mvukov_rules_ros2//repositories:rosbag2.BUILD.bazel"
