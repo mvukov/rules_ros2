@@ -5,15 +5,6 @@ load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 def ros2_repositories_impl():
     maybe(
         http_archive,
-        name = "ros2_ament_cmake_ros",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:ament_cmake_ros.BUILD.bazel",
-        sha256 = "01c778f18315ad13efd02e24200ff04f1e72359096c0967dba45e45bc479b3c6",
-        strip_prefix = "ament_cmake_ros-0.10.0",
-        url = "https://github.com/ros2/ament_cmake_ros/archive/refs/tags/0.10.0.tar.gz",
-    )
-
-    maybe(
-        http_archive,
         name = "ros2_ament_index",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ament_index.BUILD.bazel",
         sha256 = "e66896e255653508cb2bdecd7789f8dd5a03d7d2b4a1dd37445821a5679c447c",
