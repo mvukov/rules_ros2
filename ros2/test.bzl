@@ -8,9 +8,12 @@ load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_deps = None, use_pytest = False, **kwargs):
     """ Defines a ROS 2 test.
 
-    In case you don't need ROS 2 nodes for tests, but need ament setup such
-    that e.g. plugins can work: use a lightweight macro ros2_cpp_test
-    from //ros2:cc_defs.bzl.
+    For lighter options, e.g. you don't need a launch file, please take a look at:
+    * ros2_cpp_test in //ros2:cc_defs.bzl and
+    * ros2_py_test in //ros2:py_defs.bzl
+
+    Please make sure that --sandbox_default_allow_network=false is set in .bazelrc.
+    This ensures proper network isolation.
 
     Args:
         name: A unique target name.
