@@ -8,9 +8,12 @@ load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_deps = None, use_pytest = False, **kwargs):
     """ Defines a ROS 2 test.
 
-    In case you don't need ROS 2 nodes for tests, but need ament setup such
-    that e.g. plugins can work: use a lightweight macro ros2_cpp_test
-    from //ros2:cc_defs.bzl.
+    For lighter options, e.g. you don't need a launch file, please take a look at:
+    * ros2_cpp_test in //ros2:cc_defs.bzl and
+    * ros2_py_test in //ros2:py_defs.bzl
+
+    Please make sure that --sandbox_default_allow_network=false is set in .bazelrc.
+    This ensures proper network isolation.
 
     Args:
         name: A unique target name.
@@ -51,7 +54,6 @@ def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **
         data = nodes + [launch_file] + data,
         main = launch_script,
         deps = [
-            "@ros2_ament_cmake_ros//:domain_coordinator",
             "@ros2_launch//:launch_testing",
             "@ros2_launch_ros//:launch_testing_ros",
         ] + deps,
@@ -78,7 +80,6 @@ def _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, idl_deps, **k
         args = kwargs.pop("args", []) + ["$(rootpath :%s)" % launch_file],
         deps = [
             "@ros2_launch//:launch_pytest",
-            "@ros2_ament_cmake_ros//:domain_coordinator",
             requirement("coverage"),
             requirement("pytest"),
             requirement("pytest-cov"),

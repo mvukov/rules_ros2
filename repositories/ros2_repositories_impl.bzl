@@ -5,15 +5,6 @@ load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 def ros2_repositories_impl():
     maybe(
         http_archive,
-        name = "ros2_ament_cmake_ros",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:ament_cmake_ros.BUILD.bazel",
-        sha256 = "01c778f18315ad13efd02e24200ff04f1e72359096c0967dba45e45bc479b3c6",
-        strip_prefix = "ament_cmake_ros-0.10.0",
-        url = "https://github.com/ros2/ament_cmake_ros/archive/refs/tags/0.10.0.tar.gz",
-    )
-
-    maybe(
-        http_archive,
         name = "ros2_ament_index",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ament_index.BUILD.bazel",
         sha256 = "e66896e255653508cb2bdecd7789f8dd5a03d7d2b4a1dd37445821a5679c447c",
@@ -288,15 +279,6 @@ def ros2_repositories_impl():
         sha256 = "bbceaaeeb735b4ec9afd9c5db2df6a843aa917ca164f0971b43f03c74f8c85f1",
         strip_prefix = "ros2cli-0.18.10",
         url = "https://github.com/ros2/ros2cli/archive/refs/tags/0.18.10.tar.gz",
-    )
-
-    maybe(
-        http_archive,
-        name = "ros2_ros_testing",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:ros_testing.BUILD.bazel",
-        sha256 = "f52dc8d48e3e525597e96e5316e882a03cbed6b2d3024699219c0afc0283a38b",
-        strip_prefix = "ros_testing-0.4.0",
-        url = "https://github.com/ros2/ros_testing/archive/refs/tags/0.4.0.tar.gz",
     )
 
     maybe(

@@ -60,6 +60,9 @@ def ros2_py_binary(name, srcs, main, set_up_ament = False, **kwargs):
 def ros2_py_test(name, srcs, main, set_up_ament = True, **kwargs):
     """ Defines a ROS 2 Python test.
 
+    Please make sure that --sandbox_default_allow_network=false is set in .bazelrc.
+    This ensures proper network isolation.
+
     Args:
         name: A unique target name.
         srcs: List of source files.

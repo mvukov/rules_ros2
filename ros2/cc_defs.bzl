@@ -119,6 +119,9 @@ def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, idl_deps 
 
     Adds common ROS 2 C++ definitions on top of a cc_test.
 
+    Please make sure that --sandbox_default_allow_network=false is set in .bazelrc.
+    This ensures proper network isolation.
+
     Args:
         name: A unique target name.
         ros2_package_name: If given, defines a ROS package name for the target.
