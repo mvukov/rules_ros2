@@ -16,6 +16,7 @@ py_library(
         "@ros2_rcl_interfaces//:py_composition_interfaces",
         "@ros2_rcl_interfaces//:py_lifecycle_msgs",
         "@ros2_rclpy//:rclpy",
+        requirement("packaging"),
         requirement("pyyaml"),
     ],
 )
