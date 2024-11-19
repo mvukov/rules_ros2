@@ -22,6 +22,7 @@ def rust_setup_stage_1():
             "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rosidl_generator.patch",
             "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_no_msg_vendoring.patch",
             "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_logging.patch",
+            "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_publisher_can_loan_messages.patch",
         ],
     )
 

@@ -1,0 +1,18 @@
+diff --git a/rclrs/src/publisher.rs b/rclrs/src/publisher.rs
+index 2935ca3..5f3b830 100644
+--- a/rclrs/src/publisher.rs
++++ b/rclrs/src/publisher.rs
+@@ -229,6 +229,13 @@ where
+             msg_ptr: msg_ptr as *mut T,
+         })
+     }
++
++    /// Returns true if message loans are possible, false otherwise.
++    pub fn can_loan_messages(&self) -> bool {
++        unsafe {
++            rcl_publisher_can_loan_messages(&*self.handle.rcl_publisher.lock().unwrap())
++        }
++    }
+ }
+ 
+ /// Convenience trait for [`Publisher::publish`].
