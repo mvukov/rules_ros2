@@ -179,6 +179,9 @@ cmake(
         },
         no_match_error = "Unsupported build configuration",
     ),
+    copts = [
+        "-w",
+    ],
     generate_args = ["-GNinja"],
     lib_source = ":all_srcs",
     linkopts = selects.with_or(
