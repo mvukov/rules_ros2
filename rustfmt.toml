@@ -1,0 +1,4 @@
+error_on_line_overflow = true
+wrap_comments = true
+comment_width = 100
+group_imports = "StdExternalCrate"

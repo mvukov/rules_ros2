@@ -1,0 +1,1 @@
+@rules_rust//tools/upstream_wrapper:rustfmt
