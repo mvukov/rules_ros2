@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <memory>
+
 #include "console_bridge/console.h"
 #include "pluginlib/class_loader.hpp"
 #include "pybind11/pybind11.h"

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <chrono>
+#include <cstdio>
 #include <memory>
 #include <string>
 #include <thread>
