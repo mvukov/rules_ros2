@@ -1,5 +1,5 @@
 {
-  "checksum": "56b4467eddf4d24526b75eca004ff68d26b3c2b156e82846a78e508cf67c8ec2",
+  "checksum": "f362c91be67a18a41b33c6c1292d19ab634ed392b591e497234365e246deffa1",
   "crates": {
     "autocfg 1.3.0": {
       "name": "autocfg",
@@ -748,6 +748,9 @@
         "version": "0.2.155"
       },
       "build_script_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
         "data_glob": [
           "**"
         ]
@@ -949,6 +952,9 @@
         "version": "1.0.81"
       },
       "build_script_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
         "data_glob": [
           "**"
         ]
@@ -1126,6 +1132,9 @@
         "version": "1.0.201"
       },
       "build_script_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
         "data_glob": [
           "**"
         ]
@@ -1324,6 +1333,9 @@
         "version": "1.0.128"
       },
       "build_script_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
         "data_glob": [
           "**"
         ]
@@ -1405,6 +1417,9 @@
         "version": "0.3.17"
       },
       "build_script_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
         "data_glob": [
           "**"
         ]
@@ -1525,6 +1540,9 @@
         "version": "0.4.9"
       },
       "build_script_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
         "data_glob": [
           "**"
         ],
@@ -1667,14 +1685,14 @@
     "aarch64-apple-ios-sim": [
       "aarch64-apple-ios-sim"
     ],
-    "aarch64-fuchsia": [
-      "aarch64-fuchsia"
-    ],
     "aarch64-linux-android": [
       "aarch64-linux-android"
     ],
     "aarch64-pc-windows-msvc": [
       "aarch64-pc-windows-msvc"
+    ],
+    "aarch64-unknown-fuchsia": [
+      "aarch64-unknown-fuchsia"
     ],
     "aarch64-unknown-linux-gnu": [
       "aarch64-unknown-linux-gnu"
@@ -1733,14 +1751,14 @@
     "wasm32-wasi": [
       "wasm32-wasi"
     ],
+    "wasm32-wasip1": [
+      "wasm32-wasip1"
+    ],
     "x86_64-apple-darwin": [
       "x86_64-apple-darwin"
     ],
     "x86_64-apple-ios": [
       "x86_64-apple-ios"
-    ],
-    "x86_64-fuchsia": [
-      "x86_64-fuchsia"
     ],
     "x86_64-linux-android": [
       "x86_64-linux-android"
@@ -1750,6 +1768,9 @@
     ],
     "x86_64-unknown-freebsd": [
       "x86_64-unknown-freebsd"
+    ],
+    "x86_64-unknown-fuchsia": [
+      "x86_64-unknown-fuchsia"
     ],
     "x86_64-unknown-linux-gnu": [
       "x86_64-unknown-linux-gnu"

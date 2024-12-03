@@ -49,7 +49,7 @@ load("//repositories:rust_setup_stage_3.bzl", "rust_setup_stage_3")
 
 rust_setup_stage_3(
     # Only needed for CI here, see https://github.com/bazelbuild/rules_rust/pull/2698.
-    generator = "@com_github_mvukov_rules_ros2_cargo_bazel//:cargo-bazel",
+    # generator = "@com_github_mvukov_rules_ros2_cargo_bazel//:cargo-bazel",
 )
 
 load("//repositories:rust_setup_stage_4.bzl", "rust_setup_stage_4")
