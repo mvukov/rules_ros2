@@ -1,6 +1,6 @@
-load("@rules_rust//bindgen:repositories.bzl", "rust_bindgen_dependencies")
 load("@rules_rust//crate_universe:repositories.bzl", "crate_universe_dependencies")
 load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
+load("@rules_rust_bindgen//:repositories.bzl", "rust_bindgen_dependencies")
 load("//repositories:clang_configure.bzl", "clang_configure")
 
 def rust_setup_stage_2():
