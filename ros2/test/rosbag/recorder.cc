@@ -11,12 +11,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#include "rosbag2_transport/recorder.hpp"
+#include <memory>
+#include <string>
+#include <utility>
+
 #include "rclcpp/rclcpp.hpp"
 #include "rosbag2_interfaces/msg/write_split_event.hpp"
 #include "rosbag2_storage/storage_options.hpp"
 #include "rosbag2_transport/reader_writer_factory.hpp"
 #include "rosbag2_transport/record_options.hpp"
+#include "rosbag2_transport/recorder.hpp"
 #include "std_msgs/msg/string.hpp"
 
 constexpr auto kTopicName = "topic";

@@ -27,7 +27,7 @@ repos:
         files: *buildifier_external_files
         args: *buildifier_external_args
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -58,7 +58,7 @@ repos:
     hooks:
       - id: clang-format
   - repo: https://github.com/cpplint/cpplint
-    rev: 1.6.1
+    rev: 2.0.0
     hooks:
       - id: cpplint
         args: ["--filter=-build/c++11,-build/c++14"]
