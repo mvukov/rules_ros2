@@ -2,6 +2,8 @@ use std::env;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
+use rclrs::{log_info, ToLogParams};
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let shut_down = Arc::new(AtomicBool::new(false));
     signal_hook::flag::register(signal_hook::consts::SIGINT, Arc::clone(&shut_down))?;
@@ -17,7 +19,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     while !shut_down.load(Ordering::Relaxed) && context.ok() {
         let msg = format!("Hello, world! {}", publish_count);
         message.data = msg.clone();
-        rclrs::log_info!(node.logger_name(), "{}", msg);
+        log_info!(node.logger(), "{}", msg);
         publisher.publish(&message)?;
         publish_count += 1;
         std::thread::sleep(std::time::Duration::from_millis(10));

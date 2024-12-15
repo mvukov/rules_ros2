@@ -3,6 +3,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::SystemTime;
 
+use rclrs::{log_info, ToLogParams};
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let shut_down = Arc::new(AtomicBool::new(false));
     for signal in [signal_hook::consts::SIGINT, signal_hook::consts::SIGTERM] {
@@ -24,7 +26,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .as_micros() as u64;
             let delay_us = now - msg.timestamp;
             let data_length = msg.data_length as usize;
-            rclrs::log_info!(subscription_node.logger_name(),
+            log_info!(subscription_node.logger(),
                 "Delay {} us, I heard: '{:?}'",
                 delay_us,
                 String::from_utf8(msg.data[..data_length].to_vec()).unwrap()

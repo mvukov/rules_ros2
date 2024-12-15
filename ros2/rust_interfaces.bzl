@@ -137,7 +137,7 @@ def _rust_generator_aspect_impl(target, ctx):
 
     lib_rs = "rust/src/lib.rs"
     extra_generated_outputs = [lib_rs]
-    for ext in ["msg", "srv"]:
+    for ext in ["action", "msg", "srv"]:
         if any([f.extension == ext for f in srcs]):
             extra_generated_outputs.append("rust/src/{}.rs".format(ext))
 

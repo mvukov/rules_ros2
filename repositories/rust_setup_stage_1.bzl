@@ -25,9 +25,8 @@ def rust_setup_stage_1():
         urls = ["https://github.com/ros2-rust/ros2_rust/archive/31e4563e2b5a19f62f4841138927a215978bf01c.zip"],
         patch_args = ["-p1"],
         patches = [
-            "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rcl_bindings.patch",
+            "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rclrs.patch",
             "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rosidl_generator.patch",
-            "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_no_msg_vendoring.patch",
-            "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_logging.patch",
+            "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rosidl_runtime.patch",
         ],
     )

@@ -3,6 +3,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::SystemTime;
 
+use rclrs::{log_info, ToLogParams};
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let shut_down = Arc::new(AtomicBool::new(false));
     for signal in [signal_hook::consts::SIGINT, signal_hook::consts::SIGTERM] {
@@ -37,7 +39,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let msg_len = msg.len();
         message.data_length = msg_len as u64;
         message.data[..msg_len].copy_from_slice(msg.as_bytes());
-        rclrs::log_info!(node.logger_name(), "Publishing: {}", msg);
+        log_info!(node.logger(), "Publishing: {}", msg);
         message.publish()?;
         publish_count += 1;
         std::thread::sleep(std::time::Duration::from_millis(callback_period_ms as u64));
