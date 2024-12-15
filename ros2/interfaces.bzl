@@ -178,7 +178,8 @@ def run_generator(
         extra_generator_args = None,
         extra_generated_outputs = None,
         mnemonic = None,
-        progress_message = None):
+        progress_message = None,
+        generator_env = None):
     generator_templates = generator_templates[DefaultInfo].files.to_list()
 
     generator_arguments_file = ctx.actions.declare_file(
