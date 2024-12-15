@@ -225,7 +225,7 @@ def run_generator(
     ctx.actions.run(
         inputs = adapter.idl_files + generator_templates + [generator_arguments_file],
         outputs = generator_outputs,
-        env = {"ROS_DISTRO": "humble"},
+        env = generator_env,
         executable = generator,
         arguments = [generator_cmd_args],
         mnemonic = mnemonic,
