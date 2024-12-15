@@ -96,7 +96,7 @@ def _run_adapter(ctx, package_name, srcs):
     adapter_arguments_file = ctx.actions.declare_file(
         "{}/rosidl_adapter_args.json".format(package_name),
     )
-    ctx.actions.write(adapter_arguments_file, adapter_arguments.to_json())
+    ctx.actions.write(adapter_arguments_file, json.encode(adapter_arguments))
     adapter_map = ctx.actions.declare_file(
         "{}/rosidl_adapter_map.idls".format(package_name),
     )
@@ -192,7 +192,7 @@ def run_generator(
         template_dir = generator_templates[0].dirname,
         target_dependencies = [],  # TODO(mvukov) Do we need this?
     )
-    ctx.actions.write(generator_arguments_file, generator_arguments.to_json())
+    ctx.actions.write(generator_arguments_file, json.encode(generator_arguments))
 
     generator_cmd_args = ctx.actions.args()
     generator_cmd_args.add(
