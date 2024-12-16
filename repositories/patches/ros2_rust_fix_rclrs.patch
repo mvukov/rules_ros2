@@ -1,0 +1,257 @@
+diff --git a/rclrs/src/lib.rs b/rclrs/src/lib.rs
+index 3a22c6d..8c92865 100644
+--- a/rclrs/src/lib.rs
++++ b/rclrs/src/lib.rs
+@@ -20,7 +20,6 @@ mod service;
+ mod subscription;
+ mod time;
+ mod time_source;
+-mod vendor;
+ mod wait;
+ 
+ #[cfg(test)]
+diff --git a/rclrs/src/parameter.rs b/rclrs/src/parameter.rs
+index 2a0829e..7f56772 100644
+--- a/rclrs/src/parameter.rs
++++ b/rclrs/src/parameter.rs
+@@ -8,7 +8,7 @@ pub use range::*;
+ use service::*;
+ pub use value::*;
+ 
+-use crate::vendor::rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue};
++use rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue};
+ 
+ use crate::{
+     call_string_getter_with_rcl_node, rcl_bindings::*, Node, RclrsError, ENTITY_LIFECYCLE_MUTEX,
+diff --git a/rclrs/src/parameter/range.rs b/rclrs/src/parameter/range.rs
+index 6a46d2f..9c94231 100644
+--- a/rclrs/src/parameter/range.rs
++++ b/rclrs/src/parameter/range.rs
+@@ -1,9 +1,10 @@
+ use crate::{
+-    vendor::rcl_interfaces::msg::rmw::{FloatingPointRange, IntegerRange},
+     DeclarationError, ParameterValue, ParameterVariant,
+ };
+ use rosidl_runtime_rs::{seq, BoundedSequence};
+ 
++use rcl_interfaces::msg::rmw::{FloatingPointRange, IntegerRange};
++
+ impl From<ParameterRange<f64>> for ParameterRanges {
+     fn from(params: ParameterRange<f64>) -> Self {
+         Self {
+diff --git a/rclrs/src/parameter/service.rs b/rclrs/src/parameter/service.rs
+index 7c8ffe6..5143797 100644
+--- a/rclrs/src/parameter/service.rs
++++ b/rclrs/src/parameter/service.rs
+@@ -3,7 +3,7 @@ use std::{
+     sync::{Arc, Mutex},
+ };
+ 
+-use crate::vendor::rcl_interfaces::{msg::rmw::*, srv::rmw::*};
++use rcl_interfaces::{msg::rmw::*, srv::rmw::*};
+ use rosidl_runtime_rs::Sequence;
+ 
+ use super::ParameterMap;
+diff --git a/rclrs/src/parameter/value.rs b/rclrs/src/parameter/value.rs
+index 82fe31e..24453fd 100644
+--- a/rclrs/src/parameter/value.rs
++++ b/rclrs/src/parameter/value.rs
+@@ -3,10 +3,11 @@ use std::{ffi::CStr, sync::Arc};
+ use crate::{
+     parameter::{ParameterRange, ParameterRanges},
+     rcl_bindings::*,
+-    vendor::rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue},
+     ParameterValueError,
+ };
+ 
++use rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue};
++
+ /// A parameter value.
+ ///
+ /// Such a value can be specified in YAML format on the command line, or in a parameter file.
+diff --git a/rclrs/src/rcl_bindings.rs b/rclrs/src/rcl_bindings.rs
+index 90f4340..38c5d18 100644
+--- a/rclrs/src/rcl_bindings.rs
++++ b/rclrs/src/rcl_bindings.rs
+@@ -11,143 +11,9 @@
+ #![allow(clippy::all)]
+ #![allow(missing_docs)]
+ 
+-cfg_if::cfg_if! {
+-    if #[cfg(feature="generate_docs")] {
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_allocator_t;
++include!("rcl_bindings_generated.rs");
+ 
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_arguments_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_client_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_clock_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_clock_type_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_context_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_guard_condition_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_names_and_types_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_node_options_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_node_params_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_node_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_params_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_publisher_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_ret_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_service_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_subscription_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_topic_endpoint_info_array_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_variant_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcl_wait_set_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rcutils_string_array_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rmw_message_info_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rmw_names_and_types_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rmw_qos_durability_policy_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rmw_qos_history_policy_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rmw_qos_liveliness_policy_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rmw_qos_profile_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rmw_qos_reliability_policy_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rmw_request_id_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rmw_time_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rmw_topic_endpoint_info_array_t;
+-
+-        #[repr(C)]
+-        #[derive(Debug)]
+-        pub struct rosidl_message_type_support_t;
+-
+-        pub const RMW_GID_STORAGE_SIZE: usize = 24;
+-
+-        extern "C" {
+-            pub fn rcl_context_is_valid(context: *const rcl_context_t) -> bool;
+-        }
+-    } else {
+-        include!(concat!(env!("OUT_DIR"), "/rcl_bindings_generated.rs"));
+-
+-        pub const RMW_GID_STORAGE_SIZE: usize = rmw_gid_storage_size_constant;
+-    }
+-}
++pub const RMW_GID_STORAGE_SIZE: usize = rmw_gid_storage_size_constant;
+ 
+ /// Wrapper around [`std::slice::from_raw_parts`] that accommodates the rcl
+ /// convention of providing a null pointer to represent empty arrays. This
+diff --git a/rclrs/src/time.rs b/rclrs/src/time.rs
+index 540c624..3d0c631 100644
+--- a/rclrs/src/time.rs
++++ b/rclrs/src/time.rs
+@@ -1,4 +1,4 @@
+-use crate::{rcl_bindings::*, vendor::builtin_interfaces};
++use crate::rcl_bindings::*;
+ use std::{
+     num::TryFromIntError,
+     ops::{Add, Sub},
+@@ -6,6 +6,8 @@ use std::{
+     time::Duration,
+ };
+ 
++use builtin_interfaces;
++
+ /// Struct that represents time.
+ #[derive(Clone, Debug)]
+ pub struct Time {
+diff --git a/rclrs/src/time_source.rs b/rclrs/src/time_source.rs
+index 0be0c07..1fe6fee 100644
+--- a/rclrs/src/time_source.rs
++++ b/rclrs/src/time_source.rs
+@@ -1,10 +1,11 @@
+ use crate::{
+     clock::{Clock, ClockSource, ClockType},
+-    vendor::rosgraph_msgs::msg::Clock as ClockMsg,
+     Node, QoSProfile, ReadOnlyParameter, Subscription, QOS_PROFILE_CLOCK,
+ };
+ use std::sync::{Arc, Mutex, RwLock, Weak};
+ 
++use rosgraph_msgs::msg::Clock as ClockMsg;
++
+ /// Time source for a node that drives the attached clock.
+ /// If the node's `use_sim_time` parameter is set to `true`, the `TimeSource` will subscribe
+ /// to the `/clock` topic and drive the attached clock

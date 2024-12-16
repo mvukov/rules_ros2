@@ -1,0 +1,24 @@
+diff --git a/rosidl_runtime_rs/src/sequence.rs b/rosidl_runtime_rs/src/sequence.rs
+index 3d7cd58..1371bbc 100644
+--- a/rosidl_runtime_rs/src/sequence.rs
++++ b/rosidl_runtime_rs/src/sequence.rs
+@@ -502,7 +502,6 @@ impl std::error::Error for SequenceExceedsBoundsError {}
+ 
+ macro_rules! impl_sequence_alloc_for_primitive_type {
+     ($rust_type:ty, $init_func:ident, $fini_func:ident, $copy_func:ident) => {
+-        #[link(name = "rosidl_runtime_c")]
+         extern "C" {
+             fn $init_func(seq: *mut Sequence<$rust_type>, size: usize) -> bool;
+             fn $fini_func(seq: *mut Sequence<$rust_type>);
+diff --git a/rosidl_runtime_rs/src/string.rs b/rosidl_runtime_rs/src/string.rs
+index 9f0251c..599e794 100644
+--- a/rosidl_runtime_rs/src/string.rs
++++ b/rosidl_runtime_rs/src/string.rs
+@@ -115,7 +115,6 @@ pub struct StringExceedsBoundsError {
+ // There is a lot of redundancy between String and WString, which this macro aims to reduce.
+ macro_rules! string_impl {
+     ($string:ty, $char_type:ty, $unsigned_char_type:ty, $string_conversion_func:ident, $init:ident, $fini:ident, $assignn:ident, $sequence_init:ident, $sequence_fini:ident, $sequence_copy:ident) => {
+-        #[link(name = "rosidl_runtime_c")]
+         extern "C" {
+             fn $init(s: *mut $string) -> bool;
+             fn $fini(s: *mut $string);
