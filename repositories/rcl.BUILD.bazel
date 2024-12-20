@@ -28,9 +28,13 @@ ros2_c_library(
         "rcl/src/rcl/*.h",
     ]),
     hdrs = glob(["rcl/include/**/*.h"]),
-    implementation_deps = [
-        "@ros2_rcl_logging//:rcl_logging_spdlog",
-    ],
+    implementation_deps = select(
+        {
+            "@com_github_mvukov_rules_ros2//ros2:rcl_logging_spdlog": ["@ros2_rcl_logging//:rcl_logging_spdlog"],
+            "@com_github_mvukov_rules_ros2//ros2:rcl_logging_syslog": ["@ros2_rcl_logging_syslog//:rcl_logging_syslog"],
+        },
+        no_match_error = "Unsupported rcl_logging implementation",
+    ),
     includes = ["rcl/include"],
     visibility = ["//visibility:public"],
     deps = [

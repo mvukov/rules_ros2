@@ -1,0 +1,15 @@
+""" Builds rcl_logging_syslog.
+"""
+
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_c_library")
+
+ros2_c_library(
+    name = "rcl_logging_syslog",
+    srcs = ["src/rcl_logging_syslog.cpp"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2_rcl_logging//:rcl_logging_interface",
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rcutils//:rcutils",
+    ],
+)

@@ -24,6 +24,9 @@ Available features:
 - Defining ROS 2 plugins with `ros2_plugin` Bazel macro.
 - Only CycloneDDS middleware can be used at the moment.
   - Zero copy transport via shared memory backend ([iceoryx](https://github.com/eclipse-iceoryx/iceoryx)) for CycloneDDS.
+- Logging backends:
+  - `spdlog` (default): `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=spdlog`
+  - `syslog`: `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=syslog`
 - Utilities:
   - [`foxglove_bridge`](https://github.com/foxglove/ros-foxglove-bridge) for visualization and debugging
   - `ros2_bag` for handling rosbags

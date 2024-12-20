@@ -1,6 +1,7 @@
 """ ROS 2 common definitions.
 """
 
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:pip.bzl", "whl_filegroup")
@@ -28,6 +29,27 @@ exports_files([
     "topic.bzl",
     "xacro.bzl",
 ])
+
+string_flag(
+    name = "rcl_logging_impl",
+    build_setting_default = "spdlog",
+    values = [
+        "spdlog",
+        "syslog",
+    ],
+)
+
+config_setting(
+    name = "rcl_logging_spdlog",
+    flag_values = {":rcl_logging_impl": "spdlog"},
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "rcl_logging_syslog",
+    flag_values = {":rcl_logging_impl": "syslog"},
+    visibility = ["//visibility:public"],
+)
 
 py_library(
     name = "ros2_cmd",
