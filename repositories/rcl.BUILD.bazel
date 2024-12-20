@@ -10,10 +10,12 @@ ros2_c_library(
         "rcl_yaml_param_parser/src/impl/*.h",
     ]),
     hdrs = glob(["rcl_yaml_param_parser/include/**/*.h"]),
+    implementation_deps = [
+        "@libyaml",
+    ],
     includes = ["rcl_yaml_param_parser/include"],
     visibility = ["//visibility:public"],
     deps = [
-        "@libyaml",
         "@ros2_rcutils//:rcutils",
         "@ros2_rmw//:rmw",
     ],
@@ -26,12 +28,15 @@ ros2_c_library(
         "rcl/src/rcl/*.h",
     ]),
     hdrs = glob(["rcl/include/**/*.h"]),
+    implementation_deps = [
+        "@ros2_rcl_logging//:rcl_logging_spdlog",
+    ],
     includes = ["rcl/include"],
     visibility = ["//visibility:public"],
     deps = [
         ":rcl_yaml_param_parser",
         "@ros2_rcl_interfaces//:c_rcl_interfaces",
-        "@ros2_rcl_logging//:rcl_logging_spdlog",
+        "@ros2_rcl_logging//:rcl_logging_interface",
         "@ros2_rcutils//:rcutils",
         "@ros2_rmw_implementation//:rmw_implementation",
         "@ros2_rosidl//:rosidl_runtime_c",
