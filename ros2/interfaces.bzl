@@ -520,6 +520,7 @@ _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING = [
     "detail/%s__builder.hpp",
     "detail/%s__struct.hpp",
     "detail/%s__traits.hpp",
+    "detail/%s__type_support.hpp",
 ]
 
 _TYPESUPPORT_GENERATOR_CPP_OUTPUT_MAPPING = [
@@ -544,6 +545,7 @@ def _cpp_generator_aspect_impl(target, ctx):
         ctx.executable._interface_generator,
         ctx.attr._interface_templates,
         _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING,
+        visibility_control_template = ctx.file._interface_visibility_control_template,
         mnemonic = "Ros2IdlGeneratorCpp",
         progress_message = "Generating C++ IDL interfaces for %{label}",
     )
@@ -610,6 +612,10 @@ cpp_generator_aspect = aspect(
         ),
         "_interface_templates": attr.label(
             default = Label("@ros2_rosidl//:rosidl_generator_cpp_templates"),
+        ),
+        "_interface_visibility_control_template": attr.label(
+            default = Label("@ros2_rosidl//:rosidl_generator_cpp/resource/rosidl_generator_cpp__visibility_control.hpp.in"),
+            allow_single_file = True,
         ),
         "_typesupport_generator": attr.label(
             default = Label("@ros2_rosidl_typesupport//:rosidl_typesupport_generator_cpp_app"),
