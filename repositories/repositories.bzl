@@ -88,8 +88,6 @@ def ros2_workspace_repositories():
         url = "https://github.com/google/googletest/archive/refs/tags/v1.15.2.tar.gz",
     )
 
-    _googletest_deps()
-
     maybe(
         http_archive,
         name = "tinyxml2",
@@ -329,31 +327,4 @@ def ros2_repositories():
         sha256 = "89039a8d05d1d14ccb85a3d065871d54cce831522bd8aa687e27eb6afd333d07",
         strip_prefix = "rcl_logging_syslog-e63257f2d5ca693f286bbcedf2b23720675b7f73",
         urls = ["https://github.com/fujitatomoya/rcl_logging_syslog/archive/e63257f2d5ca693f286bbcedf2b23720675b7f73.zip"],
-    )
-
-def _googletest_deps():
-    """Lists implicit googletest WORKSPACE deps.
-
-    Necessary such that e.g. `bazel fetch //...` can work.
-    The versions below taken from https://github.com/google/googletest/blob/v1.13.0/WORKSPACE.
-
-    TODO(mvukov) More recent commits in googletest have googletest_deps.bzl.
-        Integrate once a new release is available.
-    """
-    maybe(
-        http_archive,
-        name = "com_google_absl",  # 2023-01-10T21:08:25Z
-        sha256 = "f9a4e749f42c386a32a90fddf0e2913ed408d10c42f7f33ccf4c59ac4f0d1d05",
-        strip_prefix = "abseil-cpp-52835439ca90d86b27bf8cd1708296e95604d724",
-        urls = ["https://github.com/abseil/abseil-cpp/archive/52835439ca90d86b27bf8cd1708296e95604d724.zip"],
-    )
-
-    # Note this must use a commit from the `abseil` branch of the RE2 project.
-    # https://github.com/google/re2/tree/abseil
-    maybe(
-        http_archive,
-        name = "com_googlesource_code_re2",  # 2022-12-21T14:29:10Z
-        sha256 = "b9ce3a51beebb38534d11d40f8928d40509b9e18a735f6a4a97ad3d014c87cb5",
-        strip_prefix = "re2-d0b1f8f2ecc2ea74956c7608b6f915175314ff0e",
-        urls = ["https://github.com/google/re2/archive/d0b1f8f2ecc2ea74956c7608b6f915175314ff0e.zip"],
     )
