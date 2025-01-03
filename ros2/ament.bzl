@@ -358,7 +358,6 @@ def _sh_launcher_rule_impl(ctx):
     )
 
     files = depset([output])
-    print(files)
     runfiles = ctx.runfiles(transitive_files = files)
     if ctx.attr.ament_setup != None:
         runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
