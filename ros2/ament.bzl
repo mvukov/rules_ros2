@@ -337,7 +337,9 @@ SH_TOOLCHAIN = "@bazel_tools//tools/sh:toolchain_type"
 
 def _sh_launcher_rule_impl(ctx):
     output = ctx.actions.declare_file(ctx.attr.name)
-    ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path or ""
+    ament_prefix_path = ""
+    if ctx.attr.ament_setup != None:
+        ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path or ""
 
     substitutions = dicts.add(
         ctx.attr.substitutions,
@@ -356,8 +358,10 @@ def _sh_launcher_rule_impl(ctx):
     )
 
     files = depset([output])
+    print(files)
     runfiles = ctx.runfiles(transitive_files = files)
-    runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
+    if ctx.attr.ament_setup != None:
+        runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
     return [
         DefaultInfo(
             files = files,
@@ -368,7 +372,6 @@ def _sh_launcher_rule_impl(ctx):
 sh_launcher_rule = rule(
     attrs = {
         "ament_setup": attr.label(
-            mandatory = True,
             providers = [Ros2AmentSetupInfo],
         ),
         "data": attr.label_list(allow_files = True),
