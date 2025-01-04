@@ -1,11 +1,7 @@
 """ Defines commonly used Rust macros.
 """
 
-load(
-    "@com_github_mvukov_rules_ros2//ros2:ament.bzl",
-    "sh_launcher_rule",
-    "split_kwargs",
-)
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
 load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_test")
 
 def ros2_rust_test(name, **kwargs):
@@ -31,7 +27,7 @@ def ros2_rust_test(name, **kwargs):
     )
 
     launcher = "{}_launch".format(name)
-    sh_launcher_rule(
+    sh_launcher(
         name = launcher,
         template = "@com_github_mvukov_rules_ros2//ros2:launch.sh.tpl",
         substitutions = {

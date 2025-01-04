@@ -384,16 +384,18 @@ sh_launcher_rule = rule(
     toolchains = [SH_TOOLCHAIN],
 )
 
-def sh_launcher(name, deps, idl_deps = None, **kwargs):
-    ament_setup = name + "_ament_setup"
+def sh_launcher(name, ament_setup_deps = None, idl_deps = None, **kwargs):
     testonly = kwargs.get("testonly", False)
-    ros2_ament_setup(
-        name = ament_setup,
-        deps = deps,
-        idl_deps = idl_deps,
-        tags = ["manual"],
-        testonly = testonly,
-    )
+    ament_setup = None
+    if ament_setup_deps != None:
+        ament_setup = name + "_ament_setup"
+        ros2_ament_setup(
+            name = ament_setup,
+            deps = ament_setup_deps,
+            idl_deps = idl_deps,
+            tags = ["manual"],
+            testonly = testonly,
+        )
     sh_launcher_rule(
         name = name,
         ament_setup = ament_setup,

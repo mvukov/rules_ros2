@@ -6,15 +6,15 @@ load("@com_github_mvukov_rules_ros2//third_party:symlink.bzl", "symlink")
 load("@rules_python//python:defs.bzl", "py_binary", "py_test")
 
 def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
-    if set_up_ament == False:
+    is_test = target == py_test
+    set_up_launcher = is_test or set_up_ament
+    if set_up_launcher == False:
         target(name = name, srcs = srcs, main = main, **kwargs)
         return
 
     launcher_target_kwargs, binary_kwargs = split_kwargs(**kwargs)
     target_impl = name + "_impl"
     target(name = target_impl, srcs = srcs, main = main, tags = ["manual"], **binary_kwargs)
-
-    is_test = target == py_test
 
     target_impl_symlink = target_impl + "_symlink"
     symlink(
@@ -25,9 +25,10 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
     )
 
     launcher = "{}_launch".format(name)
+    ament_setup_deps = [target_impl] if set_up_ament else None
     sh_launcher(
         launcher,
-        deps = [target_impl],
+        ament_setup_deps = ament_setup_deps,
         template = "@com_github_mvukov_rules_ros2//ros2:launch.sh.tpl",
         substitutions = {
             "{entry_point}": "$(rootpath {})".format(target_impl_symlink),
@@ -60,6 +61,9 @@ def ros2_py_binary(name, srcs, main, set_up_ament = False, **kwargs):
 def ros2_py_test(name, srcs, main, set_up_ament = True, **kwargs):
     """ Defines a ROS 2 Python test.
 
+    Defaults ROS_HOME and ROS_LOG_DIR to $TEST_UNDECLARED_OUTPUTS_DIR (if set,
+    otherwise to $TEST_TMPDIR, see https://bazel.build/reference/test-encyclopedia#initial-conditions)
+
     Please make sure that --sandbox_default_allow_network=false is set in .bazelrc.
     This ensures proper network isolation.
 
@@ -67,10 +71,7 @@ def ros2_py_test(name, srcs, main, set_up_ament = True, **kwargs):
         name: A unique target name.
         srcs: List of source files.
         main: Source file to use as entrypoint.
-        set_up_ament: If true, generate a launcher for the target which:
-            * Sets AMENT_PREFIX_PATH to point to a generated ament file tree
-            * Defaults ROS_HOME and ROS_LOG_DIR to $TEST_UNDECLARED_OUTPUTS_DIR (if set,
-              otherwise to $TEST_TMPDIR, see https://bazel.build/reference/test-encyclopedia#initial-conditions)
+        set_up_ament: If true, sets up ament file tree for the test target.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
     """
     _ros2_py_exec(py_test, name, srcs, main, set_up_ament, **kwargs)
