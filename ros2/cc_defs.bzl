@@ -67,7 +67,9 @@ def ros2_c_binary(name, ros2_package_name = None, **kwargs):
 def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, idl_deps, **kwargs):
     if idl_deps != None and len(idl_deps) > 0:
         set_up_ament = True
-    if set_up_ament == False:
+    is_test = target == cc_test
+    set_up_launcher = is_test or set_up_ament
+    if set_up_launcher == False:
         _ros2_cc_target(target, "cpp", name, ros2_package_name, **kwargs)
         return
 
@@ -75,12 +77,11 @@ def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, idl_deps, **kw
     target_impl = name + "_impl"
     _ros2_cc_target(cc_binary, "cpp", target_impl, ros2_package_name, tags = ["manual"], **binary_kwargs)
 
-    is_test = target == cc_test
-
     launcher = "{}_launch".format(name)
+    ament_setup_deps = [target_impl] if set_up_ament else None
     sh_launcher(
         launcher,
-        deps = [target_impl],
+        ament_setup_deps = ament_setup_deps,
         template = "@com_github_mvukov_rules_ros2//ros2:launch.sh.tpl",
         substitutions = {
             "{entry_point}": "$(rootpath {})".format(target_impl),
@@ -119,6 +120,9 @@ def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, idl_deps 
 
     Adds common ROS 2 C++ definitions on top of a cc_test.
 
+    Defaults ROS_HOME and ROS_LOG_DIR to $TEST_UNDECLARED_OUTPUTS_DIR (if set,
+    otherwise to $TEST_TMPDIR, see https://bazel.build/reference/test-encyclopedia#initial-conditions)
+
     Please make sure that --sandbox_default_allow_network=false is set in .bazelrc.
     This ensures proper network isolation.
 
@@ -126,10 +130,7 @@ def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, idl_deps 
         name: A unique target name.
         ros2_package_name: If given, defines a ROS package name for the target.
             Otherwise, the `name` is used as the package name.
-        set_up_ament: If true, generate a launcher for the target which:
-            * Sets AMENT_PREFIX_PATH to point to a generated ament file tree
-            * Defaults ROS_HOME and ROS_LOG_DIR to $TEST_UNDECLARED_OUTPUTS_DIR (if set,
-              otherwise to $TEST_TMPDIR, see https://bazel.build/reference/test-encyclopedia#initial-conditions)
+        set_up_ament: If true, sets up ament file tree for the test target.
         idl_deps: Additional IDL deps that are used as runtime plugins.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
     """
