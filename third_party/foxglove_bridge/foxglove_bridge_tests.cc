@@ -2,7 +2,10 @@
 // SPDX-License-Identifier: MIT
 #include <chrono>
 #include <future>
+#include <memory>
+#include <string>
 #include <thread>
+#include <vector>
 
 #include "foxglove_bridge/ros2_foxglove_bridge.hpp"
 #include "foxglove_bridge/test/test_client.hpp"

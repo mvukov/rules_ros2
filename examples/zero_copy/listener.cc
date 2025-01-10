@@ -15,6 +15,7 @@
 
 #include <limits>
 #include <memory>
+#include <string>
 
 #include "chatter_interface/msg/chatter.hpp"
 #include "rclcpp/rclcpp.hpp"

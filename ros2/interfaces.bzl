@@ -96,7 +96,7 @@ def _run_adapter(ctx, package_name, srcs):
     adapter_arguments_file = ctx.actions.declare_file(
         "{}/rosidl_adapter_args.json".format(package_name),
     )
-    ctx.actions.write(adapter_arguments_file, adapter_arguments.to_json())
+    ctx.actions.write(adapter_arguments_file, json.encode(adapter_arguments))
     adapter_map = ctx.actions.declare_file(
         "{}/rosidl_adapter_map.idls".format(package_name),
     )
@@ -178,7 +178,8 @@ def run_generator(
         extra_generator_args = None,
         extra_generated_outputs = None,
         mnemonic = None,
-        progress_message = None):
+        progress_message = None,
+        generator_env = None):
     generator_templates = generator_templates[DefaultInfo].files.to_list()
 
     generator_arguments_file = ctx.actions.declare_file(
@@ -192,7 +193,7 @@ def run_generator(
         template_dir = generator_templates[0].dirname,
         target_dependencies = [],  # TODO(mvukov) Do we need this?
     )
-    ctx.actions.write(generator_arguments_file, generator_arguments.to_json())
+    ctx.actions.write(generator_arguments_file, json.encode(generator_arguments))
 
     generator_cmd_args = ctx.actions.args()
     generator_cmd_args.add(
@@ -224,6 +225,7 @@ def run_generator(
     ctx.actions.run(
         inputs = adapter.idl_files + generator_templates + [generator_arguments_file],
         outputs = generator_outputs,
+        env = generator_env,
         executable = generator,
         arguments = [generator_cmd_args],
         mnemonic = mnemonic,
@@ -518,6 +520,7 @@ _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING = [
     "detail/%s__builder.hpp",
     "detail/%s__struct.hpp",
     "detail/%s__traits.hpp",
+    "detail/%s__type_support.hpp",
 ]
 
 _TYPESUPPORT_GENERATOR_CPP_OUTPUT_MAPPING = [
@@ -542,6 +545,7 @@ def _cpp_generator_aspect_impl(target, ctx):
         ctx.executable._interface_generator,
         ctx.attr._interface_templates,
         _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING,
+        visibility_control_template = ctx.file._interface_visibility_control_template,
         mnemonic = "Ros2IdlGeneratorCpp",
         progress_message = "Generating C++ IDL interfaces for %{label}",
     )
@@ -608,6 +612,10 @@ cpp_generator_aspect = aspect(
         ),
         "_interface_templates": attr.label(
             default = Label("@ros2_rosidl//:rosidl_generator_cpp_templates"),
+        ),
+        "_interface_visibility_control_template": attr.label(
+            default = Label("@ros2_rosidl//:rosidl_generator_cpp/resource/rosidl_generator_cpp__visibility_control.hpp.in"),
+            allow_single_file = True,
         ),
         "_typesupport_generator": attr.label(
             default = Label("@ros2_rosidl_typesupport//:rosidl_typesupport_generator_cpp_app"),
@@ -824,7 +832,7 @@ py_generator_aspect = aspect(
         "_py_ext_c_deps": attr.label_list(
             default = [
                 Label("@rules_python//python/cc:current_py_cc_headers"),
-                Label("@com_github_mvukov_rules_ros2//:rules_ros2_pip_deps_numpy_headers"),
+                Label("@com_github_mvukov_rules_ros2//ros2:rules_ros2_pip_deps_numpy_headers"),
             ],
             providers = [CcInfo],
         ),

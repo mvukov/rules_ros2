@@ -7,11 +7,11 @@ exclude: (.*\.patch)
 
 repos:
   - repo: https://github.com/keith/pre-commit-buildifier
-    rev: 6.4.0
+    rev: 7.3.1
     hooks:
       - id: buildifier
         args:
-          - &buildifier_args "--warnings=native-cc,native-py,out-of-order-load"
+          - &buildifier_args "--warnings=native-cc,native-py"
       - id: buildifier
         name: "buildifier (external build files)"
         files: &buildifier_external_files ^(.*/)?\w+\.BUILD.bazel$
@@ -26,7 +26,7 @@ repos:
         files: *buildifier_external_files
         args: *buildifier_external_args
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -38,26 +38,26 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/google/yapf
-    rev: v0.40.2
+    rev: v0.43.0
     hooks:
       - id: yapf
         args: [-i, --style, .style.yapf]
   - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.13.0
+    rev: v3.14.0
     hooks:
       - id: reorder-python-imports
         args: [--py37-plus]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.1
+    rev: v0.8.4
     hooks:
       - id: ruff
         args: [--fix, --show-fixes, --exit-non-zero-on-fix]
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v18.1.8
+    rev: v19.1.5
     hooks:
       - id: clang-format
   - repo: https://github.com/cpplint/cpplint
-    rev: 1.6.1
+    rev: 2.0.0
     hooks:
       - id: cpplint
         args: ["--filter=-build/c++11,-build/c++14"]

@@ -48,7 +48,7 @@ jobs:
     needs: configure
     runs-on: ubuntu-22.04
     container:
-      image: mvukov/bazel-builder:commit-49178bdf9c151b1fdb1fb0bac580da5d53a990fd
+      image: mvukov/bazel-builder:commit-32e5440bfdfa795c7fdef8885374e5cbbb9976b5
       options: --user ${{ needs.configure.outputs.uid_gid }}
 
     # Run bazel test with gcc and clang in each workspace
@@ -92,7 +92,7 @@ jobs:
       # previously built artifacts to minimize build time. The more precise you are with
       # hashFiles sources the less work bazel will have to do.
       - name: Mount bazel caches
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4.2.0
         with:
           path: |
             ~/.cache/bazel

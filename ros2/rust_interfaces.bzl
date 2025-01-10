@@ -71,7 +71,7 @@ def _compile_rust_code(ctx, label, crate_name, srcs, deps):
 
     crate_type = "rlib"
     crate_name = compute_crate_name(ctx.workspace_name, label, toolchain, crate_name)
-    crate_root = crate_root_src(label, srcs, crate_type)
+    crate_root = crate_root_src(label, crate_name, srcs, crate_type)
     srcs, crate_root = transform_sources(ctx, srcs, crate_root)
 
     output_hash = determine_output_hash(crate_root, label)
@@ -91,9 +91,12 @@ def _compile_rust_code(ctx, label, crate_name, srcs, deps):
         )
         rustc_rmeta_output = generate_output_diagnostics(ctx, rust_metadata)
 
+    attr = ctx.rule.attr + struct(crate_features = [
+        "serde",
+    ])
     providers = rustc_compile_action(
         ctx = ctx,
-        attr = ctx.rule.attr,
+        attr = attr,
         toolchain = toolchain,
         output_hash = output_hash,
         crate_info_dict = dict(
@@ -134,7 +137,7 @@ def _rust_generator_aspect_impl(target, ctx):
 
     lib_rs = "rust/src/lib.rs"
     extra_generated_outputs = [lib_rs]
-    for ext in ["msg", "srv"]:
+    for ext in ["action", "msg", "srv"]:
         if any([f.extension == ext for f in srcs]):
             extra_generated_outputs.append("rust/src/{}.rs".format(ext))
 
@@ -152,6 +155,7 @@ def _rust_generator_aspect_impl(target, ctx):
         extra_generated_outputs = extra_generated_outputs,
         mnemonic = "Ros2IdlGeneratorRust",
         progress_message = "Generating Rust IDL interfaces for %{label}",
+        generator_env = {"ROS_DISTRO": "humble"},
     )
 
     # Ideally dep_variant_info could be a depset, and all dep propagation should
@@ -199,6 +203,7 @@ rust_generator_aspect = aspect(
             default = [
                 "@ros2_rust//:rosidl_runtime_rs",
                 "@rules_ros2_crate_index//:serde",
+                "@rules_ros2_crate_index//:serde-big-array",
             ],
         ),
         "_cc_toolchain": attr.label(

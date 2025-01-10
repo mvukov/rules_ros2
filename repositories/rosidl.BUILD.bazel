@@ -166,6 +166,10 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+exports_files(
+    srcs = ["rosidl_generator_cpp/resource/rosidl_generator_cpp__visibility_control.hpp.in"],
+)
+
 # Global variable rosidl_typesupport_introspection_c__identifier must have a unique address.
 ros2_c_binary(
     name = "rosidl_typesupport_introspection_c_identifier",

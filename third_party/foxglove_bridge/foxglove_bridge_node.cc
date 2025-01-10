@@ -3,6 +3,8 @@
 // Adapted from https://github.com/foxglove/ros-foxglove-bridge at 0.5.3.
 // In the current setting Bazel rules don't support ROS 2 components, therefore,
 // the node is directly instantiated here.
+#include <memory>
+
 #include "foxglove_bridge/ros2_foxglove_bridge.hpp"
 #include "rclcpp/rclcpp.hpp"
 

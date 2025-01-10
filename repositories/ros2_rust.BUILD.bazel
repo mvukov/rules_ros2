@@ -6,14 +6,18 @@ load("@com_github_mvukov_rules_ros2//ros2:rust_interfaces.bzl", "rust_ros2_inter
 load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_python//python:defs.bzl", "py_binary")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
-load("@rules_rust//bindgen:defs.bzl", "rust_bindgen")
 load("@rules_rust//rust:defs.bzl", "rust_library")
+load("@rules_rust_bindgen//:defs.bzl", "rust_bindgen")
 
 rust_library(
     name = "rosidl_runtime_rs",
     srcs = glob(["rosidl_runtime_rs/src/**/*.rs"]),
+    crate_features = ["serde"],
     edition = "2021",
     visibility = ["//visibility:public"],
+    deps = [
+        "@rules_ros2_crate_index//:serde",
+    ],
 )
 
 cc_library(
@@ -65,7 +69,9 @@ rust_library(
     srcs = glob(
         ["rclrs/src/**/*.rs"],
         exclude = ["rclrs/src/vendor/*.rs"],
-    ) + ["rclrs/src/rcl_bindings_generated.rs"],
+    ) + [
+        "rclrs/src/rcl_bindings_generated.rs",
+    ],
     edition = "2021",
     visibility = ["//visibility:public"],
     deps = [

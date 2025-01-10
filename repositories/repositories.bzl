@@ -16,9 +16,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "be04b635c7be4604be1ef20542e9870af3c49778ce841ee2d92fcb42f9d9516a",
-        strip_prefix = "rules_python-0.35.0",
-        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.35.0.tar.gz",
+        sha256 = "690e0141724abb568267e003c7b6d9a54925df40c275a870a4d934161dc9dd53",
+        strip_prefix = "rules_python-0.40.0",
+        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.40.0.tar.gz",
     )
 
     maybe(
@@ -41,9 +41,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "spdlog",
         build_file = "@com_github_mvukov_rules_ros2//repositories:spdlog.BUILD.bazel",
-        sha256 = "1586508029a7d0670dfcb2d97575dcdc242d3868a259742b69f100801ab4e16b",
-        strip_prefix = "spdlog-1.14.1",
-        url = "https://github.com/gabime/spdlog/archive/v1.14.1.tar.gz",
+        sha256 = "9962648c9b4f1a7bbc76fd8d9172555bad1871fdb14ff4f842ef87949682caa5",
+        strip_prefix = "spdlog-1.15.0",
+        url = "https://github.com/gabime/spdlog/archive/v1.15.0.tar.gz",
     )
 
     maybe(
@@ -59,17 +59,25 @@ def ros2_workspace_repositories():
         http_archive,
         name = "pybind11",
         build_file = "@com_github_mvukov_rules_ros2//repositories:pybind11.BUILD.bazel",
-        sha256 = "efc901aa0aab439a3fea6efeaf930b5a349fb06394bf845c64ce15a9cf8f0240",
-        strip_prefix = "pybind11-2.13.4",
-        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.13.4.tar.gz"],
+        sha256 = "e08cb87f4773da97fa7b5f035de8763abc656d87d5773e62f6da0587d1f0ec20",
+        strip_prefix = "pybind11-2.13.6",
+        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.13.6.tar.gz"],
+    )
+
+    maybe(
+        http_archive,
+        name = "bazel_features",
+        sha256 = "b4b145c19e08fd48337f53c383db46398d0a810002907ff0c590762d926e05be",
+        strip_prefix = "bazel_features-1.18.0",
+        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.18.0/bazel_features-v1.18.0.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "rules_foreign_cc",
-        sha256 = "4b33d62cf109bcccf286b30ed7121129cc34cf4f4ed9d8a11f38d9108f40ba74",
-        strip_prefix = "rules_foreign_cc-0.11.1",
-        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.11.1.tar.gz",
+        sha256 = "a2e6fb56e649c1ee79703e99aa0c9d13c6cc53c8d7a0cbb8797ab2888bbc99a3",
+        strip_prefix = "rules_foreign_cc-0.12.0",
+        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.12.0.tar.gz",
     )
 
     maybe(
@@ -79,8 +87,6 @@ def ros2_workspace_repositories():
         strip_prefix = "googletest-1.15.2",
         url = "https://github.com/google/googletest/archive/refs/tags/v1.15.2.tar.gz",
     )
-
-    _googletest_deps()
 
     maybe(
         http_archive,
@@ -129,9 +135,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "asio",
         build_file = "@com_github_mvukov_rules_ros2//repositories:asio.BUILD.bazel",
-        sha256 = "5705a0e403017eba276625107160498518838064a6dd7fd8b00b2e30c0ffbdee",
-        strip_prefix = "asio-asio-1-28-2/asio/include",
-        urls = ["https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-28-2.tar.gz"],
+        sha256 = "530540f973498c2d297771af1bc852f69b27509bbb56bc7ac3309c928373286f",
+        strip_prefix = "asio-asio-1-31-0",
+        url = "https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-31-0.tar.gz",
     )
 
     # We're pointing at hedronvision's mirror of google/boringssl:main-with-bazel to get
@@ -140,9 +146,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "boringssl",
-        sha256 = "b282f3dcf29bd3d83b79a59caf1a17cfa53a5b339e3391718ae35cfcd0ade2a4",
-        strip_prefix = "boringssl-e056e3e52e1dd0e5909fe43d4a684a0c9e96f1f9",
-        urls = ["https://github.com/hedronvision/boringssl/archive/e056e3e52e1dd0e5909fe43d4a684a0c9e96f1f9.tar.gz"],
+        sha256 = "05e1b41439cf5f467090e32bf59a3cfc88596f57bf3e8d2da80c802d63caf3a6",
+        strip_prefix = "boringssl-23ad9ca4f0e26b977546bddf11857105ddc96f17",
+        urls = ["https://github.com/hedronvision/boringssl/archive/23ad9ca4f0e26b977546bddf11857105ddc96f17.tar.gz"],
     )
 
     maybe(
@@ -211,6 +217,15 @@ def ros2_workspace_repositories():
         urls = ["https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz"],
     )
 
+    maybe(
+        http_archive,
+        name = "rules_license",
+        sha256 = "26d4021f6898e23b82ef953078389dd49ac2b5618ac564ade4ef87cced147b38",
+        urls = [
+            "https://github.com/bazelbuild/rules_license/releases/download/1.0.0/rules_license-1.0.0.tar.gz",
+        ],
+    )
+
 def ros2_repositories():
     """Import ROS 2 repositories."""
 
@@ -218,9 +233,9 @@ def ros2_repositories():
         http_archive,
         name = "ros2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
-        sha256 = "cb14a8b24ef890269c4be89b29ef52e8f26282326e3b811af2beb1abdc4d8806",
-        strip_prefix = "ros2-release-humble-20240523",
-        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-humble-20240523.tar.gz"],
+        sha256 = "67757489197ea587d1832cccc2318f38468a760dfcf7627cffd78e2a4e25ac4a",
+        strip_prefix = "ros2-release-humble-20241205",
+        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-humble-20241205.tar.gz"],
     )
 
     ros2_repositories_impl()
@@ -301,29 +316,12 @@ def ros2_repositories():
         urls = ["https://github.com/foxglove/mcap/archive/refs/tags/releases/cpp/v0.8.0.tar.gz"],
     )
 
-def _googletest_deps():
-    """Lists implicit googletest WORKSPACE deps.
-
-    Necessary such that e.g. `bazel fetch //...` can work.
-    The versions below taken from https://github.com/google/googletest/blob/v1.13.0/WORKSPACE.
-
-    TODO(mvukov) More recent commits in googletest have googletest_deps.bzl.
-        Integrate once a new release is available.
-    """
+    # NOTE: Use the humble branch.
     maybe(
         http_archive,
-        name = "com_google_absl",  # 2023-01-10T21:08:25Z
-        sha256 = "f9a4e749f42c386a32a90fddf0e2913ed408d10c42f7f33ccf4c59ac4f0d1d05",
-        strip_prefix = "abseil-cpp-52835439ca90d86b27bf8cd1708296e95604d724",
-        urls = ["https://github.com/abseil/abseil-cpp/archive/52835439ca90d86b27bf8cd1708296e95604d724.zip"],
-    )
-
-    # Note this must use a commit from the `abseil` branch of the RE2 project.
-    # https://github.com/google/re2/tree/abseil
-    maybe(
-        http_archive,
-        name = "com_googlesource_code_re2",  # 2022-12-21T14:29:10Z
-        sha256 = "b9ce3a51beebb38534d11d40f8928d40509b9e18a735f6a4a97ad3d014c87cb5",
-        strip_prefix = "re2-d0b1f8f2ecc2ea74956c7608b6f915175314ff0e",
-        urls = ["https://github.com/google/re2/archive/d0b1f8f2ecc2ea74956c7608b6f915175314ff0e.zip"],
+        name = "ros2_rcl_logging_syslog",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rcl_logging_syslog.BUILD.bazel",
+        sha256 = "89039a8d05d1d14ccb85a3d065871d54cce831522bd8aa687e27eb6afd333d07",
+        strip_prefix = "rcl_logging_syslog-e63257f2d5ca693f286bbcedf2b23720675b7f73",
+        urls = ["https://github.com/fujitatomoya/rcl_logging_syslog/archive/e63257f2d5ca693f286bbcedf2b23720675b7f73.zip"],
     )
