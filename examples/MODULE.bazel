@@ -13,7 +13,6 @@ use_repo(
     "foxglove_bridge",
     "iceoryx",
     "osrf_pycommon",
-    "ros2_ament_cmake_ros",
     "ros2_ament_index",
     "ros2_class_loader",
     "ros2_common_interfaces",
@@ -40,7 +39,6 @@ use_repo(
     "ros2_rmw_dds_common",
     "ros2_rmw_implementation",
     "ros2_robot_state_publisher",
-    "ros2_ros_testing",
     "ros2_rosbag2",
     "ros2_rosidl",
     "ros2_rosidl_python",
@@ -55,5 +53,5 @@ use_repo(
     "ros2cli",
 )
 
-bazel_dep(name = "rules_cc", version = "0.0.9")
-bazel_dep(name = "rules_python", version = "0.33.2")
+bazel_dep(name = "rules_cc", version = "0.0.17")
+bazel_dep(name = "rules_python", version = "0.35.0")

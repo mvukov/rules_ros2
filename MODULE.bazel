@@ -13,17 +13,18 @@ bazel_dep(name = "platforms", version = "0.0.10")
 bazel_dep(name = "pybind11_bazel", version = "2.12.0")
 bazel_dep(name = "re2", version = "2024-07-02")  # this is only here to force graph to resolve to higher res2 version compatible with pybind11_bazel above. Remove once no longer needed.
 bazel_dep(name = "readerwriterqueue", version = "1.0.6")
-bazel_dep(name = "rules_cc", version = "0.0.9")
+bazel_dep(name = "rules_cc", version = "0.0.17")
 bazel_dep(name = "rules_foreign_cc", version = "0.11.1")
 bazel_dep(name = "rules_python", version = "0.35.0")
-bazel_dep(name = "rules_rust", version = "0.49.3")
+bazel_dep(name = "rules_rust", version = "0.56.0")
+bazel_dep(name = "rules_rust_bindgen", version = "0.56.0")
 bazel_dep(name = "spdlog", version = "1.14.1")
 bazel_dep(name = "sqlite3", version = "3.42.0.bcr.1")
 bazel_dep(name = "tinyxml", version = "2.6.2")
 bazel_dep(name = "tinyxml2", version = "10.0.0")
 bazel_dep(name = "websocketpp", version = "0.8.2")
 bazel_dep(name = "yaml-cpp", version = "0.8.0")
-bazel_dep(name = "zlib", version = "1.3")
+bazel_dep(name = "zlib", version = "1.3.1.bcr.3")
 bazel_dep(name = "zstd", version = "1.5.6")
 
 bazel_dep(name = "googletest", version = "1.14.0.bcr.1", dev_dependency = True)
@@ -35,21 +36,13 @@ http_archive(
     build_file = "@com_github_mvukov_rules_ros2//repositories:ros2_rust.BUILD.bazel",
     patch_args = ["-p1"],
     patches = [
-        "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rcl_bindings.patch",
+        "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rclrs.patch",
         "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rosidl_generator.patch",
-        "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_no_msg_vendoring.patch",
+        "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rosidl_runtime.patch",
     ],
-    sha256 = "ec3ebfb177f0ecfc2c6ecb47f2fffe701f6ebeb2b29ab482b57b53dd2c260da2",
-    strip_prefix = "ros2_rust-2e746d6e0d2cbeed811132310c3a8dc2da4f9975",
-    urls = ["https://github.com/ros2-rust/ros2_rust/archive/2e746d6e0d2cbeed811132310c3a8dc2da4f9975.zip"],
-)
-
-# https://github.com/bazelbuild/rules_rust/pull/2698
-http_archive(
-    name = "com_github_mvukov_rules_ros2_cargo_bazel",
-    build_file_content = 'exports_files(["cargo-bazel"])',
-    sha256 = "6d6d68b898b38cb58d3c29e2e54d5795e2f652ebcac1ecf3bb0ac99fc86480e7",
-    url = "https://github.com/mvukov/rules_rust/releases/download/0.46.0-mvukov-cargo-bazel/cargo-bazel.zip",
+    sha256 = "6ef8722c2dde10e5c2fc1b9aef6ec3cc397f8cda40d58743045584aa59a6b0c8",
+    strip_prefix = "ros2_rust-9a845c17873cbdf49e8017d5f0af6d8f795589cc",
+    urls = ["https://github.com/ros2-rust/ros2_rust/archive/9a845c17873cbdf49e8017d5f0af6d8f795589cc.zip"],
 )
 
 _DEFAULT_PYTHON = "3.10"
@@ -83,7 +76,7 @@ use_repo(pybind_configure, "pybind11")
 crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
 crate.from_cargo(
     name = "rules_ros2_crate_index",
-    cargo_lockfile = "@com_github_mvukov_rules_ros2//repositories/rust:Cargo.lock",
+    cargo_lockfile = "repositories/rust/Cargo.lock",
 )
 use_repo(crate, "rules_ros2_crate_index")
 
@@ -95,7 +88,6 @@ use_repo(
     "iceoryx",
     "osrf_pycommon",
     "ros2",
-    "ros2_ament_cmake_ros",
     "ros2_ament_index",
     "ros2_class_loader",
     "ros2_common_interfaces",
@@ -122,7 +114,6 @@ use_repo(
     "ros2_rmw_dds_common",
     "ros2_rmw_implementation",
     "ros2_robot_state_publisher",
-    "ros2_ros_testing",
     "ros2_rosbag2",
     "ros2_rosidl",
     "ros2_rosidl_python",
