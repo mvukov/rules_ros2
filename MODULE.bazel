@@ -98,8 +98,9 @@ crate.spec(
 )
 crate.from_specs(
     name = "rules_ros2_crate_index",
-    cargo_lockfile = "//repositories/rust:Cargo.lock",
-    lockfile = "//repositories/rust:Cargo.Bazel.lock",
+    # Add these attrs when crate.from_specs supports them (rules_rust 0.57.0)
+    # cargo_lockfile = "//repositories/rust:Cargo.lock",
+    # lockfile = "//repositories/rust:Cargo.Bazel.lock",
 )
 use_repo(crate, "rules_ros2_crate_index")
 
