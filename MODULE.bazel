@@ -33,12 +33,12 @@ http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "ht
 
 http_archive(
     name = "ros2_rust",
-    build_file = "@com_github_mvukov_rules_ros2//repositories:ros2_rust.BUILD.bazel",
+    build_file = "//repositories:ros2_rust.BUILD.bazel",
     patch_args = ["-p1"],
     patches = [
-        "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rclrs.patch",
-        "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rosidl_generator.patch",
-        "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rosidl_runtime.patch",
+        "//repositories/patches:ros2_rust_fix_rclrs.patch",
+        "//repositories/patches:ros2_rust_fix_rosidl_generator.patch",
+        "//repositories/patches:ros2_rust_fix_rosidl_runtime.patch",
     ],
     sha256 = "6ef8722c2dde10e5c2fc1b9aef6ec3cc397f8cda40d58743045584aa59a6b0c8",
     strip_prefix = "ros2_rust-9a845c17873cbdf49e8017d5f0af6d8f795589cc",
@@ -73,14 +73,37 @@ use_repo(dev_pip, "rules_ros2_resolver_deps")
 pybind_configure = use_extension("@pybind11_bazel//:internal_configure.bzl", "internal_configure_extension")
 use_repo(pybind_configure, "pybind11")
 
+# Keep specs in sync with repositories/rust_setup_stage_3.bzl
 crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
-crate.from_cargo(
+crate.spec(
+    package = "futures",
+    version = "0.3",
+)
+crate.spec(
+    features = ["derive"],
+    package = "serde",
+    version = "1",
+)
+crate.spec(
+    package = "serde-big-array",
+    version = "0.5",
+)
+crate.spec(
+    package = "serde_json",
+    version = "1",
+)
+crate.spec(
+    package = "signal-hook",
+    version = "0.3",
+)
+crate.from_specs(
     name = "rules_ros2_crate_index",
-    cargo_lockfile = "repositories/rust/Cargo.lock",
+    cargo_lockfile = "//repositories/rust:Cargo.lock",
+    lockfile = "//repositories/rust:Cargo.Bazel.lock",
 )
 use_repo(crate, "rules_ros2_crate_index")
 
-non_module_deps = use_extension("@com_github_mvukov_rules_ros2//:extensions.bzl", "non_module_deps")
+non_module_deps = use_extension("//:extensions.bzl", "non_module_deps")
 use_repo(
     non_module_deps,
     "cyclonedds",
