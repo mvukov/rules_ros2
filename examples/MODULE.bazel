@@ -6,6 +6,10 @@ local_path_override(
     path = "..",
 )
 
+bazel_dep(name = "rules_cc", version = "0.0.17")
+bazel_dep(name = "rules_python", version = "0.35.0")
+bazel_dep(name = "rules_rust", version = "0.56.0")
+
 non_module_deps = use_extension("@com_github_mvukov_rules_ros2//:extensions.bzl", "non_module_deps")
 use_repo(
     non_module_deps,
@@ -52,6 +56,3 @@ use_repo(
     "ros2_xacro",
     "ros2cli",
 )
-
-bazel_dep(name = "rules_cc", version = "0.0.17")
-bazel_dep(name = "rules_python", version = "0.35.0")
