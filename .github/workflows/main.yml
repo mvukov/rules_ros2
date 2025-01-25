@@ -71,9 +71,9 @@ jobs:
           - toolchain: "clang"
             config_option: "--config=clang"
           - external_dependency_system: bzlmod
-            bzlmod_flags: --enable_bzlmod
+            bzlmod_flags: --enable_bzlmod --noenable_workspace
           - external_dependency_system: workspace
-            bzlmod_flags: --noenable_bzlmod
+            bzlmod_flags: --noenable_bzlmod --enable_workspace
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
