@@ -71,11 +71,7 @@ jobs:
           - toolchain: "clang"
             config_option: "--config=clang"
           - external_dependency_system: bzlmod
-            bzlmod_flags: >
-              --enable_bzlmod
-              --noenable_workspace
-              --
-              -//ros2/test/rust/...
+            bzlmod_flags: --enable_bzlmod --noenable_workspace
           - external_dependency_system: workspace
             bzlmod_flags: --noenable_bzlmod --enable_workspace
 
@@ -117,3 +113,4 @@ jobs:
           ${GITHUB_WORKSPACE}/.github/workflows/test.sh
           ${{ matrix.config_option }}
           ${{ matrix.bzlmod_flags }}
+          ${{ matrix.external_dependency_system == 'bzlmod' && matrix.folder == '.' && '-- -//ros2/test/rust/...' }}
