@@ -113,4 +113,4 @@ jobs:
           ${GITHUB_WORKSPACE}/.github/workflows/test.sh
           ${{ matrix.config_option }}
           ${{ matrix.bzlmod_flags }}
-          ${{ matrix.external_dependency_system == 'bzlmod' && matrix.folder == '.' && '-- -//ros2/test/rust/...' }}
+          ${{ matrix.external_dependency_system == 'bzlmod' && matrix.folder == '.' && '-- -//ros2/test/rust/...' || '--'}}
