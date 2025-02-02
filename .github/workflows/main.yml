@@ -71,7 +71,10 @@ jobs:
           - toolchain: "clang"
             config_option: "--config=clang"
           - external_dependency_system: bzlmod
-            bzlmod_flags: --enable_bzlmod --noenable_workspace
+            bzlmod_flags: >
+              --enable_bzlmod
+              --noenable_workspace
+              -//ros2/test/rust:logging_tests
           - external_dependency_system: workspace
             bzlmod_flags: --noenable_bzlmod --enable_workspace
 
