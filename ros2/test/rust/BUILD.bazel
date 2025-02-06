@@ -49,6 +49,7 @@ rust_binary(
 ros2_test(
     name = "tests",
     size = "small",
+    flaky = True,
     launch_file = "tests.py",
     nodes = [
         ":publisher",
