@@ -30,6 +30,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+      - name: Set up rustfmt
+        run: ./repositories/rust/rustfmt/generate.sh
       - name: Run pre-commit checks
         uses: pre-commit/action@v3.0.1
   # https://github.com/actions/runner/issues/691
