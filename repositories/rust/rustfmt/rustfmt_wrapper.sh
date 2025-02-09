@@ -2,5 +2,6 @@
 
 set -o errexit -o nounset
 
-echo "rustfmt is not set up yet. Please run ./repositories/rust/rustfmt/generate.sh"
-exit 1
+rustfmt_config=`pwd`/rustfmt.toml
+
+$(dirname "$0")/rustfmt_wrapper_impl.sh --config-path=`pwd` "$@"
