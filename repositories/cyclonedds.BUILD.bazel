@@ -127,7 +127,7 @@ cache_entries_qnx = {
 
 cache_entries_with_shm = {
     "ENABLE_SHM": "ON",
-    "CMAKE_PREFIX_PATH": "$EXT_BUILD_DEPS/iceoryx",
+    "CMAKE_PREFIX_PATH": "$$EXT_BUILD_DEPS/iceoryx",
 }
 
 cache_entries_without_shm = {
