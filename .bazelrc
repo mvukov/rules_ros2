@@ -11,6 +11,8 @@ build --noincompatible_sandbox_hermetic_tmp
 # If blzmod is enabled, but not used as in this repo at the moment),
 # then bazel for some reason tries to auto-detect a Python exe.
 build --noenable_bzlmod
+# This is a mandatory option for Bazel 8.
+build --enable_workspace
 
 # Fix the wrong default to generate __init__.py to delimit a Python package.
 # This is a mandatory flag.
