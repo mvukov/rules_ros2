@@ -17,9 +17,9 @@ cmake(
     ],
     cache_entries = {
         "CMAKE_POSITION_INDEPENDENT_CODE": "ON",  # Must be set!
-        "CMAKE_PREFIX_PATH": "$EXT_BUILD_DEPS/openssl:$EXT_BUILD_DEPS/zlib",
-        "OPENSSL_CRYPTO_LIBRARY": "$EXT_BUILD_DEPS/openssl/lib/libcrypto.a",
-        "OPENSSL_SSL_LIBRARY": "$EXT_BUILD_DEPS/openssl/lib/libssl.a",
+        "CMAKE_PREFIX_PATH": "$$EXT_BUILD_DEPS/openssl:$$EXT_BUILD_DEPS/zlib",
+        "OPENSSL_CRYPTO_LIBRARY": "$$EXT_BUILD_DEPS/openssl/lib/libcrypto.a",
+        "OPENSSL_SSL_LIBRARY": "$$EXT_BUILD_DEPS/openssl/lib/libssl.a",
         # curl specific options.
         # For the following flags, process CMakeLists.txt with option\(([^\s]+)
         # on e.g. https://regexr.com/ .
