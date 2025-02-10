@@ -16,9 +16,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "690e0141724abb568267e003c7b6d9a54925df40c275a870a4d934161dc9dd53",
-        strip_prefix = "rules_python-0.40.0",
-        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.40.0.tar.gz",
+        sha256 = "9c6e26911a79fbf510a8f06d8eedb40f412023cf7fa6d1461def27116bff022c",
+        strip_prefix = "rules_python-1.1.0",
+        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/1.1.0.tar.gz",
     )
 
     maybe(
@@ -75,9 +75,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "rules_foreign_cc",
-        sha256 = "a2e6fb56e649c1ee79703e99aa0c9d13c6cc53c8d7a0cbb8797ab2888bbc99a3",
-        strip_prefix = "rules_foreign_cc-0.12.0",
-        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.12.0.tar.gz",
+        sha256 = "8e5605dc2d16a4229cb8fbe398514b10528553ed4f5f7737b663fdd92f48e1c2",
+        strip_prefix = "rules_foreign_cc-0.13.0",
+        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.13.0.tar.gz",
     )
 
     maybe(
@@ -146,9 +146,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "boringssl",
-        sha256 = "05e1b41439cf5f467090e32bf59a3cfc88596f57bf3e8d2da80c802d63caf3a6",
-        strip_prefix = "boringssl-23ad9ca4f0e26b977546bddf11857105ddc96f17",
-        urls = ["https://github.com/hedronvision/boringssl/archive/23ad9ca4f0e26b977546bddf11857105ddc96f17.tar.gz"],
+        sha256 = "d38af313617ce2e952a7af6ba80e2cd87520b5c1c355316ea4222a2a3edbcd21",
+        strip_prefix = "boringssl-266308793d4d0d1f20c817efda8da00bf393bfd6",
+        urls = ["https://github.com/hedronvision/boringssl/archive/266308793d4d0d1f20c817efda8da00bf393bfd6.tar.gz"],
     )
 
     maybe(
