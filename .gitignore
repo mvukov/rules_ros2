@@ -2,5 +2,4 @@
 bazel-*
 __pycache__
 user.bazelrc
-external/
 MODULE.bazel*

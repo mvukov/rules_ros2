@@ -54,7 +54,7 @@ jobs:
 
     # Run bazel test with gcc and clang in each workspace
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         folder:
           - "."
