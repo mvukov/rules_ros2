@@ -7,9 +7,8 @@ load(
     "logging_macros",
 )
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_c_library")
-load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
-load("@rules_ros2_pythons//3.10:defs.bzl", "py_binary")
 
 _GENERATE_LOGGING_MACROS_PY = "@com_github_mvukov_rules_ros2//repositories:generate_rcutils_logging_macros.py"
 

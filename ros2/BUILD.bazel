@@ -3,9 +3,8 @@
 
 load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:pip.bzl", "whl_filegroup")
-load("@rules_ros2_pythons//3.10:defs.bzl", "py_binary")
 
 exports_files([
     "ament.bzl",

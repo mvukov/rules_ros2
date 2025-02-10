@@ -2,7 +2,7 @@
 """
 
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
-load("@rules_ros2_pythons//3.10:defs.bzl", "py_binary")
+load("@rules_python//python:defs.bzl", "py_binary")
 
 def ros2_launch(name, launch_file, nodes = None, deps = None, data = None, idl_deps = None, **kwargs):
     """ Defines a ROS 2 deployment.

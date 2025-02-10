@@ -3,7 +3,7 @@
 
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
 load("@com_github_mvukov_rules_ros2//third_party:symlink.bzl", "symlink")
-load("@rules_ros2_pythons//3.10:defs.bzl", "py_binary", "py_test")
+load("@rules_python//python:defs.bzl", "py_binary", "py_test")
 
 def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
     is_test = target == py_test

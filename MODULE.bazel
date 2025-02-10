@@ -51,7 +51,6 @@ python.toolchain(
     is_default = True,
     python_version = _DEFAULT_PYTHON,
 )
-use_repo(python, rules_ros2_pythons = "python_versions")
 
 pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
 pip.parse(

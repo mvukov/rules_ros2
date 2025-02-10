@@ -9,9 +9,8 @@ load(
     "ros2_cpp_binary",
     "ros2_cpp_library",
 )
-load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
-load("@rules_ros2_pythons//3.10:defs.bzl", "py_binary")
 
 ros2_c_library(
     name = "rosidl_typesupport_interface",
