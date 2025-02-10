@@ -21,11 +21,10 @@ python_register_multi_toolchains(
 )
 
 load("@rules_python//python:pip.bzl", "pip_parse")
-load("@rules_ros2_pythons//3.10:defs.bzl", python_interpreter_target = "interpreter")
 
 pip_parse(
     name = "rules_ros2_pip_deps",
-    python_interpreter_target = python_interpreter_target,
+    python_interpreter_target = "@rules_ros2_pythons_3_10_host//:python",
     requirements_lock = "@com_github_mvukov_rules_ros2//:requirements_lock.txt",
 )
 
@@ -58,7 +57,7 @@ rust_setup_stage_4()
 
 pip_parse(
     name = "rules_ros2_resolver_deps",
-    python_interpreter_target = python_interpreter_target,
+    python_interpreter_target = "@rules_ros2_pythons_3_10_host//:python",
     requirements_lock = "//repositories/private:resolver_requirements_lock.txt",
 )
 
