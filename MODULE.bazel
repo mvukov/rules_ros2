@@ -104,9 +104,9 @@ crate.from_specs(
 )
 use_repo(crate, "rules_ros2_crate_index")
 
-non_module_deps = use_extension("//:extensions.bzl", "non_module_deps")
+rules_ros2_non_module_deps = use_extension("//ros2:extensions.bzl", "non_module_deps")
 use_repo(
-    non_module_deps,
+    rules_ros2_non_module_deps,
     "cyclonedds",
     "foxglove_bridge",
     "iceoryx",
