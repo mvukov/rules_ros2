@@ -16,6 +16,9 @@ build --noenable_bzlmod
 # This is a mandatory flag.
 build --incompatible_default_to_explicit_init_py
 
+# This is flipped in 8.0.0, so better make sure we're compatible already now.
+build --incompatible_disallow_empty_glob
+
 # All code will be compiled with C++17 flag.
 # Users can naturally override copts for cc_* targets.
 # NOTE: googletest >=v1.13.0 requires min C++14.

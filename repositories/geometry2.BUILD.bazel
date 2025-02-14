@@ -47,7 +47,6 @@ ros2_cpp_library(
     name = "tf2",
     srcs = glob([
         "tf2/src/*.cpp",
-        "tf2/src/*.hpp",
     ]),
     hdrs = glob(["tf2/include/**/*.h"]),
     includes = ["tf2/include"],

@@ -179,9 +179,6 @@ cpp_ros2_interface_library(
 
 ros2_cpp_library(
     name = "cpp_shape_msgs",
-    hdrs = glob([
-        "shape_msgs/include/**/*.hpp",
-    ]),
     includes = ["shape_msgs/include"],
     visibility = ["//visibility:public"],
     deps = [":_cpp_shape_msgs"],
@@ -195,9 +192,6 @@ py_ros2_interface_library(
 
 py_library(
     name = "py_shape_msgs",
-    srcs = glob(
-        ["shape_msgs_py/shape_msgs_py/**/*.py"],
-    ),
     imports = ["shape_msgs_py"],
     visibility = ["//visibility:public"],
     deps = [
@@ -225,9 +219,6 @@ cpp_ros2_interface_library(
 
 ros2_cpp_library(
     name = "cpp_stereo_msgs",
-    hdrs = glob([
-        "stereo_msgs/include/**/*.hpp",
-    ]),
     includes = ["stereo_msgs/include"],
     visibility = ["//visibility:public"],
     deps = [":_cpp_stereo_msgs"],
@@ -241,9 +232,6 @@ py_ros2_interface_library(
 
 py_library(
     name = "py_stereo_msgs",
-    srcs = glob(
-        ["stereo_msgs_py/stereo_msgs_py/**/*.py"],
-    ),
     imports = ["stereo_msgs_py"],
     visibility = ["//visibility:public"],
     deps = [
@@ -281,7 +269,6 @@ ros2_interface_library(
     name = "trajectory_msgs",
     srcs = glob([
         "trajectory_msgs/msg/*.msg",
-        "trajectory_msgs/srv/*.srv",
     ]),
     visibility = ["//visibility:public"],
     deps = [
