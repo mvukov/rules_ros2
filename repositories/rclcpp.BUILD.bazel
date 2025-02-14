@@ -130,9 +130,15 @@ ros2_cpp_library(
 
 ros2_cpp_library(
     name = "rclcpp_components",
-    srcs = glob([
-        "rclcpp_components/src/**/*.cpp",
-    ]),
+    srcs = glob(
+        [
+            "rclcpp_components/src/**/*.cpp",
+        ],
+        exclude = [
+            "rclcpp_components/src/component_container_isolated.cpp",
+            "rclcpp_components/src/component_container_mt.cpp",
+        ],
+    ),
     hdrs = glob([
         "rclcpp_components/include/**/*.hpp",
     ]),
