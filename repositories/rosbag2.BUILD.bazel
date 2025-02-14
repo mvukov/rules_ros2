@@ -341,7 +341,10 @@ py_library(
     ],
     imports = ["rosbag2_py"],
     visibility = ["//visibility:public"],
-    deps = ["@ros2_rpyutils//:rpyutils"],
+    deps = [
+        "@ros2_rclpy//:rclpy",
+        "@ros2_rpyutils//:rpyutils",
+    ],
 )
 
 py_library(
