@@ -75,7 +75,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, idl_deps, **kw
 
     launcher_target_kwargs, binary_kwargs = split_kwargs(**kwargs)
     target_impl = name + "_impl"
-    _ros2_cc_target(cc_binary, "cpp", target_impl, ros2_package_name, tags = ["manual"], **binary_kwargs)
+    _ros2_cc_target(cc_binary, "cpp", target_impl, ros2_package_name, tags = launcher_target_kwargs.get("tags"), **binary_kwargs)
 
     launcher = "{}_launch".format(name)
     ament_setup_deps = [target_impl] if set_up_ament else None
