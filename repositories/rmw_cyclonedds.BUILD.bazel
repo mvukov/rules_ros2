@@ -6,13 +6,10 @@ load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
 ros2_cpp_binary(
     name = "rmw_cyclonedds",
     srcs = glob([
-        "rmw_cyclonedds_cpp/include/**/*.h",
-        "rmw_cyclonedds_cpp/include/**/*.hpp",
         "rmw_cyclonedds_cpp/src/*.cpp",
         "rmw_cyclonedds_cpp/src/*.hpp",
     ]),
     copts = ["-fvisibility=hidden"],
-    includes = ["rmw_cyclonedds_cpp/include"],
     linkopts = ["-fvisibility=hidden"],
     linkshared = True,
     visibility = ["//visibility:public"],

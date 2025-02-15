@@ -132,11 +132,9 @@ ros2_cpp_library(
     name = "rclcpp_components",
     srcs = glob([
         "rclcpp_components/src/**/*.cpp",
-        "rclcpp_components/src/*.hpp",
     ]),
     hdrs = glob([
         "rclcpp_components/include/**/*.hpp",
-        "rclcpp_components/include/**/*.h",
     ]),
     includes = ["rclcpp_components/include"],
     visibility = ["//visibility:public"],
