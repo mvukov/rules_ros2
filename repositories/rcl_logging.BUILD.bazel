@@ -17,11 +17,9 @@ ros2_c_library(
 ros2_cpp_library(
     name = "rcl_logging_spdlog",
     srcs = glob(["rcl_logging_spdlog/src/*.cpp"]),
-    hdrs = glob(["rcl_logging_spdlog/include/**/*.h"]),
     implementation_deps = [
         "@spdlog",
     ],
-    includes = ["rcl_logging_spdlog/include"],
     visibility = ["//visibility:public"],
     deps = [
         ":rcl_logging_interface",

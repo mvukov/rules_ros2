@@ -10,6 +10,7 @@ build --incompatible_default_to_explicit_init_py
 
 # All code will be compiled with C++17 flag.
 # Users can naturally override copts for cc_* targets.
+# NOTE: ROS 2 Humble needs min C++17.
 # NOTE: googletest >=v1.13.0 requires min C++14.
 # This is a mandatory flag.
 build --cxxopt=-std=c++17
@@ -21,6 +22,9 @@ build --cxxopt=-std=c++17
 # in a separate network environment.
 # This is a mandatory flag.
 build --sandbox_default_allow_network=false
+
+# Flipped to true in Bazel 8. This is a recommended flag.
+build --incompatible_disallow_empty_glob
 
 # Don't let local Python site packages leak into the build and cause problems
 common --action_env=PYTHONNOUSERSITE=1
