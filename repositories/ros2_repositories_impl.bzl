@@ -219,6 +219,7 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rmw",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw.BUILD.bazel",
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_initialize-the-null-strucutre-with-static-value.-378.patch"],
         sha256 = "fc5eb606c44773a585f6332b33b8fe56c103821cd91e3b95c31a7ab57d38fa0e",
         strip_prefix = "rmw-6.1.2",
         url = "https://github.com/ros2/rmw/archive/refs/tags/6.1.2.tar.gz",
