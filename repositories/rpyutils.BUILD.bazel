@@ -6,5 +6,6 @@ load("@rules_python//python:defs.bzl", "py_library")
 py_library(
     name = "rpyutils",
     srcs = glob(["rpyutils/*.py"]),
+    imports = ["."],
     visibility = ["//visibility:public"],
 )
