@@ -13,7 +13,7 @@ bazel_dep(name = "rules_rust", version = "0.56.0")
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(
     is_default = True,
-    # Note that it is required to pin this specific version because of dependencies to numpy headers from rules_ros2's 3.10 numpy dep.
+    # You must pin the Python version to the one used for rules_ros2_pip_deps_numpy_headers and current_py_cc_headers in rules_ros2.
     # Otherwise you will get errors at analysis time like:
     #     configurable attribute "actual" in @@rules_python~~pip~rules_ros2_pip_deps//numpy:_no_matching_repository doesn't match this configuration: No matching wheel for current configuration's Python version.
     #     The current build configuration's Python version doesn't match any of the Python wheels available for this distribution.
