@@ -1,0 +1,21 @@
+diff --git a/rclcpp/src/rclcpp/signal_handler.cpp b/rclcpp/src/rclcpp/signal_handler.cpp
+index 35ceb56..47be41d 100644
+--- a/rclcpp/src/rclcpp/signal_handler.cpp
++++ b/rclcpp/src/rclcpp/signal_handler.cpp
+@@ -68,7 +68,6 @@ void
+ SignalHandler::signal_handler(
+   int signum, siginfo_t * siginfo, void * context)
+ {
+-  RCLCPP_INFO(SignalHandler::get_logger(), "signal_handler(signum=%d)", signum);
+   auto & instance = SignalHandler::get_global_signal_handler();
+ 
+   auto old_signal_handler = instance.get_old_signal_handler(signum);
+@@ -258,7 +257,7 @@ SignalHandler::deferred_signal_handler()
+ {
+   while (true) {
+     if (signal_received_.exchange(false)) {
+-      RCLCPP_DEBUG(get_logger(), "deferred_signal_handler(): shutting down");
++      RCLCPP_INFO(get_logger(), "deferred_signal_handler(): shutting down");
+       for (auto context_ptr : rclcpp::get_contexts()) {
+         if (context_ptr->get_init_options().shutdown_on_signal) {
+           RCLCPP_DEBUG(
