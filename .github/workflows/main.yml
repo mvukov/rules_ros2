@@ -49,7 +49,6 @@ jobs:
     name: Run tests
     needs: configure
     runs-on: ubuntu-22.04
-    timeout-minutes: 600
     container:
       image: mvukov/bazel-builder:commit-32e5440bfdfa795c7fdef8885374e5cbbb9976b5
       options: --user ${{ needs.configure.outputs.uid_gid }}
