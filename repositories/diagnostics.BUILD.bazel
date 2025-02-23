@@ -21,6 +21,7 @@ ros2_cpp_library(
 py_library(
     name = "py_diagnostic_updater",
     srcs = glob(["diagnostic_updater/diagnostic_updater/*.py"]),
+    imports = ["diagnostic_updater"],
     visibility = ["//visibility:public"],
     deps = [
         "@ros2_common_interfaces//:py_diagnostic_msgs",
