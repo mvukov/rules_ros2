@@ -38,16 +38,15 @@ Ros2PluginCollectorAspectInfo = provider(
     ],
 )
 
-# From https://github.com/bazelbuild/rules_python/blob/0.33.2/python/config_settings/transition.bzl#L121-L140
-_py_transition_attrs = ["target", "tools"]
-
-_ROS2_COLLECTOR_ATTR_ASPECTS = ["data", "deps"] + _py_transition_attrs
+_ROS2_COLLECTOR_ATTR_ASPECTS = ["data", "deps"]
 
 def _get_list_attr(rule_attr, attr_name):
-    candidate = getattr(rule_attr, attr_name, [])
-    if type(candidate) == type([]):
-        return candidate
-    return [candidate]
+    if not hasattr(rule_attr, attr_name):
+        return []
+    candidate = getattr(rule_attr, attr_name)
+    if type(candidate) != "list":
+        fail("Expected a list for attribute `{}`!".format(attr_name))
+    return candidate
 
 def _collect_deps(rule_attr, attr_name, provider_info):
     return [
