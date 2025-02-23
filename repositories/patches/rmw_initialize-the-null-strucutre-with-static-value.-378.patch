@@ -1,0 +1,260 @@
+From d41c46d1e5eaeca5ab4fac3f9bd3ec7df30e03a2 Mon Sep 17 00:00:00 2001
+From: Tomoya Fujita <Tomoya.Fujita@sony.com>
+Date: Mon, 16 Sep 2024 08:56:53 -0700
+Subject: [PATCH] Initialize the NULL structure with static value. (#378)
+
+* Initialize the NULL structure with static value.
+
+Signed-off-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
+
+* use static const for xxx_get_zero_initialized_yyy functions.
+
+Signed-off-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
+
+* address review comment.
+
+Signed-off-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
+
+---------
+
+Signed-off-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
+---
+ rmw/src/event.c                               |  6 ++++--
+ rmw/src/init_options.c                        |  9 ++++++---
+ rmw/src/message_sequence.c                    | 18 ++++--------------
+ rmw/src/names_and_types.c                     |  7 ++-----
+ rmw/src/network_flow_endpoint.c               |  3 ++-
+ rmw/src/network_flow_endpoint_array.c         |  3 ++-
+ rmw/src/security_options.c                    |  5 +++--
+ rmw/src/subscription_content_filter_options.c |  7 +++----
+ rmw/src/topic_endpoint_info.c                 | 10 ++--------
+ rmw/src/topic_endpoint_info_array.c           | 10 ++--------
+ rmw/src/types.c                               |  3 ++-
+ 11 files changed, 32 insertions(+), 49 deletions(-)
+
+diff --git rmw/src/event.c rmw/src/event.c
+index 8005fe4..9a9ed23 100644
+--- rmw/src/event.c
++++ rmw/src/event.c
+@@ -24,11 +24,13 @@ extern "C" {
+ rmw_event_t
+ rmw_get_zero_initialized_event(void)
+ {
+-  const rmw_event_t event = {
++  // TODO(@fujitatomoya): This is not exactly zero initialized structure.
++  /// We should introduce xxx_get_default_event to return the default values.
++  static const rmw_event_t event = {
+     .implementation_identifier = NULL,
+     .data = NULL,
+     .event_type = RMW_EVENT_INVALID
+-  };  // NOLINT(readability/braces): false positive
++  };
+   return event;
+ }
+ 
+diff --git rmw/src/init_options.c rmw/src/init_options.c
+index 204a7a1..0554e8b 100644
+--- rmw/src/init_options.c
++++ rmw/src/init_options.c
+@@ -25,15 +25,18 @@ extern "C"
+ rmw_init_options_t
+ rmw_get_zero_initialized_init_options(void)
+ {
+-  return (const rmw_init_options_t) {
++  // TODO(@fujitatomoya): This is not exactly zero initialized structure.
++  /// We should introduce xxx_get_default_init_optionst to return the default values.
++  static const rmw_init_options_t init_option = {
+            .domain_id = RMW_DEFAULT_DOMAIN_ID,
+            .localhost_only = RMW_LOCALHOST_ONLY_DEFAULT,
+            .implementation_identifier = NULL,
+            .impl = NULL,
+            .instance_id = 0,
+            .enclave = NULL,
+-           .security_options = rmw_get_default_security_options(),
+-  };  // NOLINT(readability/braces): false positive
++           .security_options = {RMW_SECURITY_ENFORCEMENT_PERMISSIVE, NULL},
++  };  
++  return init_option;
+ }
+ 
+ #ifdef __cplusplus
+diff --git rmw/src/message_sequence.c rmw/src/message_sequence.c
+index 373feb0..49897bd 100644
+--- rmw/src/message_sequence.c
++++ rmw/src/message_sequence.c
+@@ -18,13 +18,8 @@
+ rmw_message_sequence_t
+ rmw_get_zero_initialized_message_sequence(void)
+ {
+-  static rmw_message_sequence_t message_sequence = {
+-    .data = NULL,
+-    .size = 0u,
+-    .capacity = 0u,
+-    .allocator = NULL
+-  };
+-
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static const rmw_message_sequence_t message_sequence;
+   return message_sequence;
+ }
+ 
+@@ -75,13 +70,8 @@ rmw_message_sequence_fini(rmw_message_sequence_t * sequence)
+ rmw_message_info_sequence_t
+ rmw_get_zero_initialized_message_info_sequence(void)
+ {
+-  static rmw_message_info_sequence_t message_info_sequence = {
+-    .data = NULL,
+-    .size = 0u,
+-    .capacity = 0u,
+-    .allocator = NULL
+-  };
+-
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static const rmw_message_info_sequence_t message_info_sequence;
+   return message_info_sequence;
+ }
+ 
+diff --git rmw/src/names_and_types.c rmw/src/names_and_types.c
+index 9baf512..a164f95 100644
+--- rmw/src/names_and_types.c
++++ rmw/src/names_and_types.c
+@@ -24,11 +24,8 @@
+ rmw_names_and_types_t
+ rmw_get_zero_initialized_names_and_types(void)
+ {
+-  static rmw_names_and_types_t zero = {
+-    .names = {0, NULL, {NULL, NULL, NULL, NULL, NULL}},
+-    .types = NULL,
+-  };
+-  zero.names = rcutils_get_zero_initialized_string_array();
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static const rmw_names_and_types_t zero;
+   return zero;
+ }
+ 
+diff --git rmw/src/network_flow_endpoint.c rmw/src/network_flow_endpoint.c
+index 41d921c..7f781fd 100644
+--- rmw/src/network_flow_endpoint.c
++++ rmw/src/network_flow_endpoint.c
+@@ -22,7 +22,8 @@
+ rmw_network_flow_endpoint_t
+ rmw_get_zero_initialized_network_flow_endpoint(void)
+ {
+-  rmw_network_flow_endpoint_t network_flow_endpoint = {0};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static const rmw_network_flow_endpoint_t network_flow_endpoint;
+   return network_flow_endpoint;
+ }
+ 
+diff --git rmw/src/network_flow_endpoint_array.c rmw/src/network_flow_endpoint_array.c
+index b940190..1d2ac22 100644
+--- rmw/src/network_flow_endpoint_array.c
++++ rmw/src/network_flow_endpoint_array.c
+@@ -18,7 +18,8 @@
+ rmw_network_flow_endpoint_array_t
+ rmw_get_zero_initialized_network_flow_endpoint_array(void)
+ {
+-  rmw_network_flow_endpoint_array_t network_flow_endpoint_array = {0};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static const rmw_network_flow_endpoint_array_t network_flow_endpoint_array;
+   return network_flow_endpoint_array;
+ }
+ 
+diff --git rmw/src/security_options.c rmw/src/security_options.c
+index ff69620..b737860 100644
+--- rmw/src/security_options.c
++++ rmw/src/security_options.c
+@@ -22,14 +22,15 @@
+ rmw_security_options_t
+ rmw_get_zero_initialized_security_options()
+ {
+-  rmw_security_options_t zero_initialized_options = {0, NULL};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static const rmw_security_options_t zero_initialized_options;
+   return zero_initialized_options;
+ }
+ 
+ rmw_security_options_t
+ rmw_get_default_security_options()
+ {
+-  rmw_security_options_t default_options = {
++  static const rmw_security_options_t default_options = {
+     RMW_SECURITY_ENFORCEMENT_PERMISSIVE,
+     NULL,
+   };
+diff --git rmw/src/subscription_content_filter_options.c rmw/src/subscription_content_filter_options.c
+index 4405174..ae25e9e 100644
+--- rmw/src/subscription_content_filter_options.c
++++ rmw/src/subscription_content_filter_options.c
+@@ -22,10 +22,9 @@
+ rmw_subscription_content_filter_options_t
+ rmw_get_zero_initialized_content_filter_options()
+ {
+-  return (const rmw_subscription_content_filter_options_t) {
+-           .filter_expression = NULL,
+-           .expression_parameters = rcutils_get_zero_initialized_string_array()
+-  };  // NOLINT(readability/braces): false positive
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static const rmw_subscription_content_filter_options_t zero;
++  return zero;
+ }
+ 
+ rmw_ret_t
+diff --git rmw/src/topic_endpoint_info.c rmw/src/topic_endpoint_info.c
+index 26861a8..5cfab52 100644
+--- rmw/src/topic_endpoint_info.c
++++ rmw/src/topic_endpoint_info.c
+@@ -22,14 +22,8 @@
+ rmw_topic_endpoint_info_t
+ rmw_get_zero_initialized_topic_endpoint_info(void)
+ {
+-#ifdef __clang__
+-# pragma clang diagnostic push
+-# pragma clang diagnostic ignored "-Wmissing-field-initializers"
+-#endif
+-  rmw_topic_endpoint_info_t zero = {0};
+-#ifdef __clang__
+-# pragma clang diagnostic pop
+-#endif
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static const rmw_topic_endpoint_info_t zero;
+   return zero;
+ }
+ 
+diff --git rmw/src/topic_endpoint_info_array.c rmw/src/topic_endpoint_info_array.c
+index 1cd1f47..4c64943 100644
+--- rmw/src/topic_endpoint_info_array.c
++++ rmw/src/topic_endpoint_info_array.c
+@@ -19,14 +19,8 @@
+ rmw_topic_endpoint_info_array_t
+ rmw_get_zero_initialized_topic_endpoint_info_array(void)
+ {
+-#ifdef __clang__
+-# pragma clang diagnostic push
+-# pragma clang diagnostic ignored "-Wmissing-field-initializers"
+-#endif
+-  rmw_topic_endpoint_info_array_t zero = {0};
+-#ifdef __clang__
+-# pragma clang diagnostic pop
+-#endif
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static const rmw_topic_endpoint_info_array_t zero;
+   return zero;
+ }
+ 
+diff --git rmw/src/types.c rmw/src/types.c
+index dfb79dc..b8a83e1 100644
+--- rmw/src/types.c
++++ rmw/src/types.c
+@@ -19,6 +19,7 @@ RMW_WARN_UNUSED
+ rmw_message_info_t
+ rmw_get_zero_initialized_message_info(void)
+ {
+-  rmw_message_info_t zero_initialized_message_info = {0};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static const rmw_message_info_t zero_initialized_message_info;
+   return zero_initialized_message_info;
+ }
+-- 
+2.34.1
+
