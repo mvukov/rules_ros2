@@ -201,6 +201,7 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rcutils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcutils.BUILD.bazel",
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rcutils_fix-setting-allocator-to-null.-478.patch"],
         sha256 = "b64c3077162bc845a7c410180bc6c78e63e3a7562285b74c0982eee101ea0f28",
         strip_prefix = "rcutils-5.1.6",
         url = "https://github.com/ros2/rcutils/archive/refs/tags/5.1.6.tar.gz",
