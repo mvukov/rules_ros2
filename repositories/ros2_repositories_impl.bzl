@@ -147,6 +147,7 @@ def ros2_repositories_impl():
         sha256 = "81519ac2fff7cd811604514e64f97c85933b7729e090eb60a6278355ed30f13f",
         strip_prefix = "rcl-5.3.9",
         url = "https://github.com/ros2/rcl/archive/refs/tags/5.3.9.tar.gz",
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:fix-null-allocator-and-racy-condition.-1188.patch"],
     )
 
     maybe(
