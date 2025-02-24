@@ -147,6 +147,7 @@ def ros2_repositories_impl():
         sha256 = "81519ac2fff7cd811604514e64f97c85933b7729e090eb60a6278355ed30f13f",
         strip_prefix = "rcl-5.3.9",
         url = "https://github.com/ros2/rcl/archive/refs/tags/5.3.9.tar.gz",
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:fix-null-allocator-and-racy-condition.-1188.patch"],
     )
 
     maybe(
@@ -173,7 +174,11 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel",
         patch_cmds = ["patch"],
         patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_fix-maybe-uninitialized-warning.patch", "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_ts_libs_ownership.patch"],
+        patches = [
+            "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_do-not-allocate-in-signal-handler.patch",
+            "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_fix-maybe-uninitialized-warning.patch",
+            "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_ts_libs_ownership.patch",
+        ],
         sha256 = "f2102798b3fd7c11eba2728b35f5aca34add9acc7beb42d0a7e9cfcda12eea3d",
         strip_prefix = "rclcpp-16.0.11",
         url = "https://github.com/ros2/rclcpp/archive/refs/tags/16.0.11.tar.gz",
