@@ -6,9 +6,9 @@ local_path_override(
     path = "..",
 )
 
-bazel_dep(name = "rules_cc", version = "0.0.17")
+bazel_dep(name = "rules_cc", version = "0.1.1")
 bazel_dep(name = "rules_python", version = "1.1.0")
-bazel_dep(name = "rules_rust", version = "0.56.0")
+bazel_dep(name = "rules_rust", version = "0.58.0")
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(
@@ -18,6 +18,11 @@ python.toolchain(
     #     configurable attribute "actual" in @@rules_python~~pip~rules_ros2_pip_deps//numpy:_no_matching_repository doesn't match this configuration: No matching wheel for current configuration's Python version.
     #     The current build configuration's Python version doesn't match any of the Python wheels available for this distribution.
     python_version = "3.10",
+)
+
+register_toolchains(
+    "@com_github_mvukov_rules_ros2//repositories/rust:bindgen_toolchain",
+    dev_dependency = True,
 )
 
 rules_ros2_non_module_deps = use_extension("@com_github_mvukov_rules_ros2//ros2:extensions.bzl", "non_module_deps")

@@ -12,11 +12,11 @@ bazel_dep(name = "nlohmann_json", version = "3.11.3.bcr.1")
 bazel_dep(name = "platforms", version = "0.0.11")
 bazel_dep(name = "pybind11_bazel", version = "2.13.6")
 bazel_dep(name = "readerwriterqueue", version = "1.0.6")
-bazel_dep(name = "rules_cc", version = "0.0.17")
+bazel_dep(name = "rules_cc", version = "0.1.1")
 bazel_dep(name = "rules_foreign_cc", version = "0.13.0")
 bazel_dep(name = "rules_python", version = "1.1.0")
-bazel_dep(name = "rules_rust", version = "0.56.0")
-bazel_dep(name = "rules_rust_bindgen", version = "0.56.0")
+bazel_dep(name = "rules_rust", version = "0.58.0")
+bazel_dep(name = "rules_rust_bindgen", version = "0.58.0")
 bazel_dep(name = "spdlog", version = "1.15.0.bcr.4")
 bazel_dep(name = "sqlite3", version = "3.42.0.bcr.1")
 bazel_dep(name = "tinyxml", version = "2.6.2")
@@ -71,6 +71,11 @@ use_repo(dev_pip, "rules_ros2_resolver_deps")
 pybind_configure = use_extension("@pybind11_bazel//:internal_configure.bzl", "internal_configure_extension")
 use_repo(pybind_configure, "pybind11")
 
+register_toolchains(
+    "@com_github_mvukov_rules_ros2//repositories/rust:bindgen_toolchain",
+    dev_dependency = True,
+)
+
 # Keep specs in sync with repositories/rust_setup_stage_3.bzl
 crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
 crate.spec(
@@ -96,9 +101,8 @@ crate.spec(
 )
 crate.from_specs(
     name = "rules_ros2_crate_index",
-    # Add these attrs when crate.from_specs supports them (rules_rust 0.57.0)
-    # cargo_lockfile = "//repositories/rust:Cargo.lock",
-    # lockfile = "//repositories/rust:Cargo.Bazel.lock",
+    cargo_lockfile = "//repositories/rust:Cargo.lock",
+    lockfile = "//repositories/rust:Cargo.Bazel.lock",
 )
 use_repo(crate, "rules_ros2_crate_index")
 
@@ -148,4 +152,5 @@ use_repo(
     "ros2_urdfdom_headers",
     "ros2_xacro",
     "ros2cli",
+    "rules_ros2_config_clang",
 )
