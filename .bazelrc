@@ -48,6 +48,9 @@ build:clang --repo_env=CC=clang
 build:clang --repo_env=CXX=clang++
 build:clang --linkopt="-fuse-ld=lld"
 
+# Work around https://github.com/bazelbuild/rules_rust/issues/2125
+build --action_env=CARGO_BAZEL_REPIN=1
+
 # Load any settings specific to the current user.
 # user.bazelrc should appear in .gitignore so that settings are not shared with
 # team members. This needs to be last statement in this config,
