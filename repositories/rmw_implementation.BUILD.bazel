@@ -15,7 +15,7 @@ ros2_cpp_library(
         "@ros2_rmw_cyclonedds//:rmw_cyclonedds",
     ],
     includes = ["include"],
-    local_defines = ['RMW_LIBRARY_PATH=\\"$(rootpath @ros2_rmw_cyclonedds//:rmw_cyclonedds)\\"'],
+    local_defines = ['RMW_LIBRARY_PATH=\\"../ros2_rmw_cyclonedds/librmw_cyclonedds.so\\"'],
     visibility = ["//visibility:public"],
     deps = [
         "@ros2_rcpputils//:rcpputils",
