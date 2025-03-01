@@ -1,0 +1,403 @@
+From cd3aa53ba9f8fdeb57d768b828a313e690a37df7 Mon Sep 17 00:00:00 2001
+From: Tomoya Fujita <Tomoya.Fujita@sony.com>
+Date: Sat, 21 Sep 2024 10:42:04 -0700
+Subject: [PATCH] Fix NULL allocator and racy condition. (#1188)
+
+Signed-off-by: Tomoya Fujita <Tomoya.Fujita@sony.com>
+---
+ rcl/src/rcl/arguments.c                   |  7 +++----
+ rcl/src/rcl/client.c                      |  5 +++--
+ rcl/src/rcl/context.c                     |  2 +-
+ rcl/src/rcl/event.c                       |  3 ++-
+ rcl/src/rcl/guard_condition.c             |  8 +++-----
+ rcl/src/rcl/lexer_lookahead.c             |  5 ++---
+ rcl/src/rcl/node.c                        |  6 ++----
+ rcl/src/rcl/publisher.c                   |  5 +++--
+ rcl/src/rcl/remap.c                       |  5 ++---
+ rcl/src/rcl/service.c                     |  5 +++--
+ rcl/src/rcl/subscription.c                |  5 +++--
+ rcl/src/rcl/timer.c                       |  3 ++-
+ rcl/src/rcl/wait.c                        | 17 ++---------------
+ rcl_action/src/rcl_action/action_client.c |  5 +++--
+ rcl_action/src/rcl_action/action_server.c |  5 +++--
+ rcl_action/src/rcl_action/goal_handle.c   |  3 ++-
+ rcl_action/src/rcl_action/types.c         | 12 ++++++++----
+ rcl_lifecycle/src/transition_map.c        |  6 +-----
+ 18 files changed, 48 insertions(+), 59 deletions(-)
+
+diff --git rcl/src/rcl/arguments.c rcl/src/rcl/arguments.c
+index 8c3e7c0..00f1a5b 100644
+--- rcl/src/rcl/arguments.c
++++ rcl/src/rcl/arguments.c
+@@ -751,10 +751,9 @@ rcl_arguments_get_unparsed_ros(
+ rcl_arguments_t
+ rcl_get_zero_initialized_arguments(void)
+ {
+-  static rcl_arguments_t default_arguments = {
+-    .impl = NULL
+-  };
+-  return default_arguments;
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_arguments_t zero_arguments;
++  return zero_arguments;
+ }
+ 
+ rcl_ret_t
+diff --git rcl/src/rcl/client.c rcl/src/rcl/client.c
+index 432948d..0fafccc 100644
+--- rcl/src/rcl/client.c
++++ rcl/src/rcl/client.c
+@@ -45,7 +45,8 @@ struct rcl_client_impl_s
+ rcl_client_t
+ rcl_get_zero_initialized_client()
+ {
+-  static rcl_client_t null_client = {0};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_client_t null_client;
+   return null_client;
+ }
+ 
+@@ -199,7 +200,7 @@ rcl_client_options_t
+ rcl_client_get_default_options()
+ {
+   // !!! MAKE SURE THAT CHANGES TO THESE DEFAULTS ARE REFLECTED IN THE HEADER DOC STRING
+-  static rcl_client_options_t default_options;
++  rcl_client_options_t default_options;
+   // Must set the allocator and qos after because they are not a compile time constant.
+   default_options.qos = rmw_qos_profile_services_default;
+   default_options.allocator = rcl_get_default_allocator();
+diff --git rcl/src/rcl/context.c rcl/src/rcl/context.c
+index 5414cc5..7f7d371 100644
+--- rcl/src/rcl/context.c
++++ rcl/src/rcl/context.c
+@@ -28,7 +28,7 @@ extern "C"
+ rcl_context_t
+ rcl_get_zero_initialized_context(void)
+ {
+-  static rcl_context_t context = {
++  rcl_context_t context = {
+     .impl = NULL,
+     .instance_id_storage = {0},
+   };
+diff --git rcl/src/rcl/event.c rcl/src/rcl/event.c
+index 6196442..2f6d917 100644
+--- rcl/src/rcl/event.c
++++ rcl/src/rcl/event.c
+@@ -38,7 +38,8 @@ extern "C"
+ rcl_event_t
+ rcl_get_zero_initialized_event()
+ {
+-  static rcl_event_t null_event = {0};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_event_t null_event;
+   return null_event;
+ }
+ 
+diff --git rcl/src/rcl/guard_condition.c rcl/src/rcl/guard_condition.c
+index 6297434..fb55f60 100644
+--- rcl/src/rcl/guard_condition.c
++++ rcl/src/rcl/guard_condition.c
+@@ -36,10 +36,8 @@ struct rcl_guard_condition_impl_s
+ rcl_guard_condition_t
+ rcl_get_zero_initialized_guard_condition()
+ {
+-  static rcl_guard_condition_t null_guard_condition = {
+-    .context = 0,
+-    .impl = 0
+-  };
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_guard_condition_t null_guard_condition;
+   return null_guard_condition;
+ }
+ 
+@@ -144,7 +142,7 @@ rcl_guard_condition_options_t
+ rcl_guard_condition_get_default_options()
+ {
+   // !!! MAKE SURE THAT CHANGES TO THESE DEFAULTS ARE REFLECTED IN THE HEADER DOC STRING
+-  static rcl_guard_condition_options_t default_options;
++  rcl_guard_condition_options_t default_options;
+   default_options.allocator = rcl_get_default_allocator();
+   return default_options;
+ }
+diff --git rcl/src/rcl/lexer_lookahead.c rcl/src/rcl/lexer_lookahead.c
+index c72d847..9262a18 100644
+--- rcl/src/rcl/lexer_lookahead.c
++++ rcl/src/rcl/lexer_lookahead.c
+@@ -36,9 +36,8 @@ struct rcl_lexer_lookahead2_impl_s
+ rcl_lexer_lookahead2_t
+ rcl_get_zero_initialized_lexer_lookahead2()
+ {
+-  static rcl_lexer_lookahead2_t zero_initialized = {
+-    .impl = NULL,
+-  };
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_lexer_lookahead2_t zero_initialized;
+   return zero_initialized;
+ }
+ 
+diff --git rcl/src/rcl/node.c rcl/src/rcl/node.c
+index 4afc40f..2b30f27 100644
+--- rcl/src/rcl/node.c
++++ rcl/src/rcl/node.c
+@@ -106,10 +106,8 @@ const char * rcl_create_node_logger_name(
+ rcl_node_t
+ rcl_get_zero_initialized_node()
+ {
+-  static rcl_node_t null_node = {
+-    .context = 0,
+-    .impl = 0
+-  };
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_node_t null_node;
+   return null_node;
+ }
+ 
+diff --git rcl/src/rcl/publisher.c rcl/src/rcl/publisher.c
+index 47582da..ce17ccf 100644
+--- rcl/src/rcl/publisher.c
++++ rcl/src/rcl/publisher.c
+@@ -38,7 +38,8 @@ extern "C"
+ rcl_publisher_t
+ rcl_get_zero_initialized_publisher()
+ {
+-  static rcl_publisher_t null_publisher = {0};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_publisher_t null_publisher;
+   return null_publisher;
+ }
+ 
+@@ -198,7 +199,7 @@ rcl_publisher_options_t
+ rcl_publisher_get_default_options()
+ {
+   // !!! MAKE SURE THAT CHANGES TO THESE DEFAULTS ARE REFLECTED IN THE HEADER DOC STRING
+-  static rcl_publisher_options_t default_options;
++  rcl_publisher_options_t default_options;
+   // Must set the allocator and qos after because they are not a compile time constant.
+   default_options.qos = rmw_qos_profile_default;
+   default_options.allocator = rcl_get_default_allocator();
+diff --git rcl/src/rcl/remap.c rcl/src/rcl/remap.c
+index d767ddd..ccb9666 100644
+--- rcl/src/rcl/remap.c
++++ rcl/src/rcl/remap.c
+@@ -31,9 +31,8 @@ extern "C"
+ rcl_remap_t
+ rcl_get_zero_initialized_remap(void)
+ {
+-  static rcl_remap_t default_rule = {
+-    .impl = NULL
+-  };
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_remap_t default_rule;
+   return default_rule;
+ }
+ 
+diff --git rcl/src/rcl/service.c rcl/src/rcl/service.c
+index ea4c792..5b5a0d2 100644
+--- rcl/src/rcl/service.c
++++ rcl/src/rcl/service.c
+@@ -41,7 +41,8 @@ struct rcl_service_impl_s
+ rcl_service_t
+ rcl_get_zero_initialized_service()
+ {
+-  static rcl_service_t null_service = {0};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_service_t null_service;
+   return null_service;
+ }
+ 
+@@ -209,7 +210,7 @@ rcl_service_options_t
+ rcl_service_get_default_options()
+ {
+   // !!! MAKE SURE THAT CHANGES TO THESE DEFAULTS ARE REFLECTED IN THE HEADER DOC STRING
+-  static rcl_service_options_t default_options;
++  rcl_service_options_t default_options;
+   // Must set the allocator and qos after because they are not a compile time constant.
+   default_options.qos = rmw_qos_profile_services_default;
+   default_options.allocator = rcl_get_default_allocator();
+diff --git rcl/src/rcl/subscription.c rcl/src/rcl/subscription.c
+index bd25659..c77ec73 100644
+--- rcl/src/rcl/subscription.c
++++ rcl/src/rcl/subscription.c
+@@ -39,7 +39,8 @@ extern "C"
+ rcl_subscription_t
+ rcl_get_zero_initialized_subscription()
+ {
+-  static rcl_subscription_t null_subscription = {0};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_subscription_t null_subscription;
+   return null_subscription;
+ }
+ 
+@@ -202,7 +203,7 @@ rcl_subscription_options_t
+ rcl_subscription_get_default_options()
+ {
+   // !!! MAKE SURE THAT CHANGES TO THESE DEFAULTS ARE REFLECTED IN THE HEADER DOC STRING
+-  static rcl_subscription_options_t default_options;
++  rcl_subscription_options_t default_options;
+   // Must set these after declaration because they are not a compile time constants.
+   default_options.qos = rmw_qos_profile_default;
+   default_options.allocator = rcl_get_default_allocator();
+diff --git rcl/src/rcl/timer.c rcl/src/rcl/timer.c
+index 77239fb..1932252 100644
+--- rcl/src/rcl/timer.c
++++ rcl/src/rcl/timer.c
+@@ -55,7 +55,8 @@ struct rcl_timer_impl_s
+ rcl_timer_t
+ rcl_get_zero_initialized_timer()
+ {
+-  static rcl_timer_t null_timer = {0};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_timer_t null_timer;
+   return null_timer;
+ }
+ 
+diff --git rcl/src/rcl/wait.c rcl/src/rcl/wait.c
+index 1f79a6a..e8af101 100644
+--- rcl/src/rcl/wait.c
++++ rcl/src/rcl/wait.c
+@@ -63,21 +63,8 @@ struct rcl_wait_set_impl_s
+ rcl_wait_set_t
+ rcl_get_zero_initialized_wait_set()
+ {
+-  static rcl_wait_set_t null_wait_set = {
+-    .subscriptions = NULL,
+-    .size_of_subscriptions = 0,
+-    .guard_conditions = NULL,
+-    .size_of_guard_conditions = 0,
+-    .clients = NULL,
+-    .size_of_clients = 0,
+-    .services = NULL,
+-    .size_of_services = 0,
+-    .timers = NULL,
+-    .size_of_timers = 0,
+-    .events = NULL,
+-    .size_of_events = 0,
+-    .impl = NULL,
+-  };
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_wait_set_t null_wait_set;
+   return null_wait_set;
+ }
+ 
+diff --git rcl_action/src/rcl_action/action_client.c rcl_action/src/rcl_action/action_client.c
+index d999f1e..dcadf6b 100644
+--- rcl_action/src/rcl_action/action_client.c
++++ rcl_action/src/rcl_action/action_client.c
+@@ -42,7 +42,8 @@ extern "C"
+ rcl_action_client_t
+ rcl_action_get_zero_initialized_client(void)
+ {
+-  static rcl_action_client_t null_action_client = {0};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_action_client_t null_action_client;
+   return null_action_client;
+ }
+ 
+@@ -250,7 +251,7 @@ rcl_action_client_fini(rcl_action_client_t * action_client, rcl_node_t * node)
+ rcl_action_client_options_t
+ rcl_action_client_get_default_options(void)
+ {
+-  static rcl_action_client_options_t default_options;
++  rcl_action_client_options_t default_options;
+   default_options.goal_service_qos = rmw_qos_profile_services_default;
+   default_options.cancel_service_qos = rmw_qos_profile_services_default;
+   default_options.result_service_qos = rmw_qos_profile_services_default;
+diff --git rcl_action/src/rcl_action/action_server.c rcl_action/src/rcl_action/action_server.c
+index 63580c4..86d86ae 100644
+--- rcl_action/src/rcl_action/action_server.c
++++ rcl_action/src/rcl_action/action_server.c
+@@ -39,7 +39,8 @@ extern "C"
+ rcl_action_server_t
+ rcl_action_get_zero_initialized_server(void)
+ {
+-  static rcl_action_server_t null_action_server = {0};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_action_server_t null_action_server;
+   return null_action_server;
+ }
+ 
+@@ -260,7 +261,7 @@ rcl_action_server_options_t
+ rcl_action_server_get_default_options(void)
+ {
+   // !!! MAKE SURE THAT CHANGES TO THESE DEFAULTS ARE REFLECTED IN THE HEADER DOC STRING
+-  static rcl_action_server_options_t default_options;
++  rcl_action_server_options_t default_options;
+   default_options.goal_service_qos = rmw_qos_profile_services_default;
+   default_options.cancel_service_qos = rmw_qos_profile_services_default;
+   default_options.result_service_qos = rmw_qos_profile_services_default;
+diff --git rcl_action/src/rcl_action/goal_handle.c rcl_action/src/rcl_action/goal_handle.c
+index 3a67786..dca6853 100644
+--- rcl_action/src/rcl_action/goal_handle.c
++++ rcl_action/src/rcl_action/goal_handle.c
+@@ -32,7 +32,8 @@ typedef struct rcl_action_goal_handle_impl_s
+ rcl_action_goal_handle_t
+ rcl_action_get_zero_initialized_goal_handle(void)
+ {
+-  static rcl_action_goal_handle_t null_handle = {0};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_action_goal_handle_t null_handle;
+   return null_handle;
+ }
+ 
+diff --git rcl_action/src/rcl_action/types.c rcl_action/src/rcl_action/types.c
+index e6df168..db640c3 100644
+--- rcl_action/src/rcl_action/types.c
++++ rcl_action/src/rcl_action/types.c
+@@ -24,28 +24,32 @@ extern "C"
+ rcl_action_goal_info_t
+ rcl_action_get_zero_initialized_goal_info(void)
+ {
+-  static rcl_action_goal_info_t goal_info = {{{0}}, {0, 0}};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_action_goal_info_t goal_info;
+   return goal_info;
+ }
+ 
+ rcl_action_goal_status_array_t
+ rcl_action_get_zero_initialized_goal_status_array(void)
+ {
+-  static rcl_action_goal_status_array_t status_array = {{{0, 0, 0}}, {0, 0, 0, 0, 0}};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_action_goal_status_array_t status_array;
+   return status_array;
+ }
+ 
+ rcl_action_cancel_request_t
+ rcl_action_get_zero_initialized_cancel_request(void)
+ {
+-  static rcl_action_cancel_request_t request = {{{{0}}, {0, 0}}};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_action_cancel_request_t request;
+   return request;
+ }
+ 
+ rcl_action_cancel_response_t
+ rcl_action_get_zero_initialized_cancel_response(void)
+ {
+-  static rcl_action_cancel_response_t response = {{0, {0, 0, 0}}, {0, 0, 0, 0, 0}};
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
++  static rcl_action_cancel_response_t response;
+   return response;
+ }
+ 
+diff --git rcl_lifecycle/src/transition_map.c rcl_lifecycle/src/transition_map.c
+index 6b7454c..f6ffc96 100644
+--- rcl_lifecycle/src/transition_map.c
++++ rcl_lifecycle/src/transition_map.c
+@@ -30,12 +30,8 @@ extern "C"
+ rcl_lifecycle_transition_map_t
+ rcl_lifecycle_get_zero_initialized_transition_map()
+ {
++  // All members are initialized to 0 or NULL by C99 6.7.8/10.
+   static rcl_lifecycle_transition_map_t transition_map;
+-  transition_map.states = NULL;
+-  transition_map.states_size = 0;
+-  transition_map.transitions = NULL;
+-  transition_map.transitions_size = 0;
+-
+   return transition_map;
+ }
+ 
+-- 
+2.34.1
+
