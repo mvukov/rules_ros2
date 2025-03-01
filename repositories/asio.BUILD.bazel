@@ -1,3 +1,5 @@
+# Same as https://github.com/bazelbuild/bazel-central-registry/blob/dcff901/modules/asio/1.31.0/overlay/BUILD.bazel
+
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(

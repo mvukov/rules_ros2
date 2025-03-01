@@ -2,14 +2,14 @@
 """
 
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
-load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_COPTS", "C_COPTS")
+load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "C_COPTS")
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
 
 def _ros2_cc_target(target, lang, name, ros2_package_name, **kwargs):
     if lang == "c":
         all_copts = C_COPTS
     elif lang == "cpp":
-        all_copts = CPP_COPTS
+        all_copts = []
     else:
         fail("lang must be set to c or cpp!")
     all_copts = all_copts + kwargs.pop("copts", [])
