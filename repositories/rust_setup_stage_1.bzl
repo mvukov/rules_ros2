@@ -20,9 +20,9 @@ def rust_setup_stage_1():
         http_archive,
         name = "ros2_rust",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2_rust.BUILD.bazel",
-        sha256 = "693408db72d40bd11d80740b7bf8d3ef2122f6b98eeaf4a1dba7c5f2d0b479b5",
-        strip_prefix = "ros2_rust-94f76e5e220f3bb393372dc4d4042abfdb00b427",
-        urls = ["https://github.com/ros2-rust/ros2_rust/archive/94f76e5e220f3bb393372dc4d4042abfdb00b427.zip"],
+        sha256 = "661bd3939625434c8bd2e35e2562ca7b726085d991ceb5e0cd96fec1999a60c8",
+        strip_prefix = "ros2_rust-c463201b3c17374ba3aa58d82b7c5952c9d5f680",
+        urls = ["https://github.com/ros2-rust/ros2_rust/archive/c463201b3c17374ba3aa58d82b7c5952c9d5f680.zip"],
         patch_args = ["-p1"],
         patches = [
             "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rclrs.patch",
