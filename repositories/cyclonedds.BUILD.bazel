@@ -181,6 +181,7 @@ cmake(
     ),
     copts = [
         "-w",
+        "-D__FILE__=\"redacted\"",
     ],
     generate_args = ["-GNinja"],
     lib_source = ":all_srcs",
