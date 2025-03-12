@@ -133,6 +133,14 @@ def ros2_workspace_repositories():
 
     maybe(
         http_archive,
+        name = "with_cfg.bzl",
+        sha256 = "d83f99ac39cd9940848ea11a51a60159cf09cda2ba30545036041551aae73ab4",
+        strip_prefix = "with_cfg.bzl-0.6.1",
+        url = "https://github.com/fmeum/with_cfg.bzl/releases/download/v0.6.1/with_cfg.bzl-v0.6.1.tar.gz",
+    )
+
+    maybe(
+        http_archive,
         name = "asio",
         build_file = "@com_github_mvukov_rules_ros2//repositories:asio.BUILD.bazel",
         sha256 = "530540f973498c2d297771af1bc852f69b27509bbb56bc7ac3309c928373286f",
