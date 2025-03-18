@@ -179,6 +179,7 @@ ros2_c_binary(
     ],
     includes = ["rosidl_typesupport_introspection_c/include"],
     linkshared = True,
+    visibility = ["//visibility:public"],
 )
 
 ros2_c_library(
@@ -199,6 +200,7 @@ ros2_cpp_binary(
     ],
     includes = ["rosidl_typesupport_introspection_cpp/include"],
     linkshared = True,
+    visibility = ["//visibility:public"],
 )
 
 ros2_cpp_library(
