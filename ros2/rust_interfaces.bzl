@@ -72,7 +72,7 @@ def _compile_rust_code(ctx, label, crate_name, srcs, deps):
     crate_type = "rlib"
     crate_name = compute_crate_name(ctx.workspace_name, label, toolchain, crate_name)
     crate_root = crate_root_src(label, crate_name, srcs, crate_type)
-    srcs, crate_root = transform_sources(ctx, srcs, crate_root)
+    srcs, _, crate_root = transform_sources(ctx, srcs, [], crate_root)
 
     output_hash = determine_output_hash(crate_root, label)
     rust_lib_name = determine_lib_name(
