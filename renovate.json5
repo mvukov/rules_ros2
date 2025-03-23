@@ -37,6 +37,7 @@
         "rules_license",
         "rules_python",
         "rules_rust",
+        "rules_rust_bindgen",
         "spdlog",
         "tinyxml2",
         "websocketpp",
