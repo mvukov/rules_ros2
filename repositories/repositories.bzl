@@ -41,9 +41,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "spdlog",
         build_file = "@com_github_mvukov_rules_ros2//repositories:spdlog.BUILD.bazel",
-        sha256 = "9962648c9b4f1a7bbc76fd8d9172555bad1871fdb14ff4f842ef87949682caa5",
-        strip_prefix = "spdlog-1.15.0",
-        url = "https://github.com/gabime/spdlog/archive/v1.15.0.tar.gz",
+        sha256 = "25c843860f039a1600f232c6eb9e01e6627f7d030a2ae5e232bdd3c9205d26cc",
+        strip_prefix = "spdlog-1.15.1",
+        url = "https://github.com/gabime/spdlog/archive/v1.15.1.tar.gz",
     )
 
     maybe(
@@ -67,9 +67,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "bazel_features",
-        sha256 = "b4b145c19e08fd48337f53c383db46398d0a810002907ff0c590762d926e05be",
-        strip_prefix = "bazel_features-1.18.0",
-        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.18.0/bazel_features-v1.18.0.tar.gz",
+        sha256 = "091d8b1e1f0bf1f7bd688b95007687e862cc489f8d9bc21c14be5fd032a8362f",
+        strip_prefix = "bazel_features-1.26.0",
+        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.26.0/bazel_features-v1.26.0.tar.gz",
     )
 
     maybe(
@@ -83,9 +83,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "googletest",
-        sha256 = "7b42b4d6ed48810c5362c265a17faebe90dc2373c885e5216439d37927f02926",
-        strip_prefix = "googletest-1.15.2",
-        url = "https://github.com/google/googletest/archive/refs/tags/v1.15.2.tar.gz",
+        sha256 = "78c676fc63881529bf97bf9d45948d905a66833fbfa5318ea2cd7478cb98f399",
+        strip_prefix = "googletest-1.16.0",
+        url = "https://github.com/google/googletest/archive/refs/tags/v1.16.0.tar.gz",
     )
 
     maybe(
@@ -146,9 +146,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "boringssl",
-        sha256 = "d38af313617ce2e952a7af6ba80e2cd87520b5c1c355316ea4222a2a3edbcd21",
-        strip_prefix = "boringssl-266308793d4d0d1f20c817efda8da00bf393bfd6",
-        urls = ["https://github.com/hedronvision/boringssl/archive/266308793d4d0d1f20c817efda8da00bf393bfd6.tar.gz"],
+        sha256 = "ed3f585bf50e1c2fea09746ca8b5aaf31888420ee52f214d798ad1c6c0f6d0db",
+        strip_prefix = "boringssl-ae09fd8a6e5b5f9e0bdb05f5f1ec013acb0b3bc4",
+        urls = ["https://github.com/hedronvision/boringssl/archive/ae09fd8a6e5b5f9e0bdb05f5f1ec013acb0b3bc4.tar.gz"],
     )
 
     maybe(
@@ -185,9 +185,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "zstd",
         build_file = "@com_github_mvukov_rules_ros2//repositories:zstd.BUILD.bazel",
-        sha256 = "8c29e06cf42aacc1eafc4077ae2ec6c6fcb96a626157e0593d5e82a34fd403c1",
-        strip_prefix = "zstd-1.5.6",
-        urls = ["https://github.com/facebook/zstd/releases/download/v1.5.6/zstd-1.5.6.tar.gz"],
+        sha256 = "eb33e51f49a15e023950cd7825ca74a4a2b43db8354825ac24fc1b7ee09e6fa3",
+        strip_prefix = "zstd-1.5.7",
+        urls = ["https://github.com/facebook/zstd/releases/download/v1.5.7/zstd-1.5.7.tar.gz"],
     )
 
     maybe(
