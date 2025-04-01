@@ -103,7 +103,7 @@ jobs:
             v5-bazel-repo-cache-${{ matrix.external_dependency_system }}-${{ matrix.toolchain }}
             -${{ hashFiles('.bazelversion', '**/WORKSPACE', '**/MODULE.bazel', 'repositories/**/*.bzl', 'requirements_lock.txt') }}
           restore-keys: v5-bazel-repo-cache-${{ matrix.external_dependency_system }}-${{ matrix.toolchain }}
-      - name: bazel test //...
+      - name: "Bazel test: ${{ matrix.folder }}, ${{ matrix.config_option }} ${{ matrix.bzlmod_flags }}"
         env:
           # Bazelisk will download bazel to here, ensure it is cached between runs.
           XDG_CACHE_HOME: /github/home/.cache/bazel-repo

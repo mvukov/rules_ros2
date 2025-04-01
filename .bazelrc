@@ -41,7 +41,6 @@ test --build_tests_only
 
 # Show all the problems
 test --test_output=errors
-build --verbose_failures
 
 # To use a clang compiler, invoke Bazel with `--config=clang`.
 build:clang --repo_env=CC=clang
