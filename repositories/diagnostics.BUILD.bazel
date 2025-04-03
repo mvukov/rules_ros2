@@ -10,6 +10,7 @@ load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 ros2_cpp_library(
     name = "cpp_diagnostic_updater",
+    srcs = ["diagnostic_updater/src/diagnostic_updater.cpp"],
     hdrs = glob(["diagnostic_updater/include/**/*.hpp"]),
     includes = ["diagnostic_updater/include"],
     visibility = ["//visibility:public"],
