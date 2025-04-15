@@ -194,9 +194,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "lz4",
         build_file = "@com_github_mvukov_rules_ros2//repositories:lz4.BUILD.bazel",
-        sha256 = "0b0e3aa07c8c063ddf40b082bdf7e37a1562bda40a0ff5272957f3e987e0e54b",
-        strip_prefix = "lz4-1.9.4",
-        urls = ["https://github.com/lz4/lz4/archive/refs/tags/v1.9.4.tar.gz"],
+        sha256 = "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
+        strip_prefix = "lz4-1.10.0",
+        urls = ["https://github.com/lz4/lz4/archive/refs/tags/v1.10.0.tar.gz"],
     )
 
     maybe(
