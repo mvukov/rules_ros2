@@ -44,28 +44,47 @@ http_archive(
     urls = ["https://github.com/ros2-rust/ros2_rust/archive/9a845c17873cbdf49e8017d5f0af6d8f795589cc.zip"],
 )
 
+_PYTHON_VERSIONS = [
+    "3.10",
+    "3.11",
+]
+
 _DEFAULT_PYTHON = "3.10"
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
-python.toolchain(
-    is_default = True,
-    python_version = _DEFAULT_PYTHON,
-)
+
+[
+    python.toolchain(
+        is_default = python_version == _DEFAULT_PYTHON,
+        python_version = python_version,
+    )
+    for python_version in _PYTHON_VERSIONS
+]
 
 pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
-pip.parse(
-    hub_name = "rules_ros2_pip_deps",
-    python_version = _DEFAULT_PYTHON,
-    requirements_lock = "//:requirements_lock.txt",
-)
+
+[
+    pip.parse(
+        hub_name = "rules_ros2_pip_deps",
+        python_version = python_version,
+        requirements_lock = "//:requirements_lock.txt",
+    )
+    for python_version in _PYTHON_VERSIONS
+]
+
 use_repo(pip, "rules_ros2_pip_deps")
 
 dev_pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip", dev_dependency = True)
-dev_pip.parse(
-    hub_name = "rules_ros2_resolver_deps",
-    python_version = _DEFAULT_PYTHON,
-    requirements_lock = "//repositories/private:resolver_requirements_lock.txt",
-)
+
+[
+    dev_pip.parse(
+        hub_name = "rules_ros2_resolver_deps",
+        python_version = python_version,
+        requirements_lock = "//repositories/private:resolver_requirements_lock.txt",
+    )
+    for python_version in _PYTHON_VERSIONS
+]
+
 use_repo(dev_pip, "rules_ros2_resolver_deps")
 
 pybind_configure = use_extension("@pybind11_bazel//:internal_configure.bzl", "internal_configure_extension")
