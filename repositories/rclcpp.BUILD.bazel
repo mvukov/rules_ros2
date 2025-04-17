@@ -130,13 +130,16 @@ ros2_cpp_library(
 
 ros2_cpp_library(
     name = "rclcpp_components",
-    srcs = glob([
-        "rclcpp_components/src/**/*.cpp",
-        "rclcpp_components/src/*.hpp",
-    ]),
+    srcs = [
+        "rclcpp_components/src/component_manager.cpp",
+    ],
     hdrs = glob([
-        "rclcpp_components/include/**/*.hpp",
-        "rclcpp_components/include/**/*.h",
+        "rclcpp_components/include/rclcpp_components/component_manager.hpp",
+        "rclcpp_components/include/rclcpp_components/node_factory.hpp",
+        "rclcpp_components/include/rclcpp_components/node_factory_template.hpp",
+        "rclcpp_components/include/rclcpp_components/node_instance_wrapper.hpp",
+        "rclcpp_components/include/rclcpp_components/register_node_macro.hpp",
+        "rclcpp_components/include/rclcpp_components/visibility_control.hpp",
     ]),
     includes = ["rclcpp_components/include"],
     visibility = ["//visibility:public"],

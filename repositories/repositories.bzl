@@ -16,9 +16,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "690e0141724abb568267e003c7b6d9a54925df40c275a870a4d934161dc9dd53",
-        strip_prefix = "rules_python-0.40.0",
-        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.40.0.tar.gz",
+        sha256 = "9c6e26911a79fbf510a8f06d8eedb40f412023cf7fa6d1461def27116bff022c",
+        strip_prefix = "rules_python-1.1.0",
+        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/1.1.0.tar.gz",
     )
 
     maybe(
@@ -32,18 +32,18 @@ def ros2_workspace_repositories():
         http_archive,
         name = "fmt",
         build_file = "@com_github_mvukov_rules_ros2//repositories:fmt.BUILD.bazel",
-        sha256 = "5dea48d1fcddc3ec571ce2058e13910a0d4a6bab4cc09a809d8b1dd1c88ae6f2",
-        strip_prefix = "fmt-9.1.0",
-        url = "https://github.com/fmtlib/fmt/archive/9.1.0.tar.gz",
+        sha256 = "1250e4cc58bf06ee631567523f48848dc4596133e163f02615c97f78bab6c811",
+        strip_prefix = "fmt-10.2.1",
+        url = "https://github.com/fmtlib/fmt/archive/10.2.1.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "spdlog",
         build_file = "@com_github_mvukov_rules_ros2//repositories:spdlog.BUILD.bazel",
-        sha256 = "9962648c9b4f1a7bbc76fd8d9172555bad1871fdb14ff4f842ef87949682caa5",
-        strip_prefix = "spdlog-1.15.0",
-        url = "https://github.com/gabime/spdlog/archive/v1.15.0.tar.gz",
+        sha256 = "7a80896357f3e8e920e85e92633b14ba0f229c506e6f978578bdc35ba09e9a5d",
+        strip_prefix = "spdlog-1.15.2",
+        url = "https://github.com/gabime/spdlog/archive/v1.15.2.tar.gz",
     )
 
     maybe(
@@ -67,25 +67,25 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "bazel_features",
-        sha256 = "b4b145c19e08fd48337f53c383db46398d0a810002907ff0c590762d926e05be",
-        strip_prefix = "bazel_features-1.18.0",
-        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.18.0/bazel_features-v1.18.0.tar.gz",
+        sha256 = "2f057dd02098a106095ea291b4344257398a059eadb2c74cc470de0f9664dccd",
+        strip_prefix = "bazel_features-1.28.0",
+        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.28.0/bazel_features-v1.28.0.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "rules_foreign_cc",
-        sha256 = "a2e6fb56e649c1ee79703e99aa0c9d13c6cc53c8d7a0cbb8797ab2888bbc99a3",
-        strip_prefix = "rules_foreign_cc-0.12.0",
-        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.12.0.tar.gz",
+        sha256 = "8e5605dc2d16a4229cb8fbe398514b10528553ed4f5f7737b663fdd92f48e1c2",
+        strip_prefix = "rules_foreign_cc-0.13.0",
+        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.13.0.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "googletest",
-        sha256 = "7b42b4d6ed48810c5362c265a17faebe90dc2373c885e5216439d37927f02926",
-        strip_prefix = "googletest-1.15.2",
-        url = "https://github.com/google/googletest/archive/refs/tags/v1.15.2.tar.gz",
+        sha256 = "78c676fc63881529bf97bf9d45948d905a66833fbfa5318ea2cd7478cb98f399",
+        strip_prefix = "googletest-1.16.0",
+        url = "https://github.com/google/googletest/archive/refs/tags/v1.16.0.tar.gz",
     )
 
     maybe(
@@ -146,21 +146,18 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "boringssl",
-        sha256 = "05e1b41439cf5f467090e32bf59a3cfc88596f57bf3e8d2da80c802d63caf3a6",
-        strip_prefix = "boringssl-23ad9ca4f0e26b977546bddf11857105ddc96f17",
-        urls = ["https://github.com/hedronvision/boringssl/archive/23ad9ca4f0e26b977546bddf11857105ddc96f17.tar.gz"],
+        sha256 = "ed3f585bf50e1c2fea09746ca8b5aaf31888420ee52f214d798ad1c6c0f6d0db",
+        strip_prefix = "boringssl-ae09fd8a6e5b5f9e0bdb05f5f1ec013acb0b3bc4",
+        urls = ["https://github.com/hedronvision/boringssl/archive/ae09fd8a6e5b5f9e0bdb05f5f1ec013acb0b3bc4.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "zlib",
         build_file = "@com_github_mvukov_rules_ros2//repositories:zlib.BUILD.bazel",
-        sha256 = "d14c38e313afc35a9a8760dadf26042f51ea0f5d154b0630a31da0540107fb98",
-        strip_prefix = "zlib-1.2.13",
-        urls = [
-            "https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.xz",
-            "https://zlib.net/zlib-1.2.13.tar.xz",
-        ],
+        sha256 = "8a9ba2898e1d0d774eca6ba5b4627a11e5588ba85c8851336eb38de4683050a7",
+        strip_prefix = "zlib-1.3",
+        urls = ["https://github.com/madler/zlib/releases/download/v1.3/zlib-1.3.tar.xz"],
     )
 
     maybe(
@@ -188,27 +185,27 @@ def ros2_workspace_repositories():
         http_archive,
         name = "zstd",
         build_file = "@com_github_mvukov_rules_ros2//repositories:zstd.BUILD.bazel",
-        sha256 = "8c29e06cf42aacc1eafc4077ae2ec6c6fcb96a626157e0593d5e82a34fd403c1",
-        strip_prefix = "zstd-1.5.6",
-        urls = ["https://github.com/facebook/zstd/releases/download/v1.5.6/zstd-1.5.6.tar.gz"],
+        sha256 = "eb33e51f49a15e023950cd7825ca74a4a2b43db8354825ac24fc1b7ee09e6fa3",
+        strip_prefix = "zstd-1.5.7",
+        urls = ["https://github.com/facebook/zstd/releases/download/v1.5.7/zstd-1.5.7.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "lz4",
         build_file = "@com_github_mvukov_rules_ros2//repositories:lz4.BUILD.bazel",
-        sha256 = "4ec935d99aa4950eadfefbd49c9fad863185ac24c32001162c44a683ef61b580",
-        strip_prefix = "lz4-1.9.3",
-        urls = ["https://github.com/lz4/lz4/archive/refs/tags/v1.9.3.zip"],
+        sha256 = "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
+        strip_prefix = "lz4-1.10.0",
+        urls = ["https://github.com/lz4/lz4/archive/refs/tags/v1.10.0.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "yaml-cpp",
         build_file = "@com_github_mvukov_rules_ros2//repositories:yaml-cpp.BUILD.bazel",
-        sha256 = "43e6a9fcb146ad871515f0d0873947e5d497a1c9c60c58cb102a97b47208b7c3",
-        strip_prefix = "yaml-cpp-yaml-cpp-0.7.0",
-        urls = ["https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.7.0.tar.gz"],
+        sha256 = "fbe74bbdcee21d656715688706da3c8becfd946d92cd44705cc6098bb23b3a16",
+        strip_prefix = "yaml-cpp-0.8.0",
+        urls = ["https://github.com/jbeder/yaml-cpp/archive/refs/tags/0.8.0.tar.gz"],
     )
 
     maybe(
@@ -314,9 +311,9 @@ def ros2_repositories():
         http_archive,
         name = "mcap",
         build_file = "@com_github_mvukov_rules_ros2//repositories:mcap.BUILD.bazel",
-        sha256 = "2833f72344308ea58639f3b363a0cf17669580ae7ab435f43f3b104cff6ef548",
-        strip_prefix = "mcap-releases-cpp-v0.8.0/cpp/mcap",
-        urls = ["https://github.com/foxglove/mcap/archive/refs/tags/releases/cpp/v0.8.0.tar.gz"],
+        sha256 = "69bcd33e1590201ea180e9e6ba8a22f3e8e7e2283e9ebcbff6a2c7134d8341db",
+        strip_prefix = "mcap-releases-cpp-v1.4.1/cpp/mcap",
+        urls = ["https://github.com/foxglove/mcap/archive/refs/tags/releases/cpp/v1.4.1.tar.gz"],
     )
 
     # NOTE: Use the humble branch.

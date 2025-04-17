@@ -1,3 +1,4 @@
+load("@com_github_mvukov_rules_ros2//ros2:rust_defs.bzl", "ros2_rust_test")
 load("@com_github_mvukov_rules_ros2//ros2:rust_interfaces.bzl", "rust_ros2_interface_library")
 load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
 load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_test")
@@ -48,6 +49,7 @@ rust_binary(
 ros2_test(
     name = "tests",
     size = "small",
+    flaky = True,
     launch_file = "tests.py",
     nodes = [
         ":publisher",
@@ -56,4 +58,11 @@ ros2_test(
         "@ros2_common_interfaces//:py_std_msgs",
         "@ros2_rclpy//:rclpy",
     ],
+)
+
+ros2_rust_test(
+    name = "logging_tests",
+    srcs = ["logging_tests.rs"],
+    edition = "2021",
+    deps = ["@ros2_rust//:rclrs"],
 )

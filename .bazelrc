@@ -4,22 +4,13 @@
 # Mandatory at the moment for Bazel 7.0.0.
 build --noincompatible_sandbox_hermetic_tmp
 
-# This is mandatory if your build env doesn't have a proper Python 3 exe
-# -- like the CI build image for this repo.
-# The build image is using a fake python exe, see
-# https://github.com/mvukov/bazel_builder/blob/main/Dockerfile.
-# If blzmod is enabled, but not used as in this repo at the moment),
-# then bazel for some reason tries to auto-detect a Python exe.
-build --noenable_bzlmod
-# This is a mandatory option for Bazel 8.
-build --enable_workspace
-
 # Fix the wrong default to generate __init__.py to delimit a Python package.
 # This is a mandatory flag.
 build --incompatible_default_to_explicit_init_py
 
 # All code will be compiled with C++17 flag.
 # Users can naturally override copts for cc_* targets.
+# NOTE: ROS 2 Humble needs min C++17.
 # NOTE: googletest >=v1.13.0 requires min C++14.
 # This is a mandatory flag.
 build --cxxopt=-std=c++17
@@ -31,6 +22,9 @@ build --cxxopt=-std=c++17
 # in a separate network environment.
 # This is a mandatory flag.
 build --sandbox_default_allow_network=false
+
+# Flipped to true in Bazel 8. This is a recommended flag.
+build --incompatible_disallow_empty_glob
 
 # Don't let local Python site packages leak into the build and cause problems
 common --action_env=PYTHONNOUSERSITE=1
@@ -52,6 +46,9 @@ test --test_output=errors
 build:clang --repo_env=CC=clang
 build:clang --repo_env=CXX=clang++
 build:clang --linkopt="-fuse-ld=lld"
+
+# Work around https://github.com/bazelbuild/rules_rust/issues/2125
+build --action_env=CARGO_BAZEL_REPIN=1
 
 # Load any settings specific to the current user.
 # user.bazelrc should appear in .gitignore so that settings are not shared with
