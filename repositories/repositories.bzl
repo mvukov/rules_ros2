@@ -156,7 +156,7 @@ def ros2_workspace_repositories():
         name = "zlib",
         build_file = "@com_github_mvukov_rules_ros2//repositories:zlib.BUILD.bazel",
         sha256 = "9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23",
-        strip_prefix = "zlib-1.3",
+        strip_prefix = "zlib-1.3-1",
         urls = ["https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz"],
     )
 
