@@ -34,7 +34,9 @@ This is the new external dependency subsystem. Please take a look at the `MODULE
 
 With this approach, `rules_ros2` defines a Python 3.10 interpreter and defines the hub with resolved Python deps. If you want a different intepreter and/or you want to extend the Python requirements files with extra deps you might want to use in your monorepo, you'll need to patch `requirements_lock.txt` file and this repo.
 
-If you want to use this approach, make sure you have the following lines in your `.bazelrc` file:
+This is the default way for handling external deps since Bazel 7.
+
+If you want to be more explicit and explicitly disable the workspace-based setup, you can add the following lines in your `.bazelrc` file:
 
 ```bash
 common --enable_bzlmod --noenable_workspace
