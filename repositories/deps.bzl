@@ -11,8 +11,8 @@ def ros2_deps():
     """ Sets up dependencies.
     """
     bazel_features_deps()
+    bazel_skylib_workspace()
     rules_shell_dependencies()
     rules_shell_toolchains()
-    bazel_skylib_workspace()
     rules_foreign_cc_dependencies()
     googletest_deps()
