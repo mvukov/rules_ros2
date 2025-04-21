@@ -55,6 +55,7 @@ jobs:
 
     # Run bazel test with gcc and clang in each workspace
     strategy:
+      fail-fast: true
       matrix:
         folder:
           - "."
@@ -62,11 +63,18 @@ jobs:
         toolchain:
           - "gcc"
           - "clang"
+        external_dependency_system:
+          - bzlmod
+          - workspace
         include:
           - toolchain: "gcc"
             config_option: ""
           - toolchain: "clang"
             config_option: "--config=clang"
+          - external_dependency_system: bzlmod
+            bzlmod_flags: --enable_bzlmod --noenable_workspace
+          - external_dependency_system: workspace
+            bzlmod_flags: --noenable_bzlmod --enable_workspace
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -86,18 +94,23 @@ jobs:
       # previously built artifacts to minimize build time. The more precise you are with
       # hashFiles sources the less work bazel will have to do.
       - name: Mount bazel caches
-        uses: actions/cache@v4.2.2
+        uses: actions/cache@v4.2.3
         with:
           path: |
             ~/.cache/bazel
             ~/.cache/bazel-repo
-          key: v4-bazel-repo-cache-${{ matrix.toolchain }}-${{ hashFiles('.bazelversion', 'examples/WORKSPACE', 'repositories/**', 'requirements_lock.txt', 'WORKSPACE') }}
-          restore-keys: v4-bazel-repo-cache-${{ matrix.toolchain }}-
-      - name: bazel test ${{ matrix.config_option }} //...
+          key: >-
+            v5-bazel-repo-cache-${{ matrix.external_dependency_system }}-${{ matrix.toolchain }}
+            -${{ hashFiles('.bazelversion', '**/WORKSPACE', '**/MODULE.bazel', 'repositories/**/*.bzl', 'requirements_lock.txt') }}
+          restore-keys: v5-bazel-repo-cache-${{ matrix.external_dependency_system }}-${{ matrix.toolchain }}
+      - name: "Bazel test: ${{ matrix.folder }}, ${{ matrix.config_option }} ${{ matrix.bzlmod_flags }}"
         env:
           # Bazelisk will download bazel to here, ensure it is cached between runs.
           XDG_CACHE_HOME: /github/home/.cache/bazel-repo
           BUILDBUDDY_ORG_API_KEY: ${{ secrets.BUILDBUDDY_ORG_API_KEY }}
           USER: ${{ needs.configure.outputs.user_name }}
         working-directory: ${{ matrix.folder }}
-        run: ${GITHUB_WORKSPACE}/.github/workflows/test.sh ${{ matrix.config_option }}
+        run: >
+          ${GITHUB_WORKSPACE}/.github/workflows/test.sh
+          ${{ matrix.config_option }}
+          ${{ matrix.bzlmod_flags }}

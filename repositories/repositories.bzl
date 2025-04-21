@@ -41,9 +41,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "spdlog",
         build_file = "@com_github_mvukov_rules_ros2//repositories:spdlog.BUILD.bazel",
-        sha256 = "25c843860f039a1600f232c6eb9e01e6627f7d030a2ae5e232bdd3c9205d26cc",
-        strip_prefix = "spdlog-1.15.1",
-        url = "https://github.com/gabime/spdlog/archive/v1.15.1.tar.gz",
+        sha256 = "7a80896357f3e8e920e85e92633b14ba0f229c506e6f978578bdc35ba09e9a5d",
+        strip_prefix = "spdlog-1.15.2",
+        url = "https://github.com/gabime/spdlog/archive/v1.15.2.tar.gz",
     )
 
     maybe(
@@ -67,9 +67,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "bazel_features",
-        sha256 = "091d8b1e1f0bf1f7bd688b95007687e862cc489f8d9bc21c14be5fd032a8362f",
-        strip_prefix = "bazel_features-1.26.0",
-        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.26.0/bazel_features-v1.26.0.tar.gz",
+        sha256 = "2f057dd02098a106095ea291b4344257398a059eadb2c74cc470de0f9664dccd",
+        strip_prefix = "bazel_features-1.28.0",
+        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.28.0/bazel_features-v1.28.0.tar.gz",
     )
 
     maybe(
@@ -155,9 +155,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "zlib",
         build_file = "@com_github_mvukov_rules_ros2//repositories:zlib.BUILD.bazel",
-        sha256 = "8a9ba2898e1d0d774eca6ba5b4627a11e5588ba85c8851336eb38de4683050a7",
-        strip_prefix = "zlib-1.3",
-        urls = ["https://github.com/madler/zlib/releases/download/v1.3/zlib-1.3.tar.xz"],
+        sha256 = "9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23",
+        strip_prefix = "zlib-1.3.1",
+        urls = ["https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz"],
     )
 
     maybe(
@@ -194,9 +194,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "lz4",
         build_file = "@com_github_mvukov_rules_ros2//repositories:lz4.BUILD.bazel",
-        sha256 = "0b0e3aa07c8c063ddf40b082bdf7e37a1562bda40a0ff5272957f3e987e0e54b",
-        strip_prefix = "lz4-1.9.4",
-        urls = ["https://github.com/lz4/lz4/archive/refs/tags/v1.9.4.tar.gz"],
+        sha256 = "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
+        strip_prefix = "lz4-1.10.0",
+        urls = ["https://github.com/lz4/lz4/archive/refs/tags/v1.10.0.tar.gz"],
     )
 
     maybe(
