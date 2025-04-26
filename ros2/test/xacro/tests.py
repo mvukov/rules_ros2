@@ -21,7 +21,7 @@ class TestXacro(unittest.TestCase):
   <b bar="2 2.0"/>
 </xml>
 """
-        self._check('ros2/test/xacro/test_urdf/model.urdf', expected_xml)
+        self._check('ros2/test/xacro/test_urdf.urdf', expected_xml)
 
     def test_include(self):
         expected_xml = """
@@ -29,7 +29,7 @@ class TestXacro(unittest.TestCase):
   <a foo="1 1.0"/>
 </xml>
 """
-        self._check('ros2/test/xacro/test_include/model.urdf', expected_xml)
+        self._check('ros2/test/xacro/test_include.urdf', expected_xml)
 
     def test_with_params(self):
         expected_xml = """
@@ -37,7 +37,7 @@ class TestXacro(unittest.TestCase):
   <a foo="bar"/>
 </xml>
 """
-        self._check('ros2/test/xacro/test_with_params/model.urdf', expected_xml)
+        self._check('ros2/test/xacro/test_with_params.urdf', expected_xml)
 
 
 if __name__ == '__main__':

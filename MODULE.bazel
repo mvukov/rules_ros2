@@ -23,6 +23,11 @@ bazel_dep(name = "sqlite3", version = "3.42.0.bcr.1")
 bazel_dep(name = "tinyxml", version = "2.6.2")
 bazel_dep(name = "tinyxml2", version = "10.0.0")
 bazel_dep(name = "websocketpp", version = "0.8.2.bcr.3")
+bazel_dep(name = "xacro", version = "2.0.12", repo_name = "ros2_xacro")
+#local_path_override(
+#    module_name = "xacro",
+#    path = "../xacro",
+#)
 bazel_dep(name = "yaml-cpp", version = "0.8.0")
 bazel_dep(name = "zlib", version = "1.3.1.bcr.5")
 bazel_dep(name = "zstd", version = "1.5.6")
@@ -170,7 +175,6 @@ use_repo(
     "ros2_unique_identifier_msgs",
     "ros2_urdfdom",
     "ros2_urdfdom_headers",
-    "ros2_xacro",
     "ros2cli",
     "rules_ros2_config_clang",
 )

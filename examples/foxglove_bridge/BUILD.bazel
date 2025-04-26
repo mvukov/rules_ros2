@@ -1,6 +1,6 @@
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
 load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
-load("@com_github_mvukov_rules_ros2//ros2:xacro.bzl", "xacro")
+load("@ros2_xacro//bazel:defs.bzl", "xacro_file")
 load(
     "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
     "expand_template",
@@ -17,9 +17,9 @@ ros2_cpp_binary(
 )
 
 # Creates a URDF representation from the given xacro file.
-xacro(
+xacro_file(
     name = "sam_bot",
-    srcs = ["sam_bot.xacro"],
+    src = "sam_bot.urdf.xacro",
 )
 
 expand_template(

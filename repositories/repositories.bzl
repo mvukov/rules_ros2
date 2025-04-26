@@ -234,6 +234,14 @@ def ros2_workspace_repositories():
         ],
     )
 
+    maybe(
+        http_archive,
+        name = "ros2_xacro",
+        sha256 = "6df0d44af8a6bf9f23f0536ce167a0cd7b4c01281100dfea7e17d504363b424d",
+        strip_prefix = "xacro-2.0.13",
+        urls = ["https://github.com/ros/xacro/archive/refs/tags/2.0.13.tar.gz"],
+    )
+
 def ros2_repositories():
     """Import ROS 2 repositories."""
 
@@ -265,15 +273,6 @@ def ros2_repositories():
         sha256 = "9548f6a53794cfcd6dcae570e6e82aa2c7670d177269ecf612838655d7ba7dcc",
         strip_prefix = "ros-foxglove-bridge-0.7.9",
         urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.9.tar.gz"],
-    )
-
-    maybe(
-        http_archive,
-        name = "ros2_xacro",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:xacro.BUILD.bazel",
-        sha256 = "a8802a5b48f7479bae1238e822ac4ebb47660221eb9bc40a608e899d60f3f7e4",
-        strip_prefix = "xacro-2.0.9",
-        urls = ["https://github.com/ros/xacro/archive/refs/tags/2.0.9.tar.gz"],
     )
 
     # Version copied from https://github.com/ros2/orocos_kdl_vendor/blob/0.2.5/orocos_kdl_vendor/CMakeLists.txt#L58.
