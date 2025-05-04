@@ -20,7 +20,7 @@
 
 class Publisher : public rclcpp::Node {
  public:
-  Publisher() : Node("heartbeat_publisher"), diagnostic_updater_{this} {
+  Publisher() : Node("heartbeat_publisher"), diagnostic_updater_(this) {
     diagnostic_updater_.setHardwareID("none");
     diagnostic_updater_.add("", &diagnostic_heartbeat_,
                             &diagnostic_updater::Heartbeat::run);
