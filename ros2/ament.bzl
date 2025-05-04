@@ -329,11 +329,11 @@ def py_launcher(name, deps, idl_deps = None, **kwargs):
 
 def split_kwargs(**kwargs):
     """Split kwargs into those to be forwarded to the actual binary target and launcher target respectively."""
-    launcher_attrs = ["args", "env", "flaky", "size", "tags", "timeout", "visibility"]
+    launcher_attrs = ["args", "env", "flaky", "size", "tags", "timeout", "toolchains", "visibility"]
     launcher_target_kwargs = {attr: kwargs.pop(attr) for attr in launcher_attrs if attr in kwargs}
     return launcher_target_kwargs, kwargs
 
-SH_TOOLCHAIN = "@bazel_tools//tools/sh:toolchain_type"
+SH_TOOLCHAIN = "@rules_shell//shell:toolchain_type"
 
 def _sh_launcher_rule_impl(ctx):
     output = ctx.actions.declare_file(ctx.attr.name)
