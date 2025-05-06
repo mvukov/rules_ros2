@@ -4,7 +4,6 @@ def rust_setup_stage_3(**kwargs):
     crates_repository(
         name = "rules_ros2_crate_index",
         cargo_lockfile = "@com_github_mvukov_rules_ros2//repositories/rust:Cargo.lock",
-        lockfile = "@com_github_mvukov_rules_ros2//repositories/rust:Cargo.Bazel.lock",
         # Keep specs in sync with MODULE.bazel
         packages = {
             "futures": crate.spec(version = "0.3"),
