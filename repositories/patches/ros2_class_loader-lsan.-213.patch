@@ -1,0 +1,42 @@
+From 1b432c9355e44bb437c0e52464521bc1646471c0 Mon Sep 17 00:00:00 2001
+From: "xinyu.wang" <comicfans44@gmail.com>
+Date: Wed, 4 Sep 2024 22:05:08 +0200
+Subject: [PATCH] suppress sanitizer warning about (expected) leak
+
+Signed-off-by: xinyu.wang <comicfans44@gmail.com>
+---
+ include/class_loader/class_loader_core.hpp | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git include/class_loader/class_loader_core.hpp include/class_loader/class_loader_core.hpp
+index 6741864..c5913ae 100644
+--- include/class_loader/class_loader_core.hpp
++++ include/class_loader/class_loader_core.hpp
+@@ -163,6 +163,15 @@ bool hasANonPurePluginLibraryBeenOpened();
+ CLASS_LOADER_PUBLIC
+ void hasANonPurePluginLibraryBeenOpened(bool hasIt);
+ 
++#if defined(__has_feature)
++#if __has_feature(address_sanitizer) // for clang
++#define __SANITIZE_ADDRESS__         // GCC already sets this
++#endif
++#endif
++
++#if defined(__SANITIZE_ADDRESS__)
++#include <sanitizer/lsan_interface.h>
++#endif
+ // Plugin Functions
+ 
+ /**
+@@ -207,6 +216,11 @@ void registerPlugin(const std::string & class_name, const std::string & base_cla
+   // Create factory
+   impl::AbstractMetaObject<Base> * new_factory =
+     new impl::MetaObject<Derived, Base>(class_name, base_class_name);
++
++#if defined(__SANITIZE_ADDRESS__)
++  __lsan_ignore_object(new_factory);
++#endif
++
+   new_factory->addOwningClassLoader(getCurrentlyActiveClassLoader());
+   new_factory->setAssociatedLibraryPath(getCurrentlyLoadingLibraryName());
+ 
