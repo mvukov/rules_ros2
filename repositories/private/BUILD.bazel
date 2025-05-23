@@ -4,6 +4,7 @@ load("@rules_ros2_resolver_deps//:requirements.bzl", "requirement")
 
 compile_pip_requirements(
     name = "requirements",
+    python_version = "3.10",
     requirements_in = ":resolver_requirements.txt",
     requirements_txt = ":resolver_requirements_lock.txt",
     tags = ["manual"],
@@ -22,6 +23,7 @@ py_binary(
         "@com_github_mvukov_rules_ros2//repositories:ros2_repositories_impl.bzl",
         "@ros2//:repos",
     ],
+    python_version = "3.10",
     deps = [
         requirement("aiofile"),
         requirement("aiohttp"),
@@ -36,5 +38,6 @@ py_test(
     srcs = ["ros2_repo_mappings_tests.py"],
     data = ["@com_github_mvukov_rules_ros2//repositories:ros2_repo_mappings.yaml"],
     main = "ros2_repo_mappings_tests.py",
+    python_version = "3.10",
     deps = [requirement("pyyaml")],
 )
