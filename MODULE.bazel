@@ -1,10 +1,10 @@
 module(name = "com_github_mvukov_rules_ros2")
 
-bazel_dep(name = "asio", version = "1.31.0")
+bazel_dep(name = "asio", version = "1.32.0")
 bazel_dep(name = "bazel_skylib", version = "1.7.1")
-bazel_dep(name = "boringssl", version = "0.20250212.0")
-bazel_dep(name = "curl", version = "8.8.0.bcr.2")
-bazel_dep(name = "eigen", version = "3.4.0.bcr.2")
+bazel_dep(name = "boringssl", version = "0.20250415.0")
+bazel_dep(name = "curl", version = "8.8.0.bcr.3")
+bazel_dep(name = "eigen", version = "3.4.0.bcr.3")
 bazel_dep(name = "fmt", version = "10.2.1.bcr.1")
 bazel_dep(name = "libyaml", version = "0.2.5")
 bazel_dep(name = "lz4", version = "1.9.4")
@@ -25,9 +25,9 @@ bazel_dep(name = "tinyxml2", version = "10.0.0")
 bazel_dep(name = "websocketpp", version = "0.8.2.bcr.3")
 bazel_dep(name = "yaml-cpp", version = "0.8.0")
 bazel_dep(name = "zlib", version = "1.3.1.bcr.5")
-bazel_dep(name = "zstd", version = "1.5.6")
+bazel_dep(name = "zstd", version = "1.5.7")
 
-bazel_dep(name = "googletest", version = "1.15.2", dev_dependency = True)
+bazel_dep(name = "googletest", version = "1.17.0", dev_dependency = True)
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -48,6 +48,7 @@ http_archive(
 _PYTHON_VERSIONS = [
     "3.10",
     "3.11",
+    "3.12",
 ]
 
 _DEFAULT_PYTHON = "3.10"
@@ -76,16 +77,11 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
 use_repo(pip, "rules_ros2_pip_deps")
 
 dev_pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip", dev_dependency = True)
-
-[
-    dev_pip.parse(
-        hub_name = "rules_ros2_resolver_deps",
-        python_version = python_version,
-        requirements_lock = "//repositories/private:resolver_requirements_lock.txt",
-    )
-    for python_version in _PYTHON_VERSIONS
-]
-
+dev_pip.parse(
+    hub_name = "rules_ros2_resolver_deps",
+    python_version = "3.10",
+    requirements_lock = "//repositories/private:resolver_requirements_lock.txt",
+)
 use_repo(dev_pip, "rules_ros2_resolver_deps")
 
 pybind_configure = use_extension("@pybind11_bazel//:internal_configure.bzl", "internal_configure_extension")
