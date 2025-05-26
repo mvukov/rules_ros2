@@ -115,10 +115,9 @@ crate.spec(
     package = "signal-hook",
     version = "0.3",
 )
-crate.from_specs(
+crate.from_cargo(
     name = "rules_ros2_crate_index",
     cargo_lockfile = "//repositories/rust:Cargo.lock",
-    lockfile = "//repositories/rust:Cargo.Bazel.lock",
 )
 use_repo(crate, "rules_ros2_crate_index")
 
