@@ -126,8 +126,8 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "nlohmann_json",
-        sha256 = "a22461d13119ac5c78f205d3df1db13403e58ce1bb1794edc9313677313f4a9d",
-        urls = ["https://github.com/nlohmann/json/releases/download/v3.11.3/include.zip"],
+        sha256 = "b8cb0ef2dd7f57f18933997c9934bb1fa962594f701cd5a8d3c2c80541559372",
+        urls = ["https://github.com/nlohmann/json/releases/download/v3.12.0/include.zip"],
     )
 
     maybe(
