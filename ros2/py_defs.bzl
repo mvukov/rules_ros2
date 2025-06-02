@@ -4,6 +4,8 @@
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
 load("@com_github_mvukov_rules_ros2//third_party:symlink.bzl", "symlink")
 load("@rules_python//python:defs.bzl", "py_binary", "py_test")
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
 
 def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
     is_test = target == py_test
@@ -38,7 +40,7 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
         testonly = is_test,
     )
 
-    sh_target = native.sh_test if is_test else native.sh_binary
+    sh_target = sh_test if is_test else sh_binary
     sh_target(
         name = name,
         srcs = [launcher],
