@@ -1,7 +1,7 @@
 def _clang_configure_impl(repository_ctx):
     clang_bin_path = repository_ctx.which("clang")
     if clang_bin_path == None:
-        fail("Failed to find clang executable:\n{}".format(result.stderr))
+        fail("Failed to find clang executable")
 
     repository_ctx.symlink(clang_bin_path, "clang")
 

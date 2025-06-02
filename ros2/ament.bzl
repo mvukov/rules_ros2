@@ -24,6 +24,7 @@ load(
     "expand_template_impl",
 )
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_python//python:defs.bzl", "PyInfo")
 
 _AMENT_SETUP_MODULE = "ament_setup"
 
