@@ -7,9 +7,8 @@ load("@rules_python//python:defs.bzl", "py_binary", "py_test")
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 load("@rules_shell//shell:sh_test.bzl", "sh_test")
 
-def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
-    is_test = target == py_test
-    set_up_launcher = is_test or set_up_ament
+def _ros2_py_exec(target, name, srcs, main, set_up_ament, testonly, **kwargs):
+    set_up_launcher = testonly or set_up_ament
     if set_up_launcher == False:
         target(name = name, srcs = srcs, main = main, **kwargs)
         return
@@ -22,7 +21,7 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
     symlink(
         name = target_impl_symlink,
         executable = target_impl,
-        testonly = is_test,
+        testonly = testonly,
         tags = ["manual"],
     )
 
@@ -37,10 +36,10 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, **kwargs):
         },
         tags = ["manual"],
         data = [target_impl_symlink],
-        testonly = is_test,
+        testonly = testonly,
     )
 
-    sh_target = sh_test if is_test else sh_binary
+    sh_target = sh_test if testonly else sh_binary
     sh_target(
         name = name,
         srcs = [launcher],
@@ -58,7 +57,15 @@ def ros2_py_binary(name, srcs, main, set_up_ament = False, **kwargs):
         set_up_ament: If true, sets up ament file tree for the binary target.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
-    _ros2_py_exec(py_binary, name, srcs, main, set_up_ament, **kwargs)
+    _ros2_py_exec(
+        py_binary,
+        name,
+        srcs,
+        main,
+        set_up_ament,
+        testonly = False,
+        **kwargs
+    )
 
 def ros2_py_test(name, srcs, main, set_up_ament = True, **kwargs):
     """ Defines a ROS 2 Python test.
@@ -76,4 +83,37 @@ def ros2_py_test(name, srcs, main, set_up_ament = True, **kwargs):
         set_up_ament: If true, sets up ament file tree for the test target.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
     """
-    _ros2_py_exec(py_test, name, srcs, main, set_up_ament, **kwargs)
+    _ros2_py_exec(
+        py_binary,
+        name,
+        srcs,
+        main,
+        set_up_ament,
+        testonly = True,
+        **kwargs
+    )
+
+def ros2_py_exec(name, srcs, main, rule_impl, set_up_ament, testonly, **kwargs):
+    """ Defines a ROS 2 Python target using a user-specified rule.
+
+    Args:
+        name: A unique target name.
+        srcs: List of source files.
+        main: Source file to use as entrypoint.
+        rule_impl: The target rule to use (e.g., `py_binary`).
+        testonly: Set to True if this is a test target; False otherwise.
+        set_up_ament: If true, generate a launcher for the target which:
+            * Sets AMENT_PREFIX_PATH to point to a generated ament file tree
+            * Defaults ROS_HOME and ROS_LOG_DIR to $TEST_UNDECLARED_OUTPUTS_DIR (if set,
+              otherwise to $TEST_TMPDIR, see https://bazel.build/reference/test-encyclopedia#initial-conditions)
+        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
+    """
+    _ros2_py_exec(
+        target = rule_impl,
+        name = name,
+        srcs = srcs,
+        main = main,
+        set_up_ament = set_up_ament,
+        testonly = testonly,
+        **kwargs
+    )
