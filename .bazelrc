@@ -26,6 +26,9 @@ build --sandbox_default_allow_network=false
 # Flipped to true in Bazel 8. This is a recommended flag.
 build --incompatible_disallow_empty_glob
 
+# Will probably be flipped in Bazel 9.
+build --incompatible_autoload_externally=
+
 # Don't let local Python site packages leak into the build and cause problems
 common --action_env=PYTHONNOUSERSITE=1
 # Don't let environment variables like $PATH sneak into the build,
