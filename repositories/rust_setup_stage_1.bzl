@@ -21,9 +21,9 @@ def rust_setup_stage_1():
         http_archive,
         name = "ros2_rust",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2_rust.BUILD.bazel",
-        sha256 = "693408db72d40bd11d80740b7bf8d3ef2122f6b98eeaf4a1dba7c5f2d0b479b5",
-        strip_prefix = "ros2_rust-94f76e5e220f3bb393372dc4d4042abfdb00b427",
-        urls = ["https://github.com/ros2-rust/ros2_rust/archive/94f76e5e220f3bb393372dc4d4042abfdb00b427.zip"],
+        sha256 = "b5a8c51917535f6afdfddf426fc68c609cc9d664f8c3a36de573c98b51b12849",
+        strip_prefix = "ros2_rust-d62583d2c9faab2f0342e1f803f8088b3627d148",
+        urls = ["https://github.com/ros2-rust/ros2_rust/archive/d62583d2c9faab2f0342e1f803f8088b3627d148.zip"],
         patch_args = ["-p1"],
         patches = [
             "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rclrs.patch",
