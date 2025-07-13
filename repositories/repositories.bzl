@@ -100,9 +100,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "tinyxml2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:tinyxml2.BUILD.bazel",
-        sha256 = "3bdf15128ba16686e69bce256cc468e76c7b94ff2c7f391cc5ec09e40bff3839",
-        strip_prefix = "tinyxml2-10.0.0",
-        urls = ["https://github.com/leethomason/tinyxml2/archive/refs/tags/10.0.0.tar.gz"],
+        sha256 = "9da7e1aebbf180ef6f39044b9740a4e96fa69e54a01318488512ae92ca97a685",
+        strip_prefix = "tinyxml2-10.1.0",
+        urls = ["https://github.com/leethomason/tinyxml2/archive/refs/tags/10.1.0.tar.gz"],
     )
 
     maybe(
