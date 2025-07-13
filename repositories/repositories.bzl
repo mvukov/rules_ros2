@@ -40,9 +40,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "fmt",
         build_file = "@com_github_mvukov_rules_ros2//repositories:fmt.BUILD.bazel",
-        sha256 = "1250e4cc58bf06ee631567523f48848dc4596133e163f02615c97f78bab6c811",
-        strip_prefix = "fmt-10.2.1",
-        url = "https://github.com/fmtlib/fmt/archive/10.2.1.tar.gz",
+        sha256 = "bc23066d87ab3168f27cef3e97d545fa63314f5c79df5ea444d41d56f962c6af",
+        strip_prefix = "fmt-11.2.0",
+        url = "https://github.com/fmtlib/fmt/archive/11.2.0.tar.gz",
     )
 
     maybe(
