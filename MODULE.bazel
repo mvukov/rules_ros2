@@ -93,6 +93,11 @@ register_toolchains(
     dev_dependency = True,
 )
 
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(
+    edition = "2021",  # Keep specs in sync with repositories/rust_setup_stage_2.bzl
+)
+
 # Keep specs in sync with repositories/rust_setup_stage_3.bzl
 crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
 crate.spec(

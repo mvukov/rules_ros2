@@ -37,7 +37,6 @@ py_binary(
 rust_binary(
     name = "rust_talker",
     srcs = ["talker.rs"],
-    edition = "2021",
     deps = [
         ":rust_std_msgs",
         "@ros2_rust//:rclrs",
