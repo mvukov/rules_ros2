@@ -68,8 +68,7 @@ def validate(deployment: Deployment):
             case EnvironmentVariable() | Node() | ParametersFile():
                 entity.validate()
             case _:
-                raise TypeError(
-                    f'Got unsupported entity of type {type(entity)}')
+                pass
 
 
 def collect_env(deployment: Deployment) -> dict[str, str]:
@@ -100,17 +99,46 @@ def collect_parameters(deployment: Deployment, dst: pathlib.Path):
         yaml.dump(merged_params, stream)
 
 
-def create_node_command(node: Node, merged_params_file: pathlib.Path) -> str:
-    command_parts = [node.executable]
-    command_parts.append(f'__name:={node.name}')
-    command_parts.extend(['--params-file', merged_params_file])
+@dataclasses.dataclass(frozen=True)
+class CommandConfig:
+    program: str
+    args: list[str]
+
+
+@dataclasses.dataclass(frozen=True)
+class ProcessConfig:
+    name: str
+    run: CommandConfig
+    stop: str
+
+
+def create_node_process_config(
+        node: Node, merged_params_file: pathlib.Path) -> ProcessConfig:
+    args = [f'__name:={node.name}']
+    args.extend(['--params-file', merged_params_file])
 
     for src, dst in node.remappings:
-        command_parts.extend(['-r', f'{src}:={dst}'])
+        args.extend(['-r', f'{src}:={dst}'])
 
     if node.ros_arguments is not None and node.ros_arguments:
-        command_parts.extend(node.ros_arguments)
+        args.extend(node.ros_arguments)
     if node.arguments is not None and node.arguments:
-        command_parts.extend(node.arguments)
+        args.extend(node.arguments)
 
-    return ' '.join(command_parts)
+    return ProcessConfig(name=node.name,
+                         run=CommandConfig(program=node.executable, args=args),
+                         stop='SIGINT')
+
+
+def collect_process_configs(
+        deployment: Deployment,
+        merged_params_file: pathlib.Path) -> list[ProcessConfig]:
+    process_configs: list[ProcessConfig] = []
+    for entity in deployment.entities:
+        match entity:
+            case Node():
+                process_configs.append(
+                    create_node_process_config(entity, merged_params_file))
+            case _:
+                pass
+    return process_configs
