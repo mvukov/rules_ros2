@@ -191,18 +191,24 @@ def create_groundcontrol_config(deployment: Deployment,
     collect_parameters(flattened_deployment, merged_params_file)
     process_configs = collect_process_configs(flattened_deployment,
                                               merged_params_file,
-                                              only_env=None)
-    return {
-        'env':
-            env,
+                                              only_env=list(env.keys()))
+
+    if len(process_configs) == 0:
+        raise ValueError('There are no processes to be launched')
+
+    config = {
         'processes':
             dump_process_configs_to_groundcontrol_processes(process_configs),
     }
+    if len(env) > 0:
+        config['env'] = env
+    return config
 
 
 def generate_groundcontrol_config_file(deployment_specs_path: pathlib.Path,
                                        merged_params_file: pathlib.Path,
                                        groundcontrol_config_path: pathlib.Path):
+    # TODO(mvukov) All whitelist of env vars.
     spec = importlib.util.spec_from_file_location('deployment_specs_module',
                                                   deployment_specs_path)
     module = importlib.util.module_from_spec(spec)
