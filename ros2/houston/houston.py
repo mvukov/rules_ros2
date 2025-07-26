@@ -101,6 +101,7 @@ def collect_parameters(deployment: Deployment, dst: pathlib.Path):
 
 @dataclasses.dataclass(frozen=True)
 class CommandConfig:
+    only_env: list[str] | None
     program: str
     args: list[str]
 
@@ -112,8 +113,8 @@ class ProcessConfig:
     stop: str
 
 
-def create_node_process_config(
-        node: Node, merged_params_file: pathlib.Path) -> ProcessConfig:
+def create_node_process_config(node: Node, merged_params_file: pathlib.Path,
+                               only_env: list[str] | None) -> ProcessConfig:
     args = [f'__name:={node.name}']
     args.extend(['--params-file', merged_params_file])
 
@@ -126,19 +127,23 @@ def create_node_process_config(
         args.extend(node.arguments)
 
     return ProcessConfig(name=node.name,
-                         run=CommandConfig(program=node.executable, args=args),
+                         run=CommandConfig(only_env=only_env,
+                                           program=node.executable,
+                                           args=args),
                          stop='SIGINT')
 
 
 def collect_process_configs(
         deployment: Deployment,
-        merged_params_file: pathlib.Path) -> list[ProcessConfig]:
+        merged_params_file: pathlib.Path,
+        only_env: list[str] | None = None) -> list[ProcessConfig]:
     process_configs: list[ProcessConfig] = []
     for entity in deployment.entities:
         match entity:
             case Node():
                 process_configs.append(
-                    create_node_process_config(entity, merged_params_file))
+                    create_node_process_config(entity, merged_params_file,
+                                               only_env))
             case _:
                 pass
     return process_configs
