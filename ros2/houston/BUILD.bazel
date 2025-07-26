@@ -1,0 +1,36 @@
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+
+py_library(
+    name = "houston_lib",
+    srcs = ["houston.py"],
+    deps = [
+        requirement("deepmerge"),
+        requirement("pyyaml"),
+        requirement("toml"),
+    ],
+)
+
+py_library(
+    name = "example",
+    srcs = ["example.py"],
+    data = [
+        "config.yaml",
+        "config2.yaml",
+        "global.yaml",
+    ],
+    deps = [":houston_lib"],
+)
+
+py_binary(
+    name = "example_bin",
+    srcs = ["main.py"],
+    args = [
+        "--deployment_specs_path=$(rootpath :example)",
+    ],
+    data = [
+        ":example",
+    ],
+    main = "main.py",
+    deps = [":houston_lib"],
+)
