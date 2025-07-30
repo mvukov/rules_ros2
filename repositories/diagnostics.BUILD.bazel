@@ -101,7 +101,7 @@ ros2_py_binary(
     name = "cpu_monitor_node",
     srcs = ["diagnostic_common_diagnostics/diagnostic_common_diagnostics/cpu_monitor.py"],
     main = "diagnostic_common_diagnostics/diagnostic_common_diagnostics/cpu_monitor.py",
-    set_up_ament = True,
+    set_up_ament = False,
     visibility = ["//visibility:public"],
     deps = [
         ":py_diagnostic_updater",
@@ -117,7 +117,7 @@ ros2_py_binary(
     name = "hd_monitor_node",
     srcs = ["diagnostic_common_diagnostics/diagnostic_common_diagnostics/hd_monitor.py"],
     main = "diagnostic_common_diagnostics/diagnostic_common_diagnostics/hd_monitor.py",
-    set_up_ament = True,
+    set_up_ament = False,
     visibility = ["//visibility:public"],
     deps = [
         ":py_diagnostic_updater",
@@ -130,7 +130,7 @@ ros2_py_binary(
     name = "ntp_monitor_node",
     srcs = ["diagnostic_common_diagnostics/diagnostic_common_diagnostics/ntp_monitor.py"],
     main = "diagnostic_common_diagnostics/diagnostic_common_diagnostics/ntp_monitor.py",
-    set_up_ament = True,
+    set_up_ament = False,
     visibility = ["//visibility:public"],
     deps = [
         ":py_diagnostic_updater",
@@ -144,7 +144,7 @@ ros2_py_binary(
     name = "ram_monitor_node",
     srcs = ["diagnostic_common_diagnostics/diagnostic_common_diagnostics/ram_monitor.py"],
     main = "diagnostic_common_diagnostics/diagnostic_common_diagnostics/ram_monitor.py",
-    set_up_ament = True,
+    set_up_ament = False,
     visibility = ["//visibility:public"],
     deps = [
         ":py_diagnostic_updater",
@@ -158,7 +158,7 @@ ros2_py_binary(
     name = "sensors_monitor_node",
     srcs = ["diagnostic_common_diagnostics/diagnostic_common_diagnostics/sensors_monitor.py"],
     main = "diagnostic_common_diagnostics/diagnostic_common_diagnostics/sensors_monitor.py",
-    set_up_ament = True,
+    set_up_ament = False,
     visibility = ["//visibility:public"],
     deps = [
         ":py_diagnostic_updater",
