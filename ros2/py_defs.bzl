@@ -21,7 +21,7 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, testonly, **kwargs):
         main = main,
         tags = ["manual"],
         testonly = testonly,
-        **binary_kwargs,
+        **binary_kwargs
     )
 
     target_impl_symlink = target_impl + "_symlink"

@@ -34,24 +34,23 @@ ros2_test(
     deps = ["@ros2_rclpy//:rclpy"],
 )
 
-
 # A testonly target to make sure that ros2_py_test can depend on testonly targets.
 filegroup(
     name = "some_test_files",
-    srcs = [],
     testonly = True,
+    srcs = [],
 )
 
 ros2_py_test(
     name = "ros2_py_test_rclpy_init_test",
     size = "small",
     srcs = ["rclpy_init_test.py"],
+    data = [
+        ":some_test_files",
+    ],
     main = "rclpy_init_test.py",
     deps = [
         "@ros2_launch//:launch_pytest",
         "@ros2_rclpy//:rclpy",
     ],
-    data = [
-        ":some_test_files",
-    ]
 )
