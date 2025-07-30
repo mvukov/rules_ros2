@@ -111,6 +111,8 @@ ros2_py_binary(
     ],
 )
 
+# The "hd" in "hd_monitor_node" means "hard drive".  We name it "hd_monitor_node" to stay
+# consistent with the upstream name.
 ros2_py_binary(
     name = "hd_monitor_node",
     srcs = ["diagnostic_common_diagnostics/diagnostic_common_diagnostics/hd_monitor.py"],
