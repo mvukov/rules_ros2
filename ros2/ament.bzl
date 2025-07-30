@@ -24,6 +24,7 @@ load(
     "expand_template_impl",
 )
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_python//python:defs.bzl", "PyInfo")
 
 _AMENT_SETUP_MODULE = "ament_setup"
 
@@ -333,7 +334,7 @@ def split_kwargs(**kwargs):
     launcher_target_kwargs = {attr: kwargs.pop(attr) for attr in launcher_attrs if attr in kwargs}
     return launcher_target_kwargs, kwargs
 
-SH_TOOLCHAIN = "@bazel_tools//tools/sh:toolchain_type"
+SH_TOOLCHAIN = "@rules_shell//shell:toolchain_type"
 
 def _sh_launcher_rule_impl(ctx):
     output = ctx.actions.declare_file(ctx.attr.name)

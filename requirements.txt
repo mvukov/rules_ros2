@@ -3,7 +3,7 @@ coverage
 empy==3.3.*
 lark-parser
 ntplib
-numpy==1.23.*
+numpy~=1.23
 packaging
 psutil
 pytest

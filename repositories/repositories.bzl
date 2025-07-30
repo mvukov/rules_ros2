@@ -16,34 +16,42 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "9c6e26911a79fbf510a8f06d8eedb40f412023cf7fa6d1461def27116bff022c",
-        strip_prefix = "rules_python-1.1.0",
-        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/1.1.0.tar.gz",
+        sha256 = "fa532d635f29c038a64c8062724af700c30cf6b31174dd4fac120bc561a1a560",
+        strip_prefix = "rules_python-1.5.1",
+        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/1.5.1.tar.gz",
+    )
+
+    maybe(
+        http_archive,
+        name = "rules_shell",
+        sha256 = "3e114424a5c7e4fd43e0133cc6ecdfe54e45ae8affa14fadd839f29901424043",
+        strip_prefix = "rules_shell-0.4.0",
+        url = "https://github.com/bazelbuild/rules_shell/releases/download/v0.4.0/rules_shell-v0.4.0.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "bazel_skylib",
-        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.7.1/bazel-skylib-1.7.1.tar.gz"],
-        sha256 = "bc283cdfcd526a52c3201279cda4bc298652efa898b10b4db0837dc51652756f",
+        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.8.1/bazel-skylib-1.8.1.tar.gz"],
+        sha256 = "51b5105a760b353773f904d2bbc5e664d0987fbaf22265164de65d43e910d8ac",
     )
 
     maybe(
         http_archive,
         name = "fmt",
         build_file = "@com_github_mvukov_rules_ros2//repositories:fmt.BUILD.bazel",
-        sha256 = "1250e4cc58bf06ee631567523f48848dc4596133e163f02615c97f78bab6c811",
-        strip_prefix = "fmt-10.2.1",
-        url = "https://github.com/fmtlib/fmt/archive/10.2.1.tar.gz",
+        sha256 = "bc23066d87ab3168f27cef3e97d545fa63314f5c79df5ea444d41d56f962c6af",
+        strip_prefix = "fmt-11.2.0",
+        url = "https://github.com/fmtlib/fmt/archive/11.2.0.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "spdlog",
         build_file = "@com_github_mvukov_rules_ros2//repositories:spdlog.BUILD.bazel",
-        sha256 = "25c843860f039a1600f232c6eb9e01e6627f7d030a2ae5e232bdd3c9205d26cc",
-        strip_prefix = "spdlog-1.15.1",
-        url = "https://github.com/gabime/spdlog/archive/v1.15.1.tar.gz",
+        sha256 = "15a04e69c222eb6c01094b5c7ff8a249b36bb22788d72519646fb85feb267e67",
+        strip_prefix = "spdlog-1.15.3",
+        url = "https://github.com/gabime/spdlog/archive/v1.15.3.tar.gz",
     )
 
     maybe(
@@ -59,42 +67,42 @@ def ros2_workspace_repositories():
         http_archive,
         name = "pybind11",
         build_file = "@com_github_mvukov_rules_ros2//repositories:pybind11.BUILD.bazel",
-        sha256 = "e08cb87f4773da97fa7b5f035de8763abc656d87d5773e62f6da0587d1f0ec20",
-        strip_prefix = "pybind11-2.13.6",
-        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v2.13.6.tar.gz"],
+        sha256 = "453b1a3e2b266c3ae9da872411cadb6d693ac18063bd73226d96cfb7015a200c",
+        strip_prefix = "pybind11-3.0.0",
+        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v3.0.0.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "bazel_features",
-        sha256 = "091d8b1e1f0bf1f7bd688b95007687e862cc489f8d9bc21c14be5fd032a8362f",
-        strip_prefix = "bazel_features-1.26.0",
-        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.26.0/bazel_features-v1.26.0.tar.gz",
+        sha256 = "07bd2b18764cdee1e0d6ff42c9c0a6111ffcbd0c17f0de38e7f44f1519d1c0cd",
+        strip_prefix = "bazel_features-1.32.0",
+        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.32.0/bazel_features-v1.32.0.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "rules_foreign_cc",
-        sha256 = "8e5605dc2d16a4229cb8fbe398514b10528553ed4f5f7737b663fdd92f48e1c2",
-        strip_prefix = "rules_foreign_cc-0.13.0",
-        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.13.0.tar.gz",
+        sha256 = "32759728913c376ba45b0116869b71b68b1c2ebf8f2bcf7b41222bc07b773d73",
+        strip_prefix = "rules_foreign_cc-0.15.1",
+        url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.15.1.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "googletest",
-        sha256 = "78c676fc63881529bf97bf9d45948d905a66833fbfa5318ea2cd7478cb98f399",
-        strip_prefix = "googletest-1.16.0",
-        url = "https://github.com/google/googletest/archive/refs/tags/v1.16.0.tar.gz",
+        sha256 = "65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c",
+        strip_prefix = "googletest-1.17.0",
+        url = "https://github.com/google/googletest/archive/refs/tags/v1.17.0.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "tinyxml2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:tinyxml2.BUILD.bazel",
-        sha256 = "3bdf15128ba16686e69bce256cc468e76c7b94ff2c7f391cc5ec09e40bff3839",
-        strip_prefix = "tinyxml2-10.0.0",
-        urls = ["https://github.com/leethomason/tinyxml2/archive/refs/tags/10.0.0.tar.gz"],
+        sha256 = "5556deb5081fb246ee92afae73efd943c889cef0cafea92b0b82422d6a18f289",
+        strip_prefix = "tinyxml2-11.0.0",
+        urls = ["https://github.com/leethomason/tinyxml2/archive/refs/tags/11.0.0.tar.gz"],
     )
 
     maybe(
@@ -118,8 +126,8 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "nlohmann_json",
-        sha256 = "a22461d13119ac5c78f205d3df1db13403e58ce1bb1794edc9313677313f4a9d",
-        urls = ["https://github.com/nlohmann/json/releases/download/v3.11.3/include.zip"],
+        sha256 = "b8cb0ef2dd7f57f18933997c9934bb1fa962594f701cd5a8d3c2c80541559372",
+        urls = ["https://github.com/nlohmann/json/releases/download/v3.12.0/include.zip"],
     )
 
     maybe(
@@ -146,18 +154,18 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "boringssl",
-        sha256 = "ed3f585bf50e1c2fea09746ca8b5aaf31888420ee52f214d798ad1c6c0f6d0db",
-        strip_prefix = "boringssl-ae09fd8a6e5b5f9e0bdb05f5f1ec013acb0b3bc4",
-        urls = ["https://github.com/hedronvision/boringssl/archive/ae09fd8a6e5b5f9e0bdb05f5f1ec013acb0b3bc4.tar.gz"],
+        sha256 = "fb1326e78f644859de1a92bbea6671a88e91a7658f5bfc5080704349bb4c2eff",
+        strip_prefix = "boringssl-3a2c54253492bbc471c67b6e24a39845bc4afb79",
+        urls = ["https://github.com/hedronvision/boringssl/archive/3a2c54253492bbc471c67b6e24a39845bc4afb79.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "zlib",
         build_file = "@com_github_mvukov_rules_ros2//repositories:zlib.BUILD.bazel",
-        sha256 = "8a9ba2898e1d0d774eca6ba5b4627a11e5588ba85c8851336eb38de4683050a7",
-        strip_prefix = "zlib-1.3",
-        urls = ["https://github.com/madler/zlib/releases/download/v1.3/zlib-1.3.tar.xz"],
+        sha256 = "9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23",
+        strip_prefix = "zlib-1.3.1",
+        urls = ["https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz"],
     )
 
     maybe(
@@ -194,9 +202,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "lz4",
         build_file = "@com_github_mvukov_rules_ros2//repositories:lz4.BUILD.bazel",
-        sha256 = "0b0e3aa07c8c063ddf40b082bdf7e37a1562bda40a0ff5272957f3e987e0e54b",
-        strip_prefix = "lz4-1.9.4",
-        urls = ["https://github.com/lz4/lz4/archive/refs/tags/v1.9.4.tar.gz"],
+        sha256 = "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
+        strip_prefix = "lz4-1.10.0",
+        urls = ["https://github.com/lz4/lz4/archive/refs/tags/v1.10.0.tar.gz"],
     )
 
     maybe(
@@ -263,9 +271,9 @@ def ros2_repositories():
         http_archive,
         name = "ros2_xacro",
         build_file = "@com_github_mvukov_rules_ros2//repositories:xacro.BUILD.bazel",
-        sha256 = "a8802a5b48f7479bae1238e822ac4ebb47660221eb9bc40a608e899d60f3f7e4",
-        strip_prefix = "xacro-2.0.9",
-        urls = ["https://github.com/ros/xacro/archive/refs/tags/2.0.9.tar.gz"],
+        sha256 = "6df0d44af8a6bf9f23f0536ce167a0cd7b4c01281100dfea7e17d504363b424d",
+        strip_prefix = "xacro-2.0.13",
+        urls = ["https://github.com/ros/xacro/archive/refs/tags/2.0.13.tar.gz"],
     )
 
     # Version copied from https://github.com/ros2/orocos_kdl_vendor/blob/0.2.5/orocos_kdl_vendor/CMakeLists.txt#L58.

@@ -3,6 +3,7 @@
 
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
 load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_test")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
 
 def ros2_rust_test(name, **kwargs):
     """ Defines a ROS 2 Rust test.
@@ -38,7 +39,7 @@ def ros2_rust_test(name, **kwargs):
         testonly = True,
     )
 
-    native.sh_test(
+    sh_test(
         name = name,
         srcs = [launcher],
         data = [target_impl],
