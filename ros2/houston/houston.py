@@ -3,6 +3,7 @@ from __future__ import annotations
 import collections
 import dataclasses
 import importlib.util
+import os
 import pathlib
 
 import deepmerge
@@ -39,7 +40,8 @@ class ParametersFile:
     path: str | pathlib.Path
 
     def validate(self):
-        pass
+        if not os.path.exists(self.path):
+            raise ValueError(f'{self.path} does not exist')
 
 
 @dataclasses.dataclass(frozen=True)
@@ -69,8 +71,6 @@ def flatten(src: Deployment) -> Deployment:
 def validate(deployment: Deployment):
     for entity in deployment.entities:
         match entity:
-            case Deployment():
-                pass
             case EnvironmentVariable() | Node() | ParametersFile():
                 entity.validate()
             case _:
@@ -173,7 +173,8 @@ def dump_process_configs_to_groundcontrol_processes(
         run = {}
         if cfg.run.only_env is not None:
             run['only-env'] = cfg.run.only_env
-        run['command'] = f'{cfg.run.program} {" ".join(cfg.run.args)}'
+        run['command'] = (
+            f'{cfg.run.program} {" ".join([str(arg) for arg in cfg.run.args])}')
 
         result.append({
             'name': f'{cfg.name}',
@@ -183,17 +184,21 @@ def dump_process_configs_to_groundcontrol_processes(
     return result
 
 
-def create_groundcontrol_config(deployment: Deployment,
-                                merged_params_file: pathlib.Path) -> dict:
+def create_groundcontrol_config(
+    deployments: list[Deployment],
+    merged_params_exec_path: pathlib.Path,
+    merged_params_root_path: pathlib.Path,
+) -> dict:
+    deployment = Deployment(deployments)
     validate(deployment)
     flattened_deployment = flatten(deployment)
-    env = collect_env(flattened_deployment)
-    collect_parameters(flattened_deployment, merged_params_file)
-    process_configs = collect_process_configs(flattened_deployment,
-                                              merged_params_file,
-                                              only_env=list(env.keys()))
 
-    if len(process_configs) == 0:
+    env = collect_env(flattened_deployment)
+    collect_parameters(flattened_deployment, merged_params_exec_path)
+    process_configs = collect_process_configs(flattened_deployment,
+                                              merged_params_root_path,
+                                              only_env=list(env.keys()))
+    if not process_configs:
         raise ValueError('There are no processes to be launched')
 
     config = {
@@ -205,20 +210,29 @@ def create_groundcontrol_config(deployment: Deployment,
     return config
 
 
-def generate_groundcontrol_config_file(deployment_specs_path: pathlib.Path,
-                                       merged_params_file: pathlib.Path,
-                                       groundcontrol_config_path: pathlib.Path):
+def generate_groundcontrol_config_file(
+        deployment_specs_files: list[pathlib.Path],
+        merged_params_exec_path: pathlib.Path,
+        merged_params_root_path: pathlib.Path,
+        groundcontrol_config_file: pathlib.Path):
     # TODO(mvukov) All whitelist of env vars.
-    spec = importlib.util.spec_from_file_location('deployment_specs_module',
-                                                  deployment_specs_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    create_deployment = getattr(module, 'create_deployment')
-    deployment: Deployment = create_deployment()
 
-    groundcontrol_config = create_groundcontrol_config(deployment,
-                                                       merged_params_file)
-    with open(groundcontrol_config_path, 'w', encoding='utf-8') as stream:
+    deployments: list[Deployment] = []
+    for idx, deployment_specs_file in enumerate(deployment_specs_files):
+        print(deployment_specs_file)
+        spec = importlib.util.spec_from_file_location(
+            f'deployment_specs_module_{idx}', deployment_specs_file)
+        # spec can be None!
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        create_deployment = getattr(module, 'create_deployment')
+        deployments.append(create_deployment())
+
+    groundcontrol_config = create_groundcontrol_config(deployments,
+                                                       merged_params_exec_path,
+                                                       merged_params_root_path)
+
+    with open(groundcontrol_config_file, 'w', encoding='utf-8') as stream:
         toml.dump(groundcontrol_config,
                   stream,
                   encoder=toml.TomlPreserveInlineDictEncoder())

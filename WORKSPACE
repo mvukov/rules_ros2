@@ -66,3 +66,11 @@ load(
 )
 
 install_rules_ros2_resolver_deps()
+
+load("//repositories:ground_control_setup_stage_1.bzl", "ground_control_setup_stage_1")
+
+ground_control_setup_stage_1()
+
+load("//repositories:ground_control_setup_stage_2.bzl", "ground_control_setup_stage_2")
+
+ground_control_setup_stage_2()
