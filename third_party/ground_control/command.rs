@@ -118,7 +118,7 @@ pub(crate) fn run(
     let mut child = command
         .group_spawn()
         .wrap_err_with(|| format!("Error starting command \"{}\"", config.program))?;
-    let pid = nix::unistd::Pid::from_raw(child.id().ok_or_else(|| {
+    let pid = Pid::from_raw(child.id().ok_or_else(|| {
         eyre!(
             "Failed to get PID of just-started command \"{}\"",
             config.program
@@ -185,14 +185,13 @@ fn substitute_env_var(s: impl AsRef<str>) -> eyre::Result<String> {
     TEMPLATE_VAR_REGEX
         .captures_iter(s.as_ref())
         .map(|caps| {
-            std::env::var(&caps[1])
-                .map_err(|_| eyre!("Unknown environment variable \"{}\"", &caps[1]))
+            env::var(&caps[1]).map_err(|_| eyre!("Unknown environment variable \"{}\"", &caps[1]))
         })
         .collect::<eyre::Result<String>>()?;
 
     Ok(TEMPLATE_VAR_REGEX
         .replace_all(s.as_ref(), |caps: &Captures| {
-            std::env::var(&caps[1]).expect("Unable to find environment variable")
+            env::var(&caps[1]).expect("Unable to find environment variable")
         })
         .into_owned())
 }
