@@ -131,7 +131,7 @@ class ProcessConfig:
 
 def create_node_process_config(node: Node, merged_params_file: pathlib.Path,
                                only_env: list[str] | None) -> ProcessConfig:
-    args = [f'__name:={node.name}']
+    args = ['--ros-args', '-r', f'__node:={node.name}']
     args.extend(['--params-file', merged_params_file])
 
     if node.remappings is not None:

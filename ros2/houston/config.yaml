@@ -1,2 +1,3 @@
-a: b
-c: 21
+talker:
+  ros__parameters:
+    callback_period_ms: 100

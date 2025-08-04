@@ -110,7 +110,6 @@ def _ros2_launch_impl(ctx):
             transitive =
                 [target[DefaultInfo].files for target in merged_deps.launch_files.to_list()] +
                 [target[DefaultInfo].files for target in merged_deps.parameters.to_list()],
-            # merged_deps.nodes,
         ),
         outputs = [merged_params_file, ground_control_config_file],
         executable = ctx.executable._generator,
@@ -134,21 +133,28 @@ def _ros2_launch_impl(ctx):
         is_executable = True,
     )
 
+    nodes = merged_deps.nodes.to_list()
+    for node in nodes:
+        print(node[DefaultInfo].default_runfiles)
+
+    runfiles = ctx.runfiles(
+        files = [
+            ctx.executable._ground_control,
+            ground_control_config_file,
+            merged_params_file,
+        ],
+        transitive_files = depset(
+            transitive = [node[DefaultInfo].files for node in nodes],
+        ),
+    )
+    for node in nodes:
+        runfiles = runfiles.merge(node[DefaultInfo].default_runfiles)
+
     return [
         DefaultInfo(
-            # files = depset([merged_params_file, ground_control_config_file]),
+            files = depset([merged_params_file, ground_control_config_file]),
             executable = executable,
-            runfiles = ctx.runfiles(
-                files = [
-                    ctx.executable._ground_control,
-                    ground_control_config_file,
-                    merged_params_file,
-                ],
-                # transitive_files = depset(
-                #     direct = [
-                #     ],
-                # ),
-            ),
+            runfiles = runfiles,
         ),
     ]
 

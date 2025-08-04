@@ -5,10 +5,11 @@ def create_deployment():
     return houston.Deployment([
         houston.ParametersFile('ros2/houston/global.yaml'),
         houston.EnvironmentVariable('foo', 'bar'),
-        houston.Node('apple',
-                     'cmd1',
+        houston.EnvironmentVariable('ROS_LOG_DIR', '/tmp'),
+        houston.Node('talker',
+                     'ros2/houston/talker',
                      parameters_file='ros2/houston/config.yaml'),
-        houston.Node('hohoho',
-                     'cmd2',
+        houston.Node('listener',
+                     'ros2/houston/listener',
                      parameters_file='ros2/houston/config2.yaml'),
     ])
