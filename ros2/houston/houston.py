@@ -56,7 +56,7 @@ def flatten(src: Deployment) -> Deployment:
     dst_entities: list[Entity] = []
     src_entities: collections.deque[Entity] = collections.deque(src.entities)
     while len(src_entities) > 0:
-        match src_entity := src_entities.popleft():
+        match src_entity := src_entities.pop():
             case Deployment(entities):
                 for entity in entities:
                     src_entities.appendleft(entity)
@@ -65,6 +65,7 @@ def flatten(src: Deployment) -> Deployment:
             case _:
                 raise TypeError(
                     f'Got unsupported entity of type {type(entity)}')
+    print(dst_entities)
     return Deployment(dst_entities)
 
 

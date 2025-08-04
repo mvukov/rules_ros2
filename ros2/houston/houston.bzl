@@ -85,9 +85,6 @@ def _ros2_launch_impl(ctx):
     deps = [dep[HoustonDeploymentInfo] for dep in ctx.attr.deps]
     merged_deps = _merge_houston_deployment_infos(deps)
 
-    # launch_deps are def to be in exec config
-    # nodes are to be in target config
-
     merged_params_file = ctx.actions.declare_file(
         "{}_merged_params.yaml".format(ctx.attr.name),
     )
@@ -134,9 +131,6 @@ def _ros2_launch_impl(ctx):
     )
 
     nodes = merged_deps.nodes.to_list()
-    for node in nodes:
-        print(node[DefaultInfo].default_runfiles)
-
     runfiles = ctx.runfiles(
         files = [
             ctx.executable._ground_control,
