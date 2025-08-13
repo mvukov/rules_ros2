@@ -1,0 +1,38 @@
+diff --git a/rosbag2_transport/src/rosbag2_transport/recorder.cpp b/rosbag2_transport/src/rosbag2_transport/recorder.cpp
+index 4d0c2649..aa303b8d 100644
+--- a/rosbag2_transport/src/rosbag2_transport/recorder.cpp
++++ b/rosbag2_transport/src/rosbag2_transport/recorder.cpp
+@@ -95,11 +95,16 @@ Recorder::Recorder(
+   }
+
+   std::string key_str = enum_key_code_to_str(Recorder::kPauseResumeToggleKey);
+-  toggle_paused_key_callback_handle_ =
+-    keyboard_handler_->add_key_press_callback(
+-    [this](KeyboardHandler::KeyCode /*key_code*/,
+-    KeyboardHandler::KeyModifiers /*key_modifiers*/) {this->toggle_paused();},
+-    Recorder::kPauseResumeToggleKey);
++  if (keyboard_handler_) {
++    toggle_paused_key_callback_handle_ =
++        keyboard_handler_->add_key_press_callback(
++            [this](KeyboardHandler::KeyCode /*key_code*/,
++                   KeyboardHandler::KeyModifiers /*key_modifiers*/) {
++              this->toggle_paused();
++            },
++            Recorder::kPauseResumeToggleKey);
++  }
++
+   // show instructions
+   RCLCPP_INFO_STREAM(
+     get_logger(),
+@@ -112,7 +117,10 @@ Recorder::Recorder(
+
+ Recorder::~Recorder()
+ {
+-  keyboard_handler_->delete_key_press_callback(toggle_paused_key_callback_handle_);
++  if (keyboard_handler_) {
++    keyboard_handler_->delete_key_press_callback(
++        toggle_paused_key_callback_handle_);
++  }
+   stop();
+ }
+
