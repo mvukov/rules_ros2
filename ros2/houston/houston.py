@@ -65,7 +65,6 @@ def flatten(src: Deployment) -> Deployment:
             case _:
                 raise TypeError(
                     f'Got unsupported entity of type {type(entity)}')
-    print(dst_entities)
     return Deployment(dst_entities)
 
 
