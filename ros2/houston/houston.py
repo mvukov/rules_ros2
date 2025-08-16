@@ -3,7 +3,6 @@ from __future__ import annotations
 import collections
 import dataclasses
 import importlib.util
-import os
 import pathlib
 
 import deepmerge
@@ -15,9 +14,6 @@ import yaml
 class EnvironmentVariable:
     name: str
     value: str
-
-    def validate(self):
-        pass
 
 
 @dataclasses.dataclass(frozen=True)
@@ -31,17 +27,10 @@ class Node:
 
     # env: dict[str, str] | None = None
 
-    def validate(self):
-        pass
-
 
 @dataclasses.dataclass(frozen=True)
 class ParametersFile:
     path: str | pathlib.Path
-
-    def validate(self):
-        if not os.path.exists(self.path):
-            raise ValueError(f'{self.path} does not exist')
 
 
 @dataclasses.dataclass(frozen=True)
@@ -55,26 +44,17 @@ Entity = Deployment | EnvironmentVariable | Node | ParametersFile
 def flatten(src: Deployment) -> Deployment:
     dst_entities: list[Entity] = []
     src_entities: collections.deque[Entity] = collections.deque(src.entities)
-    while len(src_entities) > 0:
+    while src_entities:
         match src_entity := src_entities.pop():
             case Deployment(entities):
                 for entity in entities:
-                    src_entities.appendleft(entity)
+                    src_entities.append(entity)
             case EnvironmentVariable() | Node() | ParametersFile():
                 dst_entities.append(src_entity)
             case _:
                 raise TypeError(
                     f'Got unsupported entity of type {type(entity)}')
     return Deployment(dst_entities)
-
-
-def validate(deployment: Deployment):
-    for entity in deployment.entities:
-        match entity:
-            case EnvironmentVariable() | Node() | ParametersFile():
-                entity.validate()
-            case _:
-                pass
 
 
 def collect_env(deployment: Deployment) -> dict[str, str]:
@@ -190,7 +170,6 @@ def create_groundcontrol_config(
     merged_params_root_path: pathlib.Path,
 ) -> dict:
     deployment = Deployment(deployments)
-    validate(deployment)
     flattened_deployment = flatten(deployment)
 
     env = collect_env(flattened_deployment)
