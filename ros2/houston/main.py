@@ -18,9 +18,14 @@ if __name__ == '__main__':
     parser.add_argument('--groundcontrol_config',
                         type=pathlib.Path,
                         required=True)
+    parser.add_argument('--executable_paths',
+                        nargs='+',
+                        type=pathlib.Path,
+                        required=True)
     args = parser.parse_args()
 
     houston.generate_groundcontrol_config_file(args.deployment_specs,
                                                args.merged_params_exec_path,
                                                args.merged_params_root_path,
-                                               args.groundcontrol_config)
+                                               args.groundcontrol_config,
+                                               args.executable_paths)

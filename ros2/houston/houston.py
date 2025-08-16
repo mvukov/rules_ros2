@@ -16,9 +16,6 @@ class EnvironmentVariable:
     name: str
     value: str
 
-    def validate(self):
-        pass
-
 
 @dataclasses.dataclass(frozen=True)
 class Node:
@@ -28,20 +25,12 @@ class Node:
     remappings: list[tuple[str, str]] | None = None
     ros_arguments: list[str] | None = None
     arguments: list[str] | None = None
-
     # env: dict[str, str] | None = None
-
-    def validate(self):
-        pass
 
 
 @dataclasses.dataclass(frozen=True)
 class ParametersFile:
     path: str | pathlib.Path
-
-    def validate(self):
-        if not os.path.exists(self.path):
-            raise ValueError(f'{self.path} does not exist')
 
 
 @dataclasses.dataclass(frozen=True)
@@ -55,11 +44,11 @@ Entity = Deployment | EnvironmentVariable | Node | ParametersFile
 def flatten(src: Deployment) -> Deployment:
     dst_entities: list[Entity] = []
     src_entities: collections.deque[Entity] = collections.deque(src.entities)
-    while len(src_entities) > 0:
+    while src_entities:
         match src_entity := src_entities.pop():
             case Deployment(entities):
                 for entity in entities:
-                    src_entities.appendleft(entity)
+                    src_entities.append(entity)
             case EnvironmentVariable() | Node() | ParametersFile():
                 dst_entities.append(src_entity)
             case _:
@@ -68,11 +57,27 @@ def flatten(src: Deployment) -> Deployment:
     return Deployment(dst_entities)
 
 
-def validate(deployment: Deployment):
+def validate(deployment: Deployment, executable_paths: list[pathlib.Path]):
     for entity in deployment.entities:
         match entity:
-            case EnvironmentVariable() | Node() | ParametersFile():
-                entity.validate()
+            case EnvironmentVariable():
+                if not entity.name:
+                    raise ValueError(
+                        'Environment variable name must not be empty')
+
+            case Node():
+                if not entity.name:
+                    raise ValueError('Node name must not be empty')
+                if pathlib.Path(entity.executable) not in executable_paths:
+                    raise ValueError(
+                        f'Node {entity.name} executable {entity.executable} is '
+                        f'not in the list of known nodes {executable_paths}')
+
+            case ParametersFile():
+                if not os.path.exists(entity.path):
+                    raise ValueError(
+                        f'Paramter file {entity.path} does not exist')
+
             case _:
                 pass
 
@@ -186,12 +191,13 @@ def dump_process_configs_to_groundcontrol_processes(
 
 def create_groundcontrol_config(
     deployments: list[Deployment],
+    executable_paths: list[pathlib.Path],
     merged_params_exec_path: pathlib.Path,
     merged_params_root_path: pathlib.Path,
 ) -> dict:
     deployment = Deployment(deployments)
-    validate(deployment)
     flattened_deployment = flatten(deployment)
+    validate(flattened_deployment, executable_paths)
 
     env = collect_env(flattened_deployment)
     collect_parameters(flattened_deployment, merged_params_exec_path)
@@ -214,7 +220,8 @@ def generate_groundcontrol_config_file(
         deployment_specs_files: list[pathlib.Path],
         merged_params_exec_path: pathlib.Path,
         merged_params_root_path: pathlib.Path,
-        groundcontrol_config_file: pathlib.Path):
+        groundcontrol_config_file: pathlib.Path,
+        executable_paths: pathlib.Path):
     # TODO(mvukov) All whitelist of env vars.
 
     deployments: list[Deployment] = []
@@ -229,6 +236,7 @@ def generate_groundcontrol_config_file(
         deployments.append(create_deployment())
 
     groundcontrol_config = create_groundcontrol_config(deployments,
+                                                       executable_paths,
                                                        merged_params_exec_path,
                                                        merged_params_root_path)
 

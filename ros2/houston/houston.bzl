@@ -79,6 +79,9 @@ def _merge_houston_deployment_infos(infos):
 def _format_launch_file(launch_file):
     return [ff.path for ff in launch_file[DefaultInfo].files.to_list()]
 
+def _get_node_root_paths(node):
+    return [ff.short_path for ff in node[DefaultInfo].files.to_list()]
+
 SH_TOOLCHAIN = "@rules_shell//shell:toolchain_type"
 
 def _ros2_launch_impl(ctx):
@@ -98,6 +101,11 @@ def _ros2_launch_impl(ctx):
         merged_deps.launch_files,
         map_each = _format_launch_file,
     )
+    generator_args.add_all(
+        "--executable_paths",
+        merged_deps.nodes,
+        map_each = _get_node_root_paths,
+    )
     generator_args.add(merged_params_file.path, format = "--merged_params_exec_path=%s")
     generator_args.add(merged_params_file.short_path, format = "--merged_params_root_path=%s")
     generator_args.add(ground_control_config_file, format = "--groundcontrol_config=%s")
@@ -106,7 +114,8 @@ def _ros2_launch_impl(ctx):
         inputs = depset(
             transitive =
                 [target[DefaultInfo].files for target in merged_deps.launch_files.to_list()] +
-                [target[DefaultInfo].files for target in merged_deps.parameters.to_list()],
+                [target[DefaultInfo].files for target in merged_deps.parameters.to_list()] +
+                [target[DefaultInfo].files for target in merged_deps.nodes.to_list()],
         ),
         outputs = [merged_params_file, ground_control_config_file],
         executable = ctx.executable._generator,
