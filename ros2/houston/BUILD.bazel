@@ -13,17 +13,6 @@ py_library(
     ],
 )
 
-py_library(
-    name = "example",
-    srcs = ["example.py"],
-    data = [
-        "config.yaml",
-        "config2.yaml",
-        "global.yaml",
-    ],
-    deps = [":houston_lib"],
-)
-
 py_binary(
     name = "ground_control_config_generator",
     srcs = ["main.py"],
