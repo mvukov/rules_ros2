@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import collections
 import dataclasses
 import importlib.util
@@ -10,97 +8,75 @@ import deepmerge
 import toml
 import yaml
 
-
-@dataclasses.dataclass(frozen=True, kw_only=True)
-class EnvironmentVariable:
-    name: str
-    value: str
+from ros2.houston import entity
 
 
-@dataclasses.dataclass(frozen=True, kw_only=True)
-class Node:
-    name: str
-    executable: str | pathlib.Path
-    parameters_file: str | pathlib.Path | None = None
-    remappings: list[tuple[str, str]] | None = None
-    ros_arguments: list[str] | None = None
-    arguments: list[str] | None = None
-    # env: dict[str, str] | None = None
-
-
-@dataclasses.dataclass(frozen=True, kw_only=True)
-class ParametersFile:
-    path: str | pathlib.Path
-
-
-@dataclasses.dataclass(frozen=True)
-class Deployment:
-    entities: list[Deployment | EnvironmentVariable | Node | ParametersFile]
-
-
-Entity = Deployment | EnvironmentVariable | Node | ParametersFile
-
-
-def flatten(src: Deployment) -> Deployment:
-    dst_entities: list[Entity] = []
-    src_entities: collections.deque[Entity] = collections.deque(src.entities)
+def flatten(src: entity.Deployment) -> entity.Deployment:
+    dst_entities: list[entity.Entity] = []
+    src_entities: collections.deque[entity.Entity] = collections.deque(
+        src.entities)
     while src_entities:
         match src_entity := src_entities.pop():
-            case Deployment(entities):
-                for entity in entities:
-                    src_entities.append(entity)
-            case EnvironmentVariable() | Node() | ParametersFile():
+            case entity.Deployment(entities):
+                for current_entity in entities:
+                    src_entities.append(current_entity)
+            case entity.EnvironmentVariable() | entity.Node(
+            ) | entity.ParametersFile():
                 dst_entities.append(src_entity)
             case _:
                 raise TypeError(
                     f'Got unsupported entity of type {type(entity)}')
-    return Deployment(dst_entities)
+    return entity.Deployment(dst_entities)
 
 
-def validate(deployment: Deployment, executable_paths: list[pathlib.Path]):
-    for entity in deployment.entities:
-        match entity:
-            case EnvironmentVariable():
-                if not entity.name:
+def validate(deployment: entity.Deployment,
+             executable_paths: list[pathlib.Path]):
+    for current_entity in deployment.entities:
+        match current_entity:
+            case entity.EnvironmentVariable():
+                if not current_entity.name:
                     raise ValueError(
                         'Environment variable name must not be empty')
 
-            case Node():
-                if not entity.name:
+            case entity.Node():
+                if not current_entity.name:
                     raise ValueError('Node name must not be empty')
-                if pathlib.Path(entity.executable) not in executable_paths:
+                if pathlib.Path(
+                        current_entity.executable) not in executable_paths:
                     raise ValueError(
-                        f'Node {entity.name} executable {entity.executable} is '
+                        f'Node {current_entity.name} executable '
+                        f'{current_entity.executable} is '
                         f'not in the list of known nodes {executable_paths}')
 
-            case ParametersFile():
-                if not os.path.exists(entity.path):
+            case entity.ParametersFile():
+                if not os.path.exists(current_entity.path):
                     raise ValueError(
-                        f'Paramter file {entity.path} does not exist')
+                        f'Paramter file {current_entity.path} does not exist')
 
             case _:
                 pass
 
 
-def collect_env(deployment: Deployment) -> dict[str, str]:
+def collect_env(deployment: entity.Deployment) -> dict[str, str]:
     env: dict[str, str] = {}
-    for entity in deployment.entities:
-        match entity:
-            case EnvironmentVariable(name=name, value=value):
+    for current_entity in deployment.entities:
+        match current_entity:
+            case entity.EnvironmentVariable(name=name, value=value):
                 env[name] = value
             case _:
                 pass
     return env
 
 
-def collect_parameters(deployment: Deployment, dst: pathlib.Path):
+def collect_parameters(deployment: entity.Deployment, dst: pathlib.Path):
     params_files: list[pathlib.Path] = []
-    for entity in deployment.entities:
-        match entity:
-            case Node():
-                params_files.append(pathlib.Path(entity.parameters_file))
-            case ParametersFile():
-                params_files.append(pathlib.Path(entity.path))
+    for current_entity in deployment.entities:
+        match current_entity:
+            case entity.Node():
+                params_files.append(pathlib.Path(
+                    current_entity.parameters_file))
+            case entity.ParametersFile():
+                params_files.append(pathlib.Path(current_entity.path))
             case _:
                 pass
 
@@ -134,7 +110,8 @@ class ProcessConfig:
     stop: str
 
 
-def create_node_process_config(node: Node, merged_params_file: pathlib.Path,
+def create_node_process_config(node: entity.Node,
+                               merged_params_file: pathlib.Path,
                                only_env: list[str] | None) -> ProcessConfig:
     args = ['--ros-args', '-r', f'__node:={node.name}']
     args.extend(['--params-file', merged_params_file])
@@ -156,16 +133,16 @@ def create_node_process_config(node: Node, merged_params_file: pathlib.Path,
 
 
 def collect_process_configs(
-        deployment: Deployment,
+        deployment: entity.Deployment,
         merged_params_file: pathlib.Path,
         only_env: list[str] | None = None) -> list[ProcessConfig]:
     process_configs: list[ProcessConfig] = []
-    for entity in deployment.entities:
-        match entity:
-            case Node():
+    for current_entity in deployment.entities:
+        match current_entity:
+            case entity.Node():
                 process_configs.append(
-                    create_node_process_config(entity, merged_params_file,
-                                               only_env))
+                    create_node_process_config(current_entity,
+                                               merged_params_file, only_env))
             case _:
                 pass
     return process_configs
@@ -190,12 +167,12 @@ def dump_process_configs_to_groundcontrol_processes(
 
 
 def create_groundcontrol_config(
-    deployments: list[Deployment],
+    deployments: list[entity.Deployment],
     executable_paths: list[pathlib.Path],
     merged_params_exec_path: pathlib.Path,
     merged_params_root_path: pathlib.Path,
 ) -> dict:
-    deployment = Deployment(deployments)
+    deployment = entity.Deployment(deployments)
     flattened_deployment = flatten(deployment)
     validate(flattened_deployment, executable_paths)
 
@@ -224,7 +201,7 @@ def generate_groundcontrol_config_file(
         executable_paths: pathlib.Path):
     # TODO(mvukov) All whitelist of env vars.
 
-    deployments: list[Deployment] = []
+    deployments: list[entity.Deployment] = []
     for idx, deployment_specs_file in enumerate(deployment_specs_files):
         print(deployment_specs_file)
         spec = importlib.util.spec_from_file_location(

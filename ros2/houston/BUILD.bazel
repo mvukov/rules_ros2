@@ -5,7 +5,10 @@ load(":houston.bzl", "ros2_deployment", "ros2_launch")
 
 py_library(
     name = "houston_lib",
-    srcs = ["houston.py"],
+    srcs = [
+        "entity.py",
+        "houston.py",
+    ],
     deps = [
         requirement("deepmerge"),
         requirement("pyyaml"),
