@@ -11,13 +11,13 @@ import toml
 import yaml
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, kw_only=True)
 class EnvironmentVariable:
     name: str
     value: str
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, kw_only=True)
 class Node:
     name: str
     executable: str | pathlib.Path
@@ -28,7 +28,7 @@ class Node:
     # env: dict[str, str] | None = None
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, kw_only=True)
 class ParametersFile:
     path: str | pathlib.Path
 
@@ -86,7 +86,7 @@ def collect_env(deployment: Deployment) -> dict[str, str]:
     env: dict[str, str] = {}
     for entity in deployment.entities:
         match entity:
-            case EnvironmentVariable(name, value):
+            case EnvironmentVariable(name=name, value=value):
                 env[name] = value
             case _:
                 pass
@@ -120,14 +120,14 @@ def collect_parameters(deployment: Deployment, dst: pathlib.Path):
         yaml.dump(merged_params, stream)
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, kw_only=True)
 class CommandConfig:
     only_env: list[str] | None
     program: str
     args: list[str]
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, kw_only=True)
 class ProcessConfig:
     name: str
     run: CommandConfig
