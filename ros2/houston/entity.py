@@ -11,14 +11,17 @@ class EnvironmentVariable:
 
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
-class Node:
+class Process:
     name: str
     executable: str | pathlib.Path
+    arguments: list[str] | None = None
+
+
+@dataclasses.dataclass(frozen=True, kw_only=True)
+class RosNode(Process):
     parameters_file: str | pathlib.Path | None = None
     remappings: list[tuple[str, str]] | None = None
     ros_arguments: list[str] | None = None
-    arguments: list[str] | None = None
-    # env: dict[str, str] | None = None
 
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
@@ -28,7 +31,7 @@ class ParametersFile:
 
 @dataclasses.dataclass(frozen=True)
 class Deployment:
-    entities: list[Deployment | EnvironmentVariable | Node | ParametersFile]
+    entities: list[Deployment | EnvironmentVariable | RosNode | ParametersFile]
 
 
-Entity = Deployment | EnvironmentVariable | Node | ParametersFile
+Entity = Deployment | EnvironmentVariable | Process | RosNode | ParametersFile

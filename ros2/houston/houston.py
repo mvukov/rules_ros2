@@ -20,7 +20,7 @@ def flatten(src: entity.Deployment) -> entity.Deployment:
             case entity.Deployment(entities):
                 for current_entity in entities:
                     src_entities.append(current_entity)
-            case entity.EnvironmentVariable() | entity.Node(
+            case entity.EnvironmentVariable() | entity.RosNode(
             ) | entity.ParametersFile():
                 dst_entities.append(src_entity)
             case _:
@@ -38,13 +38,13 @@ def validate(deployment: entity.Deployment,
                     raise ValueError(
                         'Environment variable name must not be empty')
 
-            case entity.Node():
+            case entity.RosNode():
                 if not current_entity.name:
-                    raise ValueError('Node name must not be empty')
+                    raise ValueError('RosNode name must not be empty')
                 if pathlib.Path(
                         current_entity.executable) not in executable_paths:
                     raise ValueError(
-                        f'Node {current_entity.name} executable '
+                        f'RosNode {current_entity.name} executable '
                         f'{current_entity.executable} is '
                         f'not in the list of known nodes {executable_paths}')
 
@@ -72,7 +72,7 @@ def collect_parameters(deployment: entity.Deployment, dst: pathlib.Path):
     params_files: list[pathlib.Path] = []
     for current_entity in deployment.entities:
         match current_entity:
-            case entity.Node():
+            case entity.RosNode():
                 params_files.append(pathlib.Path(
                     current_entity.parameters_file))
             case entity.ParametersFile():
@@ -110,7 +110,7 @@ class ProcessConfig:
     stop: str
 
 
-def create_node_process_config(node: entity.Node,
+def create_node_process_config(node: entity.RosNode,
                                merged_params_file: pathlib.Path,
                                only_env: list[str] | None) -> ProcessConfig:
     args = ['--ros-args', '-r', f'__node:={node.name}']
@@ -139,7 +139,7 @@ def collect_process_configs(
     process_configs: list[ProcessConfig] = []
     for current_entity in deployment.entities:
         match current_entity:
-            case entity.Node():
+            case entity.RosNode():
                 process_configs.append(
                     create_node_process_config(current_entity,
                                                merged_params_file, only_env))
