@@ -167,7 +167,7 @@ ros2_launch = rule(
             providers = [HoustonDeploymentInfo],
         ),
         "_generator": attr.label(
-            default = Label("@com_github_mvukov_rules_ros2//ros2/houston:ground_control_config_generator"),
+            default = Label("@com_github_mvukov_rules_ros2//ros2/houston:generate_config"),
             executable = True,
             cfg = "exec",
         ),

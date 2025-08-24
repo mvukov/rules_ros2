@@ -1,3 +1,4 @@
+import argparse
 import collections
 import dataclasses
 import importlib.util
@@ -16,10 +17,11 @@ def flatten(src: entity.Deployment) -> entity.Deployment:
     src_entities: collections.deque[entity.Entity] = collections.deque(
         src.entities)
     while src_entities:
-        match src_entity := src_entities.pop():
+        src_entity = src_entities.pop()
+        match src_entity:
             case entity.Deployment(entities):
                 for current_entity in entities:
-                    src_entities.append(current_entity)
+                    src_entities.appendleft(current_entity)
             case entity.EnvironmentVariable() | entity.RosNode(
             ) | entity.ParametersFile():
                 dst_entities.append(src_entity)
@@ -86,11 +88,22 @@ def collect_parameters(deployment: entity.Deployment, dst: pathlib.Path):
     with open(params_files[0], encoding='utf-8') as stream:
         merged_params = yaml.load(stream, yaml.SafeLoader)
 
+    merger = deepmerge.Merger(
+        [
+            # Defines type-wise strategies.
+            (list, 'append_unique'),
+            (dict, 'merge'),
+            (set, 'union'),
+        ],
+        ['override'],  # Fallback strategies, applied to all other types.
+        ['override'],  # Strategies in the case where the types conflict.
+    )
+
     if len(params_files) > 1:
         for params_file in params_files[1:]:
             with open(params_file, encoding='utf-8') as stream:
-                merged_params = deepmerge.always_merger.merge(
-                    merged_params, yaml.load(stream, yaml.SafeLoader))
+                merged_params = merger.merge(merged_params,
+                                             yaml.load(stream, yaml.FullLoader))
 
     with open(dst, 'w', encoding='utf-8') as stream:
         yaml.dump(merged_params, stream)
@@ -203,7 +216,6 @@ def generate_groundcontrol_config_file(
 
     deployments: list[entity.Deployment] = []
     for idx, deployment_specs_file in enumerate(deployment_specs_files):
-        print(deployment_specs_file)
         spec = importlib.util.spec_from_file_location(
             f'deployment_specs_module_{idx}', deployment_specs_file)
         # spec can be None!
@@ -221,3 +233,31 @@ def generate_groundcontrol_config_file(
         toml.dump(groundcontrol_config,
                   stream,
                   encoder=toml.TomlPreserveInlineDictEncoder())
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--deployment_specs',
+                        nargs='+',
+                        type=pathlib.Path,
+                        required=True)
+    parser.add_argument('--merged_params_exec_path',
+                        type=pathlib.Path,
+                        required=True)
+    parser.add_argument('--merged_params_root_path',
+                        type=pathlib.Path,
+                        required=True)
+    parser.add_argument('--groundcontrol_config',
+                        type=pathlib.Path,
+                        required=True)
+    parser.add_argument('--executable_paths',
+                        nargs='+',
+                        type=pathlib.Path,
+                        required=True)
+    args = parser.parse_args()
+
+    generate_groundcontrol_config_file(args.deployment_specs,
+                                       args.merged_params_exec_path,
+                                       args.merged_params_root_path,
+                                       args.groundcontrol_config,
+                                       args.executable_paths)

@@ -4,24 +4,20 @@ load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 load(":houston.bzl", "ros2_deployment", "ros2_launch")
 
 py_library(
-    name = "houston_lib",
-    srcs = [
-        "entity.py",
-        "houston.py",
-    ],
+    name = "houston",
+    srcs = ["entity.py"],
+)
+
+py_binary(
+    name = "generate_config",
+    srcs = ["generate_config.py"],
+    visibility = ["//visibility:public"],
     deps = [
+        ":houston",
         requirement("deepmerge"),
         requirement("pyyaml"),
         requirement("toml"),
     ],
-)
-
-py_binary(
-    name = "ground_control_config_generator",
-    srcs = ["main.py"],
-    main = "main.py",
-    visibility = ["//visibility:public"],
-    deps = [":houston_lib"],
 )
 
 ros2_deployment(

@@ -1,7 +1,7 @@
 from ros2.houston import entity
 
 
-def create_deployment():
+def create_deployment() -> entity.Deployment:
     return entity.Deployment([
         entity.ParametersFile(path='ros2/houston/global.yaml'),
         entity.EnvironmentVariable(name='foo', value='bar'),
