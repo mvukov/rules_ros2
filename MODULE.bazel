@@ -31,19 +31,6 @@ bazel_dep(name = "googletest", version = "1.17.0", dev_dependency = True)
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-http_archive(
-    name = "ros2_rust",
-    build_file = "//repositories:ros2_rust.BUILD.bazel",
-    patch_args = ["-p1"],
-    patches = [
-        "//repositories/patches:ros2_rust_fix_rclrs.patch",
-        "//repositories/patches:ros2_rust_fix_rosidl_generator.patch",
-        "//repositories/patches:ros2_rust_fix_rosidl_runtime.patch",
-    ],
-    sha256 = "6ef8722c2dde10e5c2fc1b9aef6ec3cc397f8cda40d58743045584aa59a6b0c8",
-    strip_prefix = "ros2_rust-9a845c17873cbdf49e8017d5f0af6d8f795589cc",
-    urls = ["https://github.com/ros2-rust/ros2_rust/archive/9a845c17873cbdf49e8017d5f0af6d8f795589cc.zip"],
-)
 
 _PYTHON_VERSIONS = [
     "3.10",
@@ -167,6 +154,7 @@ use_repo(
     "ros2_rosidl_runtime_py",
     "ros2_rosidl_typesupport",
     "ros2_rpyutils",
+    "ros2_rust",
     "ros2_tracing",
     "ros2_unique_identifier_msgs",
     "ros2_urdfdom",
