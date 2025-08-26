@@ -345,7 +345,7 @@ def ros2_rust_repositories():
             "//repositories/patches:ros2_rust_fix_rosidl_generator.patch",
             "//repositories/patches:ros2_rust_fix_rosidl_runtime.patch",
         ],
-        sha256 = "6ef8722c2dde10e5c2fc1b9aef6ec3cc397f8cda40d58743045584aa59a6b0c8",
-        strip_prefix = "ros2_rust-9a845c17873cbdf49e8017d5f0af6d8f795589cc",
-        urls = ["https://github.com/ros2-rust/ros2_rust/archive/9a845c17873cbdf49e8017d5f0af6d8f795589cc.zip"],
+        sha256 = "b0aa9c2a890968946dd29d2368fcba542cadd8399b5a0460a3559888b272209b",
+        strip_prefix = "ros2_rust-v0.5.1",
+        urls = ["https://github.com/ros2-rust/ros2_rust/archive/v0.5.1.tar.gz"],
     )
