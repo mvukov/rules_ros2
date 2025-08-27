@@ -35,6 +35,7 @@ use_repo(
     "ros2_launch_ros",
     "ros2_rcl_interfaces",
     "ros2_rclcpp",
+    "ros2_rust",
     # Required for bazel run:
     "ros2_rclpy",
     "ros2_rosidl",

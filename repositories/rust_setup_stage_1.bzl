@@ -16,7 +16,9 @@ def rust_setup_stage_1():
         strip_prefix = "extensions/bindgen",
         url = "https://github.com/bazelbuild/rules_rust/releases/download/0.63.0/rules_rust-0.63.0.tar.gz",
     )
+    ros2_rust_repositories()
 
+def ros2_rust_repositories():
     maybe(
         http_archive,
         name = "ros2_rust",
