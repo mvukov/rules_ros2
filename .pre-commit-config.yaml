@@ -44,21 +44,21 @@ repos:
       - id: yapf
         args: [-i, --style, .style.yapf]
   - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.14.0
+    rev: v3.15.0
     hooks:
       - id: reorder-python-imports
         args: [--py37-plus]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.4
+    rev: v0.12.9
     hooks:
       - id: ruff
         args: [--fix, --show-fixes, --exit-non-zero-on-fix]
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v19.1.5
+    rev: v19.1.7
     hooks:
       - id: clang-format
   - repo: https://github.com/cpplint/cpplint
-    rev: 2.0.0
+    rev: 2.0.2
     hooks:
       - id: cpplint
         args: ["--filter=-build/c++11,-build/c++14"]
