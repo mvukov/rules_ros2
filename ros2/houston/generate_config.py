@@ -123,9 +123,9 @@ class ProcessConfig:
     stop: str
 
 
-def create_node_process_config(node: entity.RosNode,
-                               merged_params_file: pathlib.Path,
-                               only_env: list[str] | None) -> ProcessConfig:
+def create_ros_node_process_config(node: entity.RosNode,
+                                   merged_params_file: pathlib.Path,
+                                   only_env: list[str] | None) -> ProcessConfig:
     args = ['--ros-args', '-r', f'__node:={node.name}']
     args.extend(['--params-file', merged_params_file])
 
@@ -136,6 +136,7 @@ def create_node_process_config(node: entity.RosNode,
     if node.ros_arguments is not None and node.ros_arguments:
         args.extend(node.ros_arguments)
     if node.arguments is not None and node.arguments:
+        args.append('--')
         args.extend(node.arguments)
 
     return ProcessConfig(name=node.name,
@@ -154,8 +155,9 @@ def collect_process_configs(
         match current_entity:
             case entity.RosNode():
                 process_configs.append(
-                    create_node_process_config(current_entity,
-                                               merged_params_file, only_env))
+                    create_ros_node_process_config(current_entity,
+                                                   merged_params_file,
+                                                   only_env))
             case _:
                 pass
     return process_configs
