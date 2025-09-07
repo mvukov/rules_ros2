@@ -31,7 +31,8 @@ class ParametersFile:
 
 @dataclasses.dataclass(frozen=True)
 class Deployment:
-    entities: list[Deployment | EnvironmentVariable | RosNode | ParametersFile]
+    entities: list[Deployment | EnvironmentVariable | Process | RosNode |
+                   ParametersFile]
 
 
 Entity = Deployment | EnvironmentVariable | Process | RosNode | ParametersFile
