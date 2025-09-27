@@ -5,18 +5,20 @@ def rust_setup_stage_1():
     maybe(
         http_archive,
         name = "rules_rust",
-        sha256 = "c9d5a39cb3e1ceacace98f19f09d61c4b55034bc34a565bdcf7cd80eb4c412af",
-        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.62.0/rules_rust-0.62.0.tar.gz",
+        sha256 = "c38b622f26f35c34738100e26d1793ff252897381546467b22d89c9d4d8bfd50",
+        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.63.0/rules_rust-0.63.0.tar.gz",
     )
 
     maybe(
         http_archive,
         name = "rules_rust_bindgen",
-        sha256 = "c9d5a39cb3e1ceacace98f19f09d61c4b55034bc34a565bdcf7cd80eb4c412af",
+        sha256 = "c38b622f26f35c34738100e26d1793ff252897381546467b22d89c9d4d8bfd50",
         strip_prefix = "extensions/bindgen",
-        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.62.0/rules_rust-0.62.0.tar.gz",
+        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.63.0/rules_rust-0.63.0.tar.gz",
     )
+    ros2_rust_repositories()
 
+def ros2_rust_repositories():
     maybe(
         http_archive,
         name = "ros2_rust",
