@@ -7,6 +7,7 @@ load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:pip.bzl", "whl_filegroup")
 
 exports_files([
+    "action.bzl",
     "ament.bzl",
     "ament_setup.cc.tpl",
     "ament_setup.h.tpl",
@@ -20,6 +21,7 @@ exports_files([
     "plugin.bzl",
     "py_defs.bzl",
     "pytest_wrapper.py.tpl",
+    "ros2_action.py",
     "ros2_service.py",
     "ros2_topic.py",
     "rust_defs.bzl",
