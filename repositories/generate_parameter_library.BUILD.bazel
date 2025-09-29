@@ -1,0 +1,48 @@
+load("@hmnd_pip_deps//:requirements.bzl", "requirement")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+
+package(default_visibility = ["//visibility:public"])
+
+py_library(
+    name = "generate_parameter_library_py",
+    srcs = glob(
+        ["generate_parameter_library_py/generate_parameter_library_py/**/*.py"],
+        exclude = ["generate_parameter_library_py/generate_parameter_library_py/tests/**"],
+    ),
+    data = glob(["generate_parameter_library_py/generate_parameter_library_py/jinja_templates/**/*"]),
+    imports = ["generate_parameter_library_py"],
+    deps = [
+        requirement("pyyaml"),
+        requirement("Jinja2"),
+        requirement("typeguard"),
+    ],
+)
+
+py_binary(
+    name = "generate_python_module",
+    srcs = ["generate_parameter_library_py/generate_parameter_library_py/generate_python_module.py"],
+    deps = [":generate_parameter_library_py"],
+)
+
+py_binary(
+    name = "generate_cpp_header",
+    srcs = ["generate_parameter_library_py/generate_parameter_library_py/generate_cpp_header.py"],
+    deps = [":generate_parameter_library_py"],
+)
+
+py_binary(
+    name = "generate_markdown",
+    srcs = ["generate_parameter_library_py/generate_parameter_library_py/generate_markdown.py"],
+    deps = [":generate_parameter_library_py"],
+)
+
+cc_library(
+    name = "parameter_traits",
+    hdrs = glob(["parameter_traits/include/**/*.hpp"]),
+    includes = ["parameter_traits/include"],
+    deps = [
+        "@fmt",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
