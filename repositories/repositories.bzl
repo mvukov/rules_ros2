@@ -75,9 +75,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "bazel_features",
-        sha256 = "f08776c1430e8f35209a054f828d0985019879e554c4eb32a093e1f49bc9231e",
-        strip_prefix = "bazel_features-1.34.0",
-        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.34.0/bazel_features-v1.34.0.tar.gz",
+        sha256 = "9390b391a68d3b24aef7966bce8556d28003fe3f022a5008efc7807e8acaaf1a",
+        strip_prefix = "bazel_features-1.36.0",
+        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.36.0/bazel_features-v1.36.0.tar.gz",
     )
 
     maybe(
