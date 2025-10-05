@@ -34,7 +34,9 @@ ros2_cpp_binary(
 py_binary(
     name = "py_publisher",
     srcs = ["publisher.py"],
+    main = "publisher.py",
     deps = [
+        ":py_publisher_parameters",
         "@ros2_common_interfaces//:py_std_msgs",
         "@ros2_rclpy//:rclpy",
     ],
