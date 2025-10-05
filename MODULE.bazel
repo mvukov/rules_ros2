@@ -116,6 +116,7 @@ use_repo(crate, "rules_ros2_crate_index")
 rules_ros2_non_module_deps = use_extension("//ros2:extensions.bzl", "non_module_deps")
 use_repo(
     rules_ros2_non_module_deps,
+    "cpp_polyfills",
     "cyclonedds",
     "foxglove_bridge",
     "generate_parameter_library",
@@ -161,5 +162,6 @@ use_repo(
     "ros2_urdfdom_headers",
     "ros2_xacro",
     "ros2cli",
+    "rsl",
     "rules_ros2_config_clang",
 )
