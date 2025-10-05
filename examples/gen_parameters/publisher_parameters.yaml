@@ -1,3 +1,4 @@
+# This name will become a C++ namespace and a Python class
 publisher:
   names:
     type: string_array
