@@ -42,6 +42,7 @@ use_repo(
     "ros2_rust",
     "ros2_unique_identifier_msgs",
     "ros2cli",
+    "generate_parameter_library",
     # Required for bazel run:
     "ros2_rclpy",
     "ros2_rosidl",
