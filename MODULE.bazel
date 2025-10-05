@@ -118,6 +118,7 @@ use_repo(
     rules_ros2_non_module_deps,
     "cyclonedds",
     "foxglove_bridge",
+    "generate_parameter_library",
     "iceoryx",
     "osrf_pycommon",
     "ros2",

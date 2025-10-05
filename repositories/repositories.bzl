@@ -333,3 +333,12 @@ def ros2_repositories():
         strip_prefix = "rcl_logging_syslog-e63257f2d5ca693f286bbcedf2b23720675b7f73",
         urls = ["https://github.com/fujitatomoya/rcl_logging_syslog/archive/e63257f2d5ca693f286bbcedf2b23720675b7f73.zip"],
     )
+
+    maybe(
+        http_archive,
+        name = "generate_parameter_library",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:generate_parameter_library.BUILD.bazel",
+        url = "https://github.com/PickNikRobotics/generate_parameter_library/archive/0.5.0.tar.gz",
+        strip_prefix = "generate_parameter_library-0.5.0",
+        sha256 = "974511231e5c5691d2a643cb0c84129b8470408326cc675f74d2ba8c86f3d8bf",
+    )
