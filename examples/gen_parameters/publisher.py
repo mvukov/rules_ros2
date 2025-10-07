@@ -25,7 +25,7 @@ class PublisherNode(Node):
         msg = String()
         msg.data = name
         self.publisher.publish(msg)
-        self.get_logger().info(f"Published: {msg.data}")
+        self.get_logger().info(f'Published: {msg.data}')
 
     def param_callback(self, params):
         self.params = self.param_listener.get_params()
@@ -33,10 +33,10 @@ class PublisherNode(Node):
 
     def print_params(self):
         self.get_logger().info('Current parameters:')
-        self.get_logger().info(f"  names: {self.params.names}")
-        self.get_logger().info(f"  publish_topic: {self.params.publish_topic}")
+        self.get_logger().info(f'  names: {self.params.names}')
+        self.get_logger().info(f'  publish_topic: {self.params.publish_topic}')
         self.get_logger().info(
-            f"  publish_frequency_hz: {self.params.publish_frequency_hz}")
+            f'  publish_frequency_hz: {self.params.publish_frequency_hz}')
 
 
 def main(args=None):
