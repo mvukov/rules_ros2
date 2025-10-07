@@ -22,7 +22,6 @@ def cpp_parameter_library(name, parameter_file, header_name = None):
     cc_library(
         name = name,
         hdrs = [header],
-        includes = ["."],
         deps = [
             "@ros2_rclcpp//:rclcpp",
             "@ros2_rclcpp//:rclcpp_lifecycle",
