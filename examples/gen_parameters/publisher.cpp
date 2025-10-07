@@ -1,7 +1,7 @@
 #include <chrono>
 #include <memory>
-#include <string>
 #include <sstream>
+#include <string>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
@@ -14,16 +14,18 @@ namespace publisher {
 class PublisherNode : public rclcpp::Node {
  public:
   PublisherNode() : Node("publisher_params_node") {
-    param_listener_ = std::make_shared<ParamListener>(get_node_parameters_interface());
+    param_listener_ =
+        std::make_shared<ParamListener>(get_node_parameters_interface());
     param_listener_->setUserCallback(
-        [this](const auto& params) { reconfigure_callback(params); }
-        );
+        [this](const auto& params) { reconfigure_callback(params); });
     params_ = param_listener_->get_params();
     print_params();
     int64_t publish_rate_ms = std::round(1000.0 / params_.publish_frequency_hz);
 
-    publisher_ = create_publisher<std_msgs::msg::String>(params_.publish_topic, 10);
-    timer_ = create_wall_timer(std::chrono::milliseconds(publish_rate_ms), [this]() { timer_callback(); });
+    publisher_ =
+        create_publisher<std_msgs::msg::String>(params_.publish_topic, 10);
+    timer_ = create_wall_timer(std::chrono::milliseconds(publish_rate_ms),
+                               [this]() { timer_callback(); });
   }
 
   void reconfigure_callback(const Params& params) {
@@ -46,8 +48,10 @@ class PublisherNode : public rclcpp::Node {
 
     RCLCPP_INFO(get_logger(), "Received new parameters:");
     RCLCPP_INFO(get_logger(), "  names: %s", names_ss.str().c_str());
-    RCLCPP_INFO(get_logger(), "  publish_frequency_hz: %f", params_.publish_frequency_hz);
-    RCLCPP_INFO(get_logger(), "  publish_topic: %s", params_.publish_topic.c_str());
+    RCLCPP_INFO(get_logger(), "  publish_frequency_hz: %f",
+                params_.publish_frequency_hz);
+    RCLCPP_INFO(get_logger(), "  publish_topic: %s",
+                params_.publish_topic.c_str());
   }
 
   void timer_callback() {
@@ -67,7 +71,7 @@ class PublisherNode : public rclcpp::Node {
   size_t name_idx = 0;
 };
 
-} // namespace publisher
+}  // namespace publisher
 
 int main(int argc, char* argv[]) {
   rclcpp::init(argc, argv);
