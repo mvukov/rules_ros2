@@ -1,5 +1,5 @@
 import rclpy
-from gen_parameters.publisher_parameters import publisher as publisher_parameters
+from gen_parameters.publisher_parameters import publisher
 from rclpy.node import Node
 from std_msgs.msg import String
 
@@ -8,7 +8,7 @@ class PublisherNode(Node):
 
     def __init__(self):
         super().__init__('publisher_node')
-        self.param_listener = publisher_parameters.ParamListener(self)
+        self.param_listener = publisher.ParamListener(self)
         self.params = self.param_listener.get_params()
         self.param_listener.set_user_callback(self.param_callback)
         self.print_params()
@@ -32,7 +32,7 @@ class PublisherNode(Node):
         self.print_params()
 
     def print_params(self):
-        self.get_logger().info("Current parameters:")
+        self.get_logger().info('Current parameters:')
         self.get_logger().info(f"  names: {self.params.names}")
         self.get_logger().info(f"  publish_topic: {self.params.publish_topic}")
         self.get_logger().info(
