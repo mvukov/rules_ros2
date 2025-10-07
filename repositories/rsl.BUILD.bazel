@@ -7,10 +7,10 @@ cc_library(
     includes = ["include"],
     visibility = ["//visibility:public"],
     deps = [
-        "@fmt",
-        "@ros2_rclcpp//:rclcpp",
         "@cpp_polyfills//:tcb_span",
         "@cpp_polyfills//:tl_expected",
-        "@eigen"
-    ]
+        "@eigen",
+        "@fmt",
+        "@ros2_rclcpp//:rclcpp",
+    ],
 )
