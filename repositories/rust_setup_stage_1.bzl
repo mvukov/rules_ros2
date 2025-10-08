@@ -12,9 +12,9 @@ def rust_setup_stage_1():
     maybe(
         http_archive,
         name = "rules_rust_bindgen",
-        sha256 = "c38b622f26f35c34738100e26d1793ff252897381546467b22d89c9d4d8bfd50",
+        sha256 = "e4a829fb971972b2684ce52af4217a28974db01db3373bd833d52760ca18e657",
         strip_prefix = "extensions/bindgen",
-        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.63.0/rules_rust-0.63.0.tar.gz",
+        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.66.0/rules_rust-0.66.0.tar.gz",
     )
     ros2_rust_repositories()
 
