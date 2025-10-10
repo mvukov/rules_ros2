@@ -139,6 +139,7 @@ py_library(
     deps = [
         ":rosidl_cmake",
         ":rosidl_parser",
+        ":rosidl_pycommon",
     ],
 )
 
@@ -265,6 +266,7 @@ py_library(
         ":rosidl_cmake",
         ":rosidl_generator_cpp_lib",
         ":rosidl_parser",
+        ":rosidl_pycommon",
     ],
 )
 
@@ -288,4 +290,14 @@ filegroup(
     name = "rosidl_typesupport_introspection_generator_cpp_templates",
     srcs = glob(["rosidl_typesupport_introspection_cpp/resource/*.em"]),
     visibility = ["//visibility:public"],
+)
+
+py_library(
+    name = "rosidl_pycommon",
+    srcs = ["rosidl_pycommon/rosidl_pycommon/__init__.py"],
+    imports = ["rosidl_pycommon"],
+    deps = [
+        ":rosidl_parser",
+        requirement("empy"),
+    ],
 )

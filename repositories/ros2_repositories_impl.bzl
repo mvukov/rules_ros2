@@ -144,7 +144,7 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2_rcl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcl.BUILD.bazel",
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:fix-null-allocator-and-racy-condition.-1188.patch"],
+        # patches = ["@com_github_mvukov_rules_ros2//repositories/patches:fix-null-allocator-and-racy-condition.-1188.patch"],
         sha256 = "07ad74d7b3e55c65beac9cc4b5cd4521fc713bec28cc44f42e2f91ad77f8ffeb",
         strip_prefix = "rcl-9.2.7",
         url = "https://github.com/ros2/rcl/archive/refs/tags/9.2.7.tar.gz",
