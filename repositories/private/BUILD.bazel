@@ -27,6 +27,7 @@ py_binary(
     deps = [
         requirement("aiofile"),
         requirement("aiohttp"),
+        requirement("async_timeout"),
         requirement("pyyaml"),
         requirement("tqdm"),
     ],
