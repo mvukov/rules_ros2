@@ -96,6 +96,7 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         "@ros2_rosidl//:rosidl_cmake",
+        "@ros2_rosidl//:rosidl_generator_c_lib",
         "@ros2_rosidl//:rosidl_parser",
         "@ros2_rosidl//:rosidl_pycommon",
     ],

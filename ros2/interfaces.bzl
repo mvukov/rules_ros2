@@ -292,19 +292,29 @@ def _get_srcs(files):
 def _get_compilation_contexts_from_deps(deps):
     return [dep[CcInfo].compilation_context for dep in deps]
 
-def _get_compilation_contexts_from_aspect_info_deps(deps, aspect_info):
-    return [dep[aspect_info].cc_info.compilation_context for dep in deps]
+def _get_compilation_contexts_from_aspect_info_deps(deps, aspect_infos):
+    return [
+        dep[aspect_info].cc_info.compilation_context
+        for aspect_info in aspect_infos
+        for dep in deps
+        if aspect_info in dep
+    ]
 
 def _get_linking_contexts_from_deps(deps):
     return [dep[CcInfo].linking_context for dep in deps]
 
-def _get_linking_contexts_from_aspect_info_deps(deps, aspect_info):
-    return [dep[aspect_info].cc_info.linking_context for dep in deps]
+def _get_linking_contexts_from_aspect_info_deps(deps, aspect_infos):
+    return [
+        dep[aspect_info].cc_info.linking_context
+        for aspect_info in aspect_infos
+        for dep in deps
+        if aspect_info in dep
+    ]
 
 def _compile_cc_generated_code(
         ctx,
         name,
-        aspect_info,
+        aspect_infos,
         srcs,
         hdrs,
         deps,
@@ -325,10 +335,13 @@ def _compile_cc_generated_code(
     compilation_contexts = (
         _get_compilation_contexts_from_aspect_info_deps(
             rule_deps,
-            aspect_info,
+            aspect_infos,
         ) +
         _get_compilation_contexts_from_deps(deps)
     )
+    # print([cc.direct_public_headers for cc in compilation_contexts])
+    # print(hdrs)
+
     compilation_context, compilation_outputs = cc_common.compile(
         actions = ctx.actions,
         name = name,
@@ -344,7 +357,7 @@ def _compile_cc_generated_code(
     linking_contexts = (
         _get_linking_contexts_from_aspect_info_deps(
             rule_deps,
-            aspect_info,
+            aspect_infos,
         ) +
         _get_linking_contexts_from_deps(deps)
     )
@@ -424,7 +437,7 @@ def _c_generator_aspect_impl(target, ctx):
     compilation_info = _compile_cc_generated_code(
         ctx,
         name = package_name + "_c",
-        aspect_info = CGeneratorAspectInfo,
+        aspect_infos = [CGeneratorAspectInfo],
         srcs = srcs,
         hdrs = hdrs,
         deps = ctx.attr._c_deps,
@@ -540,6 +553,7 @@ def _cpp_generator_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
+    c_generator_cc_info = target[CGeneratorAspectInfo].cc_info  # Inject this!!!
 
     interface_outputs, cc_include_dir = run_generator(
         ctx,
@@ -590,12 +604,13 @@ def _cpp_generator_aspect_impl(target, ctx):
     compilation_info = _compile_cc_generated_code(
         ctx,
         name = package_name + "_cpp",
-        aspect_info = CppGeneratorAspectInfo,
+        aspect_infos = [CGeneratorAspectInfo, CppGeneratorAspectInfo],
         srcs = srcs,
         hdrs = hdrs,
         deps = ctx.attr._cpp_deps,
         cc_include_dir = cc_include_dir,
         copts = [],
+        target = target,
     )
 
     return [
@@ -651,7 +666,10 @@ cpp_generator_aspect = aspect(
         ),
     },
     required_providers = [Ros2InterfaceInfo],
-    required_aspect_providers = [IdlAdapterAspectInfo],
+    required_aspect_providers = [
+        [IdlAdapterAspectInfo],
+        [CGeneratorAspectInfo],
+    ],
     provides = [CppGeneratorAspectInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
     fragments = ["cpp"],
@@ -664,7 +682,11 @@ cpp_ros2_interface_library = rule(
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
-            aspects = [idl_adapter_aspect, cpp_generator_aspect],
+            aspects = [
+                idl_adapter_aspect,
+                c_generator_aspect,
+                cpp_generator_aspect,
+            ],
             providers = [Ros2InterfaceInfo],
         ),
     },
@@ -724,7 +746,7 @@ def _py_generator_aspect_impl(target, ctx):
     compilation_info = _compile_cc_generated_code(
         ctx,
         name = package_name + "_py",
-        aspect_info = CGeneratorAspectInfo,
+        aspect_infos = [CGeneratorAspectInfo],
         srcs = cc_srcs,
         hdrs = [],
         deps = ctx.attr._py_ext_c_deps,

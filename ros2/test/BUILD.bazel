@@ -72,6 +72,7 @@ ros2_cpp_test(
     srcs = ["cpp_idl_tests.cc"],
     deps = [
         "@googletest//:gtest_main",
-        "@ros2_common_interfaces//:c_std_msgs",
+        # "@ros2_rcl_interfaces//:cpp_builtin_interfaces",
+        "@ros2_common_interfaces//:cpp_std_msgs",
     ],
 )
