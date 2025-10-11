@@ -296,6 +296,7 @@ py_library(
     name = "rosidl_pycommon",
     srcs = ["rosidl_pycommon/rosidl_pycommon/__init__.py"],
     imports = ["rosidl_pycommon"],
+    visibility = ["//visibility:public"],
     deps = [
         ":rosidl_parser",
         requirement("empy"),

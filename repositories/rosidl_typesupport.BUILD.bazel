@@ -95,6 +95,7 @@ py_library(
     deps = [
         "@ros2_rosidl//:rosidl_cmake",
         "@ros2_rosidl//:rosidl_parser",
+        "@ros2_rosidl//:rosidl_pycommon",
     ],
 )
 
