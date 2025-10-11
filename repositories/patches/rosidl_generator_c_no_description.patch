@@ -1,0 +1,12 @@
+diff --git a/rosidl_generator_c/rosidl_generator_c/__init__.py b/rosidl_generator_c/rosidl_generator_c/__init__.py
+index 50bb60b..ae35a9b 100644
+--- a/rosidl_generator_c/rosidl_generator_c/__init__.py
++++ b/rosidl_generator_c/rosidl_generator_c/__init__.py
+@@ -31,7 +31,6 @@ from rosidl_pycommon import generate_files
+ def generate_c(generator_arguments_file, disable_description_codegen=False):
+     mapping = {
+         'idl.h.em': '%s.h',
+-        'idl__description.c.em': 'detail/%s__description.c',
+         'idl__functions.c.em': 'detail/%s__functions.c',
+         'idl__functions.h.em': 'detail/%s__functions.h',
+         'idl__struct.h.em': 'detail/%s__struct.h',

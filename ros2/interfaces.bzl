@@ -187,11 +187,13 @@ def run_generator(
     )
     output_dir = generator_arguments_file.dirname
     generator_arguments = struct(
-        package_name = package_name,
-        idl_tuples = adapter.idl_tuples,
+        package_name = package_name,  # OK
+        idl_tuples = adapter.idl_tuples,  # OK
         output_dir = output_dir,
-        template_dir = generator_templates[0].dirname,
-        target_dependencies = [],  # TODO(mvukov) Do we need this?
+        template_dir = generator_templates[0].dirname,  # OK
+        target_dependencies = [],  # We don't need this, Bazel takes care of consistency.
+        # type_description_tuples = [],  # ?
+        # ros_interface_files = [] # ?
     )
     ctx.actions.write(generator_arguments_file, json.encode(generator_arguments))
 
@@ -258,9 +260,11 @@ CGeneratorAspectInfo = provider("TBD", fields = [
 
 _INTERFACE_GENERATOR_C_OUTPUT_MAPPING = [
     "%s.h",
+    # "detail/%s__description.c",
     "detail/%s__functions.c",
     "detail/%s__functions.h",
     "detail/%s__struct.h",
+    "detail/%s__type_support.c",
     "detail/%s__type_support.h",
 ]
 
@@ -268,7 +272,7 @@ _TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING = ["%s__type_support.c"]
 
 _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING = [
     "detail/%s__rosidl_typesupport_introspection_c.h",
-    "detail/%s__type_support.c",
+    # "detail/%s__type_support.c",
 ]
 
 def _get_hdrs(files):

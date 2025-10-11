@@ -66,3 +66,12 @@ ros2_cpp_test(
         "@ros2_rclcpp//:rclcpp",
     ],
 )
+
+ros2_cpp_test(
+    name = "cpp_idl_tests",
+    srcs = ["cpp_idl_tests.cc"],
+    deps = [
+        "@googletest//:gtest_main",
+        "@ros2_common_interfaces//:c_std_msgs",
+    ],
+)

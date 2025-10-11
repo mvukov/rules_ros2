@@ -92,7 +92,9 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         ":rosidl_cmake",
+        ":rosidl_generator_type_description_lib",
         ":rosidl_parser",
+        ":rosidl_pycommon",
     ],
 )
 
@@ -228,6 +230,7 @@ py_library(
         ":rosidl_cmake",
         ":rosidl_generator_c_lib",
         ":rosidl_parser",
+        ":rosidl_pycommon",
     ],
 )
 
@@ -301,4 +304,30 @@ py_library(
         ":rosidl_parser",
         requirement("empy"),
     ],
+)
+
+py_library(
+    name = "rosidl_generator_type_description_lib",
+    srcs = glob(["rosidl_generator_type_description/rosidl_generator_type_description/*.py"]),
+    imports = ["rosidl_generator_type_description"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":rosidl_parser",
+    ],
+)
+
+_ROSIDL_GENERATOR_TYPE_DESCRIPTION_PY = "rosidl_generator_type_description.py"
+
+copy_file(
+    name = "rosidl_generator_type_description_copy",
+    src = "rosidl_generator_type_description/bin/rosidl_generator_type_description",
+    out = _ROSIDL_GENERATOR_TYPE_DESCRIPTION_PY,
+)
+
+py_binary(
+    name = "rosidl_generator_type_description",
+    srcs = [_ROSIDL_GENERATOR_TYPE_DESCRIPTION_PY],
+    legacy_create_init = False,
+    visibility = ["//visibility:public"],
+    deps = [":rosidl_generator_type_description"],
 )
