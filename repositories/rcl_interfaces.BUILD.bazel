@@ -175,3 +175,29 @@ py_ros2_interface_library(
     visibility = ["//visibility:public"],
     deps = [":statistics_msgs"],
 )
+
+ros2_interface_library(
+    name = "service_msgs",
+    srcs = glob(["service_msgs/msg/*.msg"]),
+    visibility = ["//visibility:public"],
+    deps = [":builtin_interfaces"],
+)
+
+ros2_interface_library(
+    name = "type_description_interfaces",
+    srcs = glob([
+        "type_description_interfaces/msg/*.msg",
+        "type_description_interfaces/srv/*.srv",
+    ]),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":builtin_interfaces",
+        ":service_msgs",
+    ],
+)
+
+c_ros2_interface_library(
+    name = "c_type_description_interfaces",
+    visibility = ["//visibility:public"],
+    deps = [":type_description_interfaces"],
+)
