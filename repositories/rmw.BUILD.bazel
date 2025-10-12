@@ -17,6 +17,7 @@ ros2_c_library(
     deps = [
         "@ros2_rcutils//:rcutils",
         "@ros2_rosidl//:rosidl_runtime_c",
+        "@ros2_rosidl_dynamic_typesupport//:rosidl_dynamic_typesupport",
     ],
 )
 

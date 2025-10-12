@@ -126,6 +126,10 @@ repositories:
     patch_args: ["-p1"]
     patches:
       - "@com_github_mvukov_rules_ros2//repositories/patches:rosidl_rm_unnecessary_asserts.patch"
+      - "@com_github_mvukov_rules_ros2//repositories/patches:rosidl_generator_c_no_description.patch"
+  rosidl_dynamic_typesupport:
+    name: ros2_rosidl_dynamic_typesupport
+    build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl_dynamic_typesupport.BUILD.bazel"
   rosidl_python:
     name: ros2_rosidl_python
     build_file: "@com_github_mvukov_rules_ros2//repositories:rosidl_python.BUILD.bazel"

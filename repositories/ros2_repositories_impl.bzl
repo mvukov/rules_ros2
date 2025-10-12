@@ -300,13 +300,19 @@ def ros2_repositories_impl():
         name = "ros2_rosidl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel",
         patch_args = ["-p1"],
-        patches = [
-            "@com_github_mvukov_rules_ros2//repositories/patches:rosidl_rm_unnecessary_asserts.patch",
-            "@com_github_mvukov_rules_ros2//repositories/patches:rosidl_generator_c_no_description.patch",
-        ],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosidl_rm_unnecessary_asserts.patch", "@com_github_mvukov_rules_ros2//repositories/patches:rosidl_generator_c_no_description.patch"],
         sha256 = "834390cf1fea54f158c45b83cd5e2cc442e0c7c275fda172c01d57f67ce8fcbf",
         strip_prefix = "rosidl-4.6.6",
         url = "https://github.com/ros2/rosidl/archive/refs/tags/4.6.6.tar.gz",
+    )
+
+    maybe(
+        http_archive,
+        name = "ros2_rosidl_dynamic_typesupport",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_dynamic_typesupport.BUILD.bazel",
+        sha256 = "3a7076212e7450411dd728300efe09ef10c1c0714b1e98b805da2142f98e0f6f",
+        strip_prefix = "rosidl_dynamic_typesupport-0.1.2",
+        url = "https://github.com/ros2/rosidl_dynamic_typesupport/archive/refs/tags/0.1.2.tar.gz",
     )
 
     maybe(
