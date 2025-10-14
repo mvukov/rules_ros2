@@ -174,7 +174,11 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel",
         patch_cmds = ["patch"],
         patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_do-not-allocate-in-signal-handler.patch", "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_fix-maybe-uninitialized-warning.patch", "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_ts_libs_ownership.patch"],
+        patches = [
+            "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_do-not-allocate-in-signal-handler.patch",
+            # "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_fix-maybe-uninitialized-warning.patch",
+            # "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_ts_libs_ownership.patch"
+        ],
         sha256 = "17c6f49a507886af53fc2185b1de6b9c54013b113e3675042760e442b9c3d5ea",
         strip_prefix = "rclcpp-28.1.11",
         url = "https://github.com/ros2/rclcpp/archive/refs/tags/28.1.11.tar.gz",

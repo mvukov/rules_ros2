@@ -51,7 +51,10 @@ ros2_interface_library(
         "rcl_interfaces/srv/*.srv",
     ]),
     visibility = ["//visibility:public"],
-    deps = [":builtin_interfaces"],
+    deps = [
+        ":builtin_interfaces",
+        ":service_msgs",
+    ],
 )
 
 ros2_interface_library(
