@@ -5,7 +5,7 @@ load("//repositories:clang_configure.bzl", "clang_configure")
 
 def rust_setup_stage_2():
     rules_rust_dependencies()
-    rust_register_toolchains()
+    rust_register_toolchains(edition = "2021")
 
     clang_configure(name = "rules_ros2_config_clang")
 

@@ -72,7 +72,11 @@ def generate_launch_description():
         # roudi is a shared memory manager that also has to be started.
         launch.actions.ExecuteProcess(
             name='iceoryx_roudi',
-            cmd=[zero_copy.roudi.ROUDI_PATH],
+            cmd=[
+                zero_copy.roudi.ROUDI_PATH,
+                '-c',
+                'zero_copy/roudi.toml',
+            ],
         ),
         launch.actions.SetEnvironmentVariable(name='CYCLONEDDS_URI',
                                               value='zero_copy/cyclonedds.xml'),

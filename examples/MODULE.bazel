@@ -7,7 +7,7 @@ local_path_override(
 )
 
 bazel_dep(name = "rules_cc", version = "0.1.1")
-bazel_dep(name = "rules_python", version = "1.1.0")
+bazel_dep(name = "rules_python", version = "1.5.1")
 bazel_dep(name = "rules_rust", version = "0.59.2")
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
@@ -35,6 +35,8 @@ use_repo(
     "ros2_launch_ros",
     "ros2_rcl_interfaces",
     "ros2_rclcpp",
+    "ros2_rust",
+    "ros2cli",
     # Required for bazel run:
     "ros2_rclpy",
     "ros2_rosidl",

@@ -4,6 +4,8 @@
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
 load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "C_COPTS")
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
 
 def _ros2_cc_target(target, lang, name, ros2_package_name, **kwargs):
     if lang == "c":
@@ -93,7 +95,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, idl_deps, **kw
         testonly = is_test,
     )
 
-    sh_target = native.sh_test if is_test else native.sh_binary
+    sh_target = sh_test if is_test else sh_binary
     sh_target(
         name = name,
         srcs = [launcher],
