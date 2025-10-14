@@ -318,7 +318,7 @@ py_library(
     ],
 )
 
-_ROSIDL_GENERATOR_TYPE_DESCRIPTION_PY = "rosidl_generator_type_description.py"
+_ROSIDL_GENERATOR_TYPE_DESCRIPTION_PY = "rosidl_generator_type_description_app.py"
 
 copy_file(
     name = "rosidl_generator_type_description_copy",
@@ -327,9 +327,15 @@ copy_file(
 )
 
 py_binary(
-    name = "rosidl_generator_type_description",
+    name = "rosidl_generator_type_description_app",
     srcs = [_ROSIDL_GENERATOR_TYPE_DESCRIPTION_PY],
     legacy_create_init = False,
     visibility = ["//visibility:public"],
-    deps = [":rosidl_generator_type_description"],
+    deps = [":rosidl_generator_type_description_lib"],
+)
+
+filegroup(
+    name = "rosidl_generator_type_description_templates",
+    srcs = glob(["rosidl_generator_type_description/resource/*.schema.json"]),
+    visibility = ["//visibility:public"],
 )
