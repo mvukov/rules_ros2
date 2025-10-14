@@ -11,7 +11,6 @@ rust_ros2_interface_library(
 rust_test(
     name = "rust_idl_no_deps_tests",
     srcs = ["rust_idl_no_deps_tests.rs"],
-    edition = "2021",
     deps = [
         ":rust_builtin_interfaces",
         "@rules_ros2_crate_index//:serde_json",
@@ -26,7 +25,6 @@ rust_ros2_interface_library(
 rust_test(
     name = "rust_idl_with_deps_tests",
     srcs = ["rust_idl_with_deps_tests.rs"],
-    edition = "2021",
     deps = [":rust_sensor_msgs"],
 )
 
@@ -38,7 +36,6 @@ rust_ros2_interface_library(
 rust_binary(
     name = "publisher",
     srcs = ["publisher.rs"],
-    edition = "2021",
     deps = [
         ":rust_std_msgs",
         "@ros2_rust//:rclrs",
@@ -63,6 +60,5 @@ ros2_test(
 ros2_rust_test(
     name = "logging_tests",
     srcs = ["logging_tests.rs"],
-    edition = "2021",
     deps = ["@ros2_rust//:rclrs"],
 )

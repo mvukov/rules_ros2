@@ -55,7 +55,6 @@ rust_ros2_interface_library(
 rust_binary(
     name = "rust_talker",
     srcs = ["talker.rs"],
-    edition = "2021",
     deps = [
         ":rust_chatter_interface",
         "@ros2_rust//:rclrs",
@@ -66,7 +65,6 @@ rust_binary(
 rust_binary(
     name = "rust_listener",
     srcs = ["listener.rs"],
-    edition = "2021",
     deps = [
         ":rust_chatter_interface",
         "@ros2_rust//:rclrs",
@@ -92,7 +90,10 @@ py_library(
 
 ros2_launch(
     name = "zero_copy",
-    data = ["cyclonedds.xml"],
+    data = [
+        "cyclonedds.xml",
+        "roudi.toml",
+    ],
     launch_file = "zero_copy.py",
     nodes = [
         ":listener",

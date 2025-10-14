@@ -1,6 +1,6 @@
 uint64 timestamp
 uint64 count
 # Shared memory backend can only deal with fixed size messages.
-# 3145728 = 3*1024*1024 = 3MiB
-char[3145728] data
+# For reference, FHD image: 3 * 1080 * 1920 = 6220800 bytes.
+char[6220800] data
 uint64 data_length
