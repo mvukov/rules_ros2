@@ -333,9 +333,3 @@ py_binary(
     visibility = ["//visibility:public"],
     deps = [":rosidl_generator_type_description_lib"],
 )
-
-filegroup(
-    name = "rosidl_generator_type_description_templates",
-    srcs = glob(["rosidl_generator_type_description/resource/*.schema.json"]),
-    visibility = ["//visibility:public"],
-)

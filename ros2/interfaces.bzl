@@ -253,9 +253,6 @@ type_description_aspect = aspect(
             executable = True,
             cfg = "exec",
         ),
-        "_generator_templates": attr.label(
-            default = Label("@ros2_rosidl//:rosidl_generator_type_description_templates"),
-        ),
     },
     required_providers = [Ros2InterfaceInfo],
     required_aspect_providers = [IdlAdapterAspectInfo],
