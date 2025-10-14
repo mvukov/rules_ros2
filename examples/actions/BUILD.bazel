@@ -1,3 +1,4 @@
+load("@com_github_mvukov_rules_ros2//ros2:action.bzl", "ros2_action")
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
 load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
@@ -59,5 +60,12 @@ ros2_launch(
     nodes = [
         ":client",
         ":server",
+    ],
+)
+
+ros2_action(
+    name = "action",
+    deps = [
+        ":py_fibonacci_msgs",
     ],
 )

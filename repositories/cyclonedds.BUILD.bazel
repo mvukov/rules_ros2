@@ -98,6 +98,7 @@ cache_entries = {
     "BUILD_TESTING": "OFF",
     "ENABLE_DEADLINE_MISSED": "ON",
     "ENABLE_LIFESPAN": "ON",
+    "ENABLE_LTO": "OFF",
     "ENABLE_NETWORK_PARTITIONS": "ON",
     "ENABLE_SECURITY": "OFF",
     "ENABLE_SSL": "OFF",  # TODO(mvukov) Here we could use openssl/boringssl.
@@ -181,6 +182,7 @@ cmake(
     ),
     copts = [
         "-w",
+        "-D__FILE__=\"redacted\"",
     ],
     generate_args = ["-GNinja"],
     lib_source = ":all_srcs",

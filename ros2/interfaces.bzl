@@ -17,7 +17,7 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "C_COPTS")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
-load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_python//python:defs.bzl", "PyInfo", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 Ros2InterfaceInfo = provider(
