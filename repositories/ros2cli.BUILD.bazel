@@ -104,3 +104,17 @@ py_library(
         "@ros2_rclpy//:rclpy",
     ],
 )
+
+py_library(
+    name = "ros2action",
+    srcs = glob(["ros2action/ros2action/**/*.py"]),
+    imports = ["ros2action"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":ros2cli",
+        "@ros2_ament_index//:ament_index_python",
+        "@ros2_rcl_interfaces//:py_action_msgs",
+        "@ros2_rclpy//:rclpy",
+        "@ros2_rosidl_runtime_py//:rosidl_runtime_py",
+    ],
+)

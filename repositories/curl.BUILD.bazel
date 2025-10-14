@@ -98,7 +98,7 @@ cmake(
     lib_source = ":all_srcs",
     out_static_libs = ["libcurl.a"],
     postfix_script = """\
-cp ${BUILD_TMPDIR}/lib/libcurl.a ${INSTALLDIR}/lib
+cp $${BUILD_TMPDIR}/lib/libcurl.a $${INSTALLDIR}/lib
     """,
     visibility = ["//visibility:public"],
     deps = [
