@@ -267,7 +267,6 @@ def run_generator(
         srcs,
         package_name,
         adapter,
-        type_description,
         generator,
         generator_templates,
         output_mapping,
@@ -276,20 +275,22 @@ def run_generator(
         extra_generated_outputs = None,
         mnemonic = None,
         progress_message = None,
-        generator_env = None):
+        generator_env = None,
+        type_description = None):
     generator_templates = generator_templates[DefaultInfo].files.to_list()
 
     generator_arguments_file = ctx.actions.declare_file(
         "{}/{}_args.json".format(package_name, generator.basename),
     )
     output_dir = generator_arguments_file.dirname
+    type_description_tuples = type_description.type_description_tuples if type_description != None else []
     generator_arguments = struct(
-        package_name = package_name,  # OK
-        idl_tuples = adapter.idl_tuples,  # OK
+        package_name = package_name,
+        idl_tuples = adapter.idl_tuples,
         output_dir = output_dir,
-        template_dir = generator_templates[0].dirname,  # OK
+        template_dir = generator_templates[0].dirname,
         target_dependencies = [],  # We don't need this, Bazel takes care of consistency.
-        type_description_tuples = type_description.type_description_tuples,
+        type_description_tuples = type_description_tuples,
     )
     ctx.actions.write(generator_arguments_file, json.encode(generator_arguments))
 
@@ -320,8 +321,11 @@ def run_generator(
         relative_file = "{}/{}".format(package_name, extra_output)
         generator_outputs.append(ctx.actions.declare_file(relative_file))
 
+    inputs = adapter.idl_files + generator_templates + [generator_arguments_file]
+    if type_description != None:
+        inputs.extend(type_description.type_description_files.to_list())
     ctx.actions.run(
-        inputs = adapter.idl_files + generator_templates + [generator_arguments_file] + type_description.type_description_files.to_list(),
+        inputs = inputs,
         outputs = generator_outputs,
         env = generator_env,
         executable = generator,
@@ -479,20 +483,19 @@ def _c_generator_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
-    type_description = target[TypeDescriptionAspectInfo]
 
     interface_outputs, cc_include_dir = run_generator(
         ctx,
         srcs,
         package_name,
         adapter,
-        type_description,
         ctx.executable._interface_generator,
         ctx.attr._interface_templates,
         _INTERFACE_GENERATOR_C_OUTPUT_MAPPING,
         visibility_control_template = ctx.file._interface_visibility_control_template,
         mnemonic = "Ros2IdlGeneratorC",
         progress_message = "Generating C IDL interfaces for %{label}",
+        type_description = target[TypeDescriptionAspectInfo],
     )
 
     typesupport_outputs, _ = run_generator(
@@ -500,7 +503,6 @@ def _c_generator_aspect_impl(target, ctx):
         srcs,
         package_name,
         adapter,
-        type_description,
         ctx.executable._typesupport_generator,
         ctx.attr._typesupport_templates,
         _TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING,
@@ -519,7 +521,6 @@ def _c_generator_aspect_impl(target, ctx):
         srcs,
         package_name,
         adapter,
-        type_description,
         ctx.executable._typesupport_introspection_generator,
         ctx.attr._typesupport_introspection_templates,
         _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING,
@@ -658,14 +659,12 @@ def _cpp_generator_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
-    type_description = target[TypeDescriptionAspectInfo]
 
     interface_outputs, cc_include_dir = run_generator(
         ctx,
         srcs,
         package_name,
         adapter,
-        type_description,
         ctx.executable._interface_generator,
         ctx.attr._interface_templates,
         _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING,
@@ -679,7 +678,6 @@ def _cpp_generator_aspect_impl(target, ctx):
         srcs,
         package_name,
         adapter,
-        type_description,
         ctx.executable._typesupport_generator,
         ctx.attr._typesupport_templates,
         _TYPESUPPORT_GENERATOR_CPP_OUTPUT_MAPPING,
@@ -697,7 +695,6 @@ def _cpp_generator_aspect_impl(target, ctx):
         srcs,
         package_name,
         adapter,
-        type_description,
         ctx.executable._typesupport_introspection_generator,
         ctx.attr._typesupport_introspection_templates,
         _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING,
