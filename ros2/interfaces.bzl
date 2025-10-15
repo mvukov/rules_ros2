@@ -290,10 +290,8 @@ def run_generator(
         template_dir = generator_templates[0].dirname,  # OK
         target_dependencies = [],  # We don't need this, Bazel takes care of consistency.
         type_description_tuples = type_description.type_description_tuples,
-        # ros_interface_files = [] # ?
     )
     ctx.actions.write(generator_arguments_file, json.encode(generator_arguments))
-    print(generator_arguments)
 
     generator_cmd_args = ctx.actions.args()
     generator_cmd_args.add(
@@ -322,7 +320,6 @@ def run_generator(
         relative_file = "{}/{}".format(package_name, extra_output)
         generator_outputs.append(ctx.actions.declare_file(relative_file))
 
-    print(type_description.type_description_files)
     ctx.actions.run(
         inputs = adapter.idl_files + generator_templates + [generator_arguments_file] + type_description.type_description_files.to_list(),
         outputs = generator_outputs,
@@ -438,8 +435,6 @@ def _compile_cc_generated_code(
         ) +
         _get_compilation_contexts_from_deps(deps)
     )
-    # print([cc.direct_public_headers for cc in compilation_contexts])
-    # print(hdrs)
 
     compilation_context, compilation_outputs = cc_common.compile(
         actions = ctx.actions,
