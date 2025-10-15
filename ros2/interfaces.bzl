@@ -359,7 +359,7 @@ CGeneratorAspectInfo = provider("TBD", fields = [
 
 _INTERFACE_GENERATOR_C_OUTPUT_MAPPING = [
     "%s.h",
-    # "detail/%s__description.c",
+    "detail/%s__description.c",
     "detail/%s__functions.c",
     "detail/%s__functions.h",
     "detail/%s__struct.h",
@@ -371,7 +371,7 @@ _TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING = ["%s__type_support.c"]
 
 _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING = [
     "detail/%s__rosidl_typesupport_introspection_c.h",
-    # "detail/%s__type_support.c",
+    "detail/%s__rosidl_typesupport_introspection_c.c",
 ]
 
 def _get_hdrs(files):
@@ -663,13 +663,14 @@ def _cpp_generator_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
-    c_generator_cc_info = target[CGeneratorAspectInfo].cc_info  # Inject this!!!
+    type_description = target[TypeDescriptionAspectInfo]
 
     interface_outputs, cc_include_dir = run_generator(
         ctx,
         srcs,
         package_name,
         adapter,
+        type_description,
         ctx.executable._interface_generator,
         ctx.attr._interface_templates,
         _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING,
@@ -683,6 +684,7 @@ def _cpp_generator_aspect_impl(target, ctx):
         srcs,
         package_name,
         adapter,
+        type_description,
         ctx.executable._typesupport_generator,
         ctx.attr._typesupport_templates,
         _TYPESUPPORT_GENERATOR_CPP_OUTPUT_MAPPING,
@@ -700,6 +702,7 @@ def _cpp_generator_aspect_impl(target, ctx):
         srcs,
         package_name,
         adapter,
+        type_description,
         ctx.executable._typesupport_introspection_generator,
         ctx.attr._typesupport_introspection_templates,
         _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING,
@@ -778,6 +781,7 @@ cpp_generator_aspect = aspect(
     required_providers = [Ros2InterfaceInfo],
     required_aspect_providers = [
         [IdlAdapterAspectInfo],
+        [TypeDescriptionAspectInfo],
         [CGeneratorAspectInfo],
     ],
     provides = [CppGeneratorAspectInfo],
@@ -794,6 +798,7 @@ cpp_ros2_interface_library = rule(
             mandatory = True,
             aspects = [
                 idl_adapter_aspect,
+                type_description_aspect,
                 c_generator_aspect,
                 cpp_generator_aspect,
             ],

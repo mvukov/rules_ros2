@@ -1,0 +1,12 @@
+diff --git a/rosidl_typesupport_introspection_c/rosidl_typesupport_introspection_c/__init__.py b/rosidl_typesupport_introspection_c/rosidl_typesupport_introspection_c/__init__.py
+index 8a728f9..48d034b 100644
+--- a/rosidl_typesupport_introspection_c/rosidl_typesupport_introspection_c/__init__.py
++++ b/rosidl_typesupport_introspection_c/rosidl_typesupport_introspection_c/__init__.py
+@@ -26,6 +26,6 @@ def generate_c(generator_arguments_file: str):
+     mapping = {
+         'idl__rosidl_typesupport_introspection_c.h.em':
+         'detail/%s__rosidl_typesupport_introspection_c.h',
+-        'idl__type_support.c.em': 'detail/%s__type_support.c',
++        'idl__type_support.c.em': 'detail/%s__rosidl_typesupport_introspection_c.c',
+     }
+     return generate_files(generator_arguments_file, mapping)

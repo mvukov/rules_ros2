@@ -21,7 +21,7 @@ ros2_c_library(
 
 ros2_c_library(
     name = "rosidl_runtime_c",
-    srcs = glob(["rosidl_runtime_c/src/*.c"]),
+    srcs = glob(["rosidl_runtime_c/src/**/*.c"]),
     hdrs = glob(["rosidl_runtime_c/include/**/*.h"]),
     includes = ["rosidl_runtime_c/include"],
     visibility = ["//visibility:public"],
