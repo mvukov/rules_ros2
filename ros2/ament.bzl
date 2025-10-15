@@ -346,7 +346,7 @@ def _sh_launcher_rule_impl(ctx):
         ctx.attr.substitutions,
         {
             "{{ament_prefix_path}}": ament_prefix_path,
-            "{{bash_bin}}": ctx.toolchains[SH_TOOLCHAIN].path,
+            "{{sh_bin}}": ctx.toolchains[SH_TOOLCHAIN].path,
         },
     )
 
