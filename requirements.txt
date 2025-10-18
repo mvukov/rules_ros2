@@ -5,7 +5,7 @@ lark-parser
 numpy~=1.26
 packaging
 psutil
-pytest
+pytest~=7.4
 pytest-cov
 pyyaml
 types-pkg-resources==0.1.3
