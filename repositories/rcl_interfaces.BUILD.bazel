@@ -208,3 +208,9 @@ c_ros2_interface_library(
     visibility = ["//visibility:public"],
     deps = [":type_description_interfaces"],
 )
+
+py_ros2_interface_library(
+    name = "py_type_description_interfaces",
+    visibility = ["//visibility:public"],
+    deps = [":type_description_interfaces"],
+)
