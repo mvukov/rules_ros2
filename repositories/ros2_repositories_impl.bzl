@@ -282,7 +282,6 @@ def ros2_repositories_impl():
         http_archive,
         name = "ros2cli",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel",
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:ros2cli_replace-netifaces.patch"],
         sha256 = "a5bf2edc495eb7d91a5ab48c2a917d1efb46e97dcbdff5e241434cf68d5519a7",
         strip_prefix = "ros2cli-0.32.5",
         url = "https://github.com/ros2/ros2cli/archive/refs/tags/0.32.5.tar.gz",
