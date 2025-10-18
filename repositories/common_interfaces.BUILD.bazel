@@ -123,6 +123,7 @@ ros2_interface_library(
     deps = [
         ":geometry_msgs",
         ":std_msgs",
+        "@ros2_rcl_interfaces//:service_msgs",
     ],
 )
 
