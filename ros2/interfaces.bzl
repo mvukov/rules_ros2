@@ -368,7 +368,7 @@ _INTERFACE_GENERATOR_C_OUTPUT_MAPPING = [
     "detail/%s__type_support.h",
 ]
 
-_TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING = ["%s__type_support.c"]
+_TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING = ["%s__type_support_c.c"]
 
 _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING = [
     "detail/%s__rosidl_typesupport_introspection_c.h",
@@ -647,12 +647,12 @@ _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING = [
 ]
 
 _TYPESUPPORT_GENERATOR_CPP_OUTPUT_MAPPING = [
-    "%s__type_support.cpp",
+    "%s__type_support_cpp.cpp",
 ]
 
 _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING = [
     "detail/%s__rosidl_typesupport_introspection_cpp.hpp",
-    "detail/%s__type_support.cpp",
+    "detail/%s__rosidl_typesupport_introspection_cpp.cpp",
 ]
 
 def _cpp_generator_aspect_impl(target, ctx):
