@@ -2,7 +2,7 @@ catkin_pkg
 coverage
 empy==3.3.*
 lark-parser
-numpy~=1.23
+numpy~=1.26
 packaging
 psutil
 pytest
