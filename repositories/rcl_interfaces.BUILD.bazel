@@ -18,6 +18,7 @@ ros2_interface_library(
     visibility = ["//visibility:public"],
     deps = [
         ":builtin_interfaces",
+        ":service_msgs",
         "@ros2_unique_identifier_msgs//:unique_identifier_msgs",
     ],
 )

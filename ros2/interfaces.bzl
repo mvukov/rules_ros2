@@ -875,7 +875,7 @@ def _py_generator_aspect_impl(target, ctx):
     # on the one of A.
     linking_contexts = _get_linking_contexts_from_aspect_info_deps(
         ctx.rule.attr.deps,
-        PyGeneratorAspectInfo,
+        [PyGeneratorAspectInfo],
     )
     dynamic_library_name_stem = package_name + "/" + py_extension_name
     linking_outputs = cc_common.link(
@@ -973,6 +973,7 @@ py_generator_aspect = aspect(
     required_providers = [Ros2InterfaceInfo],
     required_aspect_providers = [
         [IdlAdapterAspectInfo],
+        [TypeDescriptionAspectInfo],
         [CGeneratorAspectInfo],
     ],
     provides = [PyGeneratorAspectInfo],
@@ -1028,6 +1029,7 @@ py_generator = rule(
             mandatory = True,
             aspects = [
                 idl_adapter_aspect,
+                type_description_aspect,
                 c_generator_aspect,
                 py_generator_aspect,
             ],
