@@ -11,11 +11,14 @@ load("@rules_python//python:defs.bzl", "py_library")
 ros2_cpp_binary(
     name = "rclpy/rclpy/_rclpy_pybind11.so",
     srcs = glob([
-        "rclpy/src/rclpy/*.cpp",
-        "rclpy/src/rclpy/*.hpp",
+        "rclpy/src/rclpy/**/*.cpp",
+        "rclpy/src/rclpy/**/*.hpp",
     ]),
     copts = ["-fvisibility=hidden"],
-    includes = ["rclpy/src"],
+    includes = [
+        "rclpy/src",
+        "rclpy/src/rclpy",
+    ],
     linkopts = [
         "-fvisibility=hidden",
         "-latomic",

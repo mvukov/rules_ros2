@@ -43,6 +43,9 @@ ros2_interface_library(
         "lifecycle_msgs/srv/*.srv",
     ]),
     visibility = ["//visibility:public"],
+    deps = [
+        ":service_msgs",
+    ],
 )
 
 ros2_interface_library(
