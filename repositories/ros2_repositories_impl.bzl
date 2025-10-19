@@ -92,6 +92,10 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel",
         sha256 = "cce1f50cc0d94fa0aa0369d1814589334239ff27b5d0f479c9dc92952673e44e",
         strip_prefix = "launch-3.4.6",
+        patch_args = ["-p1"],
+        # Revert changes from https://github.com/ros2/launch/pull/686.
+        # The symlink causes issues for tests.
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:launch_no_log_dir_latest_symlink.patch"],
         url = "https://github.com/ros2/launch/archive/refs/tags/3.4.6.tar.gz",
     )
 
