@@ -59,6 +59,12 @@ ros2_plugin(
     ],
 )
 
+py_library(
+    name = "ros2bag_sqlite3_cli",
+    srcs = ["rosbag2_storage_sqlite3/ros2bag_sqlite3_cli/__init__.py"],
+    imports = ["rosbag2_storage_sqlite3"],
+)
+
 ros2_cpp_library(
     name = "mcap_vendor",
     srcs = ["mcap_vendor/src/main.cpp"],
@@ -99,6 +105,12 @@ ros2_plugin(
         "@ros2_rcpputils//:rcpputils",
         "@ros2_rcutils//:rcutils",
     ],
+)
+
+py_library(
+    name = "ros2bag_mcap_cli",
+    srcs = ["rosbag2_storage_mcap/ros2bag_mcap_cli/__init__.py"],
+    imports = ["rosbag2_storage_mcap"],
 )
 
 ros2_cpp_library(
@@ -412,6 +424,8 @@ py_library(
     imports = ["ros2bag"],
     visibility = ["//visibility:public"],
     deps = [
+        ":ros2bag_mcap_cli",
+        ":ros2bag_sqlite3_cli",
         ":rosbag2_py",
         "@ros2cli",
         requirement("pyyaml"),

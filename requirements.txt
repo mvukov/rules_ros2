@@ -1,3 +1,4 @@
+argcomplete  # Only used by ros2topic.
 catkin_pkg
 coverage
 empy==3.3.*
