@@ -20,7 +20,6 @@ ros2_cpp_library(
         "camera_calibration_parsers/src/parse_yml.cpp",
     ]),
     hdrs = glob([
-        "camera_calibration_parsers/include/**/*.h",
         "camera_calibration_parsers/include/**/*.hpp",
     ]),
     includes = ["camera_calibration_parsers/include"],
@@ -76,17 +75,11 @@ ros2_cpp_library(
         "image_transport/src/subscriber.cpp",
     ],
     hdrs = [
-        "image_transport/include/image_transport/camera_publisher.h",
         "image_transport/include/image_transport/camera_publisher.hpp",
-        "image_transport/include/image_transport/camera_subscriber.h",
         "image_transport/include/image_transport/camera_subscriber.hpp",
-        "image_transport/include/image_transport/image_transport.h",
         "image_transport/include/image_transport/image_transport.hpp",
-        "image_transport/include/image_transport/subscriber.h",
         "image_transport/include/image_transport/subscriber.hpp",
-        "image_transport/include/image_transport/subscriber_filter.h",
         "image_transport/include/image_transport/subscriber_filter.hpp",
-        "image_transport/include/image_transport/transport_hints.h",
         "image_transport/include/image_transport/transport_hints.hpp",
     ],
     data = [
