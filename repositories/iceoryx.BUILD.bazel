@@ -58,7 +58,7 @@ cmake(
     ),
     out_binaries = ["iox-roudi"],
     out_data_dirs = ["lib/cmake"],
-    out_include_dir = "include/iceoryx/v2.0.5/",
+    out_include_dir = "include/iceoryx/v2.0.6/",
     out_static_libs = [
         # The order of the libs is important for linking to work out.
         "libiceoryx_binding_c.a",
