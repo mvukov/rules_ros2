@@ -1,0 +1,16 @@
+load("@com_github_mvukov_rules_ros2//ros2/houston:houston.bzl", "ros2_deployment", "ros2_launch")
+
+ros2_deployment(
+    name = "zero_copy",
+    data = [
+        "//zero_copy:cyclonedds.xml",
+        "//zero_copy:roudi.toml",
+    ],
+    launch_file = "zero_copy.py",
+    nodes = [
+        ":listener",
+        ":talker",
+        "@iceoryx//:iox_roudi",
+    ],
+    parameters = ["talker.yaml"],
+)
