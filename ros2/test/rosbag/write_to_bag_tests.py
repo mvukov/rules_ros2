@@ -41,7 +41,8 @@ def make_bag(bag_filepath: pathlib.Path, storage_id: str):
             output_serialization_format=SERIALIZATION_FORMAT),
     )
     writer.create_topic(
-        rosbag2_py.TopicMetadata(name=ODOMETRY_TOPIC,
+        rosbag2_py.TopicMetadata(id=42,
+                                 name=ODOMETRY_TOPIC,
                                  type=ODOMETRY_MESSAGE_TYPE,
                                  serialization_format=SERIALIZATION_FORMAT))
 

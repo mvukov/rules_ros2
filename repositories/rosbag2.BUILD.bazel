@@ -34,30 +34,30 @@ ros2_cpp_library(
     ],
 )
 
-# ros2_plugin(
-#     name = "rosbag2_storage_default_plugins",
-#     srcs = glob([
-#         "rosbag2_storage_default_plugins/src/**/*.cpp",
-#         "rosbag2_storage_default_plugins/src/**/*.hpp",
-#     ]),
-#     hdrs = glob(["rosbag2_storage_default_plugins/include/**/*.hpp"]),
-#     includes = ["rosbag2_storage_default_plugins/include"],
-#     plugin_specs = [
-#         {
-#             "class_name": "sqlite3",
-#             "class_type": "rosbag2_storage_plugins::SqliteStorage",
-#             "base_class_type": "rosbag2_storage::storage_interfaces::ReadWriteInterface",
-#         },
-#     ],
-#     deps = [
-#         ":rosbag2_storage",
-#         "@ros2_pluginlib//:pluginlib",
-#         "@ros2_rcpputils//:rcpputils",
-#         "@ros2_rcutils//:rcutils",
-#         "@sqlite3",
-#         "@yaml-cpp",
-#     ],
-# )
+ros2_plugin(
+    name = "rosbag2_storage_sqlite3_plugin",
+    srcs = glob([
+        "rosbag2_storage_sqlite3/src/**/*.cpp",
+        "rosbag2_storage_sqlite3/src/**/*.hpp",
+    ]),
+    hdrs = glob(["rosbag2_storage_sqlite3/include/**/*.hpp"]),
+    includes = ["rosbag2_storage_sqlite3/include"],
+    plugin_specs = [
+        {
+            "class_name": "sqlite3",
+            "class_type": "rosbag2_storage_plugins::SqliteStorage",
+            "base_class_type": "rosbag2_storage::storage_interfaces::ReadWriteInterface",
+        },
+    ],
+    deps = [
+        ":rosbag2_storage",
+        "@ros2_pluginlib//:pluginlib",
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rcutils//:rcutils",
+        "@sqlite3",
+        "@yaml-cpp",
+    ],
+)
 
 ros2_cpp_library(
     name = "mcap_vendor",
@@ -128,8 +128,8 @@ ros2_cpp_library(
     ],
     hdrs = glob(["rosbag2_cpp/include/**/*.hpp"]),
     data = [
-        # ":rosbag2_storage_default_plugins",
         ":rosbag2_storage_mcap_plugin",
+        ":rosbag2_storage_sqlite3_plugin",
     ],
     includes = ["rosbag2_cpp/include"],
     visibility = ["//visibility:public"],
