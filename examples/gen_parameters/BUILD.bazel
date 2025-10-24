@@ -1,0 +1,43 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "cpp_ros2_interface_library",
+    "py_ros2_interface_library",
+    "ros2_interface_library",
+)
+load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
+load("@com_github_mvukov_rules_ros2//ros2:parameters.bzl", "cpp_parameter_library", "py_parameter_library")
+load("@rules_python//python:defs.bzl", "py_binary")
+
+cpp_parameter_library(
+    name = "cpp_publisher_parameters",
+    header_name = "publisher_parameters.hpp",
+    parameter_file = ":publisher_parameters.yaml",
+)
+
+py_parameter_library(
+    name = "py_publisher_parameters",
+    parameter_file = ":publisher_parameters.yaml",
+    py_file_name = "publisher_parameters.py",
+)
+
+ros2_cpp_binary(
+    name = "cpp_publisher",
+    srcs = ["publisher.cpp"],
+    deps = [
+        ":cpp_publisher_parameters",
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+py_binary(
+    name = "py_publisher",
+    srcs = ["publisher.py"],
+    main = "publisher.py",
+    deps = [
+        ":py_publisher_parameters",
+        "@ros2_common_interfaces//:py_std_msgs",
+        "@ros2_rclpy//:rclpy",
+    ],
+)
