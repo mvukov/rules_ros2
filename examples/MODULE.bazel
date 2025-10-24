@@ -31,11 +31,16 @@ use_repo(
     # Check the rules_ros2 root MODULE.bazel for a full list of available non-module repos
     # Required for bazel test:
     "ros2_common_interfaces",
+    "ros2_geometry2",
     "ros2_launch",
     "ros2_launch_ros",
+    "ros2_message_filters",
     "ros2_rcl_interfaces",
     "ros2_rclcpp",
+    "ros2_rcutils",
+    "ros2_robot_state_publisher",
     "ros2_rust",
+    "ros2_unique_identifier_msgs",
     "ros2cli",
     # Required for bazel run:
     "ros2_rclpy",
