@@ -220,9 +220,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "eigen",
         build_file = "@com_github_mvukov_rules_ros2//repositories:eigen.BUILD.bazel",
-        sha256 = "b93c667d1b69265cdb4d9f30ec21f8facbbe8b307cf34c0b9942834c6d4fdbe2",
-        strip_prefix = "eigen-3.4.1",
-        urls = ["https://gitlab.com/libeigen/eigen/-/archive/3.4.1/eigen-3.4.1.tar.gz"],
+        sha256 = "315c881e19e17542a7d428c5aa37d113c89b9500d350c433797b730cd449c056",
+        strip_prefix = "eigen-5.0.0",
+        urls = ["https://gitlab.com/libeigen/eigen/-/archive/5.0.0/eigen-5.0.0.tar.gz"],
     )
 
     maybe(
