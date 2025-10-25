@@ -4,10 +4,13 @@ load(
     "ros2_cpp_library",
 )
 load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
+load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_binary")
 load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 ros2_cpp_library(
     name = "cpp_diagnostic_updater",
+    srcs = ["diagnostic_updater/src/diagnostic_updater.cpp"],
     hdrs = glob(["diagnostic_updater/include/**/*.hpp"]),
     includes = ["diagnostic_updater/include"],
     visibility = ["//visibility:public"],
@@ -91,5 +94,75 @@ ros2_cpp_binary(
         ":diagnostic_aggregator",
         "@ros2_common_interfaces//:c_diagnostic_msgs",
         "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_py_binary(
+    name = "cpu_monitor_node",
+    srcs = ["diagnostic_common_diagnostics/diagnostic_common_diagnostics/cpu_monitor.py"],
+    main = "diagnostic_common_diagnostics/diagnostic_common_diagnostics/cpu_monitor.py",
+    set_up_ament = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":py_diagnostic_updater",
+        "@ros2_common_interfaces//:py_diagnostic_msgs",
+        "@ros2_rclpy//:rclpy",
+        requirement("psutil"),
+    ],
+)
+
+# The "hd" in "hd_monitor_node" means "hard drive".  We name it "hd_monitor_node" to stay
+# consistent with the upstream name.
+ros2_py_binary(
+    name = "hd_monitor_node",
+    srcs = ["diagnostic_common_diagnostics/diagnostic_common_diagnostics/hd_monitor.py"],
+    main = "diagnostic_common_diagnostics/diagnostic_common_diagnostics/hd_monitor.py",
+    set_up_ament = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":py_diagnostic_updater",
+        "@ros2_common_interfaces//:py_diagnostic_msgs",
+        "@ros2_rclpy//:rclpy",
+    ],
+)
+
+ros2_py_binary(
+    name = "ntp_monitor_node",
+    srcs = ["diagnostic_common_diagnostics/diagnostic_common_diagnostics/ntp_monitor.py"],
+    main = "diagnostic_common_diagnostics/diagnostic_common_diagnostics/ntp_monitor.py",
+    set_up_ament = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":py_diagnostic_updater",
+        "@ros2_common_interfaces//:py_diagnostic_msgs",
+        "@ros2_rclpy//:rclpy",
+        requirement("ntplib"),
+    ],
+)
+
+ros2_py_binary(
+    name = "ram_monitor_node",
+    srcs = ["diagnostic_common_diagnostics/diagnostic_common_diagnostics/ram_monitor.py"],
+    main = "diagnostic_common_diagnostics/diagnostic_common_diagnostics/ram_monitor.py",
+    set_up_ament = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":py_diagnostic_updater",
+        "@ros2_common_interfaces//:py_diagnostic_msgs",
+        "@ros2_rclpy//:rclpy",
+        requirement("psutil"),
+    ],
+)
+
+ros2_py_binary(
+    name = "sensors_monitor_node",
+    srcs = ["diagnostic_common_diagnostics/diagnostic_common_diagnostics/sensors_monitor.py"],
+    main = "diagnostic_common_diagnostics/diagnostic_common_diagnostics/sensors_monitor.py",
+    set_up_ament = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":py_diagnostic_updater",
+        "@ros2_common_interfaces//:py_diagnostic_msgs",
+        "@ros2_rclpy//:rclpy",
     ],
 )
