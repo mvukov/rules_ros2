@@ -4,7 +4,7 @@ load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 def cpp_parameter_library(name, parameter_file, header_name = None):
     if header_name == None:
-        header = "{}.hpp".format(name)
+        header = "{}.h".format(name)
     else:
         header = header_name
     native.genrule(
