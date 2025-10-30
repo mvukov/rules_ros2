@@ -1,0 +1,17 @@
+load("@rules_oci//oci:defs.bzl", "oci_load")
+load(":py_oci_image.bzl", "py_oci_image")
+
+py_oci_image(
+    name = "chatter_image",
+    base = "@python_base_image",
+    binary = "//chatter",
+    tars = [
+        "@libatomic_amd64//:layer",
+    ],
+)
+
+oci_load(
+    name = "chatter_image.load",
+    image = ":chatter_image",
+    repo_tags = ["chatter:latest"],
+)
