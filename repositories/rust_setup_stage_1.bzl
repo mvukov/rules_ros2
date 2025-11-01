@@ -23,9 +23,9 @@ def ros2_rust_repositories():
         http_archive,
         name = "ros2_rust",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2_rust.BUILD.bazel",
-        sha256 = "693408db72d40bd11d80740b7bf8d3ef2122f6b98eeaf4a1dba7c5f2d0b479b5",
-        strip_prefix = "ros2_rust-94f76e5e220f3bb393372dc4d4042abfdb00b427",
-        urls = ["https://github.com/ros2-rust/ros2_rust/archive/94f76e5e220f3bb393372dc4d4042abfdb00b427.zip"],
+        sha256 = "75de6ed789611ca1bfbb32d8af51339cbfea082004eb1f392cc283fded095a4f",
+        strip_prefix = "ros2_rust-d359fb987bba5d38bd9639a8115d215be9066492",
+        urls = ["https://github.com/ros2-rust/ros2_rust/archive/d359fb987bba5d38bd9639a8115d215be9066492.zip"],
         patch_args = ["-p1"],
         patches = [
             "@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rclrs.patch",
