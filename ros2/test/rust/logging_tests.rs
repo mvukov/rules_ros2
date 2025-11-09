@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod test {
-    use rclrs::{log_info, ToLogParams};
+    use rclrs::log_info;
 
     #[test]
     fn test_logging() {
