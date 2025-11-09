@@ -87,8 +87,24 @@ rust.toolchain(
 # Keep specs in sync with repositories/rust_setup_stage_3.bzl
 crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
 crate.spec(
+    package = "async-std",
+    version = "1.13",
+)
+crate.spec(
+    package = "async-stream",
+    version = "0.3.6",
+)
+crate.spec(
     package = "futures",
     version = "0.3",
+)
+crate.spec(
+    features = [
+        "race",
+        "std",
+    ],
+    package = "futures-lite",
+    version = "2.6",
 )
 crate.spec(
     features = ["derive"],
@@ -106,6 +122,20 @@ crate.spec(
 crate.spec(
     package = "signal-hook",
     version = "0.3",
+)
+crate.spec(
+    features = ["sync"],
+    package = "tokio",
+    version = "1",
+)
+crate.spec(
+    package = "tokio-stream",
+    version = "0.1",
+)
+crate.spec(
+    features = ["v4"],
+    package = "uuid",
+    version = "1",
 )
 crate.from_cargo(
     name = "rules_ros2_crate_index",
@@ -151,6 +181,8 @@ use_repo(
     "ros2_rosidl",
     "ros2_rosidl_python",
     "ros2_rosidl_runtime_py",
+    "ros2_rosidl_runtime_rs",
+    "ros2_rosidl_rust",
     "ros2_rosidl_typesupport",
     "ros2_rpyutils",
     "ros2_rust",

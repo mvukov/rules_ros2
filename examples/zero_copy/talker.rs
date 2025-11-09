@@ -3,7 +3,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::SystemTime;
 
-use rclrs::{log_info, ToLogParams};
+use rclrs::{log_info, CreateBasicExecutor, IntoPrimitiveOptions};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let shut_down = Arc::new(AtomicBool::new(false));
@@ -11,19 +11,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         signal_hook::flag::register(signal, Arc::clone(&shut_down))?;
     }
 
-    let context = rclrs::Context::new(env::args())?;
+    let context = rclrs::Context::new(env::args(), rclrs::InitOptions::default())?;
+    let executor = context.create_basic_executor();
 
-    let node = rclrs::create_node(&context, "minimal_publisher")?;
+    let node = executor.create_node("minimal_publisher")?;
     let callback_period_ms = node
         .declare_parameter::<i64>("callback_period_ms")
         .default(500)
         .read_only()
         .unwrap()
         .get();
-
     let publisher = node.create_publisher::<chatter_interface::msg::rmw::Chatter>(
-        "topic",
-        rclrs::QOS_PROFILE_DEFAULT,
+        "topic".keep_last(1).reliable(),
     )?;
 
     let mut publish_count: u32 = 0;
