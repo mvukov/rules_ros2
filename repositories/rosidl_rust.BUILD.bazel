@@ -1,0 +1,37 @@
+""" Builds rosidl_runtime_rs.
+"""
+
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+
+GENERATOR_APP_PY = "rosidl_generator_rs_app.py"
+
+copy_file(
+    name = "rosidl_generator_rs_copy",
+    src = "rosidl_generator_rs/bin/rosidl_generator_rs",
+    out = GENERATOR_APP_PY,
+)
+
+py_binary(
+    name = "rosidl_generator_rs_app",
+    srcs = [
+        GENERATOR_APP_PY,
+        "rosidl_generator_rs/rosidl_generator_rs/__init__.py",
+    ],
+    imports = ["rosidl_generator_rs"],
+    legacy_create_init = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        requirement("empy"),
+        "@ros2_rosidl//:rosidl_cmake",
+        "@ros2_rosidl//:rosidl_parser",
+        "@ros2_rosidl//:rosidl_pycommon",
+    ],
+)
+
+filegroup(
+    name = "rosidl_generator_rs_templates",
+    srcs = glob(["rosidl_generator_rs/resource/*.em"]),
+    visibility = ["//visibility:public"],
+)
