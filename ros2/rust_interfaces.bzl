@@ -194,16 +194,16 @@ rust_generator_aspect = aspect(
     attr_aspects = ["deps"],
     attrs = {
         "_rust_interface_generator": attr.label(
-            default = Label("@ros2_rust//:rosidl_generator_rs_app"),
+            default = Label("@ros2_rosidl_rust//:rosidl_generator_rs_app"),
             executable = True,
             cfg = "exec",
         ),
         "_rust_interface_templates": attr.label(
-            default = Label("@ros2_rust//:rosidl_generator_rs_templates"),
+            default = Label("@ros2_rosidl_rust//:rosidl_generator_rs_templates"),
         ),
         "_rust_deps": attr.label_list(
             default = [
-                "@ros2_rust//:rosidl_runtime_rs",
+                "@ros2_rosidl_runtime_rs//:rosidl_runtime_rs",
                 "@rules_ros2_crate_index//:serde",
                 "@rules_ros2_crate_index//:serde-big-array",
             ],

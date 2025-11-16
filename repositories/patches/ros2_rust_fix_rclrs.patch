@@ -1,17 +1,104 @@
+diff --git a/rclrs/src/action.rs b/rclrs/src/action.rs
+index 62b1543..97c372a 100644
+--- a/rclrs/src/action.rs
++++ b/rclrs/src/action.rs
+@@ -9,9 +9,11 @@ pub use action_goal_receiver::*;
+ pub(crate) mod action_server;
+ pub use action_server::*;
+ 
+-use crate::{log_error, rcl_bindings::*, vendor::builtin_interfaces::msg::Time, DropGuard};
++use crate::{log_error, rcl_bindings::*, DropGuard};
+ use std::fmt;
+ 
++use builtin_interfaces::msg::Time;
++
+ #[cfg(feature = "serde")]
+ use serde::{Deserialize, Serialize};
+ 
+diff --git a/rclrs/src/action/action_client.rs b/rclrs/src/action/action_client.rs
+index af02651..aeae08a 100644
+--- a/rclrs/src/action/action_client.rs
++++ b/rclrs/src/action/action_client.rs
+@@ -2,12 +2,13 @@ use super::empty_goal_status_array;
+ use crate::{
+     log_warn,
+     rcl_bindings::*,
+-    vendor::{action_msgs::srv::CancelGoal_Response, builtin_interfaces::msg::Time},
+     CancelResponse, CancelResponseCode, DropGuard, GoalStatus, GoalStatusCode, GoalUuid,
+     MultiCancelResponse, Node, NodeHandle, QoSProfile, RclPrimitive, RclPrimitiveHandle,
+     RclPrimitiveKind, RclrsError, ReadyKind, TakeFailedAsNone, ToResult, Waitable,
+     WaitableLifecycle, ENTITY_LIFECYCLE_MUTEX,
+ };
++use action_msgs::srv::CancelGoal_Response;
++use builtin_interfaces::msg::Time;
+ use rosidl_runtime_rs::{Action, Message, RmwFeedbackMessage, RmwGoalResponse, RmwResultResponse};
+ use std::{
+     any::Any,
+diff --git a/rclrs/src/action/action_client/goal_client.rs b/rclrs/src/action/action_client/goal_client.rs
+index 61d2773..e283a8d 100644
+--- a/rclrs/src/action/action_client/goal_client.rs
++++ b/rclrs/src/action/action_client/goal_client.rs
+@@ -1,7 +1,8 @@
+ use crate::{
+-    vendor::builtin_interfaces::msg::Time, CancellationClient, FeedbackClient, GoalStatus,
++    CancellationClient, FeedbackClient, GoalStatus,
+     GoalStatusCode, ResultClient, StatusWatcher,
+ };
++use  builtin_interfaces::msg::Time;
+ use rosidl_runtime_rs::Action;
+ use std::{
+     pin::Pin,
+diff --git a/rclrs/src/action/action_server.rs b/rclrs/src/action/action_server.rs
+index e75ea30..82f0d87 100644
+--- a/rclrs/src/action/action_server.rs
++++ b/rclrs/src/action/action_server.rs
+@@ -1,11 +1,12 @@
+ use super::empty_goal_status_array;
+ use crate::{
+     action::GoalUuid, error::ToResult, rcl_bindings::*,
+-    vendor::action_msgs::srv::CancelGoal_Response, ActionGoalReceiver, CancelResponseCode,
++    ActionGoalReceiver, CancelResponseCode,
+     DropGuard, GoalStatusCode, Node, NodeHandle, QoSProfile, RclPrimitive, RclPrimitiveHandle,
+     RclPrimitiveKind, RclrsError, ReadyKind, TakeFailedAsNone, Waitable, WaitableLifecycle,
+     ENTITY_LIFECYCLE_MUTEX,
+ };
++use action_msgs::srv::CancelGoal_Response;
+ use futures::future::BoxFuture;
+ use rosidl_runtime_rs::{Action, Message, RmwGoalRequest, RmwResultRequest};
+ use std::{
+diff --git a/rclrs/src/action/action_server/cancellation_state.rs b/rclrs/src/action/action_server/cancellation_state.rs
+index 9dc166f..8a17283 100644
+--- a/rclrs/src/action/action_server/cancellation_state.rs
++++ b/rclrs/src/action/action_server/cancellation_state.rs
+@@ -2,12 +2,10 @@ use super::ActionServerHandle;
+ use crate::{
+     log_error,
+     rcl_bindings::*,
+-    vendor::{
+-        action_msgs::{msg::GoalInfo, srv::CancelGoal_Response},
+-        unique_identifier_msgs::msg::UUID,
+-    },
+     CancelResponseCode, GoalUuid, Node, RclrsErrorFilter, ToResult,
+ };
++use action_msgs::{msg::GoalInfo, srv::CancelGoal_Response};
++use unique_identifier_msgs::msg::UUID;
+ use futures::{
+     future::{select, Either},
+     pin_mut,
 diff --git a/rclrs/src/lib.rs b/rclrs/src/lib.rs
-index 3a22c6d..8c92865 100644
+index 408d52b..ff867d7 100644
 --- a/rclrs/src/lib.rs
 +++ b/rclrs/src/lib.rs
-@@ -20,7 +20,6 @@ mod service;
- mod subscription;
+@@ -196,7 +196,6 @@ mod subscription;
  mod time;
  mod time_source;
--mod vendor;
- mod wait;
+ mod timer;
+-pub mod vendor;
+ mod wait_set;
+ mod worker;
  
- #[cfg(test)]
 diff --git a/rclrs/src/parameter.rs b/rclrs/src/parameter.rs
-index 2a0829e..7f56772 100644
+index fe9fa09..9625c61 100644
 --- a/rclrs/src/parameter.rs
 +++ b/rclrs/src/parameter.rs
 @@ -8,7 +8,7 @@ pub use range::*;
@@ -24,23 +111,20 @@ index 2a0829e..7f56772 100644
  use crate::{
      call_string_getter_with_rcl_node, rcl_bindings::*, Node, RclrsError, ENTITY_LIFECYCLE_MUTEX,
 diff --git a/rclrs/src/parameter/range.rs b/rclrs/src/parameter/range.rs
-index 6a46d2f..9c94231 100644
+index 6a46d2f..356b7a3 100644
 --- a/rclrs/src/parameter/range.rs
 +++ b/rclrs/src/parameter/range.rs
-@@ -1,9 +1,10 @@
+@@ -1,7 +1,7 @@
  use crate::{
 -    vendor::rcl_interfaces::msg::rmw::{FloatingPointRange, IntegerRange},
      DeclarationError, ParameterValue, ParameterVariant,
  };
++use rcl_interfaces::msg::rmw::{FloatingPointRange, IntegerRange};
  use rosidl_runtime_rs::{seq, BoundedSequence};
  
-+use rcl_interfaces::msg::rmw::{FloatingPointRange, IntegerRange};
-+
  impl From<ParameterRange<f64>> for ParameterRanges {
-     fn from(params: ParameterRange<f64>) -> Self {
-         Self {
 diff --git a/rclrs/src/parameter/service.rs b/rclrs/src/parameter/service.rs
-index 7c8ffe6..5143797 100644
+index 5d1c252..680a30e 100644
 --- a/rclrs/src/parameter/service.rs
 +++ b/rclrs/src/parameter/service.rs
 @@ -3,7 +3,7 @@ use std::{
@@ -53,7 +137,7 @@ index 7c8ffe6..5143797 100644
  
  use super::ParameterMap;
 diff --git a/rclrs/src/parameter/value.rs b/rclrs/src/parameter/value.rs
-index 82fe31e..24453fd 100644
+index ff0c86c..e32d551 100644
 --- a/rclrs/src/parameter/value.rs
 +++ b/rclrs/src/parameter/value.rs
 @@ -3,10 +3,11 @@ use std::{ffi::CStr, sync::Arc};
@@ -70,157 +154,52 @@ index 82fe31e..24453fd 100644
  ///
  /// Such a value can be specified in YAML format on the command line, or in a parameter file.
 diff --git a/rclrs/src/rcl_bindings.rs b/rclrs/src/rcl_bindings.rs
-index 90f4340..38c5d18 100644
+index cf1743c..047a35c 100644
 --- a/rclrs/src/rcl_bindings.rs
 +++ b/rclrs/src/rcl_bindings.rs
-@@ -11,143 +11,9 @@
+@@ -11,39 +11,7 @@
  #![allow(clippy::all)]
  #![allow(missing_docs)]
  
 -cfg_if::cfg_if! {
--    if #[cfg(feature="generate_docs")] {
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_allocator_t;
-+include!("rcl_bindings_generated.rs");
- 
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_arguments_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_client_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_clock_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_clock_type_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_context_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_guard_condition_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_names_and_types_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_node_options_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_node_params_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_node_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_params_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_publisher_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_ret_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_service_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_subscription_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_topic_endpoint_info_array_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_variant_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcl_wait_set_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rcutils_string_array_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rmw_message_info_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rmw_names_and_types_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rmw_qos_durability_policy_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rmw_qos_history_policy_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rmw_qos_liveliness_policy_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rmw_qos_profile_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rmw_qos_reliability_policy_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rmw_request_id_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rmw_time_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rmw_topic_endpoint_info_array_t;
--
--        #[repr(C)]
--        #[derive(Debug)]
--        pub struct rosidl_message_type_support_t;
--
--        pub const RMW_GID_STORAGE_SIZE: usize = 24;
--
--        extern "C" {
--            pub fn rcl_context_is_valid(context: *const rcl_context_t) -> bool;
--        }
+-    if #[cfg(ros_distro="humble")] {
+-        include!(
+-            concat!(
+-                env!("CARGO_MANIFEST_DIR"),
+-                "/src/rcl_bindings_generated_humble.rs",
+-                )
+-            );
+-    } else if #[cfg(ros_distro="jazzy")] {
+-        include!(
+-            concat!(
+-                env!("CARGO_MANIFEST_DIR"),
+-                "/src/rcl_bindings_generated_jazzy.rs",
+-                )
+-            );
+-    } else if #[cfg(ros_distro="kilted")] {
+-        include!(
+-            concat!(
+-                env!("CARGO_MANIFEST_DIR"),
+-                "/src/rcl_bindings_generated_kilted.rs",
+-                )
+-            );
+-    } else if #[cfg(ros_distro="rolling")] {
+-        include!(
+-            concat!(
+-                env!("CARGO_MANIFEST_DIR"),
+-                "/src/rcl_bindings_generated_rolling.rs",
+-                )
+-            );
 -    } else {
--        include!(concat!(env!("OUT_DIR"), "/rcl_bindings_generated.rs"));
--
--        pub const RMW_GID_STORAGE_SIZE: usize = rmw_gid_storage_size_constant;
+-        panic!("Unsupported ROS distribution");
 -    }
 -}
-+pub const RMW_GID_STORAGE_SIZE: usize = rmw_gid_storage_size_constant;
++include!("rcl_bindings_generated.rs");
  
- /// Wrapper around [`std::slice::from_raw_parts`] that accommodates the rcl
- /// convention of providing a null pointer to represent empty arrays. This
+ pub const RMW_GID_STORAGE_SIZE: usize = rmw_gid_storage_size_constant;
+ pub const RCL_ACTION_UUID_SIZE: usize = rcl_action_uuid_size_constant;
 diff --git a/rclrs/src/time.rs b/rclrs/src/time.rs
-index 540c624..3d0c631 100644
+index 1b8250d..e2b4b89 100644
 --- a/rclrs/src/time.rs
 +++ b/rclrs/src/time.rs
 @@ -1,4 +1,4 @@
@@ -239,19 +218,17 @@ index 540c624..3d0c631 100644
  #[derive(Clone, Debug)]
  pub struct Time {
 diff --git a/rclrs/src/time_source.rs b/rclrs/src/time_source.rs
-index 0be0c07..1fe6fee 100644
+index bb2c52f..33bf7ed 100644
 --- a/rclrs/src/time_source.rs
 +++ b/rclrs/src/time_source.rs
-@@ -1,10 +1,11 @@
+@@ -1,9 +1,9 @@
  use crate::{
      clock::{Clock, ClockSource, ClockType},
 -    vendor::rosgraph_msgs::msg::Clock as ClockMsg,
-     Node, QoSProfile, ReadOnlyParameter, Subscription, QOS_PROFILE_CLOCK,
+     IntoPrimitiveOptions, Node, NodeState, QoSProfile, ReadOnlyParameter, Subscription,
+     QOS_PROFILE_CLOCK,
  };
++use rosgraph_msgs::msg::Clock as ClockMsg;
  use std::sync::{Arc, Mutex, RwLock, Weak};
  
-+use rosgraph_msgs::msg::Clock as ClockMsg;
-+
  /// Time source for a node that drives the attached clock.
- /// If the node's `use_sim_time` parameter is set to `true`, the `TimeSource` will subscribe
- /// to the `/clock` topic and drive the attached clock

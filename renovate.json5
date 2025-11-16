@@ -33,6 +33,8 @@
         "nlohmann_json",
         "pybind11",
         "ros2_rust",
+        "ros2_rosidl_runtime_rs",
+        "ros2_rosidl_rust",
         "rules_foreign_cc",
         "rules_license",
         "rules_python",
