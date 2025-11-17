@@ -41,7 +41,7 @@ ros2_cpp_test(
     name = "tests",
     size = "small",
     srcs = ["foxglove_bridge_tests.cc"],
-    env = {"ROS_DISTRO": "humble"},
+    env = {"ROS_DISTRO": "jazzy"},
     flaky = True,
     idl_deps = [
         "@ros2_rcl_interfaces//:rcl_interfaces",

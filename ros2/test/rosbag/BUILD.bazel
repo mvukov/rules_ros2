@@ -43,6 +43,7 @@ ros2_bag(
         env = {
             "STORAGE_ID": storage_id,
         },
+        flaky = True,
         idl_deps = [
             "@ros2_common_interfaces//:std_msgs",
             "@ros2_rcl_interfaces//:rcl_interfaces",
