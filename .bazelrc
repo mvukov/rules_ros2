@@ -10,7 +10,7 @@ build --incompatible_default_to_explicit_init_py
 
 # All code will be compiled with C++17 flag.
 # Users can naturally override copts for cc_* targets.
-# NOTE: ROS 2 Humble needs min C++17.
+# NOTE: ROS 2 Jazzy needs min C++17.
 # NOTE: googletest >=v1.13.0 requires min C++14.
 # This is a mandatory flag.
 build --cxxopt=-std=c++17
