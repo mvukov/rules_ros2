@@ -753,6 +753,7 @@ def _py_generator_aspect_impl(target, ctx):
         linking_contexts = [compilation_info.cc_info.linking_context] + linking_contexts,
         name = dynamic_library_name_stem,
         output_type = "dynamic_library",
+        user_link_flags = ["-undefined", "dynamic_lookup"],
         # TODO(mvukov) More deps means larger libs. Try to set this to False.
         # link_deps_statically = True,  # Default is True!
     )
@@ -830,6 +831,8 @@ py_generator_aspect = aspect(
             default = [
                 Label("@rules_python//python/cc:current_py_cc_headers"),
                 Label("@com_github_mvukov_rules_ros2//ros2:rules_ros2_pip_deps_numpy_headers"),
+                Label("@ros2_rosidl//:rosidl_runtime_c"),
+                Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
             ],
             providers = [CcInfo],
         ),
@@ -868,7 +871,7 @@ def _py_generator_impl(ctx):
     linked_dynamic_libraries = []
     for linker_input in py_info.linker_inputs.to_list():
         for library in linker_input.libraries:
-            if library.pic_static_library == None:
+            if library.pic_static_library == None and library.dynamic_library != None:
                 # The sole purpose of this shenanigan is to fetch @ros2_rosidl//:rosidl_typesupport_introspection_c_identifier.
                 # For that target we know it only has a dynamic library.
                 linked_dynamic_libraries.append(library.dynamic_library)
@@ -879,7 +882,7 @@ def _py_generator_impl(ctx):
                 transitive = [
                     py_info.transitive_sources,
                     py_info.dynamic_libraries,
-                    depset(linked_dynamic_libraries),
+                    depset(direct = linked_dynamic_libraries),
                 ],
             ),
         )),
