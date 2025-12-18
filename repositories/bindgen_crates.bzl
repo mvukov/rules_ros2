@@ -430,7 +430,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/aho-corasick/1.1.3/download"],
         strip_prefix = "aho-corasick-1.1.3",
-        build_file = Label("//3rdparty/crates:BUILD.aho-corasick-1.1.3.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.aho-corasick-1.1.3.bazel"),
     )
 
     maybe(
@@ -440,7 +440,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/annotate-snippets/0.11.5/download"],
         strip_prefix = "annotate-snippets-0.11.5",
-        build_file = Label("//3rdparty/crates:BUILD.annotate-snippets-0.11.5.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.annotate-snippets-0.11.5.bazel"),
     )
 
     maybe(
@@ -450,7 +450,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/anstream/0.6.18/download"],
         strip_prefix = "anstream-0.6.18",
-        build_file = Label("//3rdparty/crates:BUILD.anstream-0.6.18.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.anstream-0.6.18.bazel"),
     )
 
     maybe(
@@ -460,7 +460,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/anstyle/1.0.10/download"],
         strip_prefix = "anstyle-1.0.10",
-        build_file = Label("//3rdparty/crates:BUILD.anstyle-1.0.10.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.anstyle-1.0.10.bazel"),
     )
 
     maybe(
@@ -470,7 +470,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/anstyle-parse/0.2.6/download"],
         strip_prefix = "anstyle-parse-0.2.6",
-        build_file = Label("//3rdparty/crates:BUILD.anstyle-parse-0.2.6.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.anstyle-parse-0.2.6.bazel"),
     )
 
     maybe(
@@ -480,7 +480,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/anstyle-query/1.1.2/download"],
         strip_prefix = "anstyle-query-1.1.2",
-        build_file = Label("//3rdparty/crates:BUILD.anstyle-query-1.1.2.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.anstyle-query-1.1.2.bazel"),
     )
 
     maybe(
@@ -490,7 +490,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/anstyle-wincon/3.0.7/download"],
         strip_prefix = "anstyle-wincon-3.0.7",
-        build_file = Label("//3rdparty/crates:BUILD.anstyle-wincon-3.0.7.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.anstyle-wincon-3.0.7.bazel"),
     )
 
     maybe(
@@ -500,7 +500,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/bindgen/0.71.1/download"],
         strip_prefix = "bindgen-0.71.1",
-        build_file = Label("//3rdparty/crates:BUILD.bindgen-0.71.1.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.bindgen-0.71.1.bazel"),
     )
 
     maybe(
@@ -510,7 +510,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/bitflags/2.9.0/download"],
         strip_prefix = "bitflags-2.9.0",
-        build_file = Label("//3rdparty/crates:BUILD.bitflags-2.9.0.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.bitflags-2.9.0.bazel"),
     )
 
     maybe(
@@ -520,7 +520,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/cexpr/0.6.0/download"],
         strip_prefix = "cexpr-0.6.0",
-        build_file = Label("//3rdparty/crates:BUILD.cexpr-0.6.0.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.cexpr-0.6.0.bazel"),
     )
 
     maybe(
@@ -530,7 +530,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/cfg-if/1.0.0/download"],
         strip_prefix = "cfg-if-1.0.0",
-        build_file = Label("//3rdparty/crates:BUILD.cfg-if-1.0.0.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.cfg-if-1.0.0.bazel"),
     )
 
     maybe(
@@ -540,7 +540,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/clang-sys/1.8.1/download"],
         strip_prefix = "clang-sys-1.8.1",
-        build_file = Label("//3rdparty/crates:BUILD.clang-sys-1.8.1.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.clang-sys-1.8.1.bazel"),
     )
 
     maybe(
@@ -550,7 +550,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/clap/4.5.32/download"],
         strip_prefix = "clap-4.5.32",
-        build_file = Label("//3rdparty/crates:BUILD.clap-4.5.32.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.clap-4.5.32.bazel"),
     )
 
     maybe(
@@ -560,7 +560,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/clap_builder/4.5.32/download"],
         strip_prefix = "clap_builder-4.5.32",
-        build_file = Label("//3rdparty/crates:BUILD.clap_builder-4.5.32.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.clap_builder-4.5.32.bazel"),
     )
 
     maybe(
@@ -570,7 +570,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/clap_complete/4.5.46/download"],
         strip_prefix = "clap_complete-4.5.46",
-        build_file = Label("//3rdparty/crates:BUILD.clap_complete-4.5.46.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.clap_complete-4.5.46.bazel"),
     )
 
     maybe(
@@ -580,7 +580,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/clap_derive/4.5.32/download"],
         strip_prefix = "clap_derive-4.5.32",
-        build_file = Label("//3rdparty/crates:BUILD.clap_derive-4.5.32.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.clap_derive-4.5.32.bazel"),
     )
 
     maybe(
@@ -590,7 +590,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/clap_lex/0.7.4/download"],
         strip_prefix = "clap_lex-0.7.4",
-        build_file = Label("//3rdparty/crates:BUILD.clap_lex-0.7.4.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.clap_lex-0.7.4.bazel"),
     )
 
     maybe(
@@ -600,7 +600,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/colorchoice/1.0.3/download"],
         strip_prefix = "colorchoice-1.0.3",
-        build_file = Label("//3rdparty/crates:BUILD.colorchoice-1.0.3.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.colorchoice-1.0.3.bazel"),
     )
 
     maybe(
@@ -610,7 +610,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/either/1.15.0/download"],
         strip_prefix = "either-1.15.0",
-        build_file = Label("//3rdparty/crates:BUILD.either-1.15.0.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.either-1.15.0.bazel"),
     )
 
     maybe(
@@ -620,7 +620,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/env_logger/0.10.2/download"],
         strip_prefix = "env_logger-0.10.2",
-        build_file = Label("//3rdparty/crates:BUILD.env_logger-0.10.2.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.env_logger-0.10.2.bazel"),
     )
 
     maybe(
@@ -630,7 +630,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/glob/0.3.2/download"],
         strip_prefix = "glob-0.3.2",
-        build_file = Label("//3rdparty/crates:BUILD.glob-0.3.2.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.glob-0.3.2.bazel"),
     )
 
     maybe(
@@ -640,7 +640,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/heck/0.5.0/download"],
         strip_prefix = "heck-0.5.0",
-        build_file = Label("//3rdparty/crates:BUILD.heck-0.5.0.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.heck-0.5.0.bazel"),
     )
 
     maybe(
@@ -650,7 +650,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/hermit-abi/0.5.0/download"],
         strip_prefix = "hermit-abi-0.5.0",
-        build_file = Label("//3rdparty/crates:BUILD.hermit-abi-0.5.0.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.hermit-abi-0.5.0.bazel"),
     )
 
     maybe(
@@ -660,7 +660,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/humantime/2.2.0/download"],
         strip_prefix = "humantime-2.2.0",
-        build_file = Label("//3rdparty/crates:BUILD.humantime-2.2.0.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.humantime-2.2.0.bazel"),
     )
 
     maybe(
@@ -670,7 +670,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/is-terminal/0.4.16/download"],
         strip_prefix = "is-terminal-0.4.16",
-        build_file = Label("//3rdparty/crates:BUILD.is-terminal-0.4.16.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.is-terminal-0.4.16.bazel"),
     )
 
     maybe(
@@ -680,7 +680,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/is_terminal_polyfill/1.70.1/download"],
         strip_prefix = "is_terminal_polyfill-1.70.1",
-        build_file = Label("//3rdparty/crates:BUILD.is_terminal_polyfill-1.70.1.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.is_terminal_polyfill-1.70.1.bazel"),
     )
 
     maybe(
@@ -690,7 +690,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/itertools/0.13.0/download"],
         strip_prefix = "itertools-0.13.0",
-        build_file = Label("//3rdparty/crates:BUILD.itertools-0.13.0.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.itertools-0.13.0.bazel"),
     )
 
     maybe(
@@ -700,7 +700,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/libc/0.2.171/download"],
         strip_prefix = "libc-0.2.171",
-        build_file = Label("//3rdparty/crates:BUILD.libc-0.2.171.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.libc-0.2.171.bazel"),
     )
 
     maybe(
@@ -710,7 +710,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/libloading/0.8.6/download"],
         strip_prefix = "libloading-0.8.6",
-        build_file = Label("//3rdparty/crates:BUILD.libloading-0.8.6.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.libloading-0.8.6.bazel"),
     )
 
     maybe(
@@ -720,7 +720,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/log/0.4.26/download"],
         strip_prefix = "log-0.4.26",
-        build_file = Label("//3rdparty/crates:BUILD.log-0.4.26.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.log-0.4.26.bazel"),
     )
 
     maybe(
@@ -730,7 +730,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/memchr/2.7.4/download"],
         strip_prefix = "memchr-2.7.4",
-        build_file = Label("//3rdparty/crates:BUILD.memchr-2.7.4.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.memchr-2.7.4.bazel"),
     )
 
     maybe(
@@ -740,7 +740,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/minimal-lexical/0.2.1/download"],
         strip_prefix = "minimal-lexical-0.2.1",
-        build_file = Label("//3rdparty/crates:BUILD.minimal-lexical-0.2.1.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.minimal-lexical-0.2.1.bazel"),
     )
 
     maybe(
@@ -750,7 +750,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/nom/7.1.3/download"],
         strip_prefix = "nom-7.1.3",
-        build_file = Label("//3rdparty/crates:BUILD.nom-7.1.3.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.nom-7.1.3.bazel"),
     )
 
     maybe(
@@ -760,7 +760,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/once_cell/1.21.1/download"],
         strip_prefix = "once_cell-1.21.1",
-        build_file = Label("//3rdparty/crates:BUILD.once_cell-1.21.1.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.once_cell-1.21.1.bazel"),
     )
 
     maybe(
@@ -770,7 +770,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/prettyplease/0.2.31/download"],
         strip_prefix = "prettyplease-0.2.31",
-        build_file = Label("//3rdparty/crates:BUILD.prettyplease-0.2.31.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.prettyplease-0.2.31.bazel"),
     )
 
     maybe(
@@ -780,7 +780,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/proc-macro2/1.0.94/download"],
         strip_prefix = "proc-macro2-1.0.94",
-        build_file = Label("//3rdparty/crates:BUILD.proc-macro2-1.0.94.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.proc-macro2-1.0.94.bazel"),
     )
 
     maybe(
@@ -790,7 +790,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/quote/1.0.40/download"],
         strip_prefix = "quote-1.0.40",
-        build_file = Label("//3rdparty/crates:BUILD.quote-1.0.40.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.quote-1.0.40.bazel"),
     )
 
     maybe(
@@ -800,7 +800,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/regex/1.11.1/download"],
         strip_prefix = "regex-1.11.1",
-        build_file = Label("//3rdparty/crates:BUILD.regex-1.11.1.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.regex-1.11.1.bazel"),
     )
 
     maybe(
@@ -810,7 +810,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/regex-automata/0.4.9/download"],
         strip_prefix = "regex-automata-0.4.9",
-        build_file = Label("//3rdparty/crates:BUILD.regex-automata-0.4.9.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.regex-automata-0.4.9.bazel"),
     )
 
     maybe(
@@ -820,7 +820,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/regex-syntax/0.8.5/download"],
         strip_prefix = "regex-syntax-0.8.5",
-        build_file = Label("//3rdparty/crates:BUILD.regex-syntax-0.8.5.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.regex-syntax-0.8.5.bazel"),
     )
 
     maybe(
@@ -830,7 +830,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/rustc-hash/2.1.1/download"],
         strip_prefix = "rustc-hash-2.1.1",
-        build_file = Label("//3rdparty/crates:BUILD.rustc-hash-2.1.1.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.rustc-hash-2.1.1.bazel"),
     )
 
     maybe(
@@ -840,7 +840,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/shlex/1.3.0/download"],
         strip_prefix = "shlex-1.3.0",
-        build_file = Label("//3rdparty/crates:BUILD.shlex-1.3.0.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.shlex-1.3.0.bazel"),
     )
 
     maybe(
@@ -850,7 +850,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/strsim/0.11.1/download"],
         strip_prefix = "strsim-0.11.1",
-        build_file = Label("//3rdparty/crates:BUILD.strsim-0.11.1.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.strsim-0.11.1.bazel"),
     )
 
     maybe(
@@ -860,7 +860,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/syn/2.0.100/download"],
         strip_prefix = "syn-2.0.100",
-        build_file = Label("//3rdparty/crates:BUILD.syn-2.0.100.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.syn-2.0.100.bazel"),
     )
 
     maybe(
@@ -870,7 +870,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/termcolor/1.4.1/download"],
         strip_prefix = "termcolor-1.4.1",
-        build_file = Label("//3rdparty/crates:BUILD.termcolor-1.4.1.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.termcolor-1.4.1.bazel"),
     )
 
     maybe(
@@ -880,7 +880,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/unicode-ident/1.0.18/download"],
         strip_prefix = "unicode-ident-1.0.18",
-        build_file = Label("//3rdparty/crates:BUILD.unicode-ident-1.0.18.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.unicode-ident-1.0.18.bazel"),
     )
 
     maybe(
@@ -890,7 +890,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/unicode-width/0.2.0/download"],
         strip_prefix = "unicode-width-0.2.0",
-        build_file = Label("//3rdparty/crates:BUILD.unicode-width-0.2.0.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.unicode-width-0.2.0.bazel"),
     )
 
     maybe(
@@ -900,7 +900,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/utf8parse/0.2.2/download"],
         strip_prefix = "utf8parse-0.2.2",
-        build_file = Label("//3rdparty/crates:BUILD.utf8parse-0.2.2.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.utf8parse-0.2.2.bazel"),
     )
 
     maybe(
@@ -910,7 +910,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/winapi-util/0.1.9/download"],
         strip_prefix = "winapi-util-0.1.9",
-        build_file = Label("//3rdparty/crates:BUILD.winapi-util-0.1.9.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.winapi-util-0.1.9.bazel"),
     )
 
     maybe(
@@ -920,7 +920,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/windows-sys/0.59.0/download"],
         strip_prefix = "windows-sys-0.59.0",
-        build_file = Label("//3rdparty/crates:BUILD.windows-sys-0.59.0.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.windows-sys-0.59.0.bazel"),
     )
 
     maybe(
@@ -930,7 +930,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/windows-targets/0.52.6/download"],
         strip_prefix = "windows-targets-0.52.6",
-        build_file = Label("//3rdparty/crates:BUILD.windows-targets-0.52.6.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.windows-targets-0.52.6.bazel"),
     )
 
     maybe(
@@ -940,7 +940,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/windows_aarch64_gnullvm/0.52.6/download"],
         strip_prefix = "windows_aarch64_gnullvm-0.52.6",
-        build_file = Label("//3rdparty/crates:BUILD.windows_aarch64_gnullvm-0.52.6.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.windows_aarch64_gnullvm-0.52.6.bazel"),
     )
 
     maybe(
@@ -950,7 +950,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/windows_aarch64_msvc/0.52.6/download"],
         strip_prefix = "windows_aarch64_msvc-0.52.6",
-        build_file = Label("//3rdparty/crates:BUILD.windows_aarch64_msvc-0.52.6.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.windows_aarch64_msvc-0.52.6.bazel"),
     )
 
     maybe(
@@ -960,7 +960,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/windows_i686_gnu/0.52.6/download"],
         strip_prefix = "windows_i686_gnu-0.52.6",
-        build_file = Label("//3rdparty/crates:BUILD.windows_i686_gnu-0.52.6.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.windows_i686_gnu-0.52.6.bazel"),
     )
 
     maybe(
@@ -970,7 +970,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/windows_i686_gnullvm/0.52.6/download"],
         strip_prefix = "windows_i686_gnullvm-0.52.6",
-        build_file = Label("//3rdparty/crates:BUILD.windows_i686_gnullvm-0.52.6.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.windows_i686_gnullvm-0.52.6.bazel"),
     )
 
     maybe(
@@ -980,7 +980,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/windows_i686_msvc/0.52.6/download"],
         strip_prefix = "windows_i686_msvc-0.52.6",
-        build_file = Label("//3rdparty/crates:BUILD.windows_i686_msvc-0.52.6.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.windows_i686_msvc-0.52.6.bazel"),
     )
 
     maybe(
@@ -990,7 +990,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/windows_x86_64_gnu/0.52.6/download"],
         strip_prefix = "windows_x86_64_gnu-0.52.6",
-        build_file = Label("//3rdparty/crates:BUILD.windows_x86_64_gnu-0.52.6.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.windows_x86_64_gnu-0.52.6.bazel"),
     )
 
     maybe(
@@ -1000,7 +1000,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/windows_x86_64_gnullvm/0.52.6/download"],
         strip_prefix = "windows_x86_64_gnullvm-0.52.6",
-        build_file = Label("//3rdparty/crates:BUILD.windows_x86_64_gnullvm-0.52.6.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.windows_x86_64_gnullvm-0.52.6.bazel"),
     )
 
     maybe(
@@ -1010,7 +1010,7 @@ def crate_repositories():
         type = "tar.gz",
         urls = ["https://static.crates.io/crates/windows_x86_64_msvc/0.52.6/download"],
         strip_prefix = "windows_x86_64_msvc-0.52.6",
-        build_file = Label("//3rdparty/crates:BUILD.windows_x86_64_msvc-0.52.6.bazel"),
+        build_file = Label("@rules_rust_bindgen//3rdparty/crates:BUILD.windows_x86_64_msvc-0.52.6.bazel"),
     )
 
     return [

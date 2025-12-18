@@ -1,6 +1,8 @@
 load("//repositories:repositories.bzl", "ros2_repositories")
 load("//repositories:third_party_repositories.bzl", "third_party_repositories")
 load("//repositories:bindgen_crates.bzl", "crate_repositories")
+load("//repositories:clang_configure.bzl", "clang_configure")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def _vendored_repository_impl(ctx):
     repo_name = ctx.attr.repo_name
@@ -52,13 +54,44 @@ vendored_repository = repository_rule(
 )
 
 def _ros2_deps_impl(ctx):
+    clang_configure(name = "rules_ros2_config_clang")
+    
+    crate_repositories()
+
+    http_archive(
+        name = "rules_rust_bindgen__bindgen-cli-0.71.1",
+        integrity = "sha256-/e0QyglWr9DL5c+JzHGuGmeeZbghbGUfyhe6feisVNw=",
+        type = "tar.gz",
+        urls = ["https://static.crates.io/crates/bindgen-cli/bindgen-cli-0.71.1.crate"],
+        strip_prefix = "bindgen-cli-0.71.1",
+        build_file = "@rules_rust_bindgen//3rdparty:BUILD.bindgen-cli.bazel",
+    )
+
     repos = [
+        "asio",
+        "boringssl",
+        "console_bridge",
+        "curl",
+        "cyclonedds",
+        "eigen",
+        "fmt",
+        "foxglove_bridge",
+        "iceoryx",
+        "libyaml",
+        "lz4",
+        "mcap",
+        "nlohmann_json",
+        "orocos_kdl",
+        "osrf_pycommon",
+        "pybind11",
+        "readerwriterqueue",
+        "ros2",
         "ros2_ament_index",
         "ros2_class_loader",
         "ros2_common_interfaces",
-        "cyclonedds",
+        "ros2_diagnostics",
         "ros2_geometry2",
-        "iceoryx",
+        "ros2_gps_umd",
         "ros2_image_common",
         "ros2_kdl_parser",
         "ros2_keyboard_handler",
@@ -66,11 +99,11 @@ def _ros2_deps_impl(ctx):
         "ros2_launch_ros",
         "ros2_libstatistics_collector",
         "ros2_message_filters",
-        "osrf_pycommon",
         "ros2_pluginlib",
         "ros2_rcl",
         "ros2_rcl_interfaces",
         "ros2_rcl_logging",
+        "ros2_rcl_logging_syslog",
         "ros2_rclcpp",
         "ros2_rclpy",
         "ros2_rcpputils",
@@ -81,51 +114,40 @@ def _ros2_deps_impl(ctx):
         "ros2_rmw_dds_common",
         "ros2_rmw_implementation",
         "ros2_robot_state_publisher",
-        "ros2_tracing",
-        "ros2cli",
         "ros2_rosbag2",
         "ros2_rosidl",
         "ros2_rosidl_python",
         "ros2_rosidl_runtime_py",
+        "ros2_rosidl_runtime_rs",
+        "ros2_rosidl_rust",
         "ros2_rosidl_typesupport",
         "ros2_rpyutils",
+        "ros2_rust",
+        "ros2_tracing",
         "ros2_unique_identifier_msgs",
+        "ros2_urdf",
         "ros2_urdfdom",
         "ros2_urdfdom_headers",
-        "fmt",
+        "ros2_xacro",
+        "ros2cli",
+        "rules_ros2_config_clang",
+        "rules_rust_bindgen",
+        "rules_rust_bindgen__bindgen-cli-0.71.1",
         "spdlog",
-        "libyaml",
-        "pybind11",
-        "tinyxml2",
-        "readerwriterqueue",
         "sqlite3",
-        "websocketpp",
-        "asio",
-        "boringssl",
-        "zlib",
         "tinyxml",
-        "curl",
-        "zstd",
-        "lz4",
+        "tinyxml2",
+        "websocketpp",
         "yaml-cpp",
-        "eigen",
-        "ros2",
-        "ros2_gps_umd", 
-        "foxglove_bridge", 
-        "ros2_xacro", 
-        "orocos_kdl", 
-        "ros2_urdf", 
-        "ros2_diagnostics", 
-        "console_bridge", 
-        "mcap", 
-        "ros2_rcl_logging_syslog",
-        "ros2_rust",
-        "ros2_rosidl_rust",
-        "ros2_rosidl_runtime_rs",
-        "rules_rust_bindgen"
+        "zlib",
+        "zstd",
     ]
 
     for repo in repos:
+        if repo == "rules_ros2_config_clang":
+            continue
+        if repo == "rules_rust_bindgen__bindgen-cli-0.71.1":
+            continue
         vendored_repository(name = repo, repo_name = repo)
 
 ros2_deps = module_extension(

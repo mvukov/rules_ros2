@@ -344,6 +344,10 @@ def _compile_cc_generated_code(
         ) +
         _get_linking_contexts_from_deps(deps)
     )
+    user_link_flags = []
+    if "darwin" in cc_toolchain.cpu or "apple" in cc_toolchain.cpu:
+        user_link_flags = ["-undefined", "dynamic_lookup"]
+
     linking_context, linking_outputs = cc_common.create_linking_context_from_compilation_outputs(
         actions = ctx.actions,
         name = name,
@@ -351,6 +355,7 @@ def _compile_cc_generated_code(
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
         linking_contexts = linking_contexts,
+        user_link_flags = user_link_flags,
     )
 
     cc_info = CcInfo(
@@ -476,6 +481,7 @@ c_generator_aspect = aspect(
                 Label("@ros2_rosidl//:rosidl_runtime_c"),
                 Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
                 Label("@ros2_rosidl_typesupport//:rosidl_typesupport_c"),
+                Label("@ros2_rcutils//:rcutils"),
             ],
             providers = [CcInfo],
         ),
@@ -833,6 +839,7 @@ py_generator_aspect = aspect(
                 Label("@com_github_mvukov_rules_ros2//ros2:rules_ros2_pip_deps_numpy_headers"),
                 Label("@ros2_rosidl//:rosidl_runtime_c"),
                 Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
+                Label("@ros2_rcutils//:rcutils"),
             ],
             providers = [CcInfo],
         ),

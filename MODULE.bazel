@@ -23,10 +23,54 @@ use_repo(rust, "rust_toolchains")
 register_toolchains("@rust_toolchains//:all")
 
 crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
-crate.from_cargo(
+crate.spec(
+    package = "async-std",
+    version = "1.13.2",
+)
+crate.spec(
+    package = "async-stream",
+    version = "0.3.6",
+)
+crate.spec(
+    package = "futures",
+    version = "0.3.30",
+)
+crate.spec(
+    package = "futures-lite",
+    version = "2.6.1",
+)
+crate.spec(
+    package = "serde",
+    version = "1.0.201",
+    features = ["derive"],
+)
+crate.spec(
+    package = "serde-big-array",
+    version = "0.5.1",
+)
+crate.spec(
+    package = "serde_json",
+    version = "1.0.128",
+)
+crate.spec(
+    package = "signal-hook",
+    version = "0.3.17",
+)
+crate.spec(
+    package = "tokio",
+    version = "1.48.0",
+)
+crate.spec(
+    package = "tokio-stream",
+    version = "0.1.17",
+)
+crate.spec(
+    package = "uuid",
+    version = "1.18.1",
+    features = ["v4", "serde"],
+)
+crate.from_specs(
     name = "rules_ros2_crate_index",
-    cargo_lockfile = "//repositories/rust:Cargo.lock",
-    manifests = ["//repositories/rust:Cargo.toml"],
 )
 use_repo(crate, "rules_ros2_crate_index")
 
@@ -109,6 +153,8 @@ use_repo(
     "ros2_rosidl_rust",
     "ros2_rosidl_runtime_rs",
     "rules_rust_bindgen",
+    "rules_ros2_config_clang",
+    "rules_rust_bindgen__bindgen-cli-0.71.1",
     # Third party repos
     "fmt",
     "spdlog",
