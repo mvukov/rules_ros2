@@ -105,9 +105,9 @@ def _compile_rust_code(ctx, label, crate_name, srcs, deps):
             name = crate_name,
             type = crate_type,
             root = crate_root,
-            srcs = depset(srcs),
+            srcs = srcs,
             deps = deps,
-            proc_macro_deps = depset([]),
+            proc_macro_deps = [],
             aliases = {},
             output = rust_lib,
             rustc_output = generate_output_diagnostics(ctx, rust_lib),
@@ -128,6 +128,7 @@ def _compile_rust_code(ctx, label, crate_name, srcs, deps):
         crate_info = _get_crate_info(providers),
         dep_info = _get_dep_info(providers),
         cc_info = _get_cc_info(providers),
+        build_info = None,
     )
 
 def _rust_generator_aspect_impl(target, ctx):
@@ -172,21 +173,23 @@ def _rust_generator_aspect_impl(target, ctx):
             [dep_aspect_info.dep_variant_info],
             transitive = [dep_aspect_info.transitive_dep_infos],
         ))
+    transitive_dep_infos = depset(transitive = transitive_deps)
 
     dep_variant_info = _compile_rust_code(
         ctx,
         label = target.label,
         crate_name = package_name,
         srcs = interface_outputs,
-        deps = depset(
-            direct = runtime_deps,
-            transitive = transitive_deps,
-        ),
+        # NOTE: rules_rust 0.63 -> 0.67: deps must be a list of DepVariantInfo providers.
+        # Performance-wise doesn't make much sense to call to_list() since deps is going
+        # to converted to a depset within rustc_compile_action:
+        # https://github.com/bazelbuild/rules_rust/blob/0.67.0/rust/private/rustc.bzl#L1211
+        deps = runtime_deps + transitive_dep_infos.to_list(),
     )
 
     return RustGeneratorAspectInfo(
         dep_variant_info = dep_variant_info,
-        transitive_dep_infos = depset(transitive = transitive_deps),
+        transitive_dep_infos = transitive_dep_infos,
     )
 
 rust_generator_aspect = aspect(
@@ -220,6 +223,9 @@ rust_generator_aspect = aspect(
         "_rustc_output_diagnostics": attr.label(
             default = Label("@rules_rust//:rustc_output_diagnostics"),
         ),
+        "_always_enable_metadata_output_groups": attr.label(
+            default = Label("@rules_rust//rust/settings:always_enable_metadata_output_groups"),
+        ),
     },
     required_providers = [Ros2InterfaceInfo],
     required_aspect_providers = [
@@ -242,6 +248,7 @@ def _rust_ros2_interface_library_impl(ctx):
         ),
         crate_info = None,
         dep_info = None,
+        build_info = None,
     )
     return [
         DefaultInfo(
