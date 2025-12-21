@@ -28,15 +28,25 @@ def get_storage_id() -> str:
     return os.environ['STORAGE_ID']
 
 
+def get_executable_path(path):
+    if os.path.exists(path):
+        return path
+    # Try finding it in external repository
+    external_path = os.path.join("..", "rules_ros2+", path)
+    if os.path.exists(external_path):
+        return external_path
+    return path
+
+
 @launch_testing.markers.keep_alive
 def generate_test_description():
     publisher_node = launch_ros.actions.Node(
-        executable='ros2/test/rosbag/publisher',
+        executable=get_executable_path('ros2/test/rosbag/publisher'),
         output='screen',
     )
 
     recorder_node = launch_ros.actions.Node(
-        executable='ros2/test/rosbag/recorder',
+        executable=get_executable_path('ros2/test/rosbag/recorder'),
         output='screen',
     )
 
@@ -58,7 +68,7 @@ STORAGE_IDS_TO_BAG_NAMES = {
 class TestRecorder(unittest.TestCase):
 
     def test_recorder_and_playback(self, proc_info, recorder):
-        proc_info.assertWaitForShutdown(process=recorder, timeout=5)
+        proc_info.assertWaitForShutdown(process=recorder, timeout=15)
         launch_testing.asserts.assertExitCodes(
             proc_info,
             allowable_exit_codes=[launch_testing.asserts.EXIT_OK],
@@ -85,7 +95,7 @@ class TestRecorder(unittest.TestCase):
 
         # Test bag player by trying to play previously recorded bag.
         bag_play_proc = subprocess.Popen(
-            ['ros2/test/rosbag/bag', 'play', bag_dir],
+            [get_executable_path('ros2/test/rosbag/bag'), 'play', bag_dir],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,

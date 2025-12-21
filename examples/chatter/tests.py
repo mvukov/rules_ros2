@@ -24,7 +24,7 @@ import std_msgs.msg
 
 @launch_testing.markers.keep_alive
 def generate_test_description():
-    talker_node = launch_ros.actions.Node(executable='chatter/talker',
+    talker_node = launch_ros.actions.Node(executable='examples/chatter/talker',
                                           parameters=[
                                               {
                                                   'callback_period_ms': 10

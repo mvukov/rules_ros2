@@ -54,6 +54,7 @@ vendored_repository = repository_rule(
 )
 
 def _ros2_deps_impl(ctx):
+    # Force regeneration
     clang_configure(name = "rules_ros2_config_clang")
     
     crate_repositories()
@@ -65,6 +66,13 @@ def _ros2_deps_impl(ctx):
         urls = ["https://static.crates.io/crates/bindgen-cli/bindgen-cli-0.71.1.crate"],
         strip_prefix = "bindgen-cli-0.71.1",
         build_file = "@rules_rust_bindgen//3rdparty:BUILD.bindgen-cli.bazel",
+    )
+
+    http_archive(
+        name = "rules_rust_bindgen",
+        integrity = "sha256-yKqAbPYGZnmsI0YyQe6ArWkiZdrQRl9RERy74wuJA1I=",
+        strip_prefix = "extensions/bindgen",
+        url = "https://github.com/bazelbuild/rules_rust/releases/download/0.68.1/rules_rust-0.68.1.tar.gz",
     )
 
     repos = [
@@ -131,7 +139,6 @@ def _ros2_deps_impl(ctx):
         "ros2_xacro",
         "ros2cli",
         "rules_ros2_config_clang",
-        "rules_rust_bindgen",
         "rules_rust_bindgen__bindgen-cli-0.71.1",
         "spdlog",
         "sqlite3",

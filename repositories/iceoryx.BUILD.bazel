@@ -46,12 +46,13 @@ cmake(
     lib_source = ":all_srcs",
     linkopts = selects.with_or(
         {
-            ("@platforms//os:linux", "@platforms//os:macos"): [
+            "@platforms//os:linux": [
                 "-lacl",
                 "-latomic",
                 "-lpthread",
                 "-lrt",
             ],
+            "@platforms//os:macos": [],
             ("@platforms//os:android", "@platforms//os:qnx"): ["-latomic"],
         },
         no_match_error = "Supported OSs: Android, Linux, macOS, QNX",

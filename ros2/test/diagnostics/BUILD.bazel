@@ -21,6 +21,7 @@ ros2_test(
         ":diagnostic_publisher",
         "@ros2_diagnostics//:aggregator_node",
     ],
+    tags = ["requires-network"],
     deps = [
         "@ros2_common_interfaces//:py_diagnostic_msgs",
         "@ros2_rclpy//:rclpy",

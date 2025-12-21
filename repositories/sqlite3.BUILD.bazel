@@ -8,5 +8,6 @@ cc_library(
     srcs = glob(["*.c"]),
     hdrs = glob(["*.h"]),
     includes = ["."],
+    copts = ["-Wno-unused-but-set-variable"],
     visibility = ["//visibility:public"],
 )

@@ -13,7 +13,7 @@ bazel_dep(name = "rules_cc", version = "0.0.17")
 bazel_dep(name = "platforms", version = "0.0.10")
 bazel_dep(name = "googletest", version = "1.15.2")
 bazel_dep(name = "nlohmann_json", version = "3.11.3")
-bazel_dep(name = "rules_rust", version = "0.56.0")
+bazel_dep(name = "rules_rust", version = "0.68.1")
 bazel_dep(name = "llvm-project", version = "17.0.3.bcr.4")
 
 rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")

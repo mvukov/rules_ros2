@@ -13,8 +13,10 @@ cc_library(
     includes = ["."],
     linkopts = [
         "-lpthread",
-        "-lrt",
-    ],
+    ] + select({
+        "@platforms//os:linux": ["-lrt"],
+        "//conditions:default": [],
+    }),
     visibility = ["//visibility:public"],
     deps = [
         "@asio",

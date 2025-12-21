@@ -14,6 +14,11 @@ build --incompatible_default_to_explicit_init_py
 # NOTE: googletest >=v1.13.0 requires min C++14.
 # This is a mandatory flag.
 build --cxxopt=-std=c++17
+build --cxxopt=-mmacosx-version-min=10.15
+build --linkopt=-mmacosx-version-min=10.15
+build --action_env=MACOSX_DEPLOYMENT_TARGET=10.15
+build --host_cxxopt=-mmacosx-version-min=10.15
+build --host_linkopt=-mmacosx-version-min=10.15
 
 # Ensure that you don't accidentally make non-hermetic actions/tests
 # which depend on remote services. Tag an individual target with
