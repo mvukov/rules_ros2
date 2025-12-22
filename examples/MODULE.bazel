@@ -1,48 +1,99 @@
-module(name = "rules_ros2_examples")
+module(
+    name = "rules_ros2_examples",
+    version = "0.0.0",
+)
 
-bazel_dep(name = "com_github_mvukov_rules_ros2")
+bazel_dep(name = "rules_ros2", version = "0.0.0", repo_name = "com_github_mvukov_rules_ros2")
 local_path_override(
-    module_name = "com_github_mvukov_rules_ros2",
+    module_name = "rules_ros2",
     path = "..",
 )
 
-bazel_dep(name = "rules_cc", version = "0.2.9")
-bazel_dep(name = "rules_python", version = "1.6.3")
-bazel_dep(name = "rules_rust", version = "0.63.0")
+bazel_dep(name = "rules_python", version = "0.40.0")
+bazel_dep(name = "rules_rust", version = "0.68.1")
+bazel_dep(name = "rules_cc", version = "0.0.17")
+bazel_dep(name = "googletest", version = "1.15.2")
 
+# Python setup
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
-python.toolchain(
-    is_default = True,
-    # You must pin the Python version to the one used for rules_ros2_pip_deps_numpy_headers and current_py_cc_headers in rules_ros2.
-    # Otherwise you will get errors at analysis time like:
-    #     configurable attribute "actual" in @@rules_python~~pip~rules_ros2_pip_deps//numpy:_no_matching_repository doesn't match this configuration: No matching wheel for current configuration's Python version.
-    #     The current build configuration's Python version doesn't match any of the Python wheels available for this distribution.
-    python_version = "3.10",
-)
+python.toolchain(python_version = "3.10")
+use_repo(python, "python_3_10")
 
-register_toolchains(
-    "@com_github_mvukov_rules_ros2//repositories/rust:bindgen_toolchain",
-    dev_dependency = True,
-)
+# Rust setup
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(edition = "2021", versions = ["1.85.0"])
+use_repo(rust, "rust_toolchains")
+register_toolchains("@rust_toolchains//:all")
 
-rules_ros2_non_module_deps = use_extension("@com_github_mvukov_rules_ros2//ros2:extensions.bzl", "non_module_deps")
+crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate", isolate = True)
+crate.spec(
+    package = "async-std",
+    version = "1.13.2",
+)
+crate.spec(
+    package = "async-stream",
+    version = "0.3.6",
+)
+crate.spec(
+    package = "futures",
+    version = "0.3.30",
+)
+crate.spec(
+    package = "futures-lite",
+    version = "2.6.1",
+)
+crate.spec(
+    package = "serde",
+    version = "1.0.201",
+    features = ["derive"],
+)
+crate.spec(
+    package = "serde-big-array",
+    version = "0.5.1",
+)
+crate.spec(
+    package = "serde_json",
+    version = "1.0.128",
+)
+crate.spec(
+    package = "signal-hook",
+    version = "0.3.17",
+)
+crate.spec(
+    package = "tokio",
+    version = "1.48.0",
+)
+crate.spec(
+    package = "tokio-stream",
+    version = "0.1.17",
+)
+crate.spec(
+    package = "uuid",
+    version = "1.18.1",
+    features = ["v4", "serde"],
+)
+crate.from_specs(
+    name = "rules_ros2_examples_crate_index",
+)
+use_repo(crate, "rules_ros2_examples_crate_index")
+
+# ROS 2 setup via rules_ros2 extension
+ros2_deps = use_extension("@com_github_mvukov_rules_ros2//repositories:extensions.bzl", "ros2_deps")
 use_repo(
-    rules_ros2_non_module_deps,
-    # Check the rules_ros2 root MODULE.bazel for a full list of available non-module repos
-    # Required for bazel test:
+    ros2_deps,
+    "ros2",
     "ros2_common_interfaces",
-    "ros2_geometry2",
+    "ros2_rclcpp",
+    "ros2_rclpy",
+    "ros2_rust",
+    "ros2_rcl_interfaces",
+    "ros2_rosbag2",
     "ros2_launch",
     "ros2_launch_ros",
-    "ros2_message_filters",
-    "ros2_rcl_interfaces",
-    "ros2_rclcpp",
-    "ros2_rcutils",
-    "ros2_robot_state_publisher",
-    "ros2_rust",
-    "ros2_unique_identifier_msgs",
     "ros2cli",
-    # Required for bazel run:
-    "ros2_rclpy",
-    "ros2_rosidl",
+    "cyclonedds",
+    "iceoryx",
+    "ros2_geometry2",
+    "ros2_robot_state_publisher",
+    "foxglove_bridge",
 )

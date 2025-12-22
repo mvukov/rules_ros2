@@ -24,7 +24,13 @@ import std_msgs.msg
 
 @launch_testing.markers.keep_alive
 def generate_test_description():
-    talker_node = launch_ros.actions.Node(executable='chatter/talker',
+    import os
+    
+    # Robustly find the executable relative to this test file
+    dir_path = os.path.dirname(os.path.abspath(__file__))
+    executable_path = os.path.join(dir_path, 'talker')
+
+    talker_node = launch_ros.actions.Node(executable=executable_path,
                                           parameters=[
                                               {
                                                   'callback_period_ms': 10

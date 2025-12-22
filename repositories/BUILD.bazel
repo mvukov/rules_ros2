@@ -8,4 +8,5 @@ exports_files([
     "repositories.bzl",
     "ros2_repo_mappings.yaml",
     "ros2_repositories_impl.bzl",
+    "curl.BUILD.bazel",
 ])

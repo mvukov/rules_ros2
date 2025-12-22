@@ -40,7 +40,7 @@ rust_binary(
     deps = [
         ":rust_std_msgs",
         "@ros2_rust//:rclrs",
-        "@rules_ros2_crate_index//:signal-hook",
+        "@rules_ros2_examples_crate_index//:signal-hook",
     ],
 )
 
@@ -68,6 +68,10 @@ ros2_test(
     deps = [
         "@ros2_common_interfaces//:py_std_msgs",
     ],
+    env = {
+        "RMW_IMPLEMENTATION": "rmw_cyclonedds_cpp",
+        "CYCLONEDDS_URI": "<CycloneDDS><Domain><General><Interfaces><NetworkInterface address=\"127.0.0.1\"/></Interfaces><AllowMulticast>false</AllowMulticast></General><Discovery><ParticipantIndex>auto</ParticipantIndex><Peers><Peer address=\"127.0.0.1\"/></Peers></Discovery></Domain></CycloneDDS>",
+    },
 )
 
 ros2_topic(

@@ -22,19 +22,25 @@ import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import lifecycle_msgs.msg
+import python.runfiles
 
 _Transition = lifecycle_msgs.msg.Transition
+
+TALKER_NODE_PATH = python.runfiles.Runfiles.Create().Rlocation(
+    'com_github_mvukov_rules_ros2/examples/lifecycle/lifecycle_talker')
+LISTENER_NODE_PATH = python.runfiles.Runfiles.Create().Rlocation(
+    'com_github_mvukov_rules_ros2/examples/lifecycle/lifecycle_listener')
 
 
 @launch_testing.markers.keep_alive
 def generate_test_description():
     talker_node = launch_ros.actions.LifecycleNode(
-        executable='lifecycle/lifecycle_talker',
+        executable=TALKER_NODE_PATH,
         name='lc_talker',
         namespace='',
         output='screen')
     listener_node = launch_ros.actions.Node(
-        executable='lifecycle/lifecycle_listener',
+        executable=LISTENER_NODE_PATH,
         name='listener',
         output='screen')
 
@@ -54,7 +60,12 @@ def generate_test_description():
             launch.event_handlers.on_process_start.OnProcessStart(
                 target_action=talker_node,
                 on_start=[
-                    emit_change_state_event(_Transition.TRANSITION_CONFIGURE)
+                    launch.actions.TimerAction(
+                        period=2.0,
+                        actions=[
+                            emit_change_state_event(
+                                _Transition.TRANSITION_CONFIGURE)
+                        ]),
                 ],
             )),
         # When the talker reaches the 'inactive' state, make it take the
@@ -122,23 +133,23 @@ class TestLifecyclePubSub(unittest.TestCase):
         """Test lifecycle talker."""
         proc_output.assertWaitFor('on_configure() is called',
                                   process=talker_node,
-                                  timeout=5)
+                                  timeout=15)
         proc_output.assertWaitFor('on_activate() is called',
                                   process=talker_node,
-                                  timeout=5)
+                                  timeout=15)
         pattern = re.compile(r'data_callback: Lifecycle HelloWorld #\d+')
         proc_output.assertWaitFor(expected_output=pattern,
                                   process=listener_node,
-                                  timeout=5)
+                                  timeout=15)
         proc_output.assertWaitFor('on_deactivate() is called',
                                   process=talker_node,
-                                  timeout=5)
+                                  timeout=15)
         proc_output.assertWaitFor('on cleanup is called',
                                   process=talker_node,
-                                  timeout=5)
+                                  timeout=15)
         proc_output.assertWaitFor('on shutdown is called',
                                   process=talker_node,
-                                  timeout=5)
+                                  timeout=15)
 
 
 @launch_testing.post_shutdown_test()

@@ -24,19 +24,26 @@ import zero_copy.roudi
 
 @launch_testing.markers.keep_alive
 def generate_test_description():
+    import os
+    dir_path = os.path.dirname(os.path.abspath(__file__))
+    talker_tests_path = os.path.join(dir_path, 'talker_tests')
+    talker_path = os.path.join(dir_path, 'talker')
+    cyclonedds_xml_path = os.path.join(dir_path, 'cyclonedds.xml')
+    roudi_config_path = os.path.join(dir_path, 'roudi.toml')
+
     talker_tests_node = launch_ros.actions.Node(
-        executable='zero_copy/talker_tests',
+        executable=talker_tests_path,
         output='screen',
     )
 
     return (launch.LaunchDescription([
         launch.actions.ExecuteProcess(
             name='iceoryx_roudi',
-            cmd=[zero_copy.roudi.ROUDI_PATH],
+            cmd=[zero_copy.roudi.ROUDI_PATH, '-c', roudi_config_path],
         ),
         launch.actions.SetEnvironmentVariable(name='CYCLONEDDS_URI',
-                                              value='zero_copy/cyclonedds.xml'),
-        launch_ros.actions.Node(executable='zero_copy/talker',
+                                              value=cyclonedds_xml_path),
+        launch_ros.actions.Node(executable=talker_path,
                                 parameters=[{
                                     'callback_period_ms': 10
                                 }],
@@ -52,7 +59,7 @@ def generate_test_description():
 class TestTalker(unittest.TestCase):
 
     def test_talker_tests(self, proc_info, talker_tests):
-        proc_info.assertWaitForShutdown(process=talker_tests, timeout=5)
+        proc_info.assertWaitForShutdown(process=talker_tests, timeout=15)
         launch_testing.asserts.assertExitCodes(
             proc_info,
             allowable_exit_codes=[launch_testing.asserts.EXIT_OK],

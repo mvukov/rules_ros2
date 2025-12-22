@@ -8,13 +8,17 @@ import launch_testing.asserts
 import launch_testing.markers
 import rclpy
 import std_msgs.msg
+import python.runfiles
+
+PUBLISHER_NODE_PATH = python.runfiles.Runfiles.Create().Rlocation(
+    'com_github_mvukov_rules_ros2/ros2/test/rust/publisher')
 
 
 @launch_testing.markers.keep_alive
 def generate_test_description():
     return launch.LaunchDescription([
         launch_ros.actions.Node(
-            executable='ros2/test/rust/publisher',
+            executable=PUBLISHER_NODE_PATH,
             name='publisher',
             output='screen',
         ),

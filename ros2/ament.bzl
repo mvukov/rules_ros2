@@ -24,6 +24,7 @@ load(
     "expand_template_impl",
 )
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 load("@rules_python//python:defs.bzl", "PyInfo")
 
 _AMENT_SETUP_MODULE = "ament_setup"
@@ -110,6 +111,7 @@ Ros2AmentSetupInfo = provider(
 )
 
 def _ros2_ament_setup_rule_impl(ctx):
+    cc_toolchain = find_cpp_toolchain(ctx)
     plugins = depset(
         transitive = [
             dep[Ros2PluginCollectorAspectInfo].plugins
@@ -149,8 +151,13 @@ def _ros2_ament_setup_rule_impl(ctx):
             types_to_bases_and_names,
         ))
 
+        extension = ".so"
+        cpu = cc_toolchain.cpu
+        if "darwin" in cpu or "apple" in cpu:
+            extension = ".dylib"
+
         dynamic_library = ctx.actions.declare_file(
-            paths.join(prefix_path, "lib", "lib" + plugin_target_name + ".so"),
+            paths.join(prefix_path, "lib", "lib" + plugin_target_name + extension),
         )
         ctx.actions.symlink(
             output = dynamic_library,
@@ -167,12 +174,13 @@ def _ros2_ament_setup_rule_impl(ctx):
 
     for plugin in idl_plugins:
         package_name = plugin.package_name
+        extension = ".so"
+        cpu = cc_toolchain.cpu
+        if "darwin" in cpu or "apple" in cpu:
+            extension = ".dylib"
 
-        if package_name not in registered_packages:
-            outputs.append(_write_package_xml(ctx, prefix_path, package_name))
-            registered_packages.append(package_name)
         dynamic_library = ctx.actions.declare_file(
-            paths.join(prefix_path, "lib", "lib" + package_name + "__" + "rosidl_typesupport_cpp" + ".so"),
+            paths.join(prefix_path, "lib", "lib" + package_name + "__" + "rosidl_typesupport_cpp" + extension),
         )
         ctx.actions.symlink(
             output = dynamic_library,
@@ -253,8 +261,13 @@ ros2_ament_setup = rule(
             ],
             providers = [Ros2InterfaceInfo],
         ),
+        "_cc_toolchain": attr.label(
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
+        ),
     },
     implementation = _ros2_ament_setup_rule_impl,
+    fragments = ["cpp"],
+    toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
 )
 
 def py_create_ament_setup(ament_prefix_path):

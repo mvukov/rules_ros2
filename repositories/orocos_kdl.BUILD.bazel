@@ -21,6 +21,7 @@ cc_library(
     include_prefix = "kdl",
     includes = ["orocos_kdl/src"],
     strip_include_prefix = "orocos_kdl/src",
+    copts = ["-Wno-unused-private-field"],
     visibility = ["//visibility:public"],
     deps = [
         "@eigen",

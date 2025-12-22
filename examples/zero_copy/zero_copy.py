@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Launch a talker and a listener."""
+import os # Added os import
 import launch.actions
 import launch.substitutions
 import launch_ros.actions
@@ -23,25 +24,26 @@ LISTENER_TYPE_ARG = 'listener_type'
 
 
 def set_up_nodes(context, callback_period_ms_arg, talker_type_arg,
-                 listener_type_arg):
+                 listener_type_arg, dir_path_arg):  # Added dir_path_arg
     callback_period_ms_str = context.perform_substitution(
         callback_period_ms_arg)
     talker_type = context.perform_substitution(talker_type_arg)
     listener_type = context.perform_substitution(listener_type_arg)
+    dir_path = context.perform_substitution(dir_path_arg)  # Resolved dir_path
 
     match talker_type:
         case 'cc':
-            talker_exe = 'zero_copy/talker'
+            talker_exe = os.path.join(dir_path, 'talker')  # Modified path
         case 'rust':
-            talker_exe = 'zero_copy/rust_talker'
+            talker_exe = os.path.join(dir_path, 'rust_talker')  # Modified path
         case _:
             raise ValueError(f'{TALKER_TYPE_ARG} must be `cc` or `rust`!')
 
     match listener_type:
         case 'cc':
-            listener_exe = 'zero_copy/listener'
+            listener_exe = os.path.join(dir_path, 'listener')  # Modified path
         case 'rust':
-            listener_exe = 'zero_copy/rust_listener'
+            listener_exe = os.path.join(dir_path, 'rust_listener')  # Modified path
         case _:
             raise ValueError(f'{LISTENER_TYPE_ARG} must be `cc` or `rust`!')
 
@@ -62,6 +64,11 @@ def set_up_nodes(context, callback_period_ms_arg, talker_type_arg,
 
 def generate_launch_description():
     """Launch a talker and a listener."""
+    # Robustly find files relative to this launch file
+    dir_path = os.path.dirname(os.path.abspath(__file__))  # Added dir_path resolution
+    roudi_config_path = os.path.join(dir_path, 'roudi.toml')  # Constructed roudi.toml path
+    cyclonedds_xml_path = os.path.join(dir_path, 'cyclonedds.xml')  # Constructed cyclonedds.xml path
+
     return launch.LaunchDescription([
         launch.actions.DeclareLaunchArgument(CALLBACK_PERIOD_MS_ARG,
                                              default_value='100'),
@@ -75,11 +82,11 @@ def generate_launch_description():
             cmd=[
                 zero_copy.roudi.ROUDI_PATH,
                 '-c',
-                'zero_copy/roudi.toml',
+                roudi_config_path,  # Used constructed path
             ],
         ),
         launch.actions.SetEnvironmentVariable(name='CYCLONEDDS_URI',
-                                              value='zero_copy/cyclonedds.xml'),
+                                              value=cyclonedds_xml_path),  # Used constructed path
         # https://github.com/ros2/rmw_cyclonedds/issues/469#issuecomment-1877574593
         launch.actions.SetEnvironmentVariable(
             name='ROS_DISABLE_LOANED_MESSAGES', value='0'),
@@ -90,6 +97,7 @@ def generate_launch_description():
                     CALLBACK_PERIOD_MS_ARG),
                 launch.substitutions.LaunchConfiguration(TALKER_TYPE_ARG),
                 launch.substitutions.LaunchConfiguration(LISTENER_TYPE_ARG),
+                launch.substitutions.TextSubstitution(text=dir_path),  # Passed dir_path
             ],
         ),
     ])

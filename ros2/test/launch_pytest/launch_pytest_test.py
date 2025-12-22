@@ -1,12 +1,16 @@
 import launch
 import launch_pytest.tools
 import pytest
+import python.runfiles
+
+HELLO_NODE_PATH = python.runfiles.Runfiles.Create().Rlocation(
+    'com_github_mvukov_rules_ros2/ros2/test/launch_pytest/hello')
 
 
 @pytest.fixture
 def hello_proc():
     return launch.actions.ExecuteProcess(
-        cmd=['ros2/test/launch_pytest/hello'],
+        cmd=[HELLO_NODE_PATH],
         cached_output=True,
     )
 

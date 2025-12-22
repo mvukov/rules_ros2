@@ -14,6 +14,7 @@ ros2_test(
     launch_file = "launch_pytest_test.py",
     nodes = [":hello"],
     use_pytest = True,
+    deps = ["@rules_python//python/runfiles"],
 )
 
 ros2_test(

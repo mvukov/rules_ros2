@@ -25,12 +25,16 @@ import rclpy
 
 AGGREGATOR_NODE_PATH = python.runfiles.Runfiles.Create().Rlocation(
     'ros2_diagnostics/aggregator_node')
+PUBLISHER_NODE_PATH = python.runfiles.Runfiles.Create().Rlocation(
+    'com_github_mvukov_rules_ros2/ros2/test/diagnostics/diagnostic_publisher')
+AGGREGATOR_CONFIG_PATH = python.runfiles.Runfiles.Create().Rlocation(
+    'com_github_mvukov_rules_ros2/ros2/test/diagnostics/aggregator_config.yaml')
 
 
 @launch_testing.markers.keep_alive
 def generate_test_description():
     publisher_node = launch_ros.actions.Node(
-        executable='ros2/test/diagnostics/diagnostic_publisher',
+        executable=PUBLISHER_NODE_PATH,
         name='diagnostic_publisher',
         output='screen',
     )
@@ -38,7 +42,7 @@ def generate_test_description():
     aggregator_node = launch_ros.actions.Node(
         executable=AGGREGATOR_NODE_PATH,
         name='diagnostic_aggregator',
-        parameters=['ros2/test/diagnostics/aggregator_config.yaml'],
+        parameters=[AGGREGATOR_CONFIG_PATH],
     )
 
     return launch.LaunchDescription([

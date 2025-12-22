@@ -4,3 +4,5 @@ __pycache__
 user.bazelrc
 MODULE.bazel*
 repositories/rust/rustfmt/rustfmt_wrapper_impl.sh
+
+*.DS_Store

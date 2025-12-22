@@ -1,58 +1,99 @@
-# A chatter example
+# Chatter Example
 
-Implements simple talker and lister nodes.
+This example implements simple publisher ("talker") and subscriber ("listener") nodes using both `rclcpp` (C++) and `rclpy` (Python), demonstrating basic ROS 2 communication.
 
-To launch a sample deployment, run
+## Purpose
 
-```sh
-bazel run //chatter
+- Demonstrate basic publisher/subscriber communication.
+- Show how to build and run C++ and Python ROS 2 nodes with Bazel.
+- Provide a starting point for verifying your ROS 2 Bazel setup.
+
+## Dependencies
+
+- `rules_ros2`: Core Bazel rules for ROS 2.
+- `rclcpp`: ROS 2 Client Library for C++.
+- `rclpy`: ROS 2 Client Library for Python.
+- `std_msgs`: Standard ROS 2 message definitions.
+
+## Usage
+
+You can run this example from the project root or as a standalone example from the `rules_ros2/examples` directory.
+
+**Note:** Do not run these commands from the `rules_ros2/` directory itself.
+
+### Option 1: Run from Project Root (`Perimeta_v2`)
+
+Run the launch file to start both the talker and listener:
+
+```bash
+bazel run @rules_ros2//examples/chatter:chatter
 ```
 
-By running this command, Bazel will (re-)build all necessary code (ROS 2, nodes,
-launch relevant code, etc.) and run the target. This is basically one of the
-value propositions for using Bazel: you don't have to (semi-)manually keep
-e.g. nodes up-to-date. With correctly specified deps, Bazel takes care of this.
+To run individual nodes:
 
-You can inspect the chatter topic with
+```bash
+# C++ Talker
+bazel run @rules_ros2//examples/chatter:talker
 
-```sh
-bazel run //chatter:topic -- echo /topic
+# Python Talker
+bazel run @rules_ros2//examples/chatter:py_talker
+
+# Listener (C++)
+bazel run @rules_ros2//examples/chatter:listener
 ```
 
-and list the parameters with
+### Option 2: Run as Standalone (`rules_ros2/examples`)
 
-```sh
-bazel run //:ros2_param -- list
+Navigate to the examples directory:
+
+```bash
+cd rules_ros2/examples
 ```
 
-You can record a topic with
+Run the launch file:
 
-```sh
-bazel run //chatter:bag -- record /topic
+```bash
+bazel run //chatter --experimental_isolated_extension_usages
 ```
 
-You can run tests with
+To run individual nodes:
 
-```sh
-bazel test //chatter:tests  # To see the logs run with `--test_output=all`.
+```bash
+# C++ Talker
+bazel run //chatter:talker --experimental_isolated_extension_usages
+
+# Python Talker
+bazel run //chatter:py_talker --experimental_isolated_extension_usages
+
+# Listener (C++)
+bazel run //chatter:listener --experimental_isolated_extension_usages
 ```
 
-Alternatively, you can run nodes without the launch mechanism. In a terminal run
+### Additional Commands
 
-```sh
-bazel run //chatter:talker
+Inspect the topic:
+```bash
+# Root
+bazel run @rules_ros2//examples/chatter:topic -- echo /topic
+
+# Standalone
+bazel run //chatter:topic --experimental_isolated_extension_usages -- echo /topic
 ```
 
-for rclcpp version or
+Record the topic:
+```bash
+# Root
+bazel run @rules_ros2//examples/chatter:bag -- record /topic
 
-```sh
-bazel run //chatter:py_talker
+# Standalone
+bazel run //chatter:bag --experimental_isolated_extension_usages -- record /topic
 ```
 
-for rclpy version.
+Run tests:
+```bash
+# Root
+bazel test @rules_ros2//examples/chatter:tests
 
-In another terminal run
-
-```sh
-bazel run //chatter:listener
+# Standalone
+bazel test //chatter:tests --experimental_isolated_extension_usages
 ```

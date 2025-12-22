@@ -18,8 +18,10 @@ ros2_cpp_binary(
     includes = ["rclpy/src"],
     linkopts = [
         "-fvisibility=hidden",
-        "-latomic",
-    ],
+    ] + select({
+        "@platforms//os:linux": ["-latomic"],
+        "//conditions:default": [],
+    }),
     linkshared = True,
     deps = [
         "@pybind11",

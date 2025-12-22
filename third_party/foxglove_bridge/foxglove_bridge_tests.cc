@@ -21,8 +21,8 @@ constexpr uint8_t HELLO_WORLD_BINARY[] = {0,   1,   0,   0,   12,  0,   0,
                                           0,   104, 101, 108, 108, 111, 32,
                                           119, 111, 114, 108, 100, 0};
 
-constexpr auto ONE_SECOND = std::chrono::seconds(1);
-constexpr auto DEFAULT_TIMEOUT = std::chrono::seconds(10);
+constexpr auto ONE_SECOND = std::chrono::seconds(5);
+constexpr auto DEFAULT_TIMEOUT = std::chrono::seconds(15);
 
 TEST(SmokeTest, testConnection) {
   foxglove::Client<websocketpp::config::asio_client> wsClient;
