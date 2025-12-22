@@ -1,1 +1,5 @@
 bazel-*
+examples/bazel-bin
+examples/bazel-out
+examples/bazel-testlogs
+examples/bazel-examples
