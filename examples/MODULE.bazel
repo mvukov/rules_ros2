@@ -12,6 +12,7 @@ local_path_override(
 bazel_dep(name = "rules_python", version = "0.40.0")
 bazel_dep(name = "rules_rust", version = "0.68.1")
 bazel_dep(name = "rules_cc", version = "0.0.17")
+bazel_dep(name = "googletest", version = "1.15.2")
 
 # Python setup
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
@@ -90,4 +91,6 @@ use_repo(
     "ros2_launch",
     "ros2_launch_ros",
     "ros2cli",
+    "cyclonedds",
+    "iceoryx",
 )
