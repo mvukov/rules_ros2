@@ -22,19 +22,25 @@ import launch_testing.actions
 import launch_testing.asserts
 import launch_testing.markers
 import lifecycle_msgs.msg
+import python.runfiles
 
 _Transition = lifecycle_msgs.msg.Transition
+
+TALKER_NODE_PATH = python.runfiles.Runfiles.Create().Rlocation(
+    'com_github_mvukov_rules_ros2/examples/lifecycle/lifecycle_talker')
+LISTENER_NODE_PATH = python.runfiles.Runfiles.Create().Rlocation(
+    'com_github_mvukov_rules_ros2/examples/lifecycle/lifecycle_listener')
 
 
 @launch_testing.markers.keep_alive
 def generate_test_description():
     talker_node = launch_ros.actions.LifecycleNode(
-        executable='examples/lifecycle/lifecycle_talker',
+        executable=TALKER_NODE_PATH,
         name='lc_talker',
         namespace='',
         output='screen')
     listener_node = launch_ros.actions.Node(
-        executable='examples/lifecycle/lifecycle_listener',
+        executable=LISTENER_NODE_PATH,
         name='listener',
         output='screen')
 
