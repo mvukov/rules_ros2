@@ -8,51 +8,50 @@ This example demonstrates how to integrate your ROS 2 application with [Foxglove
 - Show how to bundle and launch the Foxglove Bridge node using Bazel.
 - Provide a setup for debugging and visualizing robot data (URDF, topics, logs).
 
-<h2>Dependencies</h2>
+## Dependencies
 
-- <code>rules_ros2</code>: Core Bazel rules for ROS 2.
-- <code>foxglove_bridge</code>: The ROS 2 node for Foxglove connectivity.
-- <code>ros2_robot_state_publisher</code>: Publishes the state of the robot to <code>tf</code>.
-- <code>std_msgs</code>, <code>geometry_msgs</code>: Standard message definitions.
+- `rules_ros2`: Core Bazel rules for ROS 2.
+- `foxglove_bridge`: The ROS 2 node for Foxglove connectivity.
+- `ros2_robot_state_publisher`: Publishes the state of the robot to `tf`.
+- `std_msgs`, `geometry_msgs`: Standard message definitions.
 
-<h2>Usage</h2>
+## Usage
 
-You can run this example from the project root or as a standalone example from the <code>rules_ros2/examples</code> directory.
+You can run this example from the project root or as a standalone example from the `rules_ros2/examples` directory.
 
-<b>Note:</b> Do not run these commands from the <code>rules_ros2/</code> directory itself.
+**Note:** Do not run these commands from the `rules_ros2/` directory itself.
 
-<h3>Option 1: Run from Project Root (<code>Perimeta_v2</code>)</h3>
+### Option 1: Run from Project Root (`Perimeta_v2`)
 
 Start the bridge and sample publisher:
 
-<pre><code>bazel run @rules_ros2//examples/foxglove_bridge:foxglove_bridge
-</code></pre>
+```bash
+bazel run @rules_ros2//examples/foxglove_bridge:foxglove_bridge
+```
 
-<h3>Option 2: Run as Standalone (<code>rules_ros2/examples</code>)</h3>
+### Option 2: Run as Standalone (`rules_ros2/examples`)
 
 Navigate to the examples directory:
 
-<pre><code>cd rules_ros2/examples
-</code></pre>
+```bash
+cd rules_ros2/examples
+```
 
 Start the bridge and sample publisher:
 
-<pre><code>bazel run //foxglove_bridge --experimental_isolated_extension_usages
-</code></pre>
+```bash
+bazel run //foxglove_bridge --experimental_isolated_extension_usages
+```
 
-<h3>Visualization with Foxglove Studio</h3>
+### Visualization with Foxglove Studio
 
-<ol>
-<li>Open <a href="https://studio.foxglove.dev/">Foxglove Studio</a> (or the desktop app).</li>
-<li>Open a new connection.</li>
-<li>Select <b>Foxglove WebSocket</b> as the connection type.</li>
-<li>Set the URL to <code>ws://localhost:8765</code>.</li>
-<li>Click <b>Open</b>.</li>
-</ol>
+1.  Open [Foxglove Studio](https://studio.foxglove.dev/) (or the desktop app).
+2.  Open a new connection.
+3.  Select **Foxglove WebSocket** as the connection type.
+4.  Set the URL to `ws://localhost:8765`.
+5.  Click **Open**.
 
-<b>Recommended Panels:</b>
-<ul>
-<li><a href="https://foxglove.dev/docs/studio/panels/3d">3D</a>: To display the sample robot URDF model.</li>
-<li><a href="https://foxglove.dev/docs/studio/panels/log">Log</a>: To display ROS log messages.</li>
-<li><a href="https://foxglove.dev/docs/studio/panels/plot">Plot</a>: To plot data from topics (e.g., <code>/point</code>).</li>
-</ul>
+**Recommended Panels:**
+- [3D](https://foxglove.dev/docs/studio/panels/3d): To display the sample robot URDF model.
+- [Log](https://foxglove.dev/docs/studio/panels/log): To display ROS log messages.
+- [Plot](https://foxglove.dev/docs/studio/panels/plot): To plot data from topics (e.g., `/point`).
