@@ -118,3 +118,15 @@ py_library(
         "@ros2_rosidl_runtime_py//:rosidl_runtime_py",
     ],
 )
+
+py_library(
+    name = "ros2interface",
+    srcs = glob(["ros2interface/ros2interface/**/*.py"]),
+    imports = ["ros2interface"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":ros2cli",
+        "@ros2_ament_index//:ament_index_python",
+        "@ros2_rosidl_runtime_py//:rosidl_runtime_py",
+    ],
+)
