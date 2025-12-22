@@ -31,7 +31,7 @@ load("@rules_python//python:repositories.bzl", "py_repositories", "python_regist
 py_repositories()
 
 python_register_toolchains(
-    name = "rules_ros2_python",
+    name = "rules_ros2_python_3_12",
     # You must pin the Python version to the one used for rules_ros2_pip_deps_numpy_headers and current_py_cc_headers in rules_ros2.
     # Otherwise you will get errors at runtime (not build time!) like:
     #     ModuleNotFoundError: No module named 'numpy.core._multiarray_umath'
@@ -43,7 +43,7 @@ load("@rules_python//python:pip.bzl", "pip_parse")
 
 pip_parse(
     name = "rules_ros2_pip_deps",
-    python_interpreter_target = "@rules_ros2_python_host//:python",
+    python_interpreter_target = "@rules_ros2_python_3_12_host//:python",
     requirements_lock = "@com_github_mvukov_rules_ros2//:requirements_lock.txt",
 )
 
