@@ -12,8 +12,8 @@ configure_make(
     name = "curl",
     lib_source = ":all_srcs",
     configure_options = [
-        "--with-ssl=$$EXT_BUILD_DEPS/boringssl",
-        "--with-zlib=$$EXT_BUILD_DEPS/zlib",
+        "--with-ssl=$$EXT_BUILD_DEPS",
+        "--with-zlib=$$EXT_BUILD_DEPS",
         "--disable-shared",
         "--enable-static",
         "--disable-ldap",
