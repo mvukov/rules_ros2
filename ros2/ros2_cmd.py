@@ -101,6 +101,10 @@ class Ros2CommandExtension(ros2cli.command.CommandExtension):
                             action='store_true',
                             help='Consider hidden topics as well')
 
+        parser.add_argument('--include-hidden-services',
+                            action='store_true',
+                            help='Consider hidden services as well')
+
         # add arguments and sub-commands of verbs
         add_subparsers(parser,
                        cli_name,

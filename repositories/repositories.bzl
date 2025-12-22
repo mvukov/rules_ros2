@@ -32,17 +32,17 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "bazel_skylib",
-        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.8.1/bazel-skylib-1.8.1.tar.gz"],
-        sha256 = "51b5105a760b353773f904d2bbc5e664d0987fbaf22265164de65d43e910d8ac",
+        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.8.2/bazel-skylib-1.8.2.tar.gz"],
+        sha256 = "6e78f0e57de26801f6f564fa7c4a48dc8b36873e416257a92bbb0937eeac8446",
     )
 
     maybe(
         http_archive,
         name = "fmt",
         build_file = "@com_github_mvukov_rules_ros2//repositories:fmt.BUILD.bazel",
-        sha256 = "aa3e8fbb6a0066c03454434add1f1fc23299e85758ceec0d7d2d974431481e40",
-        strip_prefix = "fmt-12.0.0",
-        url = "https://github.com/fmtlib/fmt/archive/12.0.0.tar.gz",
+        sha256 = "ea7de4299689e12b6dddd392f9896f08fb0777ac7168897a244a6d6085043fea",
+        strip_prefix = "fmt-12.1.0",
+        url = "https://github.com/fmtlib/fmt/archive/12.1.0.tar.gz",
     )
 
     maybe(
@@ -75,9 +75,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "bazel_features",
-        sha256 = "f08776c1430e8f35209a054f828d0985019879e554c4eb32a093e1f49bc9231e",
-        strip_prefix = "bazel_features-1.34.0",
-        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.34.0/bazel_features-v1.34.0.tar.gz",
+        sha256 = "9390b391a68d3b24aef7966bce8556d28003fe3f022a5008efc7807e8acaaf1a",
+        strip_prefix = "bazel_features-1.36.0",
+        url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.36.0/bazel_features-v1.36.0.tar.gz",
     )
 
     maybe(
@@ -220,9 +220,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "eigen",
         build_file = "@com_github_mvukov_rules_ros2//repositories:eigen.BUILD.bazel",
-        sha256 = "8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72",
-        strip_prefix = "eigen-3.4.0",
-        urls = ["https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz"],
+        sha256 = "b93c667d1b69265cdb4d9f30ec21f8facbbe8b307cf34c0b9942834c6d4fdbe2",
+        strip_prefix = "eigen-3.4.1",
+        urls = ["https://gitlab.com/libeigen/eigen/-/archive/3.4.1/eigen-3.4.1.tar.gz"],
     )
 
     maybe(

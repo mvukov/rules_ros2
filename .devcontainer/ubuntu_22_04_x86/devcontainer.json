@@ -1,0 +1,17 @@
+{
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": []
+    }
+  },
+  "remoteUser": "vscode",
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind",
+    "source=/home/${localEnv:USER}/dev/tmp/rules_ros2_cache,target=/home/vscode/.cache,type=bind,consistency=cached"
+  ],
+  "runArgs": ["--init", "--shm-size=1gb"],
+  "overrideCommand": false
+}
