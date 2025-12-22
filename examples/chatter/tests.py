@@ -26,21 +26,9 @@ import std_msgs.msg
 def generate_test_description():
     import os
     
-    # Workaround for finding the executable in Bzlmod runfiles structure
-    executable_path = 'examples/chatter/talker'
-    if not os.path.exists(executable_path):
-        # We are likely in .../tests.runfiles/_main
-        # The external repo is at .../tests.runfiles/rules_ros2+...
-        try:
-            parent_dir = os.path.dirname(os.getcwd())
-            for item in os.listdir(parent_dir):
-                if item.startswith('rules_ros2'):
-                    candidate = os.path.join(parent_dir, item, 'examples/chatter/talker')
-                    if os.path.exists(candidate):
-                        executable_path = candidate
-                        break
-        except Exception:
-            pass
+    # Robustly find the executable relative to this test file
+    dir_path = os.path.dirname(os.path.abspath(__file__))
+    executable_path = os.path.join(dir_path, 'talker')
 
     talker_node = launch_ros.actions.Node(executable=executable_path,
                                           parameters=[
