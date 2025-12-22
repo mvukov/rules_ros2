@@ -25,7 +25,7 @@ rust.toolchain(edition = "2021", versions = ["1.85.0"])
 use_repo(rust, "rust_toolchains")
 register_toolchains("@rust_toolchains//:all")
 
-crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
+crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate", isolate = True)
 crate.spec(
     package = "async-std",
     version = "1.13.2",
