@@ -21,7 +21,7 @@ use_repo(python, "python_3_10")
 
 # Rust setup
 rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
-rust.toolchain(edition = "2021", versions = ["1.83.0"])
+rust.toolchain(edition = "2021", versions = ["1.85.0"])
 use_repo(rust, "rust_toolchains")
 register_toolchains("@rust_toolchains//:all")
 
@@ -73,9 +73,9 @@ crate.spec(
     features = ["v4", "serde"],
 )
 crate.from_specs(
-    name = "rules_ros2_crate_index",
+    name = "rules_ros2_examples_crate_index",
 )
-use_repo(crate, "rules_ros2_crate_index")
+use_repo(crate, "rules_ros2_examples_crate_index")
 
 # ROS 2 setup via rules_ros2 extension
 ros2_deps = use_extension("@com_github_mvukov_rules_ros2//repositories:extensions.bzl", "ros2_deps")
