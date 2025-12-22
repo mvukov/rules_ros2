@@ -13,6 +13,7 @@ def ros2_workspace_repositories():
 
     In particular, imports third-party package repositories excluding ROS 2 packages. ROS 2-specific repositories are imported with `ros2_repositories()` macro.
     """
+    # Force re-evaluation
     maybe(
         http_archive,
         name = "rules_python",

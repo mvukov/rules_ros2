@@ -93,4 +93,7 @@ use_repo(
     "ros2cli",
     "cyclonedds",
     "iceoryx",
+    "ros2_geometry2",
+    "ros2_robot_state_publisher",
+    "foxglove_bridge",
 )

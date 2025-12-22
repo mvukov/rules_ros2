@@ -31,14 +31,9 @@ configure_make(
         "--without-librtmp",
         "--without-libssh2",
         "--without-nghttp2",
+        "--without-brotli",
     ],
     # out_static_libs = ["libcurl.a"],
-    postfix_script = """
-echo "=== POSTFIX DEBUG ==="
-echo "INSTALLDIR: $${INSTALLDIR}"
-ls -R $${INSTALLDIR}
-echo "=== END POSTFIX DEBUG ==="
-    """,
     visibility = ["//visibility:public"],
     deps = [
         "@boringssl//:ssl",

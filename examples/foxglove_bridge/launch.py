@@ -19,7 +19,10 @@ import launch_ros.actions
 import third_party.foxglove_bridge.node_path
 import third_party.foxglove_bridge.params
 
-from examples.foxglove_bridge import data_paths  # noreorder
+try:
+    from examples.foxglove_bridge import data_paths
+except ImportError:
+    from foxglove_bridge import data_paths
 
 
 def get_abs_path(path):
