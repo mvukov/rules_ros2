@@ -60,6 +60,10 @@ ros2_cpp_binary(
     name = "py_loader.so",
     srcs = ["py_loader.cc"],
     linkshared = True,
+    linkopts = select({
+        "@bazel_tools//src/conditions:darwin": ["-undefined", "dynamic_lookup"],
+        "//conditions:default": [],
+    }),
     deps = [
         ":polygon_base",
         "@pybind11",

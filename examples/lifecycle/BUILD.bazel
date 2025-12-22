@@ -51,4 +51,9 @@ ros2_test(
         ":lifecycle_listener",
         ":lifecycle_talker",
     ],
+    env = {
+        "RMW_IMPLEMENTATION": "rmw_cyclonedds_cpp",
+        "CYCLONEDDS_URI": "<CycloneDDS><Domain><General><Interfaces><NetworkInterface address=\"127.0.0.1\"/></Interfaces><AllowMulticast>false</AllowMulticast></General><Discovery><ParticipantIndex>auto</ParticipantIndex><Peers><Peer address=\"127.0.0.1\"/></Peers></Discovery></Domain></CycloneDDS>",
+    },
+    deps = ["@rules_python//python/runfiles"],
 )

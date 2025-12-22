@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
   storage_options.uri = std::string(std::getenv("TEST_TMPDIR")) + "/bag";
   storage_options.storage_id = std::getenv("STORAGE_ID");
   // We use the bag split event as a signal that we can stop.
-  constexpr uint64_t kSqlite3MinimumSplitSize = 86016;
+  constexpr uint64_t kSqlite3MinimumSplitSize = 200000;
   storage_options.max_bagfile_size = kSqlite3MinimumSplitSize;
   auto recorder = std::make_shared<rosbag2_transport::Recorder>(
       std::move(writer), storage_options, record_options);

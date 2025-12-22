@@ -185,8 +185,8 @@ def ros2_workspace_repositories():
         sha256 = "77c0e1cd35ab5b45b659645a93b46d660224d0024f1185e8a95cdb27ae3d787d",
         strip_prefix = "curl-8.8.0",
         urls = ["https://github.com/curl/curl/releases/download/curl-8_8_0/curl-8.8.0.tar.gz"],
-        patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:curl_fix_openssl.patch"],
+        # patches = ["@com_github_mvukov_rules_ros2//repositories/patches:curl_fix_openssl.patch"],
+        # patch_args = ["-p1"],
     )
 
     maybe(

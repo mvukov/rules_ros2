@@ -1,5 +1,5 @@
 <xml xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:property name="yaml_file" value="$(cwd)/ros2/test/xacro/params.yaml" />
+  <xacro:property name="yaml_file" value="params.yaml" />
   <xacro:property name="props" value="${load_yaml(yaml_file)}"/>
   <xacro:property name="val1" value="${props['foo']}" />
   <a foo="${props['foo']}"/>

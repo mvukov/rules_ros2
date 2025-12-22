@@ -143,11 +143,16 @@ def create_dynamic_library(ctx, **kwargs):
         unsupported_features = ctx.disabled_features,
     )
 
+    user_link_flags = []
+    if "darwin" in cc_toolchain.cpu or "apple" in cc_toolchain.cpu:
+        user_link_flags = ["-undefined", "dynamic_lookup"]
+
     linking_outputs = cc_common.link(
         actions = ctx.actions,
         feature_configuration = feature_configuration,
         cc_toolchain = cc_toolchain,
         output_type = "dynamic_library",
+        user_link_flags = user_link_flags,
         **kwargs
     )
     dynamic_library = linking_outputs.library_to_link.resolved_symlink_dynamic_library

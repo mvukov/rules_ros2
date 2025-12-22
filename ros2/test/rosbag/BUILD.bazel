@@ -42,6 +42,8 @@ ros2_bag(
         ],
         env = {
             "STORAGE_ID": storage_id,
+            "RMW_IMPLEMENTATION": "rmw_cyclonedds_cpp",
+            "CYCLONEDDS_URI": "<CycloneDDS><Domain><General><Interfaces><NetworkInterface address=\"127.0.0.1\"/></Interfaces><AllowMulticast>false</AllowMulticast></General><Discovery><ParticipantIndex>auto</ParticipantIndex><Peers><Peer address=\"127.0.0.1\"/></Peers></Discovery></Domain></CycloneDDS>",
         },
         idl_deps = [
             "@ros2_common_interfaces//:std_msgs",
