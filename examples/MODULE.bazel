@@ -6,7 +6,7 @@ local_path_override(
     path = "..",
 )
 
-bazel_dep(name = "rules_cc", version = "0.2.9")
+bazel_dep(name = "rules_cc", version = "0.2.15")
 bazel_dep(name = "rules_python", version = "1.7.0")
 bazel_dep(name = "rules_rust", version = "0.67.0")
 
