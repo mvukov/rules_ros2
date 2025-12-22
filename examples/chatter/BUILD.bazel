@@ -38,7 +38,7 @@ rust_binary(
     name = "rust_talker",
     srcs = ["talker.rs"],
     deps = [
-        ":rust_chatter_interface",
+        ":rust_std_msgs",
         "@ros2_rust//:rclrs",
         "@rules_ros2_examples_crate_index//:signal-hook",
     ],

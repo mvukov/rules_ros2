@@ -74,6 +74,11 @@ crate.from_specs(
 )
 use_repo(crate, "rules_ros2_crate_index")
 
+crate.from_specs(
+    name = "rules_ros2_examples_crate_index",
+)
+use_repo(crate, "rules_ros2_examples_crate_index")
+
 register_toolchains("@rules_rust_bindgen//:default_bindgen_toolchain")
 
 # Python setup
