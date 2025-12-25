@@ -53,7 +53,7 @@ def validate(deployment: entity.Deployment,
             case entity.ParametersFile():
                 if not os.path.exists(current_entity.path):
                     raise ValueError(
-                        f'Paramter file {current_entity.path} does not exist')
+                        f'Parameter file {current_entity.path} does not exist')
 
             case _:
                 pass
@@ -75,6 +75,8 @@ def collect_parameters(deployment: entity.Deployment, dst: pathlib.Path):
     for current_entity in deployment.entities:
         match current_entity:
             case entity.RosNode():
+                if current_entity.parameters_file is None:
+                    continue
                 params_files.append(pathlib.Path(
                     current_entity.parameters_file))
             case entity.ParametersFile():
@@ -85,6 +87,7 @@ def collect_parameters(deployment: entity.Deployment, dst: pathlib.Path):
     if not params_files:
         return
 
+    params_files = params_files[::-1]
     with open(params_files[0], encoding='utf-8') as stream:
         merged_params = yaml.load(stream, yaml.SafeLoader)
 
@@ -222,8 +225,12 @@ def generate_groundcontrol_config_file(
             f'deployment_specs_module_{idx}', deployment_specs_file)
         # spec can be None!
         module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        create_deployment = getattr(module, 'create_deployment')
+        try:
+            spec.loader.exec_module(module)
+            create_deployment = getattr(module, 'create_deployment')
+        except (AttributeError, SyntaxError) as ex:
+            raise RuntimeError(
+                f'Failed to process {deployment_specs_file}: {ex}')
         deployments.append(create_deployment())
 
     groundcontrol_config = create_groundcontrol_config(deployments,
