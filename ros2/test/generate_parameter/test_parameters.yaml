@@ -1,0 +1,41 @@
+test_params:
+  string_test:
+    type: string
+    default_value: "default_string"
+    description: "test string parameter"
+  double_test:
+    type: double
+    description: "test double parameter"
+    default_value: 2.0
+    validation:
+      bounds<>: [0.0, 1000.0]
+  int_test:
+    type: int
+    description: "test int parameter"
+    default_value: 5
+    validation:
+      bounds<>: [0, 10]
+  bool_test:
+    type: bool
+    description: "test bool parameter"
+    default_value: true
+  string_array_test:
+    type: string_array
+    default_value: ["string_1", "string_2"]
+    description: "test string array parameter"
+  double_array_test:
+    type: double_array
+    default_value: [1.0, 2.0, 3.0]
+    description: "test double array parameter"
+  int_array_test:
+    type: int_array
+    default_value: [1, 2, 3, 4]
+    description: "test int array parameter"
+  bool_array_test:
+    type: bool_array
+    default_value: [true, false, true]
+    description: "test bool array parameter"
+  string_fixed_10_test:
+    type: string_fixed_10
+    default_value: "fixed"
+    description: "test fixed size string parameter with size 10"

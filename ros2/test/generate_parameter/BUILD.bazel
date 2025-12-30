@@ -1,0 +1,37 @@
+load("@com_github_mvukov_rules_ros2//ros2:parameters.bzl",
+"cpp_parameter_library",
+"py_parameter_library"
+)
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_test")
+load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_test")
+
+cpp_parameter_library(
+    name = "cpp_test_parameters",
+    parameter_file = ":test_parameters.yaml",
+    visibility = ["//visibility:public"],
+)
+
+py_parameter_library(
+    name = "py_test_parameters",
+    parameter_file = ":test_parameters.yaml",
+    py_file_name = "test_parameters.py",
+)
+
+ros2_cpp_test(
+    name = "test_parameters",
+    srcs = ["test_parameters.cc"],
+    deps = [
+        ":cpp_test_parameters",
+        "@googletest//:gtest_main",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_py_test(
+    name = "test_parameters_py",
+    srcs = ["test_parameters.py"],
+    main = "test_parameters.py",
+    deps = [
+        ":py_test_parameters",
+    ],
+)
