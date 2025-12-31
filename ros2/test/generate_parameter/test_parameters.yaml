@@ -3,6 +3,8 @@ test_params:
     type: string
     default_value: "default_string"
     description: "test string parameter"
+    validation:
+      "test_validators::string_not_empty": []
   double_test:
     type: double
     description: "test double parameter"
