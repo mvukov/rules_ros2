@@ -44,12 +44,12 @@ repos:
       - id: yapf
         args: [-i, --style, .style.yapf]
   - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.15.0
+    rev: v3.16.0
     hooks:
       - id: reorder-python-imports
         args: [--py37-plus]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.9
+    rev: v0.14.3
     hooks:
       - id: ruff
         args: [--fix, --show-fixes, --exit-non-zero-on-fix]
@@ -57,6 +57,7 @@ repos:
     rev: v21.1.2
     hooks:
       - id: clang-format
+        exclude_types: [json]
   - repo: https://github.com/cpplint/cpplint
     rev: 2.0.2
     hooks:

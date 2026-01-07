@@ -9,22 +9,12 @@ load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 load("@rules_rust//rust:defs.bzl", "rust_library")
 load("@rules_rust_bindgen//:defs.bzl", "rust_bindgen")
 
-rust_library(
-    name = "rosidl_runtime_rs",
-    srcs = glob(["rosidl_runtime_rs/src/**/*.rs"]),
-    crate_features = ["serde"],
-    edition = "2021",
-    visibility = ["//visibility:public"],
-    deps = [
-        "@rules_ros2_crate_index//:serde",
-    ],
-)
-
 cc_library(
     name = "rcl_wrapper",
     hdrs = ["rclrs/src/rcl_wrapper.h"],
     deps = [
         "@ros2_rcl//:rcl",
+        "@ros2_rcl//:rcl_action",
         "@ros2_rcl//:rcl_yaml_param_parser",
         "@ros2_rcutils//:rcutils",
         "@ros2_rmw//:rmw",
@@ -58,9 +48,11 @@ rust_bindgen(
 rust_ros2_interface_library(
     name = "rust_interfaces",
     deps = [
+        "@ros2_rcl_interfaces//:action_msgs",
         "@ros2_rcl_interfaces//:builtin_interfaces",
         "@ros2_rcl_interfaces//:rcl_interfaces",
         "@ros2_rcl_interfaces//:rosgraph_msgs",
+        "@ros2_unique_identifier_msgs//:unique_identifier_msgs",
     ],
 )
 
@@ -73,41 +65,18 @@ rust_library(
         "rclrs/src/rcl_bindings_generated.rs",
     ],
     edition = "2021",
+    rustc_flags = ["--cfg=ros_distro=\"humble\""],
     visibility = ["//visibility:public"],
     deps = [
         ":rcl_wrapper",
-        ":rosidl_runtime_rs",
         ":rust_interfaces",
+        "@ros2_rosidl_runtime_rs//:rosidl_runtime_rs",
+        "@rules_ros2_crate_index//:async-std",
+        "@rules_ros2_crate_index//:async-stream",
         "@rules_ros2_crate_index//:futures",
+        "@rules_ros2_crate_index//:futures-lite",
+        "@rules_ros2_crate_index//:tokio",
+        "@rules_ros2_crate_index//:tokio-stream",
+        "@rules_ros2_crate_index//:uuid",
     ],
-)
-
-GENERATOR_APP_PY = "rosidl_generator_rs_app.py"
-
-copy_file(
-    name = "rosidl_generator_rs_copy",
-    src = "rosidl_generator_rs/bin/rosidl_generator_rs",
-    out = GENERATOR_APP_PY,
-)
-
-py_binary(
-    name = "rosidl_generator_rs_app",
-    srcs = [
-        GENERATOR_APP_PY,
-        "rosidl_generator_rs/rosidl_generator_rs/__init__.py",
-    ],
-    imports = ["rosidl_generator_rs"],
-    legacy_create_init = False,
-    visibility = ["//visibility:public"],
-    deps = [
-        requirement("empy"),
-        "@ros2_rosidl//:rosidl_cmake",
-        "@ros2_rosidl//:rosidl_parser",
-    ],
-)
-
-filegroup(
-    name = "rosidl_generator_rs_templates",
-    srcs = glob(["rosidl_generator_rs/resource/*.em"]),
-    visibility = ["//visibility:public"],
 )
