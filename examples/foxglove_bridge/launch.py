@@ -26,8 +26,7 @@ def generate_launch_description():
 
     return launch.LaunchDescription([
         # ROS_DISTRO is necessary for correct operation of the Foxglove Studio.
-        launch.actions.SetEnvironmentVariable(name='ROS_DISTRO',
-                                              value='humble'),
+        launch.actions.SetEnvironmentVariable(name='ROS_DISTRO', value='jazzy'),
         launch_ros.actions.Node(
             executable=data_paths.ROBOT_STATE_PUBLISHER_NODE_PATH,
             output='screen',

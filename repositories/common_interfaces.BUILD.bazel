@@ -43,6 +43,7 @@ ros2_interface_library(
     name = "std_srvs",
     srcs = glob(["std_srvs/srv/*.srv"]),
     visibility = ["//visibility:public"],
+    deps = ["@ros2_rcl_interfaces//:service_msgs"],
 )
 
 c_ros2_interface_library(
@@ -98,6 +99,7 @@ ros2_interface_library(
     deps = [
         ":geometry_msgs",
         ":std_msgs",
+        "@ros2_rcl_interfaces//:service_msgs",
     ],
 )
 
@@ -123,6 +125,7 @@ ros2_interface_library(
     deps = [
         ":geometry_msgs",
         ":std_msgs",
+        "@ros2_rcl_interfaces//:service_msgs",
     ],
 )
 
@@ -273,6 +276,7 @@ ros2_interface_library(
     visibility = ["//visibility:public"],
     deps = [
         ":std_msgs",
+        "@ros2_rcl_interfaces//:service_msgs",
     ],
 )
 
