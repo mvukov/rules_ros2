@@ -4,7 +4,6 @@ HoustonDeploymentInfo = provider(
     "Provides info for deployment generation",
     fields = [
         "launch_files",
-        "launch_deps",
         "nodes",
         "parameters",
     ],
@@ -32,13 +31,6 @@ def _ros2_deployment_impl(ctx):
                     for dep in ctx.attr.deps
                 ],
             ),
-            launch_deps = depset(
-                direct = ctx.attr.launch_deps,
-                transitive = [
-                    dep[HoustonDeploymentInfo].launch_deps
-                    for dep in ctx.attr.deps
-                ],
-            ),
             nodes = depset(
                 direct = ctx.attr.nodes,
                 transitive = [
@@ -61,10 +53,6 @@ ros2_deployment = rule(
         "launch_file": attr.label(
             allow_files = [".py"],
         ),
-        "launch_deps": attr.label_list(
-            providers = [PyInfo],
-            cfg = "exec",
-        ),
         "nodes": attr.label_list(
             cfg = "target",
         ),
@@ -85,7 +73,6 @@ ros2_deployment = rule(
 def _merge_houston_deployment_infos(infos):
     return struct(
         launch_files = depset(transitive = [info.launch_files for info in infos]),
-        launch_deps = depset(transitive = [info.launch_deps for info in infos]),
         nodes = depset(transitive = [info.nodes for info in infos]),
         parameters = depset(transitive = [info.parameters for info in infos]),
     )
