@@ -8,9 +8,14 @@ ros2_deployment(
     ],
     launch_file = "zero_copy.py",
     nodes = [
-        ":listener",
-        ":talker",
         "@iceoryx//:iox_roudi",
+        "//zero_copy:listener",
+        "//zero_copy:talker",
     ],
     parameters = ["talker.yaml"],
+)
+
+ros2_launch(
+    name = "zero_copy_houston",
+    deps = [":zero_copy"],
 )

@@ -11,8 +11,19 @@ HoustonDeploymentInfo = provider(
 )
 
 def _ros2_deployment_impl(ctx):
+    transitive_files_depsets = []
+    data = ctx.attr.data
+    for target in data:
+        transitive_files_depsets.append(target[DefaultInfo].files)
+    runfiles = ctx.runfiles(
+        transitive_files = depset(transitive = transitive_files_depsets),
+    ).merge_all([
+        target[DefaultInfo].default_runfiles
+        for target in data
+    ])
+
     return [
-        # DefaultInfo(files = depset(ctx.files.srcs)),
+        DefaultInfo(runfiles = runfiles),
         HoustonDeploymentInfo(
             launch_files = depset(
                 direct = [] if ctx.attr.launch_file == None else [ctx.attr.launch_file],
@@ -63,9 +74,12 @@ ros2_deployment = rule(
         "deps": attr.label_list(
             providers = [HoustonDeploymentInfo],
         ),
+        "data": attr.label_list(
+            allow_files = True,
+        ),
     },
     implementation = _ros2_deployment_impl,
-    provides = [HoustonDeploymentInfo],
+    provides = [DefaultInfo, HoustonDeploymentInfo],
 )
 
 def _merge_houston_deployment_infos(infos):
@@ -152,6 +166,9 @@ def _ros2_launch_impl(ctx):
     )
     for node in nodes:
         runfiles = runfiles.merge(node[DefaultInfo].default_runfiles)
+
+    for dep in ctx.attr.deps:
+        runfiles = runfiles.merge(dep[DefaultInfo].default_runfiles)
 
     return [
         DefaultInfo(
