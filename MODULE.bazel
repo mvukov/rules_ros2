@@ -38,7 +38,7 @@ _PYTHON_VERSIONS = [
     "3.14",
 ]
 
-_DEFAULT_PYTHON = _PYTHON_VERSIONS[0]
+_DEFAULT_PYTHON = _PYTHON_VERSIONS[0]  # Keep in sync with WORSPACE
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 
