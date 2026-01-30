@@ -16,7 +16,7 @@ py_repositories()
 
 python_register_toolchains(
     name = "rules_ros2_python",
-    python_version = "3.14",  # Keep in sync with MODULE.bazel
+    python_version = "3.11",  # Keep in sync with MODULE.bazel
 )
 
 load("@rules_python//python:pip.bzl", "pip_parse")

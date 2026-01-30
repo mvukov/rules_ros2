@@ -30,7 +30,8 @@ common --noenable_bzlmod --enable_workspace
 
 ### [bzlmod](https://bazel.build/versions/7.5.0/external/overview#bzlmod)-based setup
 
-This is the current external dependency subsystem. Please take a look at the `MODULE.bazel` file in this folder to get an idea how to set up yourself.
+This is the current external dependency subsystem.
+Please take a look at the `MODULE.bazel` file in this folder to get an idea how to set up yourself.
 
 With this approach, `rules_ros2` defines a Python 3.14 interpreter and defines the hub with resolved Python deps.
 If you want a different intepreter and/or you want to extend the Python requirements files with extra deps you might want to use in your monorepo, you may need to patch `requirements_lock.txt` file of the rules_ros2 repo.
