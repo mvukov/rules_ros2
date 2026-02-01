@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "gtest/gtest.h"
 
 #include "ros2/test/generate_parameter/cpp_test_parameters.h"
@@ -73,7 +77,7 @@ TEST(TestGenerateParameters, TestIntArrayLoad) {
   auto param_listener = std::make_shared<test_params::ParamListener>(node);
   auto params = param_listener->get_params();
 
-  std::vector<long int> expected = {1, 2, 3, 4};
+  std::vector<uint64_t> expected = {1, 2, 3, 4};
   EXPECT_EQ(params.int_array_test, expected);
 }
 
