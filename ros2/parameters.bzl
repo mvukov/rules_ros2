@@ -12,8 +12,10 @@ def cpp_parameter_library(name, parameter_file, header_name = None, validate_inc
     if validate_include_header != None:
         # Get the package name for constructing the full include path
         package = native.package_name()
+
         # Extract filename from label (handle :file.hpp or just file.hpp)
         validate_file = validate_include_header.split(":")[-1] if ":" in validate_include_header else validate_include_header
+
         # Construct the full package-relative path
         validate_include_path = "{}/{}".format(package, validate_file) if package else validate_file
 
@@ -57,10 +59,13 @@ def py_parameter_library(name, parameter_file, py_file_name = None, validation_m
     if validation_module != None:
         # Get the package name for constructing the full module path
         package = native.package_name()
+
         # Extract filename from label (handle :file.py or just file.py)
         validation_file = validation_module.split(":")[-1] if ":" in validation_module else validation_module
+
         # Remove .py extension if present
         validation_file_base = validation_file[:-3] if validation_file.endswith(".py") else validation_file
+
         # Construct the full module path with dots (e.g., ros2.test.generate_parameter.test_validators)
         validation_module_path = "{}.{}".format(package.replace("/", "."), validation_file_base) if package else validation_file_base
 
