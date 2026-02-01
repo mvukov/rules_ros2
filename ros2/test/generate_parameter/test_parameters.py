@@ -11,10 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import unittest
+
 import rclpy
 from rclpy.node import Node
+
 from ros2.test.generate_parameter.test_parameters import test_params
 
 
@@ -33,7 +34,7 @@ class TestGenerateParameters(unittest.TestCase):
         param_listener = test_params.ParamListener(node)
         params = param_listener.get_params()
 
-        self.assertEqual(params.string_test, "default_string")
+        self.assertEqual(params.string_test, 'default_string')
         node.destroy_node()
 
     def test_double_load(self):
@@ -65,7 +66,7 @@ class TestGenerateParameters(unittest.TestCase):
         param_listener = test_params.ParamListener(node)
         params = param_listener.get_params()
 
-        expected = ["string_1", "string_2"]
+        expected = ['string_1', 'string_2']
         self.assertEqual(params.string_array_test, expected)
         node.destroy_node()
 
@@ -101,7 +102,7 @@ class TestGenerateParameters(unittest.TestCase):
         param_listener = test_params.ParamListener(node)
         params = param_listener.get_params()
 
-        self.assertEqual(params.string_fixed_10_test, "fixed")
+        self.assertEqual(params.string_fixed_10_test, 'fixed')
         node.destroy_node()
 
 

@@ -19,88 +19,88 @@
 #include "rclcpp/rclcpp.hpp"
 
 TEST(TestGenerateParameters, TestStringLoad) {
-    auto node = rclcpp::Node::make_shared("test_node");
-    auto param_listener = std::make_shared<test_params::ParamListener>(node);
-    auto params = param_listener->get_params();
+  auto node = rclcpp::Node::make_shared("test_node");
+  auto param_listener = std::make_shared<test_params::ParamListener>(node);
+  auto params = param_listener->get_params();
 
-    EXPECT_EQ(params.string_test, "default_string");
+  EXPECT_EQ(params.string_test, "default_string");
 }
 
 TEST(TestGenerateParameters, TestDoubleLoad) {
-    auto node = rclcpp::Node::make_shared("test_node");
-    auto param_listener = std::make_shared<test_params::ParamListener>(node);
-    auto params = param_listener->get_params();
+  auto node = rclcpp::Node::make_shared("test_node");
+  auto param_listener = std::make_shared<test_params::ParamListener>(node);
+  auto params = param_listener->get_params();
 
-    EXPECT_DOUBLE_EQ(params.double_test, 2.0);
+  EXPECT_DOUBLE_EQ(params.double_test, 2.0);
 }
 
 TEST(TestGenerateParameters, TestIntLoad) {
-    auto node = rclcpp::Node::make_shared("test_node");
-    auto param_listener = std::make_shared<test_params::ParamListener>(node);
-    auto params = param_listener->get_params();
+  auto node = rclcpp::Node::make_shared("test_node");
+  auto param_listener = std::make_shared<test_params::ParamListener>(node);
+  auto params = param_listener->get_params();
 
-    EXPECT_EQ(params.int_test, 5L);
+  EXPECT_EQ(params.int_test, 5L);
 }
 
 TEST(TestGenerateParameters, TestBoolLoad) {
-    auto node = rclcpp::Node::make_shared("test_node");
-    auto param_listener = std::make_shared<test_params::ParamListener>(node);
-    auto params = param_listener->get_params();
+  auto node = rclcpp::Node::make_shared("test_node");
+  auto param_listener = std::make_shared<test_params::ParamListener>(node);
+  auto params = param_listener->get_params();
 
-    EXPECT_EQ(params.bool_test, true);
+  EXPECT_EQ(params.bool_test, true);
 }
 
 TEST(TestGenerateParameters, TestStringArrayLoad) {
-    auto node = rclcpp::Node::make_shared("test_node");
-    auto param_listener = std::make_shared<test_params::ParamListener>(node);
-    auto params = param_listener->get_params();
+  auto node = rclcpp::Node::make_shared("test_node");
+  auto param_listener = std::make_shared<test_params::ParamListener>(node);
+  auto params = param_listener->get_params();
 
-    std::vector<std::string> expected = {"string_1", "string_2"};
-    EXPECT_EQ(params.string_array_test, expected);
+  std::vector<std::string> expected = {"string_1", "string_2"};
+  EXPECT_EQ(params.string_array_test, expected);
 }
 
 TEST(TestGenerateParameters, TestDoubleArrayLoad) {
-    auto node = rclcpp::Node::make_shared("test_node");
-    auto param_listener = std::make_shared<test_params::ParamListener>(node);
-    auto params = param_listener->get_params();
+  auto node = rclcpp::Node::make_shared("test_node");
+  auto param_listener = std::make_shared<test_params::ParamListener>(node);
+  auto params = param_listener->get_params();
 
-    std::vector<double> expected = {1.0, 2.0, 3.0};
-    EXPECT_EQ(params.double_array_test, expected);
+  std::vector<double> expected = {1.0, 2.0, 3.0};
+  EXPECT_EQ(params.double_array_test, expected);
 }
 
 TEST(TestGenerateParameters, TestIntArrayLoad) {
-    auto node = rclcpp::Node::make_shared("test_node");
-    auto param_listener = std::make_shared<test_params::ParamListener>(node);
-    auto params = param_listener->get_params();
+  auto node = rclcpp::Node::make_shared("test_node");
+  auto param_listener = std::make_shared<test_params::ParamListener>(node);
+  auto params = param_listener->get_params();
 
-    std::vector<long int> expected = {1, 2, 3, 4};
-    EXPECT_EQ(params.int_array_test, expected);
+  std::vector<long int> expected = {1, 2, 3, 4};
+  EXPECT_EQ(params.int_array_test, expected);
 }
 
 TEST(TestGenerateParameters, TestBoolArrayLoad) {
-    auto node = rclcpp::Node::make_shared("test_node");
-    auto param_listener = std::make_shared<test_params::ParamListener>(node);
-    auto params = param_listener->get_params();
+  auto node = rclcpp::Node::make_shared("test_node");
+  auto param_listener = std::make_shared<test_params::ParamListener>(node);
+  auto params = param_listener->get_params();
 
-    std::vector<bool> expected = {true, false, true};
-    EXPECT_EQ(params.bool_array_test, expected);
+  std::vector<bool> expected = {true, false, true};
+  EXPECT_EQ(params.bool_array_test, expected);
 }
 
 TEST(TestGenerateParameters, TestStringFixed10Load) {
-    auto node = rclcpp::Node::make_shared("test_node");
-    auto param_listener = std::make_shared<test_params::ParamListener>(node);
-    auto params = param_listener->get_params();
+  auto node = rclcpp::Node::make_shared("test_node");
+  auto param_listener = std::make_shared<test_params::ParamListener>(node);
+  auto params = param_listener->get_params();
 
-    std::string_view fixed_str = params.string_fixed_10_test;
-    EXPECT_EQ(fixed_str, "fixed");
+  std::string_view fixed_str = params.string_fixed_10_test;
+  EXPECT_EQ(fixed_str, "fixed");
 }
 
 int main(int argc, char** argv) {
-    rclcpp::init(argc, argv);
-    testing::InitGoogleTest(&argc, argv);
-    const int result = RUN_ALL_TESTS();
-    if (!rclcpp::shutdown() || result) {
-      return EXIT_FAILURE;
-    }
-    return EXIT_SUCCESS;
+  rclcpp::init(argc, argv);
+  testing::InitGoogleTest(&argc, argv);
+  const int result = RUN_ALL_TESTS();
+  if (!rclcpp::shutdown() || result) {
+    return EXIT_FAILURE;
+  }
+  return EXIT_SUCCESS;
 }

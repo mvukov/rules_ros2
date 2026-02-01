@@ -1,6 +1,5 @@
 """Custom parameter validators for testing."""
 
-from typing import Any
 from rclpy.parameter import Parameter
 
 
@@ -30,8 +29,7 @@ def positive_integer(parameter: Parameter) -> None:
     param_value = parameter.value
     if param_value <= 0:
         raise ValueError(
-            f"Parameter '{parameter.name}' must be positive, got {param_value}"
-        )
+            f"Parameter '{parameter.name}' must be positive, got {param_value}")
 
 
 def in_range(parameter: Parameter, min_value: float, max_value: float) -> None:
@@ -49,5 +47,4 @@ def in_range(parameter: Parameter, min_value: float, max_value: float) -> None:
     if param_value < min_value or param_value > max_value:
         raise ValueError(
             f"Parameter '{parameter.name}' value {param_value} is outside "
-            f"range [{min_value}, {max_value}]"
-        )
+            f'range [{min_value}, {max_value}]')
