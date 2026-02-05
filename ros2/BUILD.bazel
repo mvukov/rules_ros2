@@ -19,6 +19,7 @@ exports_files([
     "launch.py.tpl",
     "launch.sh.tpl",
     "plugin.bzl",
+    "proto2ros.bzl",
     "py_defs.bzl",
     "pytest_wrapper.py.tpl",
     "ros2_action.py",

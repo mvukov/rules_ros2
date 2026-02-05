@@ -1,7 +1,10 @@
 catkin_pkg
 coverage
 empy==3.3.*
+inflection
+jinja2
 lark-parser
+networkx
 numpy~=1.23
 packaging
 psutil
