@@ -29,6 +29,7 @@ load(
     "create_dynamic_library",
 )
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
+load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 
 def _ros2_plugin_impl(ctx):
     target_name = ctx.attr.name

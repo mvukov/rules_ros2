@@ -17,6 +17,8 @@ def _clang_configure_impl(repository_ctx):
     repository_ctx.symlink(libclang_path, "libclang.so")
 
     repository_ctx.file("BUILD.bazel", """\
+load("@rules_cc//cc:cc_import.bzl", "cc_import")
+
 exports_files([
     "clang",
 ])
