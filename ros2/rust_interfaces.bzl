@@ -25,6 +25,7 @@ load(
     "idl_adapter_aspect",
     "run_generator",
 )
+load("@rules_cc//cc:defs.bzl", "cc_common")
 load("@rules_rust//rust:defs.bzl", "rust_common")
 load("@rules_rust//rust/private:rustc.bzl", "rustc_compile_action")
 load(
