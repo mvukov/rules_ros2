@@ -19,8 +19,6 @@ def _proto2ros_message_impl(ctx):
     """Generates ROS 2 .msg files from proto_library descriptors."""
     proto_info = ctx.attr.proto_library[ProtoInfo]
     descriptor_set = proto_info.direct_descriptor_set
-    proto_sources = proto_info.direct_sources
-    msg_names = ctx.attr.msg_names
     label_name = ctx.label.name
 
     # Generate Python protobuf code for proto2ros to import.
@@ -30,10 +28,20 @@ def _proto2ros_message_impl(ctx):
 
     proto_gen_args = ctx.actions.args()
     proto_gen_args.add("--python_out", py_pb2_dir.path)
-    proto_gen_args.add_all(proto_sources)
+
+    # Add proto paths for all transitive proto roots
+    for proto_root in proto_info.transitive_proto_path.to_list():
+        if proto_root:
+            proto_gen_args.add("--proto_path", proto_root)
+
+    # Add the exec root as a fallback proto path
+    proto_gen_args.add("--proto_path", ".")
+
+    # Generate Python code for ALL transitive sources so proto2ros can import them
+    proto_gen_args.add_all(proto_info.transitive_sources)
 
     ctx.actions.run(
-        inputs = proto_sources,
+        inputs = proto_info.transitive_sources,
         outputs = [py_pb2_dir],
         executable = ctx.executable._protoc,
         arguments = [proto_gen_args],
@@ -45,7 +53,7 @@ def _proto2ros_message_impl(ctx):
     output_prefix = "{}_proto2ros_output".format(label_name)
 
     msg_files = []
-    for msg_name in msg_names:
+    for msg_name in ctx.attr.msg_names:
         msg_file = ctx.actions.declare_file(
             "{}/msg/{}.msg".format(output_prefix, msg_name),
         )
