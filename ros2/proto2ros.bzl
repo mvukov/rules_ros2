@@ -13,7 +13,7 @@
 # limitations under the License.
 """Rules for converting Protocol Buffers to ROS 2 messages."""
 
-load("@protobuf//bazel/common:proto_info.bzl", "ProtoInfo")
+load("@com_google_protobuf//bazel/common:proto_info.bzl", "ProtoInfo")
 
 def _proto2ros_message_impl(ctx):
     """Generates ROS 2 .msg files from proto_library descriptors."""
@@ -89,7 +89,7 @@ proto2ros_message = rule(
             cfg = "exec",
         ),
         "_protoc": attr.label(
-            default = Label("@protobuf//src/google/protobuf/compiler:protoc"),
+            default = Label("@com_google_protobuf//src/google/protobuf/compiler:protoc"),
             executable = True,
             cfg = "exec",
         ),

@@ -6,7 +6,7 @@ local_path_override(
     path = "..",
 )
 
-bazel_dep(name = "protobuf", version = "33.5")
+bazel_dep(name = "protobuf", version = "33.5", repo_name = "com_google_protobuf")
 bazel_dep(name = "rules_cc", version = "0.2.9")
 bazel_dep(name = "rules_python", version = "1.6.3")
 bazel_dep(name = "rules_rust", version = "0.63.0")

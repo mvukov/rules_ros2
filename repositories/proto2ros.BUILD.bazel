@@ -1,12 +1,12 @@
 """Builds proto2ros from bdaiinstitute/proto2ros repository."""
 
-load("@protobuf//bazel:py_proto_library.bzl", "py_proto_library")
+load("@com_google_protobuf//bazel:py_proto_library.bzl", "py_proto_library")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 py_proto_library(
     name = "protobuf_runtime",
-    deps = ["@protobuf//:any_proto"],
+    deps = ["@com_google_protobuf//:any_proto"],
 )
 
 # Core proto2ros Python library

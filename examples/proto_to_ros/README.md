@@ -6,6 +6,7 @@ definitions to ROS 2 messages, integrated with working ROS 2 nodes.
 ## Overview
 
 The example shows:
+
 - Converting a `.proto` file to ROS 2 `.msg` format
 - Using the `proto2ros_message` rule
 - **Python talker node** publishing messages on the `chatter` topic
@@ -24,7 +25,7 @@ The example shows:
 ### In BUILD.bazel
 
 ```python
-load("@protobuf//bazel:proto_library.bzl", "proto_library")
+load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
 load("@com_github_mvukov_rules_ros2//ros2:proto2ros.bzl", "proto2ros_message")
 
 proto_library(
