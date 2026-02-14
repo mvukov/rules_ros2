@@ -21,6 +21,8 @@ build --cxxopt=-std=c++17
 # In ROS context this is important such that each test target is executed
 # in a separate network environment.
 # This is a mandatory flag.
+# NOTE: For this to properly work you need to ensure Bazel uses linux-sandbox
+# https://bazel.build/docs/sandboxing#sandboxing-strategies
 build --sandbox_default_allow_network=false
 
 # Flipped to true in Bazel 8. This is a recommended flag.
