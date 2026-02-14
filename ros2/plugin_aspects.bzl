@@ -16,9 +16,11 @@
 
 load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "CGeneratorAspectInfo",
     "CppGeneratorAspectInfo",
     "IdlAdapterAspectInfo",
     "Ros2InterfaceInfo",
+    "TypeDescriptionAspectInfo",
 )
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 

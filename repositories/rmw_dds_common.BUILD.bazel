@@ -35,6 +35,7 @@ ros2_cpp_library(
         "@ros2_rcpputils//:rcpputils",
         "@ros2_rcutils//:rcutils",
         "@ros2_rmw//:rmw",
+        "@ros2_rmw//:rmw_cpp",
         "@ros2_rosidl//:rosidl_runtime_cpp",
     ],
 )
