@@ -1,3 +1,0 @@
-talker:
-  ros__parameters:
-    callback_period_ms: 200

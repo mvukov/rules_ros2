@@ -333,12 +333,3 @@ def ros2_repositories():
         strip_prefix = "rcl_logging_syslog-e63257f2d5ca693f286bbcedf2b23720675b7f73",
         urls = ["https://github.com/fujitatomoya/rcl_logging_syslog/archive/e63257f2d5ca693f286bbcedf2b23720675b7f73.zip"],
     )
-
-    maybe(
-        http_archive,
-        name = "ground_control",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:ground_control.BUILD.bazel",
-        sha256 = "bd83fc26d142604bf9cdb62c840de3ba4801de5273f1ccbf4c1fdb9e47c92532",
-        strip_prefix = "groundcontrol-1.0.0",
-        urls = ["https://github.com/malyn/groundcontrol/archive/refs/tags/v1.0.0.tar.gz"],
-    )

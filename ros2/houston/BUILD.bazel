@@ -1,7 +1,5 @@
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
-load(":houston.bzl", "ros2_deployment", "ros2_launch")
 
 py_library(
     name = "houston",
@@ -17,47 +15,5 @@ py_binary(
         requirement("deepmerge"),
         requirement("pyyaml"),
         requirement("toml"),
-    ],
-)
-
-ros2_deployment(
-    name = "d1",
-    launch_file = "example.py",
-    nodes = [
-        ":talker",
-        ":listener",
-    ],
-    parameters = ["config.yaml"],
-)
-
-ros2_deployment(
-    name = "d2",
-    parameters = [
-        "config2.yaml",
-        "global.yaml",
-    ],
-    deps = [":d1"],
-)
-
-ros2_launch(
-    name = "ll",
-    deps = [":d2"],
-)
-
-ros2_cpp_binary(
-    name = "talker",
-    srcs = ["talker.cc"],
-    deps = [
-        "@ros2_common_interfaces//:cpp_std_msgs",
-        "@ros2_rclcpp//:rclcpp",
-    ],
-)
-
-ros2_cpp_binary(
-    name = "listener",
-    srcs = ["listener.cc"],
-    deps = [
-        "@ros2_common_interfaces//:cpp_std_msgs",
-        "@ros2_rclcpp//:rclcpp",
     ],
 )
