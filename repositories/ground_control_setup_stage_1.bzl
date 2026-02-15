@@ -5,8 +5,10 @@ def ground_control_setup_stage_1(**kwargs):
         name = "ground_control_crate_index",
         cargo_lockfile = "@com_github_mvukov_rules_ros2//repositories:ground_control_cargo.lock",
         packages = {
+            "chrono": crate.spec(default_features = False, features = ["clock", "std"], version = "0.4"),
             "clap": crate.spec(features = ["derive"], version = "4.1.8"),
             "color-eyre": crate.spec(default_features = False, version = "0.6.2"),
+            "hostname": crate.spec(version = "0.3"),
             "command-group": crate.spec(features = ["with-tokio"], version = "2.0.0"),
             "console": crate.spec(default_features = False, features = ["ansi-parsing"], version = "0.15.2"),
             "nix": crate.spec(default_features = False, features = ["signal"], version = "0.26.1"),
@@ -18,6 +20,7 @@ def ground_control_setup_stage_1(**kwargs):
             "tokio": crate.spec(features = ["fs", "macros", "process", "rt-multi-thread", "signal", "sync"], version = "1.26.0"),
             "toml": crate.spec(version = "0.5"),
             "tracing": crate.spec(version = "0.1"),
+            "tracing-appender": crate.spec(version = "0.2"),
             "tracing-subscriber": crate.spec(default_features = False, features = ["env-filter", "fmt", "std"], version = "0.3"),
             "users": crate.spec(version = "0.11.0"),
         },

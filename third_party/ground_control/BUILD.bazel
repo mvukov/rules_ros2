@@ -32,11 +32,14 @@ rust_binary(
     visibility = ["//visibility:public"],
     deps = [
         ":groundcontrol",
+        "@ground_control_crate_index//:chrono",
         "@ground_control_crate_index//:clap",
         "@ground_control_crate_index//:color-eyre",
+        "@ground_control_crate_index//:hostname",
         "@ground_control_crate_index//:tokio",
         "@ground_control_crate_index//:toml",
         "@ground_control_crate_index//:tracing",
+        "@ground_control_crate_index//:tracing-appender",
         "@ground_control_crate_index//:tracing-subscriber",
     ],
 )

@@ -14,6 +14,8 @@
     clippy::unwrap_used
 )]
 
+use std::path::PathBuf;
+
 use clap::Parser;
 use color_eyre::eyre::{self, WrapErr};
 use groundcontrol::config::Config;
@@ -31,6 +33,73 @@ struct Cli {
     check: bool,
 
     config_file: String,
+}
+
+/// Gets the ROS_HOME directory path.
+///
+/// Returns ROS_HOME if set, otherwise falls back to ~/.ros
+fn get_ros_home() -> eyre::Result<PathBuf> {
+    if let Ok(ros_home) = std::env::var("ROS_HOME") {
+        Ok(PathBuf::from(ros_home))
+    } else {
+        let home = std::env::var("HOME").wrap_err("HOME environment variable not set")?;
+        Ok(PathBuf::from(home).join(".ros"))
+    }
+}
+
+/// Gets the log directory following ROS 2 strategy.
+///
+/// If ROS_LOG_DIR is defined: validate and use it directly, or fail if invalid.
+/// If ROS_LOG_DIR is not defined: use ros_home/log and create a unique subdirectory.
+fn get_log_dir(ros_home: &PathBuf) -> eyre::Result<PathBuf> {
+    let base_log_dir = if let Ok(ros_log_dir) = std::env::var("ROS_LOG_DIR") {
+        // ROS_LOG_DIR is explicitly set - validate it or fail
+        if ros_log_dir.is_empty() {
+            return Err(eyre::eyre!(
+                "ROS_LOG_DIR is set but empty. Either unset it or provide a valid path."
+            ));
+        }
+
+        PathBuf::from(&ros_log_dir)
+    } else {
+        ros_home.join("log")
+    };
+    make_unique_log_dir(&base_log_dir)
+}
+
+/// Gets the launch log file path within the given log directory.
+fn get_launch_log_path(log_dir: &PathBuf) -> PathBuf {
+    log_dir.join("launch.log")
+}
+
+/// Creates a unique log directory with format: YYYY-MM-DD-HH-MM-SS-micros-hostname-pid
+fn make_unique_log_dir(base_path: &PathBuf) -> eyre::Result<PathBuf> {
+    // Get current UTC time with microseconds
+    let now = chrono::Utc::now();
+    let datetime_str = format!(
+        "{}-{:06}",
+        now.format("%Y-%m-%d-%H-%M-%S"),
+        now.timestamp_subsec_micros()
+    );
+
+    // Get hostname
+    let hostname = hostname::get()
+        .wrap_err("Failed to get hostname")?
+        .to_string_lossy()
+        .to_string();
+
+    // Get PID
+    let pid = std::process::id();
+
+    // Construct directory name and path
+    let log_dirname = format!("{}-{}-{}", datetime_str, hostname, pid);
+    let log_dir = base_path.join(log_dirname);
+
+    // Create the directory (will fail if it already exists or can't be created)
+    std::fs::create_dir_all(&log_dir)
+        .wrap_err_with(|| format!("Failed to create log directory: {}", log_dir.display()))?;
+
+    Ok(log_dir)
 }
 
 #[tokio::main]
@@ -66,13 +135,56 @@ async fn main() -> eyre::Result<()> {
     if std::env::var_os("RUST_LOG").is_none() {
         std::env::set_var("RUST_LOG", "info")
     }
-    tracing_subscriber::fmt()
-        .event_format(
-            groundcontrol::formatter::GroundControlFormatter::from_config(&config)
-                .with_include_timestamp(!config.suppress_timestamps),
-        )
-        .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
+
+    // Get the launch log file path following ROS 2 strategy
+    let ros_home = get_ros_home().wrap_err("Failed to determine ROS_HOME")?;
+    let log_dir = get_log_dir(&ros_home).wrap_err("Failed to determine log directory")?;
+
+    // Export ROS_HOME and ROS_LOG_DIR as environment variables for child processes
+    std::env::set_var("ROS_HOME", &ros_home);
+    std::env::set_var("ROS_LOG_DIR", &log_dir);
+
+    // Create a file appender for the launch log
+    let launch_log_path = get_launch_log_path(&log_dir);
+    let file = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(&launch_log_path)
+        .wrap_err_with(|| {
+            format!(
+                "Failed to open launch log file: {}",
+                launch_log_path.display()
+            )
+        })?;
+    let (non_blocking_file, _guard) = tracing_appender::non_blocking(file);
+
+    // Build the layers for console and file logging
+    use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+    let env_filter = tracing_subscriber::EnvFilter::from_default_env();
+    let formatter = groundcontrol::formatter::GroundControlFormatter::from_config(&config)
+        .with_include_timestamp(!config.suppress_timestamps);
+
+    // Console layer with custom formatter
+    let console_layer = tracing_subscriber::fmt::layer()
+        .event_format(formatter.clone())
+        .with_writer(std::io::stdout);
+
+    // File layer with custom formatter
+    let file_layer = tracing_subscriber::fmt::layer()
+        .event_format(formatter)
+        .with_writer(non_blocking_file)
+        .with_ansi(false); // Disable ANSI colors in file output
+
+    // Initialize the subscriber with both layers
+    tracing_subscriber::registry()
+        .with(env_filter)
+        .with(console_layer)
+        .with(file_layer)
         .init();
+
+    // Now that logging is initialized, log the directory location
+    tracing::info!("All log files can be found below {}", log_dir.display());
 
     // Create the external shutdown signal (used to shut down Ground
     // Control on UNIX signals).
