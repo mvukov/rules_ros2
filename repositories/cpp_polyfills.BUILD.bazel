@@ -1,0 +1,15 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "tcb_span",
+    hdrs = glob(["tcb_span/include/**/*.hpp"]),
+    includes = ["tcb_span/include"],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "tl_expected",
+    hdrs = glob(["tl_expected/include/**/*.hpp"]),
+    includes = ["tl_expected/include"],
+    visibility = ["//visibility:public"],
+)
