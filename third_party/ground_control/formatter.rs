@@ -183,6 +183,7 @@ impl Visit for ConsoleOutputVisitor {
 
     fn record_debug(&mut self, field: &Field, value: &dyn std::fmt::Debug) {
         match field.name() {
+            "process" => self.process = format!("{value:?}"),
             "message" => self.message = format!(" {value:?}"),
             _ => write!(self.fields, " {}={:?}", field.name(), value).unwrap(),
         }
