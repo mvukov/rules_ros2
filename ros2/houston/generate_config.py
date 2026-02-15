@@ -59,6 +59,9 @@ def validate(deployment: entity.Deployment,
                 pass
 
 
+PROTECTED_ENV_VARS = ['ROS_HOME', 'ROS_LOG_DIR']
+
+
 def collect_env(deployment: entity.Deployment) -> dict[str, str]:
     env: dict[str, str] = {}
     for current_entity in deployment.entities:
@@ -67,6 +70,11 @@ def collect_env(deployment: entity.Deployment) -> dict[str, str]:
                 env[name] = value
             case _:
                 pass
+
+    for protected_env_var in PROTECTED_ENV_VARS:
+        if protected_env_var in env:
+            raise RuntimeError(f'Do not set {protected_env_var}')
+
     return env
 
 
@@ -210,9 +218,10 @@ def create_groundcontrol_config(
 
     env = collect_env(flattened_deployment)
     collect_parameters(flattened_deployment, merged_params_exec_path)
+    only_env = PROTECTED_ENV_VARS + list(env.keys())
     process_configs = collect_process_configs(flattened_deployment,
                                               merged_params_root_path,
-                                              only_env=list(env.keys()))
+                                              only_env=only_env)
     if not process_configs:
         raise ValueError('There are no processes to be launched')
 

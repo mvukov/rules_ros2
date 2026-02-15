@@ -3,7 +3,6 @@ from ros2.houston import entity
 
 def create_deployment() -> entity.Deployment:
     return entity.Deployment([
-        entity.EnvironmentVariable(name='ROS_LOG_DIR', value='/tmp'),
         entity.EnvironmentVariable(name='ROS_DISABLE_LOANED_MESSAGES',
                                    value='0'),
         entity.EnvironmentVariable(name='CYCLONEDDS_URI',
