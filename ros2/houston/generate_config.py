@@ -82,6 +82,8 @@ def collect_parameters(deployment: entity.Deployment, dst: pathlib.Path):
     params_files: list[pathlib.Path] = []
     for current_entity in deployment.entities:
         match current_entity:
+        # TODO(mukov) Should we remove this and really separate configuration
+        # from node definition?
             case entity.RosNode():
                 if current_entity.parameters_file is None:
                     continue
@@ -175,14 +177,15 @@ def collect_process_configs(
     process_configs: list[ProcessConfig] = []
     for current_entity in deployment.entities:
         match current_entity:
-            case entity.Process():
-                process_configs.append(
-                    create_process_process_config(current_entity, only_env))
+        # NOTE: This must be the first one as it's a derived class.
             case entity.RosNode():
                 process_configs.append(
                     create_ros_node_process_config(current_entity,
                                                    merged_params_file,
                                                    only_env))
+            case entity.Process():
+                process_configs.append(
+                    create_process_process_config(current_entity, only_env))
             case _:
                 pass
     return process_configs
