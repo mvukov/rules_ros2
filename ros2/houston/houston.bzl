@@ -15,11 +15,14 @@ def _ros2_deployment_impl(ctx):
     transitive_files_depsets = []
     for target in ctx.attr.data:
         transitive_files_depsets.append(target[DefaultInfo].files)
+    for dep in ctx.attr.deps:
+        transitive_files_depsets.append(dep[DefaultInfo].files)
 
     runfiles = ctx.runfiles(
         transitive_files = depset(transitive = transitive_files_depsets),
     ).merge_all(
         [target[DefaultInfo].default_runfiles for target in ctx.attr.data] +
+        [dep[DefaultInfo].default_runfiles for dep in ctx.attr.deps] +
         [node[DefaultInfo].default_runfiles for node in ctx.attr.nodes],
     )
 
