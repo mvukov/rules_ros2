@@ -82,13 +82,6 @@ def collect_parameters(deployment: entity.Deployment, dst: pathlib.Path):
     params_files: list[pathlib.Path] = []
     for current_entity in deployment.entities:
         match current_entity:
-        # TODO(mukov) Should we remove this and really separate configuration
-        # from node definition?
-            case entity.RosNode():
-                if current_entity.parameters_file is None:
-                    continue
-                params_files.append(pathlib.Path(
-                    current_entity.parameters_file))
             case entity.ParametersFile():
                 params_files.append(pathlib.Path(current_entity.path))
             case _:

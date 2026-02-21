@@ -2,6 +2,7 @@ HoustonDeploymentInfo = provider(
     "Provides info for deployment generation",
     fields = [
         "launch_files",
+        # Serves to check that all process definitions exist within a set of known binaries.
         "executable_files",
         "params_files",
     ],
@@ -34,9 +35,14 @@ def _ros2_deployment_impl(ctx):
     if ctx.attr.parameters != None:
         params_files = [param[DefaultInfo].files for param in ctx.attr.parameters]
 
-    # TODO(mvukov) Check that nodes are executables.
     executable_files = []
     if ctx.attr.nodes != None:
+        for node in ctx.attr.nodes:
+            if node[DefaultInfo].files_to_run == None or node[DefaultInfo].files_to_run.executable == None:
+                fail("{} is not an executable")
+
+        # TODO(mvukov) The last thing I know is that for py_binary both the interpreter
+        # and the shim are in files, to be double-checked.
         executable_files = [node[DefaultInfo].files for node in ctx.attr.nodes]
 
     return [

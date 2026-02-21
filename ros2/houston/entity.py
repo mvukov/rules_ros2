@@ -19,7 +19,6 @@ class Process:
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
 class RosNode(Process):
-    parameters_file: str | pathlib.Path | None = None
     remappings: list[tuple[str, str]] | None = None
     ros_arguments: list[str] | None = None
 

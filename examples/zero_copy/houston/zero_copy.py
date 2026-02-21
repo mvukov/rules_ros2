@@ -12,8 +12,7 @@ def create_deployment() -> entity.Deployment:
             executable='../iceoryx/iceoryx/bin/iox-roudi',
             arguments=['-c', 'zero_copy/roudi.toml'],
         ),
-        entity.RosNode(name='talker',
-                       executable='zero_copy/talker',
-                       parameters_file='zero_copy/houston/talker.yaml'),
+        entity.RosNode(name='talker', executable='zero_copy/talker'),
         entity.RosNode(name='listener', executable='zero_copy/listener'),
+        entity.ParametersFile(path='zero_copy/houston/zero_copy_params.yaml')
     ])
