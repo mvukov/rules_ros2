@@ -1,0 +1,34 @@
+"""Tests for proto -> ROS2 interface conversion."""
+
+load(
+    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "py_ros2_interface_library",
+)
+load(
+    "@com_github_mvukov_rules_ros2//ros2:protobuf.bzl",
+    "proto_ros2_interface_library",
+)
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_python//python:defs.bzl", "py_test")
+
+proto_library(
+    name = "point_proto",
+    srcs = ["Point.proto"],
+)
+
+proto_ros2_interface_library(
+    name = "point_msgs",
+    proto_deps = [":point_proto"],
+)
+
+py_ros2_interface_library(
+    name = "py_point_msgs",
+    deps = [":point_msgs"],
+)
+
+py_test(
+    name = "test_proto_msg",
+    size = "small",
+    srcs = ["test_proto_msg.py"],
+    deps = [":py_point_msgs"],
+)
