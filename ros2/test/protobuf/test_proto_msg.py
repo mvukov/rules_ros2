@@ -16,3 +16,6 @@ def test_point_message_instantiation():
     assert p.label == 'hello'
     assert p.id == 42
     assert p.valid is True
+
+
+test_point_message_instantiation()

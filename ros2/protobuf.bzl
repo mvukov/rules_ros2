@@ -44,12 +44,14 @@ def _proto_to_ros2_msg_aspect_impl(target, ctx):
     proto_info = target[ProtoInfo]
     msg_files = []
 
+    print(target.label.name)
+    ros_package_name = target.label.name
     for src in proto_info.direct_sources:
         if not src.basename.endswith(".proto"):
             fail("Expected a .proto source file, got: {}".format(src.basename))
         stem = src.basename[:-len(".proto")].capitalize()
         msg_file = ctx.actions.declare_file(
-            "{}/{}.msg".format(target.label.name, stem),
+            "{}/{}.msg".format(ros_package_name, stem),
         )
         msg_files.append(msg_file)
 
@@ -73,6 +75,7 @@ def _proto_to_ros2_msg_aspect_impl(target, ctx):
         Ros2InterfaceInfo(
             info = struct(srcs = msg_files),
             deps = depset([]),
+            ros_package_name = ros_package_name,
         ),
     ]
 
@@ -100,6 +103,7 @@ def _proto_ros2_interface_library_impl(ctx):
         Ros2InterfaceInfo(
             info = struct(srcs = msg_files),
             deps = depset([]),
+            ros_package_name = ctx.label.name,
         ),
     ]
 

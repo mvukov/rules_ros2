@@ -97,7 +97,7 @@ Ros2InterfaceCollectorAspectInfo = provider(
 
 def create_interface_struct(target):
     return struct(
-        package_name = target.label.name,
+        package_name = target[Ros2InterfaceInfo].ros_package_name,
         srcs = target[Ros2InterfaceInfo].info.srcs,
     )
 
@@ -154,7 +154,7 @@ def create_dynamic_library(ctx, **kwargs):
     return dynamic_library
 
 def _ros2_idl_plugin_aspect_impl(target, ctx):
-    package_name = target.label.name
+    package_name = target[Ros2InterfaceInfo].ros_package_name
     cc_info = target[CppGeneratorAspectInfo].cc_info
     dynamic_library = create_dynamic_library(
         ctx,

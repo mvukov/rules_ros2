@@ -25,6 +25,7 @@ Ros2InterfaceInfo = provider(
     fields = [
         "info",
         "deps",
+        "ros_package_name",
     ],
 )
 
@@ -42,6 +43,7 @@ def _ros2_interface_library_impl(ctx):
                     for dep in ctx.attr.deps
                 ],
             ),
+            ros_package_name = ctx.label.name,
         ),
     ]
 
@@ -140,7 +142,7 @@ IdlAdapterAspectInfo = provider("TBD", fields = [
 ])
 
 def _idl_adapter_aspect_impl(target, ctx):
-    package_name = target.label.name
+    package_name = target[Ros2InterfaceInfo].ros_package_name
     srcs = target[Ros2InterfaceInfo].info.srcs
     idl_files, idl_tuples = _run_adapter(ctx, package_name, srcs)
     return [
@@ -366,7 +368,7 @@ def _compile_cc_generated_code(
     )
 
 def _c_generator_aspect_impl(target, ctx):
-    package_name = target.label.name
+    package_name = target[Ros2InterfaceInfo].ros_package_name
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
 
@@ -534,7 +536,7 @@ _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING = [
 ]
 
 def _cpp_generator_aspect_impl(target, ctx):
-    package_name = target.label.name
+    package_name = target[Ros2InterfaceInfo].ros_package_name
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
 
@@ -685,7 +687,7 @@ def _get_py_srcs(files):
     return [f for f in files if f.path.endswith(".py")]
 
 def _py_generator_aspect_impl(target, ctx):
-    package_name = target.label.name
+    package_name = target[Ros2InterfaceInfo].ros_package_name
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
 
