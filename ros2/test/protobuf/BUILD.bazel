@@ -13,12 +13,12 @@ load("@rules_python//python:defs.bzl", "py_test")
 
 proto_library(
     name = "point_proto",
-    srcs = ["Point.proto"],
+    srcs = ["point.proto"],
 )
 
 proto_ros2_interface_library(
     name = "point_msgs",
-    proto_deps = [":point_proto"],
+    deps = [":point_proto"],
 )
 
 py_ros2_interface_library(

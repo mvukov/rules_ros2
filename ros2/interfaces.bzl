@@ -160,6 +160,7 @@ idl_adapter_aspect = aspect(
             cfg = "exec",
         ),
     },
+    required_providers = [Ros2InterfaceInfo],
     provides = [IdlAdapterAspectInfo],
 )
 
@@ -289,13 +290,13 @@ def _get_compilation_contexts_from_deps(deps):
     return [dep[CcInfo].compilation_context for dep in deps]
 
 def _get_compilation_contexts_from_aspect_info_deps(deps, aspect_info):
-    return [dep[aspect_info].cc_info.compilation_context for dep in deps]
+    return [dep[aspect_info].cc_info.compilation_context for dep in deps if aspect_info in dep]
 
 def _get_linking_contexts_from_deps(deps):
     return [dep[CcInfo].linking_context for dep in deps]
 
 def _get_linking_contexts_from_aspect_info_deps(deps, aspect_info):
-    return [dep[aspect_info].cc_info.linking_context for dep in deps]
+    return [dep[aspect_info].cc_info.linking_context for dep in deps if aspect_info in dep]
 
 def _compile_cc_generated_code(
         ctx,
@@ -777,32 +778,33 @@ def _py_generator_aspect_impl(target, ctx):
             *relative_path_parts[0:]
         )
 
+    py_deps = [dep for dep in ctx.rule.attr.deps if PyGeneratorAspectInfo in dep]
     py_info = PyGeneratorAspectInfo(
         cc_info = cc_common.merge_cc_infos(
             direct_cc_infos = [compilation_info.cc_info] + [
                 dep[PyGeneratorAspectInfo].cc_info
-                for dep in ctx.rule.attr.deps
+                for dep in py_deps
             ],
         ),
         dynamic_libraries = depset(
             direct = [dynamic_library],
             transitive = [
                 dep[PyGeneratorAspectInfo].dynamic_libraries
-                for dep in ctx.rule.attr.deps
+                for dep in py_deps
             ],
         ),
         transitive_sources = depset(
             direct = _get_py_srcs(all_outputs),
             transitive = [
                 dep[PyGeneratorAspectInfo].transitive_sources
-                for dep in ctx.rule.attr.deps
+                for dep in py_deps
             ],
         ),
         imports = depset(
             direct = [py_import_path],
             transitive = [
                 dep[PyGeneratorAspectInfo].imports
-                for dep in ctx.rule.attr.deps
+                for dep in py_deps
             ],
         ),
         linker_inputs = compilation_info.cc_info.linking_context.linker_inputs,
