@@ -162,7 +162,8 @@ idl_adapter_aspect = aspect(
             cfg = "exec",
         ),
     },
-    required_providers = [Ros2InterfaceInfo],
+    required_aspect_providers = [Ros2InterfaceInfo],
+    # required_providers = [Ros2InterfaceInfo],
     provides = [IdlAdapterAspectInfo],
 )
 
@@ -493,14 +494,14 @@ c_generator_aspect = aspect(
     fragments = ["cpp"],
 )
 
-def _cc_generator_impl(ctx, aspect_info):
+def cc_generator_impl(ctx, aspect_info):
     cc_info = cc_common.merge_cc_infos(
         direct_cc_infos = [dep[aspect_info].cc_info for dep in ctx.attr.deps],
     )
     return [cc_info]
 
 def _c_ros2_interface_library_impl(ctx):
-    return _cc_generator_impl(ctx, CGeneratorAspectInfo)
+    return cc_generator_impl(ctx, CGeneratorAspectInfo)
 
 c_ros2_interface_library = rule(
     attrs = {
@@ -649,15 +650,18 @@ cpp_generator_aspect = aspect(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
-    required_providers = [Ros2InterfaceInfo],
-    required_aspect_providers = [IdlAdapterAspectInfo],
+    # required_providers = [Ros2InterfaceInfo],
+    required_aspect_providers = [
+        [Ros2InterfaceInfo],
+        [IdlAdapterAspectInfo],
+    ],
     provides = [CppGeneratorAspectInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
     fragments = ["cpp"],
 )
 
 def _cpp_ros2_interface_library_impl(ctx):
-    return _cc_generator_impl(ctx, CppGeneratorAspectInfo)
+    return cc_generator_impl(ctx, CppGeneratorAspectInfo)
 
 cpp_ros2_interface_library = rule(
     attrs = {

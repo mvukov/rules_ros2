@@ -16,8 +16,11 @@
 Limitations:
 - One proto file must correspond to exactly one message definition.
 - Service definitions in a proto file cause a build error.
-- Only proto3 scalar field types are supported (no message-type or enum fields).
-- Repeated scalar fields map to dynamic ROS2 arrays (e.g. `int32[] values`).
+- Message-type fields are supported as cross-package ROS2 references (e.g.
+  `pkg/Type`). Each proto dep must have a corresponding
+  proto_ros2_interface_library so the package name can be resolved.
+- Enum and group fields are not supported.
+- Repeated scalar and message fields map to dynamic ROS2 arrays.
 - Proto `bytes` fields map to `uint8[]` in ROS2.
 
 Example usage:
@@ -37,15 +40,35 @@ Example usage:
     )
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:interfaces.bzl", "Ros2InterfaceInfo")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "CppGeneratorAspectInfo",
+    "Ros2InterfaceInfo",
+    "cc_generator_impl",
+    "cpp_generator_aspect",
+    "idl_adapter_aspect",
+)
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 
 def _proto_to_ros2_msg_aspect_impl(target, ctx):
     proto_info = target[ProtoInfo]
     msg_files = []
 
-    print(target.label.name)
-    ros_package_name = target.label.name
+    ros_package_name = target.label.name + "_ros_msgs"
+
+    dep_extra_args = []
+    dep_descriptor_sets = []
+    for dep in ctx.rule.attr.deps:
+        dep_ds = dep[ProtoInfo].direct_descriptor_set
+        dep_descriptor_sets.append(dep_ds)
+        dep_extra_args += ["--dep_descriptor_set", dep_ds.path]
+        dep_ros2_package = dep[Ros2InterfaceInfo].ros_package_name
+        for src in dep[ProtoInfo].direct_sources:
+            dep_extra_args += [
+                "--dep_mapping",
+                "{}:{}".format(src.short_path, dep_ros2_package),
+            ]
+
     for src in proto_info.direct_sources:
         if not src.basename.endswith(".proto"):
             fail("Expected a .proto source file, got: {}".format(src.basename))
@@ -57,7 +80,7 @@ def _proto_to_ros2_msg_aspect_impl(target, ctx):
 
         ctx.actions.run(
             executable = ctx.executable._proto_to_ros2_msg,
-            inputs = [proto_info.direct_descriptor_set],
+            inputs = [proto_info.direct_descriptor_set] + dep_descriptor_sets,
             outputs = [msg_file],
             arguments = [
                 "--descriptor_set",
@@ -66,15 +89,21 @@ def _proto_to_ros2_msg_aspect_impl(target, ctx):
                 src.short_path,
                 "--output",
                 msg_file.path,
-            ],
+            ] + dep_extra_args,
             mnemonic = "ProtoToRos2Msg",
-            progress_message = "Converting proto to ROS2 msg for %{label}",
+            progress_message = "Converting proto to ROS 2 messages for %{label}",
         )
 
     return [
         Ros2InterfaceInfo(
             info = struct(srcs = msg_files),
-            deps = depset([]),
+            deps = depset(
+                direct = [dep[Ros2InterfaceInfo].info for dep in ctx.rule.attr.deps],
+                transitive = [
+                    dep[Ros2InterfaceInfo].deps
+                    for dep in ctx.rule.attr.deps
+                ],
+            ),
             ros_package_name = ros_package_name,
         ),
     ]
@@ -93,34 +122,16 @@ proto_to_ros2_msg_aspect = aspect(
     provides = [Ros2InterfaceInfo],
 )
 
-def _proto_ros2_interface_library_impl(ctx):
-    msg_files = []
-    for dep in ctx.attr.deps:
-        msg_files.extend(dep[Ros2InterfaceInfo].info.srcs)
+def _cpp_proto_ros2_interface_library_impl(ctx):
+    return cc_generator_impl(ctx, CppGeneratorAspectInfo)
 
-    return [
-        DefaultInfo(files = depset(msg_files)),
-        Ros2InterfaceInfo(
-            info = struct(srcs = msg_files),
-            deps = depset([]),
-            ros_package_name = ctx.label.name,
-        ),
-    ]
-
-proto_ros2_interface_library = rule(
-    implementation = _proto_ros2_interface_library_impl,
+cpp_proto_ros2_interface_library = rule(
     attrs = {
         "deps": attr.label_list(
-            providers = [ProtoInfo],
-            aspects = [proto_to_ros2_msg_aspect],
             mandatory = True,
-            doc = "List of proto_library targets to convert to ROS2 interfaces.",
+            aspects = [proto_to_ros2_msg_aspect, idl_adapter_aspect, cpp_generator_aspect],
+            providers = [ProtoInfo],
         ),
     },
-    provides = [Ros2InterfaceInfo],
-    doc = """Converts proto_library targets to a ROS2 interface library.
-
-Generates one .msg file per proto source file and exposes Ros2InterfaceInfo
-so that downstream rules such as cpp_ros2_interface_library and
-py_ros2_interface_library can consume the result.""",
+    implementation = _cpp_proto_ros2_interface_library_impl,
 )

@@ -16,10 +16,11 @@
 Limitations:
 - Exactly one message definition per proto file is required.
 - Service definitions are not supported.
-- Only proto3 scalar field types are supported (no message-type fields, no enum
-  fields).
-- Repeated scalar fields are supported and map to dynamic arrays (e.g.
-  `int32[] values`).
+- Message-type fields are supported as cross-package ROS2 references (e.g.
+  `pkg/Type`). The caller must supply --dep_mapping for each imported proto.
+- Enum and group fields are not supported.
+- Repeated scalar and message fields are supported and map to dynamic arrays
+  (e.g. `int32[] values`, `pkg/msg/Point[] points`).
 - proto `bytes` fields map to `uint8[]` in ROS2.
 """
 import argparse
@@ -66,10 +67,34 @@ _PROTO_TO_ROS2_TYPE = {
 
 # Non-scalar types that are explicitly rejected.
 _UNSUPPORTED_TYPES = {
-    FieldDescriptorProto.TYPE_MESSAGE: 'message',
     FieldDescriptorProto.TYPE_GROUP: 'group',
     FieldDescriptorProto.TYPE_ENUM: 'enum',
 }
+
+
+def _build_msg_type_map(dep_descriptor_set_paths, dep_mapping):
+    """Build {'.pkg.MsgName': 'ros2_package/MsgName'} from dep descriptor sets.
+    """
+    path_to_pkg = {}
+    for entry in dep_mapping:
+        proto_path, ros2_pkg = entry.split(':', 1)
+        path_to_pkg[proto_path] = ros2_pkg
+
+    msg_type_map = {}
+    for ds_path in dep_descriptor_set_paths:
+        with open(ds_path, 'rb') as f:
+            data = f.read()
+        dep_set = descriptor_pb2.FileDescriptorSet()
+        dep_set.ParseFromString(data)
+        for file_proto in dep_set.file:
+            ros2_pkg = path_to_pkg.get(file_proto.name)
+            if ros2_pkg is None:
+                continue
+            pkg_prefix = '.' + file_proto.package if file_proto.package else ''
+            for msg in file_proto.message_type:
+                fq = f'{pkg_prefix}.{msg.name}'
+                msg_type_map[fq] = f'{ros2_pkg}/{msg.name}'
+    return msg_type_map
 
 
 def _find_file_descriptor(proto_set, proto_source):
@@ -86,7 +111,7 @@ def _find_file_descriptor(proto_set, proto_source):
     return None
 
 
-def _convert(file_proto, output_path, proto_source):
+def _convert(file_proto, output_path, proto_source, msg_type_map):
     """Validate and convert a FileDescriptorProto to a ROS2 .msg file."""
     if file_proto.service:
         sys.exit(f'Error: {proto_source}: services are not supported '
@@ -103,19 +128,32 @@ def _convert(file_proto, output_path, proto_source):
 
     for field in message.field:
         field_type_value = field.type
+        is_repeated = (field.label == FieldDescriptorProto.LABEL_REPEATED)
+
+        if field_type_value == FieldDescriptorProto.TYPE_MESSAGE:
+            ros2_type = msg_type_map.get(field.type_name)
+            if ros2_type is None:
+                sys.exit(
+                    f'Error: {proto_source}: field "{field.name}" references '
+                    f'message type "{field.type_name}" with no dep_mapping '
+                    f'entry. Add a --dep_mapping for the proto file that '
+                    f'defines it.')
+            if is_repeated:
+                ros2_type = ros2_type + '[]'
+            lines.append(f'{ros2_type} {field.name}')
+            continue
 
         if field_type_value in _UNSUPPORTED_TYPES:
             type_name = _UNSUPPORTED_TYPES[field_type_value]
             sys.exit(
                 f'Error: {proto_source}: field "{field.name}" has unsupported '
-                f'type "{type_name}". Only scalar types are supported.')
+                f'type "{type_name}".')
 
         if field_type_value not in _PROTO_TO_ROS2_TYPE:
             sys.exit(f'Error: {proto_source}: field "{field.name}" has unknown '
                      f'type value {field_type_value}.')
 
         ros2_type = _PROTO_TO_ROS2_TYPE[field_type_value]
-        is_repeated = (field.label == FieldDescriptorProto.LABEL_REPEATED)
 
         # proto `bytes` already becomes `uint8[]`; avoid double `[]`.
         if is_repeated and field_type_value != FieldDescriptorProto.TYPE_BYTES:
@@ -145,6 +183,21 @@ def main():
         required=True,
         help='Path of the output .msg file to write.',
     )
+    parser.add_argument(
+        '--dep_mapping',
+        action='append',
+        default=[],
+        metavar='PROTO_PATH:ROS2_PACKAGE',
+        help='Mapping from a dep proto file path to its ROS2 package name. '
+        'May be repeated.',
+    )
+    parser.add_argument(
+        '--dep_descriptor_set',
+        action='append',
+        default=[],
+        metavar='PATH',
+        help='Path to a dep binary FileDescriptorSet file. May be repeated.',
+    )
     args = parser.parse_args()
 
     with open(args.descriptor_set, 'rb') as f:
@@ -158,7 +211,9 @@ def main():
         sys.exit(f'Error: could not find proto source "{args.proto_source}" in '
                  f'descriptor set "{args.descriptor_set}".')
 
-    _convert(file_proto, args.output, args.proto_source)
+    msg_type_map = _build_msg_type_map(args.dep_descriptor_set,
+                                       args.dep_mapping)
+    _convert(file_proto, args.output, args.proto_source, msg_type_map)
 
 
 if __name__ == '__main__':
