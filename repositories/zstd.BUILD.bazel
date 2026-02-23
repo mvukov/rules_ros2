@@ -23,7 +23,7 @@ cmake(
     generate_args = ["-GNinja"],
     lib_source = ":all_srcs",
     out_static_libs = ["libzstd.a"],
-    visibility = ["//visibility:public"],
     set_file_prefix_map = True,
+    visibility = ["//visibility:public"],
     working_directory = "build/cmake",
 )

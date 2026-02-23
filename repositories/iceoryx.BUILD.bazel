@@ -69,10 +69,10 @@ cmake(
         "libiceoryx_hoofs.a",
         "libiceoryx_platform.a",
     ],
+    set_file_prefix_map = True,
     # TODO(mvukov) Provide toml library instead of allowing network access?
     tags = ["requires-network"],
     visibility = ["//visibility:public"],
-    set_file_prefix_map = True,
     working_directory = "iceoryx_meta",
 )
 
