@@ -194,6 +194,7 @@ cmake(
         no_match_error = "Supported OSs: Android, Linux, macOS, QNX",
     ),
     out_static_libs = ["libddsc.a"],
+    set_file_prefix_map = True,
     visibility = ["//visibility:public"],
     deps = select({
         ":enable_shm_on": ["@iceoryx"],

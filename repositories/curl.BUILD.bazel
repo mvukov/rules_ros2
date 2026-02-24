@@ -100,6 +100,7 @@ cmake(
     postfix_script = """\
 cp $${BUILD_TMPDIR}/lib/libcurl.a $${INSTALLDIR}/lib
     """,
+    set_file_prefix_map = True,
     visibility = ["//visibility:public"],
     deps = [
         "@boringssl//:ssl",
