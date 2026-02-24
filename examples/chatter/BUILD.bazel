@@ -4,6 +4,7 @@ load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
 load("@com_github_mvukov_rules_ros2//ros2:rust_interfaces.bzl", "rust_ros2_interface_library")
 load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
 load("@com_github_mvukov_rules_ros2//ros2:topic.bzl", "ros2_topic")
+load("@com_github_mvukov_rules_ros2//ros2/houston:houston.bzl", "ros2_deployment", houston_launch = "ros2_launch")
 load("@rules_python//python:defs.bzl", "py_binary")
 load("@rules_rust//rust:defs.bzl", "rust_binary")
 
@@ -84,4 +85,28 @@ ros2_bag(
         "@ros2_rcl_interfaces//:rcl_interfaces",
         "@ros2_rosbag2//:rosbag2_interfaces",
     ],
+)
+
+ros2_deployment(
+    name = "chatter_deployment",
+    launch_file = "chatter_specs.py",
+    nodes = [
+        ":talker",
+        ":listener",
+    ],
+    parameters = ["params.yaml"],
+)
+
+ros2_deployment(
+    name = "override_chatter_deployment",
+    launch_file = "override_chatter_specs.py",
+    parameters = [
+        "override_params.yaml",
+    ],
+    deps = [":chatter_deployment"],
+)
+
+houston_launch(
+    name = "houston_chatter",
+    deps = [":override_chatter_deployment"],
 )

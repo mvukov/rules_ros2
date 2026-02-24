@@ -15,6 +15,11 @@ load(
 load("@rules_python//python:defs.bzl", "py_library")
 load("@rules_rust//rust:defs.bzl", "rust_binary")
 
+exports_files(srcs = [
+    "cyclonedds.xml",
+    "roudi.toml",
+])
+
 ros2_interface_library(
     name = "chatter_interface",
     srcs = ["Chatter.msg"],
@@ -32,6 +37,7 @@ cpp_ros2_interface_library(
 ros2_cpp_binary(
     name = "talker",
     srcs = ["talker.cc"],
+    visibility = ["//visibility:public"],
     deps = [
         ":cpp_chatter_interface",
         "@ros2_rclcpp//:rclcpp",
@@ -41,6 +47,7 @@ ros2_cpp_binary(
 ros2_cpp_binary(
     name = "listener",
     srcs = ["listener.cc"],
+    visibility = ["//visibility:public"],
     deps = [
         ":cpp_chatter_interface",
         "@ros2_rclcpp//:rclcpp",
@@ -55,6 +62,7 @@ rust_ros2_interface_library(
 rust_binary(
     name = "rust_talker",
     srcs = ["talker.rs"],
+    visibility = ["//visibility:public"],
     deps = [
         ":rust_chatter_interface",
         "@ros2_rust//:rclrs",
@@ -65,6 +73,7 @@ rust_binary(
 rust_binary(
     name = "rust_listener",
     srcs = ["listener.rs"],
+    visibility = ["//visibility:public"],
     deps = [
         ":rust_chatter_interface",
         "@ros2_rust//:rclrs",
@@ -86,6 +95,7 @@ py_library(
     name = "roudi",
     srcs = [":roudi_py"],
     data = ["@iceoryx//:iox_roudi"],
+    visibility = ["//visibility:public"],
 )
 
 ros2_launch(

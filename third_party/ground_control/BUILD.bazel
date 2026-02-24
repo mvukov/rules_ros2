@@ -1,0 +1,45 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_library")
+
+rust_library(
+    name = "groundcontrol",
+    srcs = [
+        "command.rs",
+        "config.rs",
+        "formatter.rs",
+        "lib.rs",
+        "process.rs",
+    ],
+    deps = [
+        "@ground_control_crate_index//:color-eyre",
+        "@ground_control_crate_index//:command-group",
+        "@ground_control_crate_index//:console",
+        "@ground_control_crate_index//:nix",
+        "@ground_control_crate_index//:once_cell",
+        "@ground_control_crate_index//:regex",
+        "@ground_control_crate_index//:serde",
+        "@ground_control_crate_index//:thiserror",
+        "@ground_control_crate_index//:time",
+        "@ground_control_crate_index//:tokio",
+        "@ground_control_crate_index//:tracing",
+        "@ground_control_crate_index//:tracing-subscriber",
+        "@ground_control_crate_index//:users",
+    ],
+)
+
+rust_binary(
+    name = "ground_control",
+    srcs = ["main.rs"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":groundcontrol",
+        "@ground_control_crate_index//:chrono",
+        "@ground_control_crate_index//:clap",
+        "@ground_control_crate_index//:color-eyre",
+        "@ground_control_crate_index//:hostname",
+        "@ground_control_crate_index//:tokio",
+        "@ground_control_crate_index//:toml",
+        "@ground_control_crate_index//:tracing",
+        "@ground_control_crate_index//:tracing-appender",
+        "@ground_control_crate_index//:tracing-subscriber",
+    ],
+)

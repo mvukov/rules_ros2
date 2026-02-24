@@ -1,0 +1,21 @@
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+
+exports_files(["launch.sh.tpl"])
+
+py_library(
+    name = "houston",
+    srcs = ["entity.py"],
+)
+
+py_binary(
+    name = "generate_config",
+    srcs = ["generate_config.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":houston",
+        requirement("deepmerge"),
+        requirement("pyyaml"),
+        requirement("toml"),
+    ],
+)

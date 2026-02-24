@@ -1,0 +1,21 @@
+load("@com_github_mvukov_rules_ros2//ros2/houston:houston.bzl", "ros2_deployment", "ros2_launch")
+
+ros2_deployment(
+    name = "zero_copy",
+    data = [
+        "//zero_copy:cyclonedds.xml",
+        "//zero_copy:roudi.toml",
+    ],
+    launch_file = "zero_copy.py",
+    nodes = [
+        "@iceoryx//:iox_roudi",
+        "//zero_copy:listener",
+        "//zero_copy:talker",
+    ],
+    parameters = ["zero_copy_params.yaml"],
+)
+
+ros2_launch(
+    name = "zero_copy_houston",
+    deps = [":zero_copy"],
+)
