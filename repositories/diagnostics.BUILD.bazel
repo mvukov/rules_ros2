@@ -93,3 +93,13 @@ ros2_cpp_binary(
         "@ros2_rclcpp//:rclcpp",
     ],
 )
+
+ros2_cpp_binary(
+    name = "add_analyzer",
+    srcs = ["diagnostic_aggregator/src/add_analyzer.cpp"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2_common_interfaces//:c_diagnostic_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
