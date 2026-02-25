@@ -10,6 +10,7 @@ load(
     "rclcpp_interfaces",
 )
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
+load("@rules_cc//cc:defs.bzl", "cc_shared_library")
 load("@rules_python//python:defs.bzl", "py_binary")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
@@ -109,11 +110,34 @@ ros2_cpp_library(
 )
 
 ros2_cpp_library(
-    name = "rclcpp_lifecycle",
-    srcs = glob([
-        "rclcpp_lifecycle/src/**/*.cpp",
+    name = "rclcpp_lifecycle_impl",
+    srcs = glob(["rclcpp_lifecycle/src/**/*.cpp"]),
+    hdrs = glob([
+        "rclcpp_lifecycle/include/**/*.hpp",
+        "rclcpp_lifecycle/include/**/*.h",
         "rclcpp_lifecycle/src/*.hpp",
     ]),
+    includes = [
+        "rclcpp_lifecycle/include",
+        "rclcpp_lifecycle/src",
+    ],
+    local_defines = ["RCLCPP_LIFECYCLE_BUILDING_DLL"],
+    deps = [
+        ":rclcpp",
+        "@ros2_rcl//:rcl_lifecycle",
+        "@ros2_rcl_interfaces//:c_lifecycle_msgs",
+        "@ros2_rcl_interfaces//:cpp_lifecycle_msgs",
+    ],
+)
+
+cc_shared_library(
+    name = "rclcpp_lifecycle_so",
+    deps = [":rclcpp_lifecycle_impl"],
+)
+
+ros2_cpp_library(
+    name = "rclcpp_lifecycle",
+    srcs = [":rclcpp_lifecycle_so"],
     hdrs = glob([
         "rclcpp_lifecycle/include/**/*.hpp",
         "rclcpp_lifecycle/include/**/*.h",
