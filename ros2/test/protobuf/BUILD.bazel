@@ -1,6 +1,6 @@
 """Tests for proto -> ROS2 interface conversion."""
 
-load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
 load("//ros2:cc_defs.bzl", "ros2_cpp_test")
 load("//ros2:protobuf.bzl", "cpp_proto_ros2_interface_library")
 

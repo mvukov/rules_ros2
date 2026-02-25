@@ -236,10 +236,10 @@ def ros2_workspace_repositories():
 
     maybe(
         http_archive,
-        name = "rules_proto",
-        sha256 = "14a225870ab4e91869652cfd69ef2028277fc1dc4910d65d353b62d6e0ae21f4",
-        strip_prefix = "rules_proto-7.1.0",
-        url = "https://github.com/bazelbuild/rules_proto/releases/download/7.1.0/rules_proto-7.1.0.tar.gz",
+        name = "com_google_protobuf",
+        sha256 = "440848dffa209beb8a04e41cc352762e44f8e91342b2a43aab6af9b30713c2f6",
+        strip_prefix = "protobuf-33.5",
+        urls = ["https://github.com/protocolbuffers/protobuf/archive/refs/tags/v33.5.tar.gz"],
     )
 
 def ros2_repositories():

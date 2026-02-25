@@ -3,9 +3,9 @@
 
 load("@bazel_features//:deps.bzl", "bazel_features_deps")
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 load("@googletest//:googletest_deps.bzl", "googletest_deps")
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies")
 load("@rules_shell//shell:repositories.bzl", "rules_shell_dependencies", "rules_shell_toolchains")
 
 def ros2_deps():
@@ -17,4 +17,4 @@ def ros2_deps():
     rules_shell_toolchains()
     rules_foreign_cc_dependencies()
     googletest_deps()
-    rules_proto_dependencies()
+    protobuf_deps()

@@ -48,7 +48,7 @@ load(
     "cpp_generator_aspect",
     "idl_adapter_aspect",
 )
-load("@rules_proto//proto:defs.bzl", "ProtoInfo")
+load("@com_google_protobuf//bazel/common:proto_info.bzl", "ProtoInfo")
 
 def _proto_to_ros2_msg_aspect_impl(target, ctx):
     proto_info = target[ProtoInfo]
