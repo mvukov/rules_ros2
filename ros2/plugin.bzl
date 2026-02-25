@@ -28,6 +28,7 @@ load(
     "Ros2PluginInfo",
     "create_dynamic_library",
 )
+load("@rules_cc//cc:defs.bzl", "CcInfo")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 def _ros2_plugin_impl(ctx):
