@@ -86,6 +86,10 @@ lark-parser==0.12.0 \
     --hash=sha256:0eaf30cb5ba787fe404d73a7d6e61df97b21d5a63ac26c5008c78a494373c675 \
     --hash=sha256:15967db1f1214013dca65b1180745047b9be457d73da224fcda3d9dd4e96a138
     # via -r requirements.txt
+ntplib==0.4.0 \
+    --hash=sha256:899d8fb5f8c2555213aea95efca02934c7343df6ace9d7628a5176b176906267 \
+    --hash=sha256:8d27375329ed7ff38755f7b6d4658b28edc147cadf40338a63a0da8133469d60
+    # via -r requirements.txt
 numpy==1.26.4 \
     --hash=sha256:03a8c78d01d9781b28a6989f6fa1bb2c4f2d51201cf99d3dd875df6fbd96b23b \
     --hash=sha256:08beddf13648eb95f8d867350f6a018a4be2e5ad54c8d8caed89ebca558b2818 \

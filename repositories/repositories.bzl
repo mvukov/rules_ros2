@@ -301,9 +301,9 @@ def ros2_repositories():
         http_archive,
         name = "ros2_diagnostics",
         build_file = "@com_github_mvukov_rules_ros2//repositories:diagnostics.BUILD.bazel",
-        sha256 = "a723dae7acf0f00ee643c076c7c81299be0254919f29225ec7a89dc14cb8ea6f",
-        strip_prefix = "diagnostics-9f402787ea2c9b3dd4d7e51a9986810e8a3400ba",
-        urls = ["https://github.com/ros/diagnostics/archive/9f402787ea2c9b3dd4d7e51a9986810e8a3400ba.zip"],
+        sha256 = "22f3e6cf118bc76bdbd466106f4f0dd94382277d3fc7eb5248d2fcf26be8d411",
+        strip_prefix = "diagnostics-4.4.6",
+        urls = ["https://github.com/ros/diagnostics/archive/refs/tags/4.4.6.zip"],
     )
 
     maybe(
