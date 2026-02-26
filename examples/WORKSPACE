@@ -32,11 +32,11 @@ py_repositories()
 
 python_register_toolchains(
     name = "rules_ros2_python",
-    # You must pin the Python version to the one used for rules_ros2_pip_deps_numpy_headers and current_py_cc_headers in rules_ros2.
+    # You must pin the Python version to one that is compatible to the rules_ros2_pip_deps_numpy_headers and current_py_cc_headers in rules_ros2.
     # Otherwise you will get errors at runtime (not build time!) like:
     #     ModuleNotFoundError: No module named 'numpy.core._multiarray_umath'
     #     Importing the numpy C-extensions failed.
-    python_version = "3.10",
+    python_version = "3.14",
 )
 
 load("@rules_python//python:pip.bzl", "pip_parse")
