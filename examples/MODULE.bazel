@@ -6,6 +6,7 @@ local_path_override(
     path = "..",
 )
 
+bazel_dep(name = "protobuf", version = "33.5", repo_name = "com_google_protobuf")
 bazel_dep(name = "rules_cc", version = "0.2.9")
 bazel_dep(name = "rules_python", version = "1.6.3")
 bazel_dep(name = "rules_rust", version = "0.63.0")
@@ -29,6 +30,8 @@ rules_ros2_non_module_deps = use_extension("@com_github_mvukov_rules_ros2//ros2:
 use_repo(
     rules_ros2_non_module_deps,
     # Check the rules_ros2 root MODULE.bazel for a full list of available non-module repos
+    # Required for proto2ros:
+    "proto2ros",
     # Required for bazel test:
     "ros2_common_interfaces",
     "ros2_geometry2",
@@ -44,5 +47,6 @@ use_repo(
     "ros2cli",
     # Required for bazel run:
     "ros2_rclpy",
+    # Required for proto2ros:
     "ros2_rosidl",
 )
