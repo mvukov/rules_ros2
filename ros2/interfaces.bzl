@@ -163,6 +163,102 @@ idl_adapter_aspect = aspect(
     provides = [IdlAdapterAspectInfo],
 )
 
+TypeDescriptionAspectInfo = provider("TBD", fields = [
+    "type_description_files",
+    "type_description_tuples",
+    "include_path_tuples",
+])
+
+def _type_description_aspect_impl(target, ctx):
+    package_name = target.label.name
+    srcs = target[Ros2InterfaceInfo].info.srcs
+    adapter = target[IdlAdapterAspectInfo]
+
+    generator = ctx.executable._generator
+    generator_arguments_file = ctx.actions.declare_file(
+        "{}/{}_args.json".format(package_name, generator.basename),
+    )
+    output_dir = generator_arguments_file.dirname
+    transitive_include_path_tuples = depset(
+        transitive = [
+            dep[TypeDescriptionAspectInfo].include_path_tuples
+            for dep in ctx.rule.attr.deps
+        ],
+    )
+
+    generator_arguments = struct(
+        package_name = package_name,
+        idl_tuples = adapter.idl_tuples,
+        output_dir = output_dir,
+        include_paths = transitive_include_path_tuples.to_list(),
+    )
+    ctx.actions.write(generator_arguments_file, json.encode(generator_arguments))
+
+    generator_cmd_args = ctx.actions.args()
+    generator_cmd_args.add(
+        generator_arguments_file.path,
+        format = "--generator-arguments-file=%s",
+    )
+
+    type_description_files = []
+    type_description_tuples = []
+    for src in srcs:
+        extension = src.extension
+        stem = _get_stem(src)
+        relative_file = "{}/{}/{}.json".format(package_name, extension, stem)
+        type_description_file = ctx.actions.declare_file(relative_file)
+        type_description_files.append(type_description_file)
+        type_description_tuples.append(
+            "{}/{}.idl:{}".format(extension, stem, type_description_file.path),
+        )
+
+    transitive_type_description_files = depset(
+        transitive = [
+            dep[TypeDescriptionAspectInfo].type_description_files
+            for dep in ctx.rule.attr.deps
+        ],
+    )
+
+    ctx.actions.run(
+        inputs = adapter.idl_files + [generator_arguments_file] + transitive_type_description_files.to_list(),
+        outputs = type_description_files,
+        executable = generator,
+        arguments = [generator_cmd_args],
+        mnemonic = "Ros2TypeDescription",
+        progress_message = "Generating type description files for %{label}",
+    )
+
+    include_path_tuple = "{}:{}".format(package_name, _get_parent_dir(type_description_files[0].dirname))
+    return [
+        TypeDescriptionAspectInfo(
+            # TODO(mvukov) Check if run_generator only needs direct files!
+            type_description_files = depset(
+                direct = type_description_files,
+                transitive = [transitive_type_description_files],
+            ),
+            type_description_tuples = type_description_tuples,
+            include_path_tuples = depset(
+                direct = [include_path_tuple],
+                transitive = [transitive_include_path_tuples],
+            ),
+        ),
+    ]
+
+type_description_aspect = aspect(
+    implementation = _type_description_aspect_impl,
+    attr_aspects = ["deps"],
+    attrs = {
+        "_generator": attr.label(
+            default = Label("@ros2_rosidl//:rosidl_generator_type_description_app"),
+            executable = True,
+            cfg = "exec",
+        ),
+    },
+    required_providers = [Ros2InterfaceInfo],
+    required_aspect_providers = [IdlAdapterAspectInfo],
+    provides = [TypeDescriptionAspectInfo],
+)
+
 def _get_parent_dir(path):
     return "/".join(path.split("/")[:-1])
 
@@ -179,19 +275,22 @@ def run_generator(
         extra_generated_outputs = None,
         mnemonic = None,
         progress_message = None,
-        generator_env = None):
+        generator_env = None,
+        type_description = None):
     generator_templates = generator_templates[DefaultInfo].files.to_list()
 
     generator_arguments_file = ctx.actions.declare_file(
         "{}/{}_args.json".format(package_name, generator.basename),
     )
     output_dir = generator_arguments_file.dirname
+    type_description_tuples = type_description.type_description_tuples if type_description != None else []
     generator_arguments = struct(
         package_name = package_name,
         idl_tuples = adapter.idl_tuples,
         output_dir = output_dir,
         template_dir = generator_templates[0].dirname,
-        target_dependencies = [],  # TODO(mvukov) Do we need this?
+        target_dependencies = [],  # We don't need this, Bazel takes care of consistency.
+        type_description_tuples = type_description_tuples,
     )
     ctx.actions.write(generator_arguments_file, json.encode(generator_arguments))
 
@@ -222,8 +321,11 @@ def run_generator(
         relative_file = "{}/{}".format(package_name, extra_output)
         generator_outputs.append(ctx.actions.declare_file(relative_file))
 
+    inputs = adapter.idl_files + generator_templates + [generator_arguments_file]
+    if type_description != None:
+        inputs.extend(type_description.type_description_files.to_list())
     ctx.actions.run(
-        inputs = adapter.idl_files + generator_templates + [generator_arguments_file],
+        inputs = inputs,
         outputs = generator_outputs,
         env = generator_env,
         executable = generator,
@@ -258,17 +360,19 @@ CGeneratorAspectInfo = provider("TBD", fields = [
 
 _INTERFACE_GENERATOR_C_OUTPUT_MAPPING = [
     "%s.h",
+    "detail/%s__description.c",
     "detail/%s__functions.c",
     "detail/%s__functions.h",
     "detail/%s__struct.h",
+    "detail/%s__type_support.c",
     "detail/%s__type_support.h",
 ]
 
-_TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING = ["%s__type_support.c"]
+_TYPESUPPORT_GENERATOR_C_OUTPUT_MAPPING = ["%s__type_support_c.c"]
 
 _TYPESUPPORT_INTROSPECION_GENERATOR_C_OUTPUT_MAPPING = [
     "detail/%s__rosidl_typesupport_introspection_c.h",
-    "detail/%s__type_support.c",
+    "detail/%s__rosidl_typesupport_introspection_c.c",
 ]
 
 def _get_hdrs(files):
@@ -288,19 +392,29 @@ def _get_srcs(files):
 def _get_compilation_contexts_from_deps(deps):
     return [dep[CcInfo].compilation_context for dep in deps]
 
-def _get_compilation_contexts_from_aspect_info_deps(deps, aspect_info):
-    return [dep[aspect_info].cc_info.compilation_context for dep in deps]
+def _get_compilation_contexts_from_aspect_info_deps(deps, aspect_infos):
+    return [
+        dep[aspect_info].cc_info.compilation_context
+        for aspect_info in aspect_infos
+        for dep in deps
+        if aspect_info in dep
+    ]
 
 def _get_linking_contexts_from_deps(deps):
     return [dep[CcInfo].linking_context for dep in deps]
 
-def _get_linking_contexts_from_aspect_info_deps(deps, aspect_info):
-    return [dep[aspect_info].cc_info.linking_context for dep in deps]
+def _get_linking_contexts_from_aspect_info_deps(deps, aspect_infos):
+    return [
+        dep[aspect_info].cc_info.linking_context
+        for aspect_info in aspect_infos
+        for dep in deps
+        if aspect_info in dep
+    ]
 
 def _compile_cc_generated_code(
         ctx,
         name,
-        aspect_info,
+        aspect_infos,
         srcs,
         hdrs,
         deps,
@@ -321,10 +435,11 @@ def _compile_cc_generated_code(
     compilation_contexts = (
         _get_compilation_contexts_from_aspect_info_deps(
             rule_deps,
-            aspect_info,
+            aspect_infos,
         ) +
         _get_compilation_contexts_from_deps(deps)
     )
+
     compilation_context, compilation_outputs = cc_common.compile(
         actions = ctx.actions,
         name = name,
@@ -340,7 +455,7 @@ def _compile_cc_generated_code(
     linking_contexts = (
         _get_linking_contexts_from_aspect_info_deps(
             rule_deps,
-            aspect_info,
+            aspect_infos,
         ) +
         _get_linking_contexts_from_deps(deps)
     )
@@ -380,6 +495,7 @@ def _c_generator_aspect_impl(target, ctx):
         visibility_control_template = ctx.file._interface_visibility_control_template,
         mnemonic = "Ros2IdlGeneratorC",
         progress_message = "Generating C IDL interfaces for %{label}",
+        type_description = target[TypeDescriptionAspectInfo],
     )
 
     typesupport_outputs, _ = run_generator(
@@ -420,7 +536,7 @@ def _c_generator_aspect_impl(target, ctx):
     compilation_info = _compile_cc_generated_code(
         ctx,
         name = package_name + "_c",
-        aspect_info = CGeneratorAspectInfo,
+        aspect_infos = [CGeneratorAspectInfo],
         srcs = srcs,
         hdrs = hdrs,
         deps = ctx.attr._c_deps,
@@ -484,7 +600,10 @@ c_generator_aspect = aspect(
         ),
     },
     required_providers = [Ros2InterfaceInfo],
-    required_aspect_providers = [IdlAdapterAspectInfo],
+    required_aspect_providers = [
+        [IdlAdapterAspectInfo],
+        [TypeDescriptionAspectInfo],
+    ],
     provides = [CGeneratorAspectInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
     fragments = ["cpp"],
@@ -503,7 +622,11 @@ c_ros2_interface_library = rule(
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
-            aspects = [idl_adapter_aspect, c_generator_aspect],
+            aspects = [
+                idl_adapter_aspect,
+                type_description_aspect,
+                c_generator_aspect,
+            ],
             providers = [Ros2InterfaceInfo],
         ),
     },
@@ -524,12 +647,12 @@ _INTERFACE_GENERATOR_CPP_OUTPUT_MAPPING = [
 ]
 
 _TYPESUPPORT_GENERATOR_CPP_OUTPUT_MAPPING = [
-    "%s__type_support.cpp",
+    "%s__type_support_cpp.cpp",
 ]
 
 _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING = [
     "detail/%s__rosidl_typesupport_introspection_cpp.hpp",
-    "detail/%s__type_support.cpp",
+    "detail/%s__rosidl_typesupport_introspection_cpp.cpp",
 ]
 
 def _cpp_generator_aspect_impl(target, ctx):
@@ -586,12 +709,13 @@ def _cpp_generator_aspect_impl(target, ctx):
     compilation_info = _compile_cc_generated_code(
         ctx,
         name = package_name + "_cpp",
-        aspect_info = CppGeneratorAspectInfo,
+        aspect_infos = [CGeneratorAspectInfo, CppGeneratorAspectInfo],
         srcs = srcs,
         hdrs = hdrs,
         deps = ctx.attr._cpp_deps,
         cc_include_dir = cc_include_dir,
         copts = [],
+        target = target,
     )
 
     return [
@@ -647,7 +771,11 @@ cpp_generator_aspect = aspect(
         ),
     },
     required_providers = [Ros2InterfaceInfo],
-    required_aspect_providers = [IdlAdapterAspectInfo],
+    required_aspect_providers = [
+        [IdlAdapterAspectInfo],
+        [TypeDescriptionAspectInfo],
+        [CGeneratorAspectInfo],
+    ],
     provides = [CppGeneratorAspectInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
     fragments = ["cpp"],
@@ -660,7 +788,12 @@ cpp_ros2_interface_library = rule(
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
-            aspects = [idl_adapter_aspect, cpp_generator_aspect],
+            aspects = [
+                idl_adapter_aspect,
+                type_description_aspect,
+                c_generator_aspect,
+                cpp_generator_aspect,
+            ],
             providers = [Ros2InterfaceInfo],
         ),
     },
@@ -720,7 +853,7 @@ def _py_generator_aspect_impl(target, ctx):
     compilation_info = _compile_cc_generated_code(
         ctx,
         name = package_name + "_py",
-        aspect_info = CGeneratorAspectInfo,
+        aspect_infos = [CGeneratorAspectInfo],
         srcs = cc_srcs,
         hdrs = [],
         deps = ctx.attr._py_ext_c_deps,
@@ -742,7 +875,7 @@ def _py_generator_aspect_impl(target, ctx):
     # on the one of A.
     linking_contexts = _get_linking_contexts_from_aspect_info_deps(
         ctx.rule.attr.deps,
-        PyGeneratorAspectInfo,
+        [PyGeneratorAspectInfo],
     )
     dynamic_library_name_stem = package_name + "/" + py_extension_name
     linking_outputs = cc_common.link(
@@ -840,6 +973,7 @@ py_generator_aspect = aspect(
     required_providers = [Ros2InterfaceInfo],
     required_aspect_providers = [
         [IdlAdapterAspectInfo],
+        [TypeDescriptionAspectInfo],
         [CGeneratorAspectInfo],
     ],
     provides = [PyGeneratorAspectInfo],
@@ -895,6 +1029,7 @@ py_generator = rule(
             mandatory = True,
             aspects = [
                 idl_adapter_aspect,
+                type_description_aspect,
                 c_generator_aspect,
                 py_generator_aspect,
             ],

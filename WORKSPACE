@@ -15,15 +15,15 @@ load("@rules_python//python:repositories.bzl", "py_repositories", "python_regist
 py_repositories()
 
 python_register_toolchains(
-    name = "rules_ros2_python",
-    python_version = "3.10",
+    name = "rules_ros2_python_3_12",
+    python_version = "3.12",
 )
 
 load("@rules_python//python:pip.bzl", "pip_parse")
 
 pip_parse(
     name = "rules_ros2_pip_deps",
-    python_interpreter_target = "@rules_ros2_python_host//:python",
+    python_interpreter_target = "@rules_ros2_python_3_12_host//:python",
     requirements_lock = "@com_github_mvukov_rules_ros2//:requirements_lock.txt",
 )
 
@@ -56,7 +56,7 @@ rust_setup_stage_4()
 
 pip_parse(
     name = "rules_ros2_resolver_deps",
-    python_interpreter_target = "@rules_ros2_python_host//:python",
+    python_interpreter_target = "@rules_ros2_python_3_12_host//:python",
     requirements_lock = "//repositories/private:resolver_requirements_lock.txt",
 )
 

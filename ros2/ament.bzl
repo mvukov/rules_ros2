@@ -6,8 +6,10 @@ load("@bazel_skylib//lib:paths.bzl", "paths")
 load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
     "Ros2InterfaceInfo",
+    "c_generator_aspect",
     "cpp_generator_aspect",
     "idl_adapter_aspect",
+    "type_description_aspect",
 )
 load(
     "@com_github_mvukov_rules_ros2//ros2:plugin_aspects.bzl",
@@ -248,6 +250,8 @@ ros2_ament_setup = rule(
         "idl_deps": attr.label_list(
             aspects = [
                 idl_adapter_aspect,
+                type_description_aspect,
+                c_generator_aspect,
                 cpp_generator_aspect,
                 ros2_idl_plugin_aspect,
             ],

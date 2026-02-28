@@ -65,7 +65,7 @@ rust_library(
         "rclrs/src/rcl_bindings_generated.rs",
     ],
     edition = "2021",
-    rustc_flags = ["--cfg=ros_distro=\"humble\""],
+    rustc_flags = ["--cfg=ros_distro=\"jazzy\""],
     visibility = ["//visibility:public"],
     deps = [
         ":rcl_wrapper",
