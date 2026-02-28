@@ -5,6 +5,7 @@ load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:pip.bzl", "whl_filegroup")
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 exports_files([
     "action.bzl",
@@ -19,6 +20,7 @@ exports_files([
     "launch.py.tpl",
     "launch.sh.tpl",
     "plugin.bzl",
+    "protobuf.bzl",
     "py_defs.bzl",
     "pytest_wrapper.py.tpl",
     "ros2_action.py",
@@ -90,6 +92,23 @@ py_binary(
     deps = [
         ":ros2_cmd",
         "@ros2cli//:ros2lifecycle",
+    ],
+)
+
+py_binary(
+    name = "proto_to_ros2_msg",
+    srcs = ["proto_to_ros2_msg.py"],
+    visibility = ["//visibility:public"],
+    deps = [requirement("protobuf")],
+)
+
+py_binary(
+    name = "proto_to_ros2_converter",
+    srcs = ["proto_to_ros2_converter.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        requirement("empy"),
+        requirement("protobuf"),
     ],
 )
 

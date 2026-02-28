@@ -4,6 +4,7 @@ empy==3.3.*
 lark-parser
 numpy~=1.23
 packaging
+protobuf
 psutil
 pytest
 pytest-cov

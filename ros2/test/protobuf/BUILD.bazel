@@ -1,0 +1,47 @@
+"""Tests for proto -> ROS2 interface conversion."""
+
+load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
+load("//ros2:cc_defs.bzl", "ros2_cpp_test")
+load("//ros2:protobuf.bzl", "cpp_proto_ros2_converter_library", "cpp_proto_ros2_interface_library")
+
+proto_library(
+    name = "point_proto",
+    srcs = [
+        "dummy_one.proto",
+        "point.proto",
+    ],
+)
+
+proto_library(
+    name = "transform_proto",
+    srcs = ["transform.proto"],
+    deps = [":point_proto"],
+)
+
+cpp_proto_ros2_interface_library(
+    name = "cpp_proto_ros_msgs",
+    deps = [":transform_proto"],
+)
+
+ros2_cpp_test(
+    name = "tests",
+    srcs = ["tests.cc"],
+    deps = [
+        ":cpp_proto_ros_msgs",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cpp_proto_ros2_converter_library(
+    name = "cpp_proto_ros2_converters",
+    deps = [":transform_proto"],
+)
+
+ros2_cpp_test(
+    name = "converter_tests",
+    srcs = ["converter_tests.cc"],
+    deps = [
+        ":cpp_proto_ros2_converters",
+        "@googletest//:gtest_main",
+    ],
+)
