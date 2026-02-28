@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Converts proto_library targets to ros2_interface_library-compatible targets.
+"""Protobuf ROS 2 utilities.
 
 Limitations:
 - One proto file must correspond to exactly one message definition.
@@ -22,22 +22,6 @@ Limitations:
 - Enum and group fields are not supported.
 - Repeated scalar and message fields map to dynamic ROS2 arrays.
 - Proto `bytes` fields map to `uint8[]` in ROS2.
-
-Example usage:
-    proto_library(
-        name = "my_proto",
-        srcs = ["my.proto"],
-    )
-
-    proto_ros2_interface_library(
-        name = "my_msgs",
-        deps = [":my_proto"],
-    )
-
-    cpp_ros2_interface_library(
-        name = "cpp_my_msgs",
-        deps = [":my_msgs"],
-    )
 """
 
 load(
