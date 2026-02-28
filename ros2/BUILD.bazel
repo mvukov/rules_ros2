@@ -102,6 +102,16 @@ py_binary(
     deps = [requirement("protobuf")],
 )
 
+py_binary(
+    name = "proto_to_ros2_converter",
+    srcs = ["proto_to_ros2_converter.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        requirement("empy"),
+        requirement("protobuf"),
+    ],
+)
+
 whl_filegroup(
     name = "numpy_includes",
     pattern = "numpy/core/include/numpy",
