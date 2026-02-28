@@ -60,7 +60,7 @@ def _proto_to_ros2_msg_aspect_impl(target, ctx):
     for src in proto_info.direct_sources:
         if not src.basename.endswith(".proto"):
             fail("Expected a .proto source file, got: {}".format(src.basename))
-        stem = src.basename[:-len(".proto")].capitalize()
+        stem = "".join([w.capitalize() for w in src.basename[:-len(".proto")].split("_")])
         msg_file = ctx.actions.declare_file(
             "{}/{}.msg".format(ros_package_name, stem),
         )

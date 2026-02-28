@@ -6,7 +6,10 @@ load("//ros2:protobuf.bzl", "cpp_proto_ros2_converter_library", "cpp_proto_ros2_
 
 proto_library(
     name = "point_proto",
-    srcs = ["point.proto"],
+    srcs = [
+        "dummy_one.proto",
+        "point.proto",
+    ],
 )
 
 proto_library(

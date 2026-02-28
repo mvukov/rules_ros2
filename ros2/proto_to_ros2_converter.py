@@ -79,8 +79,12 @@ def _proto_package_to_ns(package):
     return '::'.join(package.split('.')) if package else ''
 
 
-def _build_fqn_to_dep_pkg_map(dep_descriptor_set_paths, dep_mapping):
+def _build_fqn_to_dep_pkg_map(dep_descriptor_set_paths, dep_mapping,
+                              main_proto_set, ros_package_name):
     """Build {'.pkg.MsgName': 'dep_ros_package_name'} from dep descriptor sets.
+
+    Also scans the main descriptor set for sibling files (other sources in the
+    same proto_library target) and maps their message types to ros_package_name.
     """
     path_to_ros_pkg = {}
     for entry in dep_mapping:
@@ -88,6 +92,17 @@ def _build_fqn_to_dep_pkg_map(dep_descriptor_set_paths, dep_mapping):
         path_to_ros_pkg[proto_path] = ros2_pkg
 
     fqn_map = {}
+
+    # Scan sibling files in the main descriptor set (same proto_library target).
+    for file_proto in main_proto_set.file:
+        if file_proto.name in path_to_ros_pkg:
+            continue  # Already covered by a dep_mapping.
+        # This is a sibling file; it belongs to the same ROS2 package.
+        pkg_prefix = '.' + file_proto.package if file_proto.package else ''
+        for msg in file_proto.message_type:
+            fqn = f'{pkg_prefix}.{msg.name}'
+            fqn_map[fqn] = ros_package_name
+
     for ds_path in dep_descriptor_set_paths:
         with open(ds_path, 'rb') as f:
             dep_set = descriptor_pb2.FileDescriptorSet()
@@ -329,9 +344,10 @@ def _convert(descriptor_set, proto_sources, ros_package_name, fqn_map,
         proto_includes.append(proto_include)
         ros2_includes.append(ros2_include)
 
-    # Build a sorted, deduplicated dep-converter include list.
+    # Build a sorted, deduplicated dep-converter include list, excluding self.
     dep_converter_includes = sorted(
-        f'{pkg}/proto_converters.h' for pkg in dep_pkgs_all)
+        f'{pkg}/proto_converters.h' for pkg in dep_pkgs_all
+        if pkg != ros_package_name)
 
     # Header includes: only the current package's proto and ROS2 msg types.
     # Dep converter includes go into the .cc file, not the header.
@@ -410,7 +426,8 @@ def main():
         proto_set.ParseFromString(f.read())
 
     fqn_map = _build_fqn_to_dep_pkg_map(args.dep_descriptor_set,
-                                        args.dep_mapping)
+                                        args.dep_mapping, proto_set,
+                                        args.ros_package_name)
 
     proto_sources = [fp.name for fp in proto_set.file]
 

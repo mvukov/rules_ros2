@@ -24,6 +24,7 @@ Limitations:
 - proto `bytes` fields map to `uint8[]` in ROS2.
 """
 import argparse
+import os
 import sys
 
 from google.protobuf import descriptor_pb2
@@ -72,8 +73,13 @@ _UNSUPPORTED_TYPES = {
 }
 
 
-def _build_msg_type_map(dep_descriptor_set_paths, dep_mapping):
+def _build_msg_type_map(dep_descriptor_set_paths, dep_mapping,
+                        main_descriptor_set_path, proto_source,
+                        self_ros_package):
     """Build {'.pkg.MsgName': 'ros2_package/MsgName'} from dep descriptor sets.
+
+    Also scans the main descriptor set for sibling files (other sources in the
+    same proto_library target) and maps their message types to self_ros_package.
     """
     path_to_pkg = {}
     for entry in dep_mapping:
@@ -81,6 +87,23 @@ def _build_msg_type_map(dep_descriptor_set_paths, dep_mapping):
         path_to_pkg[proto_path] = ros2_pkg
 
     msg_type_map = {}
+
+    # Scan sibling files in the main descriptor set (same proto_library target).
+    with open(main_descriptor_set_path, 'rb') as f:
+        main_data = f.read()
+    main_set = descriptor_pb2.FileDescriptorSet()
+    main_set.ParseFromString(main_data)
+    for file_proto in main_set.file:
+        if file_proto.name == proto_source:
+            continue  # Skip the file being converted.
+        if file_proto.name in path_to_pkg:
+            continue  # Already covered by a dep_mapping.
+        # This is a sibling file; it belongs to the same ROS2 package.
+        pkg_prefix = '.' + file_proto.package if file_proto.package else ''
+        for msg in file_proto.message_type:
+            fq = f'{pkg_prefix}.{msg.name}'
+            msg_type_map[fq] = f'{self_ros_package}/{msg.name}'
+
     for ds_path in dep_descriptor_set_paths:
         with open(ds_path, 'rb') as f:
             data = f.read()
@@ -211,8 +234,10 @@ def main():
         sys.exit(f'Error: could not find proto source "{args.proto_source}" in '
                  f'descriptor set "{args.descriptor_set}".')
 
+    self_ros_package = os.path.basename(os.path.dirname(args.output))
     msg_type_map = _build_msg_type_map(args.dep_descriptor_set,
-                                       args.dep_mapping)
+                                       args.dep_mapping, args.descriptor_set,
+                                       args.proto_source, self_ros_package)
     _convert(file_proto, args.output, args.proto_source, msg_type_map)
 
 
