@@ -25,6 +25,7 @@ Limitations:
 """
 import argparse
 import os
+import pathlib
 import sys
 
 from google.protobuf.descriptor_pb2 import FieldDescriptorProto
@@ -118,6 +119,13 @@ def _convert(file_proto, output_path, proto_source, msg_type_map):
             f'got {num_messages}.')
 
     message = file_proto.message_type[0]
+    stem = pathlib.Path(proto_source).stem
+    expected_name = ''.join(w.capitalize() for w in stem.split('_'))
+    if message.name != expected_name:
+        sys.exit(
+            f'Error: {proto_source}: message must be named "{expected_name}" '
+            f'to match the proto filename, got "{message.name}".')
+
     lines = [f'# Generated from proto source: {proto_source}', '']
 
     for field in message.field:
