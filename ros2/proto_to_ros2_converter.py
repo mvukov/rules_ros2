@@ -75,15 +75,15 @@ def _proto_package_to_ns(package):
     return '::'.join(package.split('.')) if package else ''
 
 
-def _build_fqn_to_dep_pkg_map(dep_descriptor_set_paths, dep_mapping,
-                              main_proto_set, ros_package_name):
+def _build_proto_types_to_ros_pkgs(dep_descriptor_set_paths, dep_mapping,
+                                   main_proto_set, ros_package_name):
     """Build {'.pkg.MsgName': 'dep_ros_package_name'} from dep descriptor sets.
 
     Also scans the main descriptor set for sibling files (other sources in the
     same proto_library target) and maps their message types to ros_package_name.
     """
     path_to_ros_pkg = proto_to_ros2.parse_dep_mapping(dep_mapping)
-    fqn_map = {}
+    proto_types_to_ros_pkgs = {}
 
     # Scan sibling files in the main descriptor set (same proto_library target).
     for file_proto in main_proto_set.file:
@@ -92,20 +92,17 @@ def _build_fqn_to_dep_pkg_map(dep_descriptor_set_paths, dep_mapping,
         # This is a sibling file; it belongs to the same ROS package.
         pkg_prefix = '.' + file_proto.package if file_proto.package else ''
         for msg in file_proto.message_type:
-            fqn = f'{pkg_prefix}.{msg.name}'
-            fqn_map[fqn] = ros_package_name
+            proto_types_to_ros_pkgs[
+                f'{pkg_prefix}.{msg.name}'] = ros_package_name
 
     for ds_path in dep_descriptor_set_paths:
         dep_set = proto_to_ros2.load_descriptor_set(ds_path)
         for file_proto in dep_set.file:
-            ros2_pkg = path_to_ros_pkg.get(file_proto.name)
-            if ros2_pkg is None:
-                continue
+            ros_pkg = path_to_ros_pkg[file_proto.name]
             pkg_prefix = '.' + file_proto.package if file_proto.package else ''
             for msg in file_proto.message_type:
-                fqn = f'{pkg_prefix}.{msg.name}'
-                fqn_map[fqn] = ros2_pkg
-    return fqn_map
+                proto_types_to_ros_pkgs[f'{pkg_prefix}.{msg.name}'] = ros_pkg
+    return proto_types_to_ros_pkgs
 
 
 # ---------------------------------------------------------------------------
@@ -113,11 +110,11 @@ def _build_fqn_to_dep_pkg_map(dep_descriptor_set_paths, dep_mapping,
 # ---------------------------------------------------------------------------
 
 
-def _field_conversions(message, proto_source, fqn_map):
+def _field_conversions(message, proto_source, proto_types_to_ros_pkgs):
     """Return (to_ros_lines, from_ros_lines, dep_pkgs_used) for one message.
 
     Each entry in to_ros_lines / from_ros_lines is a C++ statement string
-    (already indented with two spaces).  dep_pkgs_used is the set of dep
+    (already indented with two spaces). dep_pkgs_used is the set of dep
     ros_package_names whose converters are called.
     """
     to_ros = []
@@ -162,7 +159,7 @@ def _field_conversions(message, proto_source, fqn_map):
 
         # ---- message --------------------------------------------------------
         if ftype == FieldDescriptorProto.TYPE_MESSAGE:
-            dep_pkg = fqn_map.get(field.type_name)
+            dep_pkg = proto_types_to_ros_pkgs.get(field.type_name)
             if dep_pkg is None:
                 sys.exit(
                     f'Error: {proto_source}: field "{name}" references '
@@ -269,14 +266,14 @@ def _render(template, context):
 # ---------------------------------------------------------------------------
 
 
-def _convert(descriptor_set, proto_sources, ros_package_name, fqn_map,
-             output_header, output_source):
+def _convert(descriptor_set, proto_sources, ros_package_name,
+             proto_types_to_ros_pkgs, output_header, output_source):
     """Generate converter .h and .cc for all proto sources in the descriptor."""
     messages = []
     dep_pkgs_all = set()
 
     proto_includes = []
-    ros2_includes = []
+    ros_includes = []
 
     for proto_source in proto_sources:
         file_proto = proto_to_ros2.find_file_descriptor(descriptor_set,
@@ -303,11 +300,11 @@ def _convert(descriptor_set, proto_sources, ros_package_name, fqn_map,
         # Proto C++ include: replace .proto suffix with .pb.h
         proto_include = file_proto.name[:-len('.proto')] + '.pb.h'
         # ROS msg include: snake_case name with .hpp extension
-        ros2_include = (f'{ros_package_name}/msg/'
-                        f'{_to_snake_case(msg_name)}.hpp')
+        ros_include = (f'{ros_package_name}/msg/'
+                       f'{_to_snake_case(msg_name)}.hpp')
 
         to_ros_lines, from_ros_lines, dep_pkgs = _field_conversions(
-            message, proto_source, fqn_map)
+            message, proto_source, proto_types_to_ros_pkgs)
         dep_pkgs_all.update(dep_pkgs)
 
         to_ros_body = '\n'.join(to_ros_lines)
@@ -322,7 +319,7 @@ def _convert(descriptor_set, proto_sources, ros_package_name, fqn_map,
         })
 
         proto_includes.append(proto_include)
-        ros2_includes.append(ros2_include)
+        ros_includes.append(ros_include)
 
     # Build a sorted, deduplicated dep-converter include list, excluding self.
     dep_converter_includes = sorted(
@@ -335,7 +332,7 @@ def _convert(descriptor_set, proto_sources, ros_package_name, fqn_map,
     for inc in proto_includes:
         include_lines.append(f'#include "{inc}"')
     include_lines.append('')
-    for inc in ros2_includes:
+    for inc in ros_includes:
         include_lines.append(f'#include "{inc}"')
     includes_section = '\n'.join(include_lines)
 
@@ -403,9 +400,9 @@ def main():
 
     proto_set = proto_to_ros2.load_descriptor_set(args.descriptor_set)
 
-    fqn_map = _build_fqn_to_dep_pkg_map(args.dep_descriptor_set,
-                                        args.dep_mapping, proto_set,
-                                        args.ros_package_name)
+    proto_types_to_ros_pkgs = _build_proto_types_to_ros_pkgs(
+        args.dep_descriptor_set, args.dep_mapping, proto_set,
+        args.ros_package_name)
 
     proto_sources = [fp.name for fp in proto_set.file]
 
@@ -413,7 +410,7 @@ def main():
         descriptor_set=proto_set,
         proto_sources=proto_sources,
         ros_package_name=args.ros_package_name,
-        fqn_map=fqn_map,
+        proto_types_to_ros_pkgs=proto_types_to_ros_pkgs,
         output_header=args.output_header,
         output_source=args.output_source,
     )
