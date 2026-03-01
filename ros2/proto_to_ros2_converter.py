@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Generates C++ proto<->ROS2 converter header and source from a proto file.
+"""Generates C++ proto<->ROS converter header and source from a proto file.
 
 For each proto message the tool emits two free functions in namespace
 ``<ros_package_name>::proto_converters``:
@@ -22,7 +22,7 @@ For each proto message the tool emits two free functions in namespace
 Limitations mirror those of proto_to_ros2_msg.py:
 - Exactly one message definition per proto file.
 - Service definitions are not supported.
-- Message-type fields require a --dep_mapping entry so the ROS2 package can
+- Message-type fields require a --dep_mapping entry so the ROS package can
   be resolved.
 - Enum and group fields are not supported.
 - Repeated bytes fields are not supported.
@@ -40,7 +40,7 @@ from google.protobuf.descriptor_pb2 import FieldDescriptorProto
 # Field-type tables
 # ---------------------------------------------------------------------------
 
-# Proto scalar types → C++ type used in ROS2 structs.
+# Proto scalar types → C++ type used in ROS structs.
 _SCALAR_CPP_TYPE = {
     FieldDescriptorProto.TYPE_DOUBLE: 'double',
     FieldDescriptorProto.TYPE_FLOAT: 'float',
@@ -97,7 +97,7 @@ def _build_fqn_to_dep_pkg_map(dep_descriptor_set_paths, dep_mapping,
     for file_proto in main_proto_set.file:
         if file_proto.name in path_to_ros_pkg:
             continue  # Already covered by a dep_mapping.
-        # This is a sibling file; it belongs to the same ROS2 package.
+        # This is a sibling file; it belongs to the same ROS package.
         pkg_prefix = '.' + file_proto.package if file_proto.package else ''
         for msg in file_proto.message_type:
             fqn = f'{pkg_prefix}.{msg.name}'
@@ -322,7 +322,7 @@ def _convert(descriptor_set, proto_sources, ros_package_name, fqn_map,
 
         # Proto C++ include: replace .proto suffix with .pb.h
         proto_include = file_proto.name[:-len('.proto')] + '.pb.h'
-        # ROS2 msg include: snake_case name with .hpp extension
+        # ROS msg include: snake_case name with .hpp extension
         ros2_include = (f'{ros_package_name}/msg/'
                         f'{_to_snake_case(msg_name)}.hpp')
 
@@ -349,7 +349,7 @@ def _convert(descriptor_set, proto_sources, ros_package_name, fqn_map,
         f'{pkg}/proto_converters.h' for pkg in dep_pkgs_all
         if pkg != ros_package_name)
 
-    # Header includes: only the current package's proto and ROS2 msg types.
+    # Header includes: only the current package's proto and ROS msg types.
     # Dep converter includes go into the .cc file, not the header.
     include_lines = []
     for inc in proto_includes:
@@ -383,7 +383,7 @@ def _convert(descriptor_set, proto_sources, ros_package_name, fqn_map,
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Generate C++ proto<->ROS2 converter code.')
+        description='Generate C++ proto<->ROS converter code.')
     parser.add_argument(
         '--descriptor_set',
         required=True,
@@ -392,7 +392,7 @@ def main():
     parser.add_argument(
         '--ros_package_name',
         required=True,
-        help='ROS2 package name (e.g. point_proto_ros_msgs).',
+        help='ROS package name (e.g. point_proto_ros_msgs).',
     )
     parser.add_argument(
         '--output_header',
@@ -408,8 +408,8 @@ def main():
         '--dep_mapping',
         action='append',
         default=[],
-        metavar='PROTO_PATH:ROS2_PACKAGE',
-        help='Mapping from a dep proto file path to its ROS2 package name. '
+        metavar='PROTO_PATH:ROS_PACKAGE',
+        help='Mapping from a dep proto file path to its ROS package name. '
         'May be repeated.',
     )
     parser.add_argument(

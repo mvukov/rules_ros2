@@ -38,24 +38,29 @@ load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 CppProtoConverterAspectInfo = provider("TBD", fields = ["cc_info"])
 
-def _proto_to_ros2_msg_aspect_impl(target, ctx):
-    proto_info = target[ProtoInfo]
-    msg_files = []
-
-    ros_package_name = target.label.name + "_ros_msgs"
-
+def _collect_dep_proto_args(deps):
+    """Returns (dep_extra_args, dep_descriptor_sets) for proto deps."""
     dep_extra_args = []
     dep_descriptor_sets = []
-    for dep in ctx.rule.attr.deps:
-        dep_ds = dep[ProtoInfo].direct_descriptor_set
-        dep_descriptor_sets.append(dep_ds)
-        dep_extra_args += ["--dep_descriptor_set", dep_ds.path]
+    for dep in deps:
+        dep_descriptor_set = dep[ProtoInfo].direct_descriptor_set
+        dep_descriptor_sets.append(dep_descriptor_set)
+        dep_extra_args += ["--dep_descriptor_set", dep_descriptor_set.path]
         dep_ros2_package = dep[Ros2InterfaceInfo].ros_package_name
         for src in dep[ProtoInfo].direct_sources:
             dep_extra_args += [
                 "--dep_mapping",
                 "{}:{}".format(src.short_path, dep_ros2_package),
             ]
+    return dep_extra_args, dep_descriptor_sets
+
+def _proto_to_ros2_msg_aspect_impl(target, ctx):
+    proto_info = target[ProtoInfo]
+    msg_files = []
+
+    ros_package_name = target.label.name + "_ros_msgs"
+
+    dep_extra_args, dep_descriptor_sets = _collect_dep_proto_args(ctx.rule.attr.deps)
 
     for src in proto_info.direct_sources:
         if not src.basename.endswith(".proto"):
@@ -129,21 +134,12 @@ def _cpp_proto_ros2_converter_aspect_impl(target, ctx):
     ros_package_name = target[Ros2InterfaceInfo].ros_package_name
 
     # Collect dep information: descriptor sets and proto→ros_package mappings.
-    dep_extra_args = []
-    dep_descriptor_sets = []
-    dep_converter_cc_infos = []
-    for dep in ctx.rule.attr.deps:
-        dep_ds = dep[ProtoInfo].direct_descriptor_set
-        dep_descriptor_sets.append(dep_ds)
-        dep_extra_args += ["--dep_descriptor_set", dep_ds.path]
-        dep_ros2_package = dep[Ros2InterfaceInfo].ros_package_name
-        for src in dep[ProtoInfo].direct_sources:
-            dep_extra_args += [
-                "--dep_mapping",
-                "{}:{}".format(src.short_path, dep_ros2_package),
-            ]
-        if CppProtoConverterAspectInfo in dep:
-            dep_converter_cc_infos.append(dep[CppProtoConverterAspectInfo].cc_info)
+    dep_extra_args, dep_descriptor_sets = _collect_dep_proto_args(ctx.rule.attr.deps)
+    dep_converter_cc_infos = [
+        dep[CppProtoConverterAspectInfo].cc_info
+        for dep in ctx.rule.attr.deps
+        if CppProtoConverterAspectInfo in dep
+    ]
 
     # Declare output files.
     header = ctx.actions.declare_file(
@@ -168,7 +164,7 @@ def _cpp_proto_ros2_converter_aspect_impl(target, ctx):
             source.path,
         ] + dep_extra_args,
         mnemonic = "ProtoToRos2Converter",
-        progress_message = "Generating proto/ROS2 converters for %{label}",
+        progress_message = "Generating proto/ROS 2 converters for %{label}",
     )
 
     # The include root is the parent directory of the ros_package_name folder.

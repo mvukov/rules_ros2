@@ -11,17 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Converts a proto file to a ROS2 .msg file.
+"""Converts a proto file to a ROS .msg file.
 
 Limitations:
 - Exactly one message definition per proto file is required.
 - Service definitions are not supported.
-- Message-type fields are supported as cross-package ROS2 references (e.g.
+- Message-type fields are supported as cross-package ROS references (e.g.
   `pkg/Type`). The caller must supply --dep_mapping for each imported proto.
 - Enum and group fields are not supported.
 - Repeated scalar and message fields are supported and map to dynamic arrays
   (e.g. `int32[] values`, `pkg/msg/Point[] points`).
-- proto `bytes` fields map to `uint8[]` in ROS2.
+- proto `bytes` fields map to `uint8[]` in ROS.
 """
 import argparse
 import os
@@ -30,9 +30,9 @@ import sys
 from google.protobuf import descriptor_pb2
 from google.protobuf.descriptor_pb2 import FieldDescriptorProto
 
-# Mapping from proto3 scalar FieldDescriptorProto.Type to ROS2 .msg type.
+# Mapping from proto3 scalar FieldDescriptorProto.Type to ROS .msg type.
 # Types that map to arrays (like bytes) use a special sentinel handled below.
-_PROTO_TO_ROS2_TYPE = {
+_PROTO_TO_ROS_TYPE = {
     FieldDescriptorProto.TYPE_DOUBLE:
         'float64',
     FieldDescriptorProto.TYPE_FLOAT:
@@ -61,7 +61,7 @@ _PROTO_TO_ROS2_TYPE = {
         'bool',
     FieldDescriptorProto.TYPE_STRING:
         'string',
-    # bytes in proto3 → dynamic byte array in ROS2
+    # bytes in proto3 → dynamic byte array in ROS
     FieldDescriptorProto.TYPE_BYTES:
         'uint8[]',
 }
@@ -98,7 +98,7 @@ def _build_msg_type_map(dep_descriptor_set_paths, dep_mapping,
             continue  # Skip the file being converted.
         if file_proto.name in path_to_pkg:
             continue  # Already covered by a dep_mapping.
-        # This is a sibling file; it belongs to the same ROS2 package.
+        # This is a sibling file; it belongs to the same ROS 2 package.
         pkg_prefix = '.' + file_proto.package if file_proto.package else ''
         for msg in file_proto.message_type:
             fq = f'{pkg_prefix}.{msg.name}'
@@ -135,7 +135,7 @@ def _find_file_descriptor(proto_set, proto_source):
 
 
 def _convert(file_proto, output_path, proto_source, msg_type_map):
-    """Validate and convert a FileDescriptorProto to a ROS2 .msg file."""
+    """Validate and convert a FileDescriptorProto to a ROS .msg file."""
     if file_proto.service:
         sys.exit(f'Error: {proto_source}: services are not supported '
                  f'(found {len(file_proto.service)} service(s)).')
@@ -172,11 +172,11 @@ def _convert(file_proto, output_path, proto_source, msg_type_map):
                 f'Error: {proto_source}: field "{field.name}" has unsupported '
                 f'type "{type_name}".')
 
-        if field_type_value not in _PROTO_TO_ROS2_TYPE:
+        if field_type_value not in _PROTO_TO_ROS_TYPE:
             sys.exit(f'Error: {proto_source}: field "{field.name}" has unknown '
                      f'type value {field_type_value}.')
 
-        ros2_type = _PROTO_TO_ROS2_TYPE[field_type_value]
+        ros2_type = _PROTO_TO_ROS_TYPE[field_type_value]
 
         # proto `bytes` already becomes `uint8[]`; avoid double `[]`.
         if is_repeated and field_type_value != FieldDescriptorProto.TYPE_BYTES:
@@ -190,7 +190,7 @@ def _convert(file_proto, output_path, proto_source, msg_type_map):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Convert a proto file to a ROS2 .msg file.')
+        description='Convert a proto file to a ROS .msg file.')
     parser.add_argument(
         '--descriptor_set',
         required=True,
@@ -210,8 +210,8 @@ def main():
         '--dep_mapping',
         action='append',
         default=[],
-        metavar='PROTO_PATH:ROS2_PACKAGE',
-        help='Mapping from a dep proto file path to its ROS2 package name. '
+        metavar='PROTO_PATH:ROS_PACKAGE',
+        help='Mapping from a dep proto file path to its ROS package name. '
         'May be repeated.',
     )
     parser.add_argument(
