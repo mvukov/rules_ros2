@@ -24,7 +24,9 @@ Limitations mirror those of proto_to_ros2_msg.py:
 - Service definitions are not supported.
 - Message-type fields require a --dep_mapping entry so the ROS package can
   be resolved.
-- Enum and group fields are not supported.
+- Enum fields are supported (cast to/from int32_t). Only enums defined in
+  the same proto file are supported.
+- Group fields are not supported.
 - Repeated bytes fields are not supported.
 """
 import argparse
@@ -130,6 +132,26 @@ def _field_conversions(message, proto_source, proto_types_to_ros_pkgs):
             sys.exit(f'Error: {proto_source}: field "{name}": '
                      f'{proto_to_ros2.UNSUPPORTED_TYPES[ftype]} '
                      'fields are not supported.')
+
+        # ---- enum -----------------------------------------------------------
+        if ftype == FieldDescriptorProto.TYPE_ENUM:
+            # Proto3 enums are backed by int32; cast explicitly.
+            enum_cpp_type = field.type_name.lstrip('.').replace('.', '::')
+            if is_repeated:
+                to_ros.append(f'  for (const auto v : proto.{name}()) {{')
+                to_ros.append(
+                    f'    ros.{name}.push_back(static_cast<int32_t>(v));')
+                to_ros.append('  }')
+                from_ros.append(f'  for (const auto v : ros.{name}) {{')
+                from_ros.append(f'    proto.add_{name}'
+                                f'(static_cast<{enum_cpp_type}>(v));')
+                from_ros.append('  }')
+            else:
+                to_ros.append(
+                    f'  ros.{name} = static_cast<int32_t>(proto.{name}());')
+                from_ros.append(f'  proto.set_{name}'
+                                f'(static_cast<{enum_cpp_type}>(ros.{name}));')
+            continue
 
         # ---- bytes ----------------------------------------------------------
         if ftype == FieldDescriptorProto.TYPE_BYTES:

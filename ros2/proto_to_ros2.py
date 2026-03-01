@@ -18,7 +18,6 @@ from google.protobuf.descriptor_pb2 import FieldDescriptorProto
 # Non-scalar proto field types that are explicitly unsupported.
 UNSUPPORTED_TYPES = {
     FieldDescriptorProto.TYPE_GROUP: 'group',
-    FieldDescriptorProto.TYPE_ENUM: 'enum',
 }
 
 

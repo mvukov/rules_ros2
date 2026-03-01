@@ -127,4 +127,36 @@ TEST(TransformConverterTest, RoundTrip) {
   EXPECT_EQ(original.SerializeAsString(), recovered.SerializeAsString());
 }
 
+// ---------------------------------------------------------------------------
+// DummyOne converter tests (exercises enum field conversion)
+// ---------------------------------------------------------------------------
+
+TEST(DummyOneConverterTest, ToRos) {
+  ros2::test::protobuf::DummyOne proto;
+  proto.set_color(ros2::test::protobuf::COLOR_RED);
+
+  const auto ros = point_proto_ros_msgs::proto_converters::ToRos(proto);
+
+  EXPECT_EQ(ros.color, point_proto_ros_msgs::msg::DummyOne::COLOR_RED);
+}
+
+TEST(DummyOneConverterTest, FromRos) {
+  point_proto_ros_msgs::msg::DummyOne ros;
+  ros.color = point_proto_ros_msgs::msg::DummyOne::COLOR_GREEN;
+
+  const auto proto = point_proto_ros_msgs::proto_converters::FromRos(ros);
+
+  EXPECT_EQ(proto.color(), ros2::test::protobuf::COLOR_GREEN);
+}
+
+TEST(DummyOneConverterTest, RoundTrip) {
+  ros2::test::protobuf::DummyOne original;
+  original.set_color(ros2::test::protobuf::COLOR_BLUE);
+
+  const auto ros = point_proto_ros_msgs::proto_converters::ToRos(original);
+  const auto recovered = point_proto_ros_msgs::proto_converters::FromRos(ros);
+
+  EXPECT_EQ(original.SerializeAsString(), recovered.SerializeAsString());
+}
+
 }  // namespace

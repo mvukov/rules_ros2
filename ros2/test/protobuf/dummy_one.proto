@@ -4,6 +4,14 @@ package ros2.test.protobuf;
 
 import "ros2/test/protobuf/point.proto";
 
+enum Color {
+  COLOR_UNKNOWN = 0;
+  COLOR_RED = 1;
+  COLOR_GREEN = 2;
+  COLOR_BLUE = 3;
+}
+
 message DummyOne {
   repeated Point points = 1;
+  Color color = 2;
 }

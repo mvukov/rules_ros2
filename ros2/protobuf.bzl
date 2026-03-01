@@ -19,7 +19,9 @@ Limitations:
 - Message-type fields are supported as cross-package ROS2 references (e.g.
   `pkg/Type`). Each proto dep must have a corresponding
   proto_ros2_interface_library so the package name can be resolved.
-- Enum and group fields are not supported.
+- Enum fields are supported (mapped to int32 with named constants).
+  Only enums defined in the same proto file are supported.
+- Group fields are not supported.
 - Repeated scalar and message fields map to dynamic ROS2 arrays.
 - Proto `bytes` fields map to `uint8[]` in ROS2.
 """

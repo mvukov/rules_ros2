@@ -18,7 +18,9 @@ Limitations:
 - Service definitions are not supported.
 - Message-type fields are supported as cross-package ROS references (e.g.
   `pkg/Type`). The caller must supply --dep_mapping for each imported proto.
-- Enum and group fields are not supported.
+- Enum fields are supported (mapped to int32 with named constants).
+  Only enums defined in the same proto file are supported.
+- Group fields are not supported.
 - Repeated scalar and message fields are supported and map to dynamic arrays
   (e.g. `int32[] values`, `pkg/msg/Point[] points`).
 - proto `bytes` fields map to `uint8[]` in ROS.
@@ -67,6 +69,21 @@ _PROTO_TO_ROS_TYPE = {
     FieldDescriptorProto.TYPE_BYTES:
         'uint8[]',
 }
+
+
+def _build_enum_map(file_proto, message):
+    """Build {'.pkg.EnumName': EnumDescriptorProto} for enums in this file.
+
+    Covers top-level enums and enums nested directly inside the message.
+    """
+    enum_map = {}
+    pkg_prefix = '.' + file_proto.package if file_proto.package else ''
+    for enum_type in file_proto.enum_type:  # top-level enums
+        enum_map[f'{pkg_prefix}.{enum_type.name}'] = enum_type
+    msg_prefix = f'{pkg_prefix}.{message.name}'
+    for enum_type in message.enum_type:  # nested enums
+        enum_map[f'{msg_prefix}.{enum_type.name}'] = enum_type
+    return enum_map
 
 
 def _build_msg_type_map(dep_descriptor_set_paths, dep_mapping,
@@ -128,6 +145,23 @@ def _convert(file_proto, output_path, proto_source, msg_type_map):
 
     lines = [f'# Generated from proto source: {proto_source}', '']
 
+    # Emit enum constants before fields (deduplicated per enum type).
+    enum_map = _build_enum_map(file_proto, message)
+    emitted_enums = set()
+    for field in message.field:
+        if field.type == FieldDescriptorProto.TYPE_ENUM:
+            if field.type_name not in emitted_enums:
+                enum_desc = enum_map.get(field.type_name)
+                if enum_desc is None:
+                    sys.exit(f'Error: {proto_source}: enum "{field.type_name}" '
+                             f'not found in the current proto file. Cross-file '
+                             f'enums are not yet supported.')
+                lines.append(f'# {enum_desc.name} constants')
+                for ev in enum_desc.value:
+                    lines.append(f'int32 {ev.name}={ev.number}')
+                lines.append('')
+                emitted_enums.add(field.type_name)
+
     for field in message.field:
         field_type_value = field.type
         is_repeated = (field.label == FieldDescriptorProto.LABEL_REPEATED)
@@ -142,6 +176,11 @@ def _convert(file_proto, output_path, proto_source, msg_type_map):
                     f'defines it.')
             if is_repeated:
                 ros2_type = ros2_type + '[]'
+            lines.append(f'{ros2_type} {field.name}')
+            continue
+
+        if field_type_value == FieldDescriptorProto.TYPE_ENUM:
+            ros2_type = 'int32[]' if is_repeated else 'int32'
             lines.append(f'{ros2_type} {field.name}')
             continue
 
