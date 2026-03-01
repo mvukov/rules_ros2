@@ -27,8 +27,9 @@ import argparse
 import os
 import sys
 
-from google.protobuf import descriptor_pb2
 from google.protobuf.descriptor_pb2 import FieldDescriptorProto
+
+from ros2 import proto_to_ros2
 
 # Mapping from proto3 scalar FieldDescriptorProto.Type to ROS .msg type.
 # Types that map to arrays (like bytes) use a special sentinel handled below.
@@ -66,12 +67,6 @@ _PROTO_TO_ROS_TYPE = {
         'uint8[]',
 }
 
-# Non-scalar types that are explicitly rejected.
-_UNSUPPORTED_TYPES = {
-    FieldDescriptorProto.TYPE_GROUP: 'group',
-    FieldDescriptorProto.TYPE_ENUM: 'enum',
-}
-
 
 def _build_msg_type_map(dep_descriptor_set_paths, dep_mapping,
                         main_descriptor_set_path, proto_source,
@@ -81,18 +76,11 @@ def _build_msg_type_map(dep_descriptor_set_paths, dep_mapping,
     Also scans the main descriptor set for sibling files (other sources in the
     same proto_library target) and maps their message types to self_ros_package.
     """
-    path_to_pkg = {}
-    for entry in dep_mapping:
-        proto_path, ros2_pkg = entry.split(':', 1)
-        path_to_pkg[proto_path] = ros2_pkg
-
+    path_to_pkg = proto_to_ros2.parse_dep_mapping(dep_mapping)
     msg_type_map = {}
 
     # Scan sibling files in the main descriptor set (same proto_library target).
-    with open(main_descriptor_set_path, 'rb') as f:
-        main_data = f.read()
-    main_set = descriptor_pb2.FileDescriptorSet()
-    main_set.ParseFromString(main_data)
+    main_set = proto_to_ros2.load_descriptor_set(main_descriptor_set_path)
     for file_proto in main_set.file:
         if file_proto.name == proto_source:
             continue  # Skip the file being converted.
@@ -105,10 +93,7 @@ def _build_msg_type_map(dep_descriptor_set_paths, dep_mapping,
             msg_type_map[fq] = f'{self_ros_package}/{msg.name}'
 
     for ds_path in dep_descriptor_set_paths:
-        with open(ds_path, 'rb') as f:
-            data = f.read()
-        dep_set = descriptor_pb2.FileDescriptorSet()
-        dep_set.ParseFromString(data)
+        dep_set = proto_to_ros2.load_descriptor_set(ds_path)
         for file_proto in dep_set.file:
             ros2_pkg = path_to_pkg.get(file_proto.name)
             if ros2_pkg is None:
@@ -118,20 +103,6 @@ def _build_msg_type_map(dep_descriptor_set_paths, dep_mapping,
                 fq = f'{pkg_prefix}.{msg.name}'
                 msg_type_map[fq] = f'{ros2_pkg}/{msg.name}'
     return msg_type_map
-
-
-def _find_file_descriptor(proto_set, proto_source):
-    """Find a FileDescriptorProto by name, with fallback to basename matching.
-    """
-    for file_proto in proto_set.file:
-        if file_proto.name == proto_source:
-            return file_proto
-    # Fallback: match by basename in case paths differ slightly.
-    source_basename = proto_source.split('/')[-1]
-    for file_proto in proto_set.file:
-        if file_proto.name.split('/')[-1] == source_basename:
-            return file_proto
-    return None
 
 
 def _convert(file_proto, output_path, proto_source, msg_type_map):
@@ -166,8 +137,8 @@ def _convert(file_proto, output_path, proto_source, msg_type_map):
             lines.append(f'{ros2_type} {field.name}')
             continue
 
-        if field_type_value in _UNSUPPORTED_TYPES:
-            type_name = _UNSUPPORTED_TYPES[field_type_value]
+        if field_type_value in proto_to_ros2.UNSUPPORTED_TYPES:
+            type_name = proto_to_ros2.UNSUPPORTED_TYPES[field_type_value]
             sys.exit(
                 f'Error: {proto_source}: field "{field.name}" has unsupported '
                 f'type "{type_name}".')
@@ -223,13 +194,10 @@ def main():
     )
     args = parser.parse_args()
 
-    with open(args.descriptor_set, 'rb') as f:
-        data = f.read()
+    proto_set = proto_to_ros2.load_descriptor_set(args.descriptor_set)
 
-    proto_set = descriptor_pb2.FileDescriptorSet()
-    proto_set.ParseFromString(data)
-
-    file_proto = _find_file_descriptor(proto_set, args.proto_source)
+    file_proto = proto_to_ros2.find_file_descriptor(proto_set,
+                                                    args.proto_source)
     if file_proto is None:
         sys.exit(f'Error: could not find proto source "{args.proto_source}" in '
                  f'descriptor set "{args.descriptor_set}".')

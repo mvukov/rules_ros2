@@ -33,8 +33,9 @@ import re
 import sys
 
 import em
-from google.protobuf import descriptor_pb2
 from google.protobuf.descriptor_pb2 import FieldDescriptorProto
+
+from ros2 import proto_to_ros2
 
 # ---------------------------------------------------------------------------
 # Field-type tables
@@ -55,11 +56,6 @@ _SCALAR_CPP_TYPE = {
     FieldDescriptorProto.TYPE_SFIXED32: 'int32_t',
     FieldDescriptorProto.TYPE_SFIXED64: 'int64_t',
     FieldDescriptorProto.TYPE_BOOL: 'bool',
-}
-
-_UNSUPPORTED_TYPES = {
-    FieldDescriptorProto.TYPE_GROUP: 'group',
-    FieldDescriptorProto.TYPE_ENUM: 'enum',
 }
 
 # ---------------------------------------------------------------------------
@@ -86,11 +82,7 @@ def _build_fqn_to_dep_pkg_map(dep_descriptor_set_paths, dep_mapping,
     Also scans the main descriptor set for sibling files (other sources in the
     same proto_library target) and maps their message types to ros_package_name.
     """
-    path_to_ros_pkg = {}
-    for entry in dep_mapping:
-        proto_path, ros2_pkg = entry.split(':', 1)
-        path_to_ros_pkg[proto_path] = ros2_pkg
-
+    path_to_ros_pkg = proto_to_ros2.parse_dep_mapping(dep_mapping)
     fqn_map = {}
 
     # Scan sibling files in the main descriptor set (same proto_library target).
@@ -104,9 +96,7 @@ def _build_fqn_to_dep_pkg_map(dep_descriptor_set_paths, dep_mapping,
             fqn_map[fqn] = ros_package_name
 
     for ds_path in dep_descriptor_set_paths:
-        with open(ds_path, 'rb') as f:
-            dep_set = descriptor_pb2.FileDescriptorSet()
-            dep_set.ParseFromString(f.read())
+        dep_set = proto_to_ros2.load_descriptor_set(ds_path)
         for file_proto in dep_set.file:
             ros2_pkg = path_to_ros_pkg.get(file_proto.name)
             if ros2_pkg is None:
@@ -116,18 +106,6 @@ def _build_fqn_to_dep_pkg_map(dep_descriptor_set_paths, dep_mapping,
                 fqn = f'{pkg_prefix}.{msg.name}'
                 fqn_map[fqn] = ros2_pkg
     return fqn_map
-
-
-def _find_file_descriptor(proto_set, proto_source):
-    """Find a FileDescriptorProto by name, with basename fallback."""
-    for fp in proto_set.file:
-        if fp.name == proto_source:
-            return fp
-    source_base = proto_source.split('/')[-1]
-    for fp in proto_set.file:
-        if fp.name.split('/')[-1] == source_base:
-            return fp
-    return None
 
 
 # ---------------------------------------------------------------------------
@@ -151,9 +129,10 @@ def _field_conversions(message, proto_source, fqn_map):
         is_repeated = field.label == FieldDescriptorProto.LABEL_REPEATED
         ftype = field.type
 
-        if ftype in _UNSUPPORTED_TYPES:
+        if ftype in proto_to_ros2.UNSUPPORTED_TYPES:
             sys.exit(f'Error: {proto_source}: field "{name}": '
-                     f'{_UNSUPPORTED_TYPES[ftype]} fields are not supported.')
+                     f'{proto_to_ros2.UNSUPPORTED_TYPES[ftype]} '
+                     'fields are not supported.')
 
         # ---- bytes ----------------------------------------------------------
         if ftype == FieldDescriptorProto.TYPE_BYTES:
@@ -300,7 +279,8 @@ def _convert(descriptor_set, proto_sources, ros_package_name, fqn_map,
     ros2_includes = []
 
     for proto_source in proto_sources:
-        file_proto = _find_file_descriptor(descriptor_set, proto_source)
+        file_proto = proto_to_ros2.find_file_descriptor(descriptor_set,
+                                                        proto_source)
         if file_proto is None:
             sys.exit(f'Error: could not find proto source "{proto_source}" in '
                      f'the descriptor set.')
@@ -421,9 +401,7 @@ def main():
     )
     args = parser.parse_args()
 
-    with open(args.descriptor_set, 'rb') as f:
-        proto_set = descriptor_pb2.FileDescriptorSet()
-        proto_set.ParseFromString(f.read())
+    proto_set = proto_to_ros2.load_descriptor_set(args.descriptor_set)
 
     fqn_map = _build_fqn_to_dep_pkg_map(args.dep_descriptor_set,
                                         args.dep_mapping, proto_set,

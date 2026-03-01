@@ -95,11 +95,20 @@ py_binary(
     ],
 )
 
+py_library(
+    name = "proto_to_ros2",
+    srcs = ["proto_to_ros2.py"],
+    deps = [
+        "@com_google_protobuf//:protobuf_python",
+    ],
+)
+
 py_binary(
     name = "proto_to_ros2_msg",
     srcs = ["proto_to_ros2_msg.py"],
     visibility = ["//visibility:public"],
     deps = [
+        ":proto_to_ros2",
         "@com_google_protobuf//:protobuf_python",
     ],
 )
@@ -109,6 +118,7 @@ py_binary(
     srcs = ["proto_to_ros2_converter.py"],
     visibility = ["//visibility:public"],
     deps = [
+        ":proto_to_ros2",
         "@com_google_protobuf//:protobuf_python",
         requirement("empy"),
     ],
