@@ -119,6 +119,12 @@ def _cpp_proto_ros2_interface_library_impl(ctx):
     return cc_generator_impl(ctx, CppGeneratorAspectInfo)
 
 cpp_proto_ros2_interface_library = rule(
+    doc = """Generates a C++ ROS 2 interface library from proto_library deps.
+
+Each proto file in deps must be named in snake_case (e.g. my_message.proto)
+or PascalCase (e.g. MyMessage.proto), and must define exactly one message
+whose name matches the PascalCase form of the filename stem.
+""",
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
@@ -255,6 +261,12 @@ def _cpp_proto_ros2_converter_library_impl(ctx):
     return [cc_info]
 
 cpp_proto_ros2_converter_library = rule(
+    doc = """Generates a C++ proto<->ROS 2 converter library from proto_library deps.
+
+Each proto file in deps must be named in snake_case (e.g. my_message.proto)
+or PascalCase (e.g. MyMessage.proto), and must define exactly one message
+whose name matches the PascalCase form of the filename stem.
+""",
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
