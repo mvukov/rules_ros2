@@ -5,14 +5,17 @@ def _clang_configure_impl(repository_ctx):
 
     repository_ctx.symlink(clang_bin_path, "clang")
 
-    result = repository_ctx.execute([clang_bin_path, "--version"])
+    # find libclang.so
+    result = repository_ctx.execute(["realpath", "-e", "/usr/lib/libclang.so"])
     if result.return_code != 0:
-        fail("Failed to get clang version")
-    clang_version = result.stdout.split(" ")[3].split(".")[0]
+        result = repository_ctx.execute([clang_bin_path, "--version"])
+        if result.return_code != 0:
+            fail("Failed to get clang version")
+        clang_version = result.stdout.split(" ")[3].split(".")[0]
 
-    result = repository_ctx.execute(["realpath", "/usr/lib/llvm-{}/lib/libclang.so.1".format(clang_version)])
-    if result.return_code != 0:
-        fail("Failed to fetch libclang_path:\n{}".format(result.stderr))
+        result = repository_ctx.execute(["realpath", "/usr/lib/llvm-{}/lib/libclang.so.1".format(clang_version)])
+        if result.return_code != 0:
+            fail("Failed to fetch libclang_path:\n{}".format(result.stderr))
     libclang_path = result.stdout.strip()
     repository_ctx.symlink(libclang_path, "libclang.so")
 
