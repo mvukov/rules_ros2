@@ -20,6 +20,7 @@ Limitations:
   `pkg/Type`). The caller must supply --dep_mapping for each imported proto.
 - Enum fields are supported (mapped to int32 with named constants).
   Only enums defined in the same proto file are supported.
+- oneof and map fields are not supported.
 - Group fields are not supported.
 - Repeated scalar and message fields are supported and map to dynamic arrays
   (e.g. `int32[] values`, `pkg/msg/Point[] points`).
@@ -162,9 +163,28 @@ def _convert(file_proto, output_path, proto_source, msg_type_map):
                 lines.append('')
                 emitted_enums.add(field.type_name)
 
+    # Build the set of fully-qualified names of map-entry nested message types
+    # so that map fields can be detected and rejected below.
+    pkg_prefix = '.' + file_proto.package if file_proto.package else ''
+    map_entry_fq_names = {
+        f'{pkg_prefix}.{message.name}.{nested.name}'
+        for nested in message.nested_type
+        if nested.options.map_entry
+    }
+
     for field in message.field:
         field_type_value = field.type
         is_repeated = (field.label == FieldDescriptorProto.LABEL_REPEATED)
+
+        if field.HasField('oneof_index'):
+            sys.exit(
+                f'Error: {proto_source}: field "{field.name}" is part of a '
+                f'oneof, which is not supported.')
+
+        if field.type_name in map_entry_fq_names:
+            sys.exit(
+                f'Error: {proto_source}: field "{field.name}" is a map field, '
+                f'which is not supported.')
 
         if field_type_value == FieldDescriptorProto.TYPE_MESSAGE:
             ros2_type = msg_type_map.get(field.type_name)
