@@ -140,16 +140,16 @@ def _field_conversions(message, proto_source, proto_types_to_ros_pkgs):
             if is_repeated:
                 to_ros.append(f'  for (const auto v : proto.{name}()) {{')
                 to_ros.append(
-                    f'    ros.{name}.push_back(static_cast<int32_t>(v));')
+                    f'    ros->{name}.push_back(static_cast<int32_t>(v));')
                 to_ros.append('  }')
                 from_ros.append(f'  for (const auto v : ros.{name}) {{')
-                from_ros.append(f'    proto.add_{name}'
+                from_ros.append(f'    proto->add_{name}'
                                 f'(static_cast<{enum_cpp_type}>(v));')
                 from_ros.append('  }')
             else:
                 to_ros.append(
-                    f'  ros.{name} = static_cast<int32_t>(proto.{name}());')
-                from_ros.append(f'  proto.set_{name}'
+                    f'  ros->{name} = static_cast<int32_t>(proto.{name}());')
+                from_ros.append(f'  proto->set_{name}'
                                 f'(static_cast<{enum_cpp_type}>(ros.{name}));')
             continue
 
@@ -158,10 +158,10 @@ def _field_conversions(message, proto_source, proto_types_to_ros_pkgs):
             if is_repeated:
                 sys.exit(f'Error: {proto_source}: field "{name}": '
                          f'repeated bytes is not supported.')
-            to_ros.append(f'  ros.{name} = std::vector<uint8_t>'
+            to_ros.append(f'  ros->{name} = std::vector<uint8_t>'
                           f'(proto.{name}().begin(), proto.{name}().end());')
             from_ros.append(
-                f'  proto.set_{name}'
+                f'  proto->set_{name}'
                 f'(std::string(ros.{name}.begin(), ros.{name}.end()));')
             continue
 
@@ -169,14 +169,14 @@ def _field_conversions(message, proto_source, proto_types_to_ros_pkgs):
         if ftype == FieldDescriptorProto.TYPE_STRING:
             if is_repeated:
                 to_ros.append(
-                    f'  ros.{name} = std::vector<std::string>'
+                    f'  ros->{name} = std::vector<std::string>'
                     f'(proto.{name}().begin(), proto.{name}().end());')
                 from_ros.append(f'  for (const auto& s : ros.{name}) {{')
-                from_ros.append(f'    proto.add_{name}(s);')
+                from_ros.append(f'    proto->add_{name}(s);')
                 from_ros.append('  }')
             else:
-                to_ros.append(f'  ros.{name} = proto.{name}();')
-                from_ros.append(f'  proto.set_{name}(ros.{name});')
+                to_ros.append(f'  ros->{name} = proto.{name}();')
+                from_ros.append(f'  proto->set_{name}(ros.{name});')
             continue
 
         # ---- message --------------------------------------------------------
@@ -193,16 +193,17 @@ def _field_conversions(message, proto_source, proto_types_to_ros_pkgs):
 
             if is_repeated:
                 to_ros.append(f'  for (const auto& item : proto.{name}()) {{')
-                to_ros.append(f'    ros.{name}.push_back({conv}::ToRos(item));')
+                to_ros.append(
+                    f'    {conv}::ToRos(item, &ros->{name}.emplace_back());')
                 to_ros.append('  }')
                 from_ros.append(f'  for (const auto& item : ros.{name}) {{')
                 from_ros.append(
-                    f'    *proto.add_{name}() = {conv}::FromRos(item);')
+                    f'    {conv}::FromRos(item, proto->add_{name}());')
                 from_ros.append('  }')
             else:
-                to_ros.append(f'  ros.{name} = {conv}::ToRos(proto.{name}());')
-                from_ros.append(f'  *proto.mutable_{name}() = '
-                                f'{conv}::FromRos(ros.{name});')
+                to_ros.append(f'  {conv}::ToRos(proto.{name}(), &ros->{name});')
+                from_ros.append(
+                    f'  {conv}::FromRos(ros.{name}, proto->mutable_{name}());')
             continue
 
         # ---- scalar (all remaining types) -----------------------------------
@@ -213,13 +214,13 @@ def _field_conversions(message, proto_source, proto_types_to_ros_pkgs):
         cpp_type = _SCALAR_CPP_TYPE[ftype]
 
         if is_repeated:
-            to_ros.append(f'  ros.{name} = std::vector<{cpp_type}>'
+            to_ros.append(f'  ros->{name} = std::vector<{cpp_type}>'
                           f'(proto.{name}().begin(), proto.{name}().end());')
-            from_ros.append(f'  proto.mutable_{name}()->Assign'
+            from_ros.append(f'  proto->mutable_{name}()->Assign'
                             f'(ros.{name}.begin(), ros.{name}.end());')
         else:
-            to_ros.append(f'  ros.{name} = proto.{name}();')
-            from_ros.append(f'  proto.set_{name}(ros.{name});')
+            to_ros.append(f'  ros->{name} = proto.{name}();')
+            from_ros.append(f'  proto->set_{name}(ros.{name});')
 
     return to_ros, from_ros, dep_pkgs
 
@@ -237,9 +238,9 @@ _HEADER_TEMPLATE = """\
 namespace @(ctx['ros_package_name'])::proto_converters {
 
 @[for msg in ctx['messages']]
-@(msg['ros_type']) ToRos(const @(msg['proto_type'])& proto);
+void ToRos(const @(msg['proto_type'])& proto, @(msg['ros_type'])* ros);
 
-@(msg['proto_type']) FromRos(const @(msg['ros_type'])& ros);
+void FromRos(const @(msg['ros_type'])& ros, @(msg['proto_type'])* proto);
 @[end for]
 
 }  // namespace @(ctx['ros_package_name'])::proto_converters
@@ -255,16 +256,12 @@ _SOURCE_TEMPLATE = """\
 namespace @(ctx['ros_package_name'])::proto_converters {
 
 @[for msg in ctx['messages']]
-@(msg['ros_type']) ToRos(const @(msg['proto_type'])& proto) {
-  @(msg['ros_type']) ros;
+void ToRos(const @(msg['proto_type'])& proto, @(msg['ros_type'])* ros) {
 @(msg['to_ros_body'])
-  return ros;
 }
 
-@(msg['proto_type']) FromRos(const @(msg['ros_type'])& ros) {
-  @(msg['proto_type']) proto;
+void FromRos(const @(msg['ros_type'])& ros, @(msg['proto_type'])* proto) {
 @(msg['from_ros_body'])
-  return proto;
 }
 @[end for]
 

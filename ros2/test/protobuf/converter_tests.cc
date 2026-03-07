@@ -33,7 +33,8 @@ TEST(PointConverterTest, ToRos) {
   proto.add_values(1.5f);
   proto.add_values(2.5f);
 
-  const auto ros = point_proto_ros_msgs::proto_converters::ToRos(proto);
+  point_proto_ros_msgs::msg::Point ros;
+  point_proto_ros_msgs::proto_converters::ToRos(proto, &ros);
 
   EXPECT_DOUBLE_EQ(ros.x, 1.0);
   EXPECT_DOUBLE_EQ(ros.y, 2.0);
@@ -56,7 +57,8 @@ TEST(PointConverterTest, FromRos) {
   ros.valid = false;
   ros.values = {3.0f, 4.0f, 5.0f};
 
-  const auto proto = point_proto_ros_msgs::proto_converters::FromRos(ros);
+  ros2::test::protobuf::Point proto;
+  point_proto_ros_msgs::proto_converters::FromRos(ros, &proto);
 
   EXPECT_DOUBLE_EQ(proto.x(), 4.0);
   EXPECT_DOUBLE_EQ(proto.y(), 5.0);
@@ -81,8 +83,10 @@ TEST(PointConverterTest, RoundTrip) {
   original.add_values(0.1f);
   original.add_values(0.2f);
 
-  const auto ros = point_proto_ros_msgs::proto_converters::ToRos(original);
-  const auto recovered = point_proto_ros_msgs::proto_converters::FromRos(ros);
+  point_proto_ros_msgs::msg::Point ros;
+  point_proto_ros_msgs::proto_converters::ToRos(original, &ros);
+  ros2::test::protobuf::Point recovered;
+  point_proto_ros_msgs::proto_converters::FromRos(ros, &recovered);
 
   EXPECT_EQ(original.SerializeAsString(), recovered.SerializeAsString());
 }
@@ -100,7 +104,8 @@ TEST(TransformConverterTest, ToRos) {
   proto.mutable_point()->set_id(1);
   proto.mutable_point()->set_valid(true);
 
-  const auto ros = transform_proto_ros_msgs::proto_converters::ToRos(proto);
+  transform_proto_ros_msgs::msg::Transform ros;
+  transform_proto_ros_msgs::proto_converters::ToRos(proto, &ros);
 
   EXPECT_DOUBLE_EQ(ros.point.x, 7.0);
   EXPECT_DOUBLE_EQ(ros.point.y, 8.0);
@@ -120,9 +125,10 @@ TEST(TransformConverterTest, RoundTrip) {
   original.mutable_point()->set_valid(false);
   original.mutable_point()->add_values(0.5f);
 
-  const auto ros = transform_proto_ros_msgs::proto_converters::ToRos(original);
-  const auto recovered =
-      transform_proto_ros_msgs::proto_converters::FromRos(ros);
+  transform_proto_ros_msgs::msg::Transform ros;
+  transform_proto_ros_msgs::proto_converters::ToRos(original, &ros);
+  ros2::test::protobuf::Transform recovered;
+  transform_proto_ros_msgs::proto_converters::FromRos(ros, &recovered);
 
   EXPECT_EQ(original.SerializeAsString(), recovered.SerializeAsString());
 }
@@ -135,7 +141,8 @@ TEST(DummyOneConverterTest, ToRos) {
   ros2::test::protobuf::DummyOne proto;
   proto.set_color(ros2::test::protobuf::COLOR_RED);
 
-  const auto ros = point_proto_ros_msgs::proto_converters::ToRos(proto);
+  point_proto_ros_msgs::msg::DummyOne ros;
+  point_proto_ros_msgs::proto_converters::ToRos(proto, &ros);
 
   EXPECT_EQ(ros.color, point_proto_ros_msgs::msg::DummyOne::COLOR_RED);
 }
@@ -144,7 +151,8 @@ TEST(DummyOneConverterTest, FromRos) {
   point_proto_ros_msgs::msg::DummyOne ros;
   ros.color = point_proto_ros_msgs::msg::DummyOne::COLOR_GREEN;
 
-  const auto proto = point_proto_ros_msgs::proto_converters::FromRos(ros);
+  ros2::test::protobuf::DummyOne proto;
+  point_proto_ros_msgs::proto_converters::FromRos(ros, &proto);
 
   EXPECT_EQ(proto.color(), ros2::test::protobuf::COLOR_GREEN);
 }
@@ -153,8 +161,10 @@ TEST(DummyOneConverterTest, RoundTrip) {
   ros2::test::protobuf::DummyOne original;
   original.set_color(ros2::test::protobuf::COLOR_BLUE);
 
-  const auto ros = point_proto_ros_msgs::proto_converters::ToRos(original);
-  const auto recovered = point_proto_ros_msgs::proto_converters::FromRos(ros);
+  point_proto_ros_msgs::msg::DummyOne ros;
+  point_proto_ros_msgs::proto_converters::ToRos(original, &ros);
+  ros2::test::protobuf::DummyOne recovered;
+  point_proto_ros_msgs::proto_converters::FromRos(ros, &recovered);
 
   EXPECT_EQ(original.SerializeAsString(), recovered.SerializeAsString());
 }
