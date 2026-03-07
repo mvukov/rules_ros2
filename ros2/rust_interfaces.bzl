@@ -130,7 +130,7 @@ def _compile_rust_code(ctx, label, crate_name, srcs, deps):
     )
 
 def _rust_generator_aspect_impl(target, ctx):
-    package_name = target.label.name
+    package_name = target[Ros2InterfaceInfo].ros_package_name
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
 

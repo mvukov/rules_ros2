@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package ros2.test.protobuf;
+
+// A simple 3D point with some extra scalar fields to exercise type conversion.
+message Point {
+  double x = 1;
+  double y = 2;
+  double z = 3;
+  string label = 4;
+  int32 id = 5;
+  bool valid = 6;
+  repeated float values = 7;
+}
