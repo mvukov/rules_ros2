@@ -108,7 +108,7 @@ proto_to_ros2_msg_aspect = aspect(
     attr_aspects = ["deps"],
     attrs = {
         "_proto_to_ros2_msg": attr.label(
-            default = Label("@com_github_mvukov_rules_ros2//ros2:proto_to_ros2_msg"),
+            default = Label("@com_github_mvukov_rules_ros2//ros2/protobuf:proto_to_ros2_msg"),
             executable = True,
             cfg = "exec",
         ),
@@ -234,7 +234,7 @@ cpp_proto_ros2_converter_aspect = aspect(
     attr_aspects = ["deps"],
     attrs = {
         "_proto_to_ros2_converter": attr.label(
-            default = Label("@com_github_mvukov_rules_ros2//ros2:proto_to_ros2_converter"),
+            default = Label("@com_github_mvukov_rules_ros2//ros2/protobuf:proto_to_ros2_converter"),
             executable = True,
             cfg = "exec",
         ),

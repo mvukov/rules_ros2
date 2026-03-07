@@ -33,7 +33,7 @@ import sys
 
 from google.protobuf.descriptor_pb2 import FieldDescriptorProto
 
-from ros2 import proto_to_ros2
+from ros2.protobuf import proto_to_ros2
 
 # Mapping from proto3 scalar FieldDescriptorProto.Type to ROS .msg type.
 # Types that map to arrays (like bytes) use a special sentinel handled below.

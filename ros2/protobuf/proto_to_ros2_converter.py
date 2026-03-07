@@ -37,7 +37,7 @@ import sys
 import em
 from google.protobuf.descriptor_pb2 import FieldDescriptorProto
 
-from ros2 import proto_to_ros2
+from ros2.protobuf import proto_to_ros2
 
 # ---------------------------------------------------------------------------
 # Field-type tables

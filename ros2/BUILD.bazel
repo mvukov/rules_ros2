@@ -20,7 +20,6 @@ exports_files([
     "launch.py.tpl",
     "launch.sh.tpl",
     "plugin.bzl",
-    "protobuf.bzl",
     "py_defs.bzl",
     "pytest_wrapper.py.tpl",
     "ros2_action.py",
@@ -92,35 +91,6 @@ py_binary(
     deps = [
         ":ros2_cmd",
         "@ros2cli//:ros2lifecycle",
-    ],
-)
-
-py_library(
-    name = "proto_to_ros2",
-    srcs = ["proto_to_ros2.py"],
-    deps = [
-        "@com_google_protobuf//:protobuf_python",
-    ],
-)
-
-py_binary(
-    name = "proto_to_ros2_msg",
-    srcs = ["proto_to_ros2_msg.py"],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":proto_to_ros2",
-        "@com_google_protobuf//:protobuf_python",
-    ],
-)
-
-py_binary(
-    name = "proto_to_ros2_converter",
-    srcs = ["proto_to_ros2_converter.py"],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":proto_to_ros2",
-        "@com_google_protobuf//:protobuf_python",
-        requirement("empy"),
     ],
 )
 
