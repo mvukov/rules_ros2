@@ -169,4 +169,50 @@ TEST(DummyOneConverterTest, RoundTrip) {
   EXPECT_EQ(original.SerializeAsString(), recovered.SerializeAsString());
 }
 
+// ---------------------------------------------------------------------------
+// Event converter tests (exercises google.protobuf.Timestamp conversion)
+// ---------------------------------------------------------------------------
+
+TEST(EventConverterTest, ToRos) {
+  ros2::test::protobuf::Event proto;
+  proto.mutable_stamp()->set_seconds(1234567890);
+  proto.mutable_stamp()->set_nanos(500000000);
+  proto.set_name("test_event");
+
+  point_proto_ros_msgs::msg::Event ros;
+  point_proto_ros_msgs::proto_converters::ToRos(proto, &ros);
+
+  EXPECT_EQ(ros.stamp.sec, 1234567890);
+  EXPECT_EQ(ros.stamp.nanosec, 500000000u);
+  EXPECT_EQ(ros.name, "test_event");
+}
+
+TEST(EventConverterTest, FromRos) {
+  point_proto_ros_msgs::msg::Event ros;
+  ros.stamp.sec = 987654321;
+  ros.stamp.nanosec = 123456789u;
+  ros.name = "from_ros_event";
+
+  ros2::test::protobuf::Event proto;
+  point_proto_ros_msgs::proto_converters::FromRos(ros, &proto);
+
+  EXPECT_EQ(proto.stamp().seconds(), 987654321);
+  EXPECT_EQ(proto.stamp().nanos(), 123456789);
+  EXPECT_EQ(proto.name(), "from_ros_event");
+}
+
+TEST(EventConverterTest, RoundTrip) {
+  ros2::test::protobuf::Event original;
+  original.mutable_stamp()->set_seconds(1000000000);
+  original.mutable_stamp()->set_nanos(999999999);
+  original.set_name("round_trip");
+
+  point_proto_ros_msgs::msg::Event ros;
+  point_proto_ros_msgs::proto_converters::ToRos(original, &ros);
+  ros2::test::protobuf::Event recovered;
+  point_proto_ros_msgs::proto_converters::FromRos(ros, &recovered);
+
+  EXPECT_EQ(original.SerializeAsString(), recovered.SerializeAsString());
+}
+
 }  // namespace

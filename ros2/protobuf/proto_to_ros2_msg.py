@@ -187,6 +187,11 @@ def _convert(file_proto, output_path, proto_source, msg_type_map):
                 f'which is not supported.')
 
         if field_type_value == FieldDescriptorProto.TYPE_MESSAGE:
+            if field.type_name == '.google.protobuf.Timestamp':
+                ros2_type = ('builtin_interfaces/Time[]'
+                             if is_repeated else 'builtin_interfaces/Time')
+                lines.append(f'{ros2_type} {field.name}')
+                continue
             ros2_type = msg_type_map.get(field.type_name)
             if ros2_type is None:
                 sys.exit(

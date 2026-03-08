@@ -40,6 +40,8 @@ load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 CppProtoConverterAspectInfo = provider("TBD", fields = ["cc_info"])
 
+_GOOGLE_PROTOBUF_TIMESTAMP_PROTO = "google/protobuf/timestamp.proto"
+
 def _collect_dep_proto_args(deps):
     """Returns (dep_extra_args, dep_descriptor_sets) for proto deps."""
     dep_extra_args = []
@@ -58,6 +60,15 @@ def _collect_dep_proto_args(deps):
 
 def _proto_to_ros2_msg_aspect_impl(target, ctx):
     proto_info = target[ProtoInfo]
+
+    # Special case: google.protobuf.Timestamp → alias to builtin_interfaces so
+    # that downstream aspects (idl_adapter, cpp_generator) produce
+    # builtin_interfaces C++ headers that generated ROS msgs with Timestamp
+    # fields can include.
+    for src in proto_info.direct_sources:
+        if src.short_path.endswith(_GOOGLE_PROTOBUF_TIMESTAMP_PROTO):
+            return [ctx.attr._builtin_interfaces[Ros2InterfaceInfo]]
+
     msg_files = []
 
     ros_package_name = target.label.name + "_ros_msgs"
@@ -112,6 +123,10 @@ proto_to_ros2_msg_aspect = aspect(
             executable = True,
             cfg = "exec",
         ),
+        "_builtin_interfaces": attr.label(
+            default = Label("@ros2_rcl_interfaces//:builtin_interfaces"),
+            providers = [Ros2InterfaceInfo],
+        ),
     },
     required_providers = [ProtoInfo],
     provides = [Ros2InterfaceInfo],
@@ -139,6 +154,15 @@ whose name matches the PascalCase form of the filename stem.
 
 def _cpp_proto_ros2_converter_aspect_impl(target, ctx):
     proto_info = target[ProtoInfo]
+
+    # Skip converter generation for google.protobuf.Timestamp – conversion is
+    # handled by common_runtime; the generated converter would be wrong anyway
+    # because the Ros2InterfaceInfo for this target is aliased to
+    # builtin_interfaces (not a one-to-one Timestamp ↔ Time mapping).
+    for src in proto_info.direct_sources:
+        if src.short_path.endswith(_GOOGLE_PROTOBUF_TIMESTAMP_PROTO):
+            return [CppProtoConverterAspectInfo(cc_info = ctx.attr._common_runtime[CcInfo])]
+
     ros_package_name = target[Ros2InterfaceInfo].ros_package_name
 
     # Collect dep information: descriptor sets and proto→ros_package mappings.
@@ -157,6 +181,10 @@ def _cpp_proto_ros2_converter_aspect_impl(target, ctx):
         "{}/proto_converters.cc".format(ros_package_name),
     )
 
+    proto_source_args = []
+    for src in proto_info.direct_sources:
+        proto_source_args += ["--proto_source", src.short_path]
+
     ctx.actions.run(
         executable = ctx.executable._proto_to_ros2_converter,
         inputs = [proto_info.direct_descriptor_set] + dep_descriptor_sets,
@@ -170,7 +198,7 @@ def _cpp_proto_ros2_converter_aspect_impl(target, ctx):
             header.path,
             "--output_source",
             source.path,
-        ] + dep_extra_args,
+        ] + proto_source_args + dep_extra_args,
         mnemonic = "ProtoToRos2Converter",
         progress_message = "Generating proto/ROS 2 converters for %{label}",
     )
@@ -240,6 +268,10 @@ cpp_proto_ros2_converter_aspect = aspect(
         ),
         "_cc_toolchain": attr.label(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
+        ),
+        "_common_runtime": attr.label(
+            default = Label("@com_github_mvukov_rules_ros2//ros2/protobuf:common_runtime"),
+            providers = [CcInfo],
         ),
     },
     required_providers = [ProtoInfo],

@@ -8,8 +8,10 @@ proto_library(
     name = "point_proto",
     srcs = [
         "dummy_one.proto",
+        "event.proto",
         "point.proto",
     ],
+    deps = ["@com_google_protobuf//:timestamp_proto"],
 )
 
 proto_library(
