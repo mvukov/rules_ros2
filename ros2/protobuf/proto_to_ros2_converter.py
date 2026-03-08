@@ -77,6 +77,13 @@ def _proto_package_to_ns(package):
     return '::'.join(package.split('.')) if package else ''
 
 
+def _get_ros2_pkg(path_to_pkg, path):
+    for actual_path, ros2_pkg in path_to_pkg.items():
+        if actual_path.endswith(path):
+            return ros2_pkg
+    raise ValueError(f'Failed to find ROS package for {path} proto file')
+
+
 def _build_proto_types_to_ros_pkgs(dep_descriptor_set_paths, dep_mapping,
                                    main_proto_set, ros_package_name):
     """Build {'.pkg.MsgName': 'dep_ros_package_name'} from dep descriptor sets.
@@ -100,10 +107,7 @@ def _build_proto_types_to_ros_pkgs(dep_descriptor_set_paths, dep_mapping,
     for ds_path in dep_descriptor_set_paths:
         dep_set = proto_to_ros2.load_descriptor_set(ds_path)
         for file_proto in dep_set.file:
-            ros_pkg = path_to_ros_pkg.get(file_proto.name)
-            if ros_pkg is None:
-                # TODO(mvukov) Investigate this in more details.
-                continue  # Skip transitive well-known types not in dep_mapping.
+            ros_pkg = _get_ros2_pkg(path_to_ros_pkg, file_proto.name)
             pkg_prefix = '.' + file_proto.package if file_proto.package else ''
             for msg in file_proto.message_type:
                 proto_types_to_ros_pkgs[f'{pkg_prefix}.{msg.name}'] = ros_pkg

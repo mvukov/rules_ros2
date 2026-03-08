@@ -87,6 +87,13 @@ def _build_enum_map(file_proto, message):
     return enum_map
 
 
+def _get_ros2_pkg(path_to_pkg, path):
+    for actual_path, ros2_pkg in path_to_pkg.items():
+        if actual_path.endswith(path):
+            return ros2_pkg
+    raise ValueError(f'Failed to find ROS package for {path} proto file')
+
+
 def _build_msg_type_map(dep_descriptor_set_paths, dep_mapping,
                         main_descriptor_set_path, proto_source,
                         self_ros_package):
@@ -106,6 +113,7 @@ def _build_msg_type_map(dep_descriptor_set_paths, dep_mapping,
         if file_proto.name in path_to_pkg:
             continue  # Already covered by a dep_mapping.
         # This is a sibling file; it belongs to the same ROS 2 package.
+        # TODO(mvukov) Make package mandatory!
         pkg_prefix = '.' + file_proto.package if file_proto.package else ''
         for msg in file_proto.message_type:
             fq = f'{pkg_prefix}.{msg.name}'
@@ -114,9 +122,7 @@ def _build_msg_type_map(dep_descriptor_set_paths, dep_mapping,
     for ds_path in dep_descriptor_set_paths:
         dep_set = proto_to_ros2.load_descriptor_set(ds_path)
         for file_proto in dep_set.file:
-            ros2_pkg = path_to_pkg.get(file_proto.name)
-            if ros2_pkg is None:
-                continue
+            ros2_pkg = _get_ros2_pkg(path_to_pkg, file_proto.name)
             pkg_prefix = '.' + file_proto.package if file_proto.package else ''
             for msg in file_proto.message_type:
                 fq = f'{pkg_prefix}.{msg.name}'

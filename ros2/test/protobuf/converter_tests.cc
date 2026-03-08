@@ -170,7 +170,7 @@ TEST(DummyOneConverterTest, RoundTrip) {
 }
 
 // ---------------------------------------------------------------------------
-// Event converter tests (exercises google.protobuf.Timestamp conversion)
+// Event converter tests (exercises Timestamp and Duration conversion)
 // ---------------------------------------------------------------------------
 
 TEST(EventConverterTest, ToRos) {
@@ -178,6 +178,8 @@ TEST(EventConverterTest, ToRos) {
   proto.mutable_stamp()->set_seconds(1234567890);
   proto.mutable_stamp()->set_nanos(500000000);
   proto.set_name("test_event");
+  proto.mutable_duration()->set_seconds(60);
+  proto.mutable_duration()->set_nanos(250000000);
 
   point_proto_ros_msgs::msg::Event ros;
   point_proto_ros_msgs::proto_converters::ToRos(proto, &ros);
@@ -185,6 +187,8 @@ TEST(EventConverterTest, ToRos) {
   EXPECT_EQ(ros.stamp.sec, 1234567890);
   EXPECT_EQ(ros.stamp.nanosec, 500000000u);
   EXPECT_EQ(ros.name, "test_event");
+  EXPECT_EQ(ros.duration.seconds, 60);
+  EXPECT_EQ(ros.duration.nanos, 250000000u);
 }
 
 TEST(EventConverterTest, FromRos) {
@@ -192,6 +196,8 @@ TEST(EventConverterTest, FromRos) {
   ros.stamp.sec = 987654321;
   ros.stamp.nanosec = 123456789u;
   ros.name = "from_ros_event";
+  ros.duration.seconds = 5;
+  ros.duration.nanos = 0u;
 
   ros2::test::protobuf::Event proto;
   point_proto_ros_msgs::proto_converters::FromRos(ros, &proto);
@@ -199,6 +205,8 @@ TEST(EventConverterTest, FromRos) {
   EXPECT_EQ(proto.stamp().seconds(), 987654321);
   EXPECT_EQ(proto.stamp().nanos(), 123456789);
   EXPECT_EQ(proto.name(), "from_ros_event");
+  EXPECT_EQ(proto.duration().seconds(), 5);
+  EXPECT_EQ(proto.duration().nanos(), 0);
 }
 
 TEST(EventConverterTest, RoundTrip) {
@@ -206,6 +214,8 @@ TEST(EventConverterTest, RoundTrip) {
   original.mutable_stamp()->set_seconds(1000000000);
   original.mutable_stamp()->set_nanos(999999999);
   original.set_name("round_trip");
+  original.mutable_duration()->set_seconds(3600);
+  original.mutable_duration()->set_nanos(1);
 
   point_proto_ros_msgs::msg::Event ros;
   point_proto_ros_msgs::proto_converters::ToRos(original, &ros);

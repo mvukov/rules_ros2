@@ -13,6 +13,7 @@
 // limitations under the License.
 syntax = "proto3";
 
+import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
 package ros2.test.protobuf;
@@ -20,4 +21,5 @@ package ros2.test.protobuf;
 message Event {
   google.protobuf.Timestamp stamp = 1;
   string name = 2;
+  google.protobuf.Duration duration = 3;
 }
