@@ -1,11 +1,9 @@
 """ Defines commonly used Python macros.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_exec_launcher", "split_kwargs")
 load("@com_github_mvukov_rules_ros2//third_party:symlink.bzl", "symlink")
 load("@rules_python//python:defs.bzl", "py_binary", "py_test")
-load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
-load("@rules_shell//shell:sh_test.bzl", "sh_test")
 
 def _ros2_py_exec(target, name, srcs, main, set_up_ament, testonly, **kwargs):
     set_up_launcher = testonly or set_up_ament
@@ -34,10 +32,10 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, testonly, **kwargs):
 
     launcher = "{}_launch".format(name)
     ament_setup_deps = [target_impl] if set_up_ament else None
-    sh_launcher(
+    py_exec_launcher(
         launcher,
         ament_setup_deps = ament_setup_deps,
-        template = "@com_github_mvukov_rules_ros2//ros2:launch.sh.tpl",
+        template = "@com_github_mvukov_rules_ros2//ros2:launch_exec.py.tpl",
         substitutions = {
             "{entry_point}": "$(rootpath {})".format(target_impl_symlink),
         },
@@ -46,10 +44,11 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, testonly, **kwargs):
         testonly = testonly,
     )
 
-    sh_target = sh_test if testonly else sh_binary
-    sh_target(
+    py_target = py_test if testonly else py_binary
+    py_target(
         name = name,
         srcs = [launcher],
+        main = launcher + ".py",
         data = [target_impl_symlink],
         **launcher_target_kwargs
     )
