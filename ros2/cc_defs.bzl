@@ -1,7 +1,7 @@
 """ Defines commonly used C/C++ macros.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_launcher", "split_kwargs")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_exec_launcher", "split_kwargs")
 load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "C_COPTS")
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
@@ -82,10 +82,10 @@ def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, idl_deps, **kw
 
     launcher = "{}_launch".format(name)
     ament_setup_deps = [target_impl] if set_up_ament else None
-    sh_launcher(
+    sh_exec_launcher(
         launcher,
         ament_setup_deps = ament_setup_deps,
-        template = "@com_github_mvukov_rules_ros2//ros2:launch.sh.tpl",
+        template = "@com_github_mvukov_rules_ros2//ros2:launch_exec.sh.tpl",
         substitutions = {
             "{entry_point}": "$(rootpath {})".format(target_impl),
         },
