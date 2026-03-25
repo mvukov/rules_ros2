@@ -200,17 +200,41 @@ def _ros2_ament_setup_rule_impl(ctx):
             registered_packages.append(package_name)
         idl_manifest_contents = []
         for src in idl.srcs:
-            if src.extension != "msg":
+            if src.extension == "msg":
+                src_file = ctx.actions.declare_file(
+                    paths.join(prefix_path, "share", package_name, "msg", src.basename),
+                )
+                ctx.actions.symlink(
+                    output = src_file,
+                    target_file = src,
+                )
+                outputs.append(src_file)
+                idl_manifest_contents.append(paths.join("msg", src.basename))
+
+            elif src.extension == "idl":
+                # Extract basename and parent directory
+                submodule_name = src.dirname.split("/")[-1]
+                src_file = ctx.actions.declare_file(
+                    paths.join(prefix_path, "share", package_name, submodule_name, src.basename),
+                )
+                ctx.actions.symlink(
+                    output = src_file,
+                    target_file = src,
+                )
+                outputs.append(src_file)
+                idl_manifest_contents.append(paths.join(submodule_name, src.basename))
+            else:
                 continue
-            src_file = ctx.actions.declare_file(
-                paths.join(prefix_path, "share", package_name, "msg", src.basename),
-            )
-            ctx.actions.symlink(
-                output = src_file,
-                target_file = src,
-            )
-            outputs.append(src_file)
-            idl_manifest_contents.append(paths.join("msg", src.basename))
+        if idl.generated_idl_files != None:
+            for idl in idl.generated_idl_files:
+                src_file = ctx.actions.declare_file(
+                    paths.join(prefix_path, "share", package_name, "msg", idl.basename),
+                )
+                ctx.actions.symlink(
+                    output = src_file,
+                    target_file = idl,
+                )
+                outputs.append(src_file)
 
         idl_manifest = ctx.actions.declare_file(
             paths.join(prefix_path, _RESOURCE_INDEX_PATH, "rosidl_interfaces", package_name),
