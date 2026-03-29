@@ -1,0 +1,39 @@
+"""Builds proto2ros from bdaiinstitute/proto2ros repository."""
+
+load("@com_google_protobuf//bazel:py_proto_library.bzl", "py_proto_library")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+
+py_proto_library(
+    name = "protobuf_runtime",
+    deps = ["@com_google_protobuf//:any_proto"],
+)
+
+# Core proto2ros Python library
+py_library(
+    name = "proto2ros_lib",
+    srcs = glob(["proto2ros/proto2ros/**/*.py"]),
+    data = glob([
+        "proto2ros/proto2ros/configuration/*.yaml",
+        "proto2ros/proto2ros/output/templates/**/*",
+    ]),
+    imports = ["proto2ros"],
+    deps = [
+        ":protobuf_runtime",
+        "@ros2_rosidl//:rosidl_adapter_lib",
+        requirement("inflection"),
+        requirement("jinja2"),
+        requirement("networkx"),
+        requirement("numpy"),
+        requirement("pyyaml"),
+    ],
+)
+
+# Main generation CLI binary
+py_binary(
+    name = "generate",
+    srcs = ["proto2ros/proto2ros/cli/generate.py"],
+    main = "proto2ros/proto2ros/cli/generate.py",
+    visibility = ["//visibility:public"],
+    deps = [":proto2ros_lib"],
+)
