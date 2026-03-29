@@ -1,9 +1,5 @@
 # See e.g. https://blog.aspect.dev/bazelrc-flags
 
-# https://github.com/bazelbuild/rules_foreign_cc/issues/1129
-# Mandatory at the moment for Bazel 7.0.0.
-build --noincompatible_sandbox_hermetic_tmp
-
 # Fix the wrong default to generate __init__.py to delimit a Python package.
 # This is a mandatory flag.
 build --incompatible_default_to_explicit_init_py
