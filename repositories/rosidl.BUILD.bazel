@@ -10,7 +10,6 @@ load(
     "ros2_cpp_library",
 )
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 ros2_c_library(
     name = "rosidl_typesupport_interface",
@@ -45,7 +44,7 @@ py_library(
     data = glob(["rosidl_adapter/rosidl_adapter/resource/*.em"]),
     imports = ["rosidl_adapter"],
     visibility = ["//visibility:public"],
-    deps = [requirement("empy")],
+    deps = ["@rules_ros2_py_deps//:empy"],
 )
 
 _ROSIDL_ADAPTER_APP_PY = "rosidl_adapter_app.py"
@@ -71,7 +70,7 @@ py_library(
     data = ["rosidl_parser/rosidl_parser/grammar.lark"],
     imports = ["rosidl_parser"],
     visibility = ["//visibility:public"],
-    deps = [requirement("lark_parser")],
+    deps = ["@rules_ros2_py_deps//:lark-parser"],
 )
 
 py_library(
@@ -81,7 +80,7 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         ":rosidl_parser",
-        requirement("empy"),
+        "@rules_ros2_py_deps//:empy",
     ],
 )
 
@@ -304,7 +303,7 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         ":rosidl_parser",
-        requirement("empy"),
+        "@rules_ros2_py_deps//:empy",
     ],
 )
 

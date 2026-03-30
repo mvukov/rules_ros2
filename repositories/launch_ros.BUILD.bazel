@@ -2,7 +2,6 @@
 """
 
 load("@rules_python//python:defs.bzl", "py_library")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 py_library(
     name = "launch_ros",
@@ -16,8 +15,8 @@ py_library(
         "@ros2_rcl_interfaces//:py_composition_interfaces",
         "@ros2_rcl_interfaces//:py_lifecycle_msgs",
         "@ros2_rclpy//:rclpy",
-        requirement("packaging"),
-        requirement("pyyaml"),
+        "@rules_ros2_py_deps//:packaging",
+        "@rules_ros2_py_deps//:pyyaml",
     ],
 )
 

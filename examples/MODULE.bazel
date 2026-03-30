@@ -9,13 +9,22 @@ local_path_override(
 bazel_dep(name = "rules_cc", version = "0.2.9")
 bazel_dep(name = "rules_python", version = "1.6.3")
 bazel_dep(name = "rules_rust", version = "0.63.0")
+bazel_dep(name = "hermetic_cc_toolchain", version = "4.1.0")
+
+toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
+use_repo(toolchains, "zig_sdk")
+
+register_toolchains(
+    "@zig_sdk//toolchain:linux_arm64_gnu.2.35",
+    "@zig_sdk//toolchain:linux_amd64_gnu.2.35",
+)
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(
     is_default = True,
-    # You must pin the Python version to the one used for rules_ros2_pip_deps_numpy_headers and current_py_cc_headers in rules_ros2.
+    # You must pin the Python version to the one used for rules_ros2_py_deps_numpy_headers and current_py_cc_headers in rules_ros2.
     # Otherwise you will get errors at analysis time like:
-    #     configurable attribute "actual" in @@rules_python~~pip~rules_ros2_pip_deps//numpy:_no_matching_repository doesn't match this configuration: No matching wheel for current configuration's Python version.
+    #     configurable attribute "actual" in @@rules_python~~pip~rules_ros2_py_deps//numpy:_no_matching_repository doesn't match this configuration: No matching wheel for current configuration's Python version.
     #     The current build configuration's Python version doesn't match any of the Python wheels available for this distribution.
     python_version = "3.12",
 )

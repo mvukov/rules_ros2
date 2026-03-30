@@ -14,7 +14,6 @@ load(
 )
 load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
 load("@rules_python//python:defs.bzl", "py_library")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 ros2_cpp_library(
     name = "rosbag2_storage",
@@ -428,6 +427,6 @@ py_library(
         ":ros2bag_sqlite3_cli",
         ":rosbag2_py",
         "@ros2cli",
-        requirement("pyyaml"),
+        "@rules_ros2_py_deps//:pyyaml",
     ],
 )

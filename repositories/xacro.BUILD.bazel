@@ -2,7 +2,6 @@
 """
 
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 py_library(
     name = "xacro",
@@ -10,7 +9,7 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         "@ros2_ament_index//:ament_index_python",
-        requirement("pyyaml"),
+        "@rules_ros2_py_deps//:pyyaml",
     ],
 )
 

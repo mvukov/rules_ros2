@@ -96,11 +96,11 @@ py_binary(
 whl_filegroup(
     name = "numpy_includes",
     pattern = "numpy/core/include/numpy",
-    whl = "@rules_ros2_pip_deps//numpy:whl",
+    whl = "@rules_ros2_py_deps//numpy:wheel",
 )
 
 cc_library(
-    name = "rules_ros2_pip_deps_numpy_headers",
+    name = "rules_ros2_py_deps_numpy_headers",
     hdrs = [":numpy_includes"],
     includes = ["numpy_includes/numpy/core/include"],
     visibility = ["//visibility:public"],

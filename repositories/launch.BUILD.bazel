@@ -2,7 +2,6 @@
 """
 
 load("@rules_python//python:defs.bzl", "py_library")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 py_library(
     name = "launch",
@@ -13,7 +12,7 @@ py_library(
     deps = [
         "@osrf_pycommon",
         "@ros2_ament_index//:ament_index_python",
-        requirement("lark_parser"),
+        "@rules_ros2_py_deps//:lark-parser",
     ],
 )
 
@@ -27,8 +26,8 @@ py_library(
         ":launch_testing",
         "@osrf_pycommon",
         "@ros2_ament_index//:ament_index_python",
-        requirement("pytest"),
-        requirement("pyyaml"),
+        "@rules_ros2_py_deps//:pytest",
+        "@rules_ros2_py_deps//:pyyaml",
     ],
 )
 
@@ -41,7 +40,7 @@ py_library(
         ":launch",
         "@osrf_pycommon",
         "@ros2_ament_index//:ament_index_python",
-        requirement("pytest"),
+        "@rules_ros2_py_deps//:pytest",
     ],
 )
 

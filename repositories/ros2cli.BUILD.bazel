@@ -2,7 +2,6 @@
 """
 
 load("@rules_python//python:defs.bzl", "py_library")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 py_library(
     name = "ros2cli",
@@ -11,9 +10,9 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         "@ros2_rclpy//:rclpy",
-        requirement("packaging"),
-        requirement("psutil"),
-        requirement("types-pkg-resources"),
+        "@rules_ros2_py_deps//:packaging",
+        "@rules_ros2_py_deps//:psutil",
+        "@rules_ros2_py_deps//:types-pkg-resources",
     ],
 )
 
@@ -24,9 +23,9 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         "@ros2_ament_index//:ament_index_python",
-        requirement("catkin_pkg"),
-        requirement("empy"),
-        requirement("types-pkg-resources"),
+        "@rules_ros2_py_deps//:catkin-pkg",
+        "@rules_ros2_py_deps//:empy",
+        "@rules_ros2_py_deps//:types-pkg-resources",
     ],
 )
 
@@ -38,9 +37,9 @@ py_library(
     deps = [
         "@ros2_rclpy//:rclpy",
         "@ros2_rosidl_runtime_py//:rosidl_runtime_py",
-        requirement("numpy"),
-        requirement("pyyaml"),
-        requirement("argcomplete"),
+        "@rules_ros2_py_deps//:numpy",
+        "@rules_ros2_py_deps//:pyyaml",
+        "@rules_ros2_py_deps//:argcomplete",
     ],
 )
 
@@ -63,7 +62,7 @@ py_library(
         ":ros2cli",
         "@ros2_rclpy//:rclpy",
         "@ros2_rosidl_runtime_py//:rosidl_runtime_py",
-        requirement("pyyaml"),
+        "@rules_ros2_py_deps//:pyyaml",
     ],
 )
 

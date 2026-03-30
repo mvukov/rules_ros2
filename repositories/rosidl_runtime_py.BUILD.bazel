@@ -2,7 +2,6 @@
 """
 
 load("@rules_python//python:defs.bzl", "py_library")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 py_library(
     name = "rosidl_runtime_py",
@@ -12,7 +11,7 @@ py_library(
     deps = [
         "@ros2_ament_index//:ament_index_python",
         "@ros2_rosidl//:rosidl_parser",
-        requirement("numpy"),
-        requirement("pyyaml"),
+        "@rules_ros2_py_deps//:numpy",
+        "@rules_ros2_py_deps//:pyyaml",
     ],
 )

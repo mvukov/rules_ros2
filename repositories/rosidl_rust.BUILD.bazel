@@ -3,7 +3,6 @@
 
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load("@rules_python//python:defs.bzl", "py_binary")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 GENERATOR_APP_PY = "rosidl_generator_rs_app.py"
 
@@ -23,7 +22,7 @@ py_binary(
     legacy_create_init = False,
     visibility = ["//visibility:public"],
     deps = [
-        requirement("empy"),
+        "@rules_ros2_py_deps//:empy",
         "@ros2_rosidl//:rosidl_cmake",
         "@ros2_rosidl//:rosidl_parser",
         "@ros2_rosidl//:rosidl_pycommon",

@@ -8,7 +8,6 @@ load(
 )
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_c_library")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 _GENERATE_LOGGING_MACROS_PY = "@com_github_mvukov_rules_ros2//repositories:generate_rcutils_logging_macros.py"
 
@@ -16,7 +15,7 @@ py_library(
     name = "logging_generator",
     srcs = ["rcutils/logging.py"],
     visibility = ["//visibility:public"],
-    deps = [requirement("empy")],
+    deps = ["@rules_ros2_py_deps//:empy"],
 )
 
 py_binary(
@@ -25,7 +24,7 @@ py_binary(
     main = _GENERATE_LOGGING_MACROS_PY,
     deps = [
         ":logging_generator",
-        requirement("empy"),
+        "@rules_ros2_py_deps//:empy",
     ],
 )
 

@@ -3,7 +3,6 @@
 
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
 load("@rules_python//python:defs.bzl", "py_test")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_deps = None, use_pytest = False, **kwargs):
     """ Defines a ROS 2 test.
@@ -80,9 +79,9 @@ def _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, idl_deps, **k
         args = kwargs.pop("args", []) + ["$(rootpath :%s)" % launch_file],
         deps = [
             "@ros2_launch//:launch_pytest",
-            requirement("coverage"),
-            requirement("pytest"),
-            requirement("pytest-cov"),
+            Label("@rules_ros2_py_deps//:coverage"),
+            Label("@rules_ros2_py_deps//:pytest"),
+            Label("@rules_ros2_py_deps//:pytest-cov"),
         ] + deps,
         **kwargs
     )

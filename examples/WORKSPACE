@@ -48,11 +48,11 @@ pip_parse(
 )
 
 load(
-    "@rules_ros2_pip_deps//:requirements.bzl",
-    install_rules_ros2_pip_deps = "install_deps",
+    "@rules_ros2_py_deps//:requirements.bzl",
+    install_rules_ros2_py_deps = "install_deps",
 )
 
-install_rules_ros2_pip_deps()
+install_rules_ros2_py_deps()
 
 # Below is an optional setup for Rust support for ROS 2.
 

@@ -2,7 +2,6 @@ load("@com_github_mvukov_rules_ros2//ros2:bag.bzl", "ros2_bag")
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
 load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_test")
 load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 ros2_cpp_binary(
     name = "publisher",
@@ -55,7 +54,7 @@ ros2_bag(
             ":recorder",
         ],
         tags = ["cpu:2"],
-        deps = [requirement("pyyaml")],
+        deps = ["@rules_ros2_py_deps//:pyyaml"],
     )
     for storage_id in [
         "mcap",
@@ -73,6 +72,6 @@ ros2_py_test(
         "@ros2_common_interfaces//:py_nav_msgs",
         "@ros2_rclpy//:rclpy",
         "@ros2_rosbag2//:rosbag2_py",
-        requirement("pytest"),
+        "@rules_ros2_py_deps//:pytest",
     ],
 )
