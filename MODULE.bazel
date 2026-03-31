@@ -54,6 +54,11 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
 
 [
     pip.parse(
+        experimental_index_url = "https://pypi.org/simple",
+        experimental_target_platforms = [
+            "cp{}_linux_aarch64".format(python_version.replace(".", "")),
+            "cp{}_linux_x86_64".format(python_version.replace(".", "")),
+        ],
         hub_name = "rules_ros2_pip_deps",
         python_version = python_version,
         requirements_lock = "//:requirements_lock.txt",
