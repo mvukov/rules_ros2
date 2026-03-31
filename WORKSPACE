@@ -19,20 +19,35 @@ python_register_toolchains(
     python_version = "3.12",
 )
 
-load("@rules_python//python:pip.bzl", "pip_parse")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-pip_parse(
-    name = "rules_ros2_pip_deps",
-    python_interpreter_target = "@rules_ros2_python_3_12_host//:python",
-    requirements_lock = "@com_github_mvukov_rules_ros2//:requirements_lock.txt",
+http_archive(
+    name = "rules_pycross",
+    sha256 = "4acc6eb0f04baf94e6a864e6a199a050e9465967b8b8e900523cc2f4214e7937",
+    strip_prefix = "rules_pycross-0.8.1",
+    url = "https://github.com/jvolkman/rules_pycross/releases/download/v0.8.1/rules_pycross-v0.8.1.tar.gz",
+)
+
+load("@rules_pycross//pycross:repositories.bzl", "rules_pycross_dependencies")
+
+rules_pycross_dependencies()
+
+load("@rules_pycross//pycross:workspace.bzl", "lock_repo_model_poetry", "pycross_lock_repo")
+
+pycross_lock_repo(
+    name = "rules_ros2_py_deps",
+    lock_model = lock_repo_model_poetry(
+        lock_file = "@com_github_mvukov_rules_ros2//:poetry.lock",
+        project_file = "@com_github_mvukov_rules_ros2//:pyproject.toml",
+    ),
 )
 
 load(
-    "@rules_ros2_pip_deps//:requirements.bzl",
-    install_rules_ros2_pip_deps = "install_deps",
+    "@rules_ros2_py_deps//:requirements.bzl",
+    install_rules_ros2_py_deps = "install_deps",
 )
 
-install_rules_ros2_pip_deps()
+install_rules_ros2_py_deps()
 
 # Below is an optional setup for Rust support for ROS 2.
 
