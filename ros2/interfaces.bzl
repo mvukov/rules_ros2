@@ -17,8 +17,6 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "C_COPTS")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
-load("@rules_cc//cc/common:cc_common.bzl", "cc_common")
-load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 load("@rules_python//python:defs.bzl", "PyInfo", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
@@ -49,11 +47,11 @@ def _ros2_interface_library_impl(ctx):
 
 ros2_interface_library = rule(
     attrs = {
-        "deps": attr.label_list(providers = [Ros2InterfaceInfo]),
         "srcs": attr.label_list(
             allow_files = [".action", ".idl", ".msg", ".srv"],
             mandatory = True,
         ),
+        "deps": attr.label_list(providers = [Ros2InterfaceInfo]),
     },
     implementation = _ros2_interface_library_impl,
     provides = [Ros2InterfaceInfo],
@@ -478,20 +476,6 @@ c_generator_aspect = aspect(
     implementation = _c_generator_aspect_impl,
     attr_aspects = ["deps"],
     attrs = {
-        "_c_copts": attr.string_list(
-            default = C_COPTS,
-        ),
-        "_c_deps": attr.label_list(
-            default = [
-                Label("@ros2_rosidl//:rosidl_runtime_c"),
-                Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
-                Label("@ros2_rosidl_typesupport//:rosidl_typesupport_c"),
-            ],
-            providers = [CcInfo],
-        ),
-        "_cc_toolchain": attr.label(
-            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
-        ),
         "_interface_generator": attr.label(
             default = Label("@ros2_rosidl//:rosidl_generator_c_app"),
             executable = True,
@@ -509,6 +493,9 @@ c_generator_aspect = aspect(
             executable = True,
             cfg = "exec",
         ),
+        "_typesupport_templates": attr.label(
+            default = Label("@ros2_rosidl_typesupport//:rosidl_typesupport_generator_c_templates"),
+        ),
         "_typesupport_introspection_generator": attr.label(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_generator_c"),
             executable = True,
@@ -521,8 +508,19 @@ c_generator_aspect = aspect(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_c/resource/rosidl_typesupport_introspection_c__visibility_control.h.in"),
             allow_single_file = True,
         ),
-        "_typesupport_templates": attr.label(
-            default = Label("@ros2_rosidl_typesupport//:rosidl_typesupport_generator_c_templates"),
+        "_c_copts": attr.string_list(
+            default = C_COPTS,
+        ),
+        "_c_deps": attr.label_list(
+            default = [
+                Label("@ros2_rosidl//:rosidl_runtime_c"),
+                Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
+                Label("@ros2_rosidl_typesupport//:rosidl_typesupport_c"),
+            ],
+            providers = [CcInfo],
+        ),
+        "_cc_toolchain": attr.label(
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
     required_providers = [Ros2InterfaceInfo],
@@ -575,11 +573,6 @@ _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING = [
 ]
 
 def _cpp_generator_aspect_impl(target, ctx):
-    if Ros2InterfaceInfo not in target:
-        return [CppGeneratorAspectInfo(
-            cc_info = None,
-            compilation_outputs = [],
-        )]
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
@@ -652,18 +645,6 @@ cpp_generator_aspect = aspect(
     implementation = _cpp_generator_aspect_impl,
     attr_aspects = ["deps"],
     attrs = {
-        "_cc_toolchain": attr.label(
-            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
-        ),
-        "_cpp_deps": attr.label_list(
-            default = [
-                Label("@ros2_rosidl//:rosidl_runtime_cpp"),
-                Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
-                Label("@ros2_rosidl//:rosidl_typesupport_introspection_cpp"),
-                Label("@ros2_rosidl_typesupport//:rosidl_typesupport_cpp"),
-            ],
-            providers = [CcInfo],
-        ),
         "_interface_generator": attr.label(
             default = Label("@ros2_rosidl//:rosidl_generator_cpp_app"),
             executable = True,
@@ -681,6 +662,9 @@ cpp_generator_aspect = aspect(
             executable = True,
             cfg = "exec",
         ),
+        "_typesupport_templates": attr.label(
+            default = Label("@ros2_rosidl_typesupport//:rosidl_typesupport_generator_cpp_templates"),
+        ),
         "_typesupport_introspection_generator": attr.label(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_generator_cpp"),
             executable = True,
@@ -689,10 +673,20 @@ cpp_generator_aspect = aspect(
         "_typesupport_introspection_templates": attr.label(
             default = Label("@ros2_rosidl//:rosidl_typesupport_introspection_generator_cpp_templates"),
         ),
-        "_typesupport_templates": attr.label(
-            default = Label("@ros2_rosidl_typesupport//:rosidl_typesupport_generator_cpp_templates"),
+        "_cpp_deps": attr.label_list(
+            default = [
+                Label("@ros2_rosidl//:rosidl_runtime_cpp"),
+                Label("@ros2_rosidl//:rosidl_typesupport_introspection_c"),
+                Label("@ros2_rosidl//:rosidl_typesupport_introspection_cpp"),
+                Label("@ros2_rosidl_typesupport//:rosidl_typesupport_cpp"),
+            ],
+            providers = [CcInfo],
+        ),
+        "_cc_toolchain": attr.label(
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
+    required_providers = [Ros2InterfaceInfo],
     required_aspect_providers = [IdlAdapterAspectInfo],
     provides = [CppGeneratorAspectInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
@@ -861,8 +855,13 @@ py_generator_aspect = aspect(
     implementation = _py_generator_aspect_impl,
     attr_aspects = ["deps"],
     attrs = {
-        "_cc_toolchain": attr.label(
-            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
+        "_py_interface_generator": attr.label(
+            default = Label("@ros2_rosidl_python//:rosidl_generator_py_app"),
+            executable = True,
+            cfg = "exec",
+        ),
+        "_py_interface_templates": attr.label(
+            default = Label("@ros2_rosidl_python//:rosidl_generator_py_templates"),
         ),
         "_py_ext_c_copts": attr.string_list(
             default = C_COPTS,
@@ -874,13 +873,8 @@ py_generator_aspect = aspect(
             ],
             providers = [CcInfo],
         ),
-        "_py_interface_generator": attr.label(
-            default = Label("@ros2_rosidl_python//:rosidl_generator_py_app"),
-            executable = True,
-            cfg = "exec",
-        ),
-        "_py_interface_templates": attr.label(
-            default = Label("@ros2_rosidl_python//:rosidl_generator_py_templates"),
+        "_cc_toolchain": attr.label(
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
     required_providers = [Ros2InterfaceInfo],

@@ -104,7 +104,7 @@ def create_interface_struct(target):
 
 def _ros2_interface_collector_aspect_impl(target, ctx):
     direct_interfaces = []
-    if Ros2InterfaceInfo in target:
+    if ctx.rule.kind == "ros2_interface_rule":
         direct_interfaces.append(create_interface_struct(target))
 
     transitive_interfaces = _get_transitive_items(
@@ -126,7 +126,6 @@ ros2_interface_collector_aspect = aspect(
     implementation = _ros2_interface_collector_aspect_impl,
     attr_aspects = _ROS2_COLLECTOR_ATTR_ASPECTS,
     provides = [Ros2InterfaceCollectorAspectInfo],
-    required_aspect_providers = [IdlAdapterAspectInfo],
 )
 
 Ros2IdlPluginAspectInfo = provider(
