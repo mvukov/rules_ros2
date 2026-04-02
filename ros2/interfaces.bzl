@@ -48,7 +48,7 @@ def _ros2_interface_library_impl(ctx):
 ros2_interface_library = rule(
     attrs = {
         "srcs": attr.label_list(
-            allow_files = [".action", ".msg", ".srv"],
+            allow_files = [".action", ".idl", ".msg", ".srv"],
             mandatory = True,
         ),
         "deps": attr.label_list(providers = [Ros2InterfaceInfo]),
@@ -87,10 +87,23 @@ def _to_snake_case(not_snake_case):
 def _get_stem(path):
     return path.basename[:-len(path.extension) - 1]
 
+def _get_idl_submodule_name(path):
+    """For .idl files, we do not know if they are services, actions or messages, so we enforce the convention
+    where the parent directory of the .idl file is the submodule name.
+    For .msg/.srv and other files, return the extension
+    """
+    if path.extension == "idl":
+        return path.dirname.split("/")[-1]
+    else:
+        return path.extension
+
 def _run_adapter(ctx, package_name, srcs):
+    non_idl_srcs = [src for src in srcs if src.extension != "idl"]
+    idl_srcs = [src for src in srcs if src.extension == "idl"]
+
     adapter_arguments = struct(
         package_name = package_name,
-        non_idl_tuples = [":{}".format(src.path) for src in srcs],
+        non_idl_tuples = [":{}".format(src.path) for src in non_idl_srcs],
     )
 
     adapter_arguments_file = ctx.actions.declare_file(
@@ -103,13 +116,33 @@ def _run_adapter(ctx, package_name, srcs):
     output_dir = adapter_map.dirname
 
     idl_files = []
+    generated_idl_files = []
     idl_tuples = []
-    for src in srcs:
+
+    for src in idl_srcs:
+        idl_submodule_name = _get_idl_submodule_name(src)
+        stem = _get_stem(src)
+
+        new_file = ctx.actions.declare_file("{}/{}/{}.idl".format(package_name, idl_submodule_name, stem))
+        idl_files.append(new_file)
+        ctx.actions.run_shell(
+            inputs = [src],
+            outputs = [new_file],
+            command = "cp {} {}".format(src.path, new_file.path),
+        )
+
+        idl_tuples.append(
+            "{}:{}/{}.idl".format(output_dir, idl_submodule_name, stem),
+        )
+
+    for src in non_idl_srcs:
         extension = src.extension
         stem = _get_stem(src)
-        idl_files.append(ctx.actions.declare_file(
+
+        generated_idl_files.append(ctx.actions.declare_file(
             "{}/{}/{}.idl".format(package_name, extension, stem),
         ))
+
         idl_tuples.append(
             "{}:{}/{}.idl".format(output_dir, extension, stem),
         )
@@ -124,29 +157,36 @@ def _run_adapter(ctx, package_name, srcs):
     adapter_cmd_args.add(adapter_map, format = "--output-file=%s")
 
     ctx.actions.run(
-        inputs = srcs + [adapter_arguments_file],
-        outputs = [adapter_map] + idl_files,
+        inputs = non_idl_srcs + [adapter_arguments_file],
+        outputs = [adapter_map] + generated_idl_files,
         executable = ctx.executable._adapter,
         arguments = [adapter_cmd_args],
         mnemonic = "Ros2IdlAdapter",
         progress_message = "Generating IDL files for %{label}",
     )
 
-    return idl_files, idl_tuples
+    return idl_files, generated_idl_files, idl_tuples
 
 IdlAdapterAspectInfo = provider("TBD", fields = [
     "idl_files",
     "idl_tuples",
+    "idl_deps",
+    "generated_idl_files",
 ])
 
 def _idl_adapter_aspect_impl(target, ctx):
     package_name = target.label.name
     srcs = target[Ros2InterfaceInfo].info.srcs
-    idl_files, idl_tuples = _run_adapter(ctx, package_name, srcs)
+    idl_files, generated_idl_files, idl_tuples = _run_adapter(ctx, package_name, srcs)
+
+    idl_deps = depset(transitive = [depset(dep[IdlAdapterAspectInfo].idl_files) for dep in ctx.rule.attr.deps])
+
     return [
         IdlAdapterAspectInfo(
-            idl_files = idl_files,
+            idl_files = idl_files + generated_idl_files,
             idl_tuples = idl_tuples,
+            idl_deps = idl_deps,
+            generated_idl_files = generated_idl_files,
         ),
     ]
 
@@ -206,13 +246,13 @@ def run_generator(
 
     generator_outputs = []
     for src in srcs:
-        extension = src.extension
+        idl_submodule_name = _get_idl_submodule_name(src)
         stem = _get_stem(src)
         snake_case_stem = _to_snake_case(stem)
         for t in output_mapping:
             relative_file = "{}/{}/{}".format(
                 package_name,
-                extension,
+                idl_submodule_name,
                 t % snake_case_stem,
             )
             generator_outputs.append(ctx.actions.declare_file(relative_file))
