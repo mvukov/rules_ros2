@@ -126,6 +126,7 @@ ros2_interface_collector_aspect = aspect(
     implementation = _ros2_interface_collector_aspect_impl,
     attr_aspects = _ROS2_COLLECTOR_ATTR_ASPECTS,
     provides = [Ros2InterfaceCollectorAspectInfo],
+    required_aspect_providers = [IdlAdapterAspectInfo],
 )
 
 Ros2IdlPluginAspectInfo = provider(
