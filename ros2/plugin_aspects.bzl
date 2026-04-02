@@ -104,7 +104,7 @@ def create_interface_struct(target):
 
 def _ros2_interface_collector_aspect_impl(target, ctx):
     direct_interfaces = []
-    if ctx.rule.kind == "ros2_interface_rule":
+    if ctx.rule.kind == "ros2_interface_library":
         direct_interfaces.append(create_interface_struct(target))
 
     transitive_interfaces = _get_transitive_items(
