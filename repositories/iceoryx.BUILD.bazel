@@ -48,7 +48,6 @@ cmake(
         {
             ("@platforms//os:linux", "@platforms//os:macos"): [
                 "-lacl",
-                "-latomic",
                 "-lpthread",
                 "-lrt",
             ],
