@@ -12,8 +12,7 @@ filegroup(
 cmake(
     name = "yaml-cpp",
     build_args = [
-        "--",
-        "-j4",
+        "--parallel",
     ],
     cache_entries = {
         "BUILD_SHARED_LIBS": "OFF",
