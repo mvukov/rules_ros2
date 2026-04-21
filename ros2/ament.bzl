@@ -40,16 +40,55 @@ _RESOURCE_INDEX_PATH = "share/ament_index/resource_index"
 _PACKAGES_PATH = paths.join(_RESOURCE_INDEX_PATH, "packages")
 _PACKAGE_XML = "package.xml"
 
+def _write_package_marker(ctx, prefix_path, package_name, content = ""):
+    """Writes a marker file for the package in the ament index.
+
+    The packages resource type should be shallow and contain marker files (not directories)
+    named after each package. The marker file can be empty or contain optional content.
+
+    See: https://github.com/ament/ament_cmake/blob/jazzy/ament_cmake_core/doc/resource_index.md
+
+    Args:
+        ctx: The rule context.
+        prefix_path: The prefix path for the ament setup.
+        package_name: The name of the package.
+        content: Optional content for the marker file. Defaults to empty string.
+
+    Returns:
+        The marker file object.
+    """
+    marker_file = ctx.actions.declare_file(
+        paths.join(prefix_path, _PACKAGES_PATH, package_name),
+    )
+    ctx.actions.write(marker_file, content)
+    return marker_file
+
 def _write_package_xml(ctx, prefix_path, package_name):
+    """Writes a package.xml file for the package.
+
+    Creates the package.xml file at share/<package_name>/package.xml
+
+    Args:
+        ctx: The rule context.
+        prefix_path: The prefix path for the ament setup.
+        package_name: The name of the package.
+
+    Returns:
+        The package.xml file object.
+    """
     package_xml = ctx.actions.declare_file(
-        paths.join(prefix_path, _PACKAGES_PATH, package_name, _PACKAGE_XML),
+        paths.join(prefix_path, "share", package_name, _PACKAGE_XML),
     )
     ctx.actions.write(package_xml, _PACKAGE_XML_TEMPLATE.format(package_name = package_name))
     return package_xml
 
 def get_plugins_xml_path(plugin_package, plugin_target_name):
-    """Returns prefix-path relative plugins XML file."""
-    return paths.join(_PACKAGES_PATH, plugin_package, plugin_target_name + "_plugins.xml")
+    """Returns prefix-path relative plugins XML file.
+
+    Plugin XML files should be stored in the package's share directory,
+    not in the resource_index directory.
+    """
+    return paths.join("share", plugin_package, plugin_target_name + "_plugins.xml")
 
 def _write_plugin_manifest(ctx, prefix_path, base_package, plugin_package, plugin_target_name):
     manifest = ctx.actions.declare_file(
@@ -126,13 +165,15 @@ def _ros2_ament_setup_rule_impl(ctx):
 
         base_package = _get_package_name(types_to_bases_and_names.values()[0][0])
         if base_package not in registered_packages:
+            outputs.append(_write_package_marker(ctx, prefix_path, base_package))
             outputs.append(_write_package_xml(ctx, prefix_path, base_package))
             registered_packages.append(base_package)
 
         plugin_package = _get_package_name(types_to_bases_and_names.keys()[0])
         if plugin_package not in registered_packages:
+            outputs.append(_write_package_marker(ctx, prefix_path, plugin_package))
             outputs.append(_write_package_xml(ctx, prefix_path, plugin_package))
-            registered_packages.append(base_package)
+            registered_packages.append(plugin_package)
 
         outputs.append(_write_plugin_manifest(
             ctx,
@@ -169,6 +210,7 @@ def _ros2_ament_setup_rule_impl(ctx):
         package_name = plugin.package_name
 
         if package_name not in registered_packages:
+            outputs.append(_write_package_marker(ctx, prefix_path, package_name))
             outputs.append(_write_package_xml(ctx, prefix_path, package_name))
             registered_packages.append(package_name)
         dynamic_library = ctx.actions.declare_file(
@@ -196,6 +238,7 @@ def _ros2_ament_setup_rule_impl(ctx):
     for idl in idls:
         package_name = idl.package_name
         if package_name not in registered_packages:
+            outputs.append(_write_package_marker(ctx, prefix_path, package_name))
             outputs.append(_write_package_xml(ctx, prefix_path, package_name))
             registered_packages.append(package_name)
         idl_manifest_contents = []
