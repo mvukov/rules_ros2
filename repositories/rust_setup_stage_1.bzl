@@ -45,9 +45,9 @@ def ros2_rust_repositories():
         http_archive,
         name = "ros2_rosidl_runtime_rs",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_runtime_rs.BUILD.bazel",
-        sha256 = "de7254fcbca2f8f77ac196d9419798d6856bb0fbea4f586907bf6a81396692c6",
-        strip_prefix = "rosidl_runtime_rs-0.5.0",
-        url = "https://github.com/ros2-rust/rosidl_runtime_rs/archive/refs/tags/v0.5.0.tar.gz",
+        sha256 = "09efe386464cd5adfe916559c1dace08293ab8dc2e53be6d6efb81f554156e4b",
+        strip_prefix = "rosidl_runtime_rs-0.6.0",
+        url = "https://github.com/ros2-rust/rosidl_runtime_rs/archive/refs/tags/v0.6.0.tar.gz",
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rosidl_runtime.patch"],
     )
