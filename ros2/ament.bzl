@@ -200,17 +200,31 @@ def _ros2_ament_setup_rule_impl(ctx):
             registered_packages.append(package_name)
         idl_manifest_contents = []
         for src in idl.srcs:
-            if src.extension != "msg":
-                continue
-            src_file = ctx.actions.declare_file(
-                paths.join(prefix_path, "share", package_name, "msg", src.basename),
-            )
-            ctx.actions.symlink(
-                output = src_file,
-                target_file = src,
-            )
-            outputs.append(src_file)
-            idl_manifest_contents.append(paths.join("msg", src.basename))
+            if src.extension == "msg" or src.extension == "idl":
+                submodule_name = "msg" if src.extension == "msg" else src.dirname.split("/")[-1]
+                src_file = ctx.actions.declare_file(
+                    paths.join(prefix_path, "share", package_name, submodule_name, src.basename),
+                )
+                ctx.actions.symlink(
+                    output = src_file,
+                    target_file = src,
+                )
+                outputs.append(src_file)
+                idl_manifest_contents.append(paths.join(submodule_name, src.basename))
+
+        # Generated IDL files in the output tree such that the rosbag mcap writer can include them in the metadata.
+        # mcap supports both IDL and msg definitions, but not combinations. Therefore, if any handwritten IDL files are
+        # present, the rosbag writer also needs any generated IDL files it depends on.
+        if idl.generated_idl_files != None:
+            for idl in idl.generated_idl_files:
+                src_file = ctx.actions.declare_file(
+                    paths.join(prefix_path, "share", package_name, idl.dirname.split("/")[-1], idl.basename),
+                )
+                ctx.actions.symlink(
+                    output = src_file,
+                    target_file = idl,
+                )
+                outputs.append(src_file)
 
         idl_manifest = ctx.actions.declare_file(
             paths.join(prefix_path, _RESOURCE_INDEX_PATH, "rosidl_interfaces", package_name),
