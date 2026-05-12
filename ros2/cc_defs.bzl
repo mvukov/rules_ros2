@@ -3,6 +3,7 @@
 
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_exec_launcher", "split_kwargs")
 load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "C_COPTS")
+load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "CPP_LINKOPTS")
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 load("@rules_shell//shell:sh_test.bzl", "sh_test")
@@ -10,11 +11,14 @@ load("@rules_shell//shell:sh_test.bzl", "sh_test")
 def _ros2_cc_target(target, lang, name, ros2_package_name, **kwargs):
     if lang == "c":
         all_copts = C_COPTS
+        all_linkopts = []
     elif lang == "cpp":
         all_copts = []
+        all_linkopts = CPP_LINKOPTS
     else:
         fail("lang must be set to c or cpp!")
     all_copts = all_copts + kwargs.pop("copts", [])
+    all_linkopts = all_linkopts + kwargs.pop("linkopts", [])
 
     ros2_package_name = ros2_package_name or name
     all_local_defines = ["ROS_PACKAGE_NAME=\\\"{}\\\"".format(ros2_package_name)]
@@ -23,6 +27,7 @@ def _ros2_cc_target(target, lang, name, ros2_package_name, **kwargs):
     target(
         name = name,
         copts = all_copts,
+        linkopts = all_linkopts,
         local_defines = all_local_defines,
         **kwargs
     )
