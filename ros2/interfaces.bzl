@@ -154,6 +154,7 @@ def _idl_adapter_aspect_impl(target, ctx):
 idl_adapter_aspect = aspect(
     implementation = _idl_adapter_aspect_impl,
     attr_aspects = ["deps"],
+    required_providers = [Ros2InterfaceInfo],
     attrs = {
         "_adapter": attr.label(
             default = Label("@ros2_rosidl//:rosidl_adapter_app"),
