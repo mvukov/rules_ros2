@@ -333,3 +333,14 @@ def ros2_repositories():
         strip_prefix = "rcl_logging_syslog-e63257f2d5ca693f286bbcedf2b23720675b7f73",
         urls = ["https://github.com/fujitatomoya/rcl_logging_syslog/archive/e63257f2d5ca693f286bbcedf2b23720675b7f73.zip"],
     )
+
+def proto2ros_repository():
+    """Fetches proto2ros from GitHub."""
+    maybe(
+        http_archive,
+        name = "proto2ros",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:proto2ros.BUILD.bazel",
+        sha256 = "31fbebb35056266f2959fda4291862f063b21ea29a8209c5d87cde49443e71bd",
+        strip_prefix = "proto2ros-0cc24714f99d1538d20fc25c9312d6199c3ce662",
+        url = "https://github.com/bdaiinstitute/proto2ros/archive/0cc24714f99d1538d20fc25c9312d6199c3ce662.tar.gz",
+    )

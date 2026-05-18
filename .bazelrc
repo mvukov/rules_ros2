@@ -55,6 +55,8 @@ build:clang --linkopt="-fuse-ld=lld"
 # Work around https://github.com/bazelbuild/rules_rust/issues/2125
 build --action_env=CARGO_BAZEL_REPIN=1
 
+common --enable_bzlmod --noenable_workspace
+
 # Load any settings specific to the current user.
 # user.bazelrc should appear in .gitignore so that settings are not shared with
 # team members. This needs to be last statement in this config,
