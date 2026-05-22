@@ -37,7 +37,7 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, testonly, **kwargs):
         ament_setup_deps = ament_setup_deps,
         template = "@com_github_mvukov_rules_ros2//ros2:launch_exec.py.tpl",
         substitutions = {
-            "{entry_point}": "$(rootpath {})".format(target_impl_symlink),
+            "{entry_point}": "$(rlocationpath {})".format(target_impl_symlink),
         },
         tags = ["manual"],
         data = [target_impl_symlink],
@@ -50,6 +50,7 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, testonly, **kwargs):
         srcs = [launcher],
         main = launcher + ".py",
         data = [target_impl_symlink],
+        deps = ["@rules_python//python/runfiles"],
         **launcher_target_kwargs
     )
 

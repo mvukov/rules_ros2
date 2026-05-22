@@ -32,7 +32,7 @@ def ros2_rust_test(name, **kwargs):
         name = launcher,
         template = "@com_github_mvukov_rules_ros2//ros2:launch_exec.sh.tpl",
         substitutions = {
-            "{entry_point}": "$(rootpath {})".format(target_impl),
+            "{entry_point}": "$(rlocationpath {})".format(target_impl),
         },
         tags = ["manual"],
         data = [target_impl],
@@ -43,5 +43,6 @@ def ros2_rust_test(name, **kwargs):
         name = name,
         srcs = [launcher],
         data = [target_impl],
+        use_bash_launcher = True,
         **launcher_target_kwargs
     )

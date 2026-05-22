@@ -87,7 +87,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, idl_deps, **kw
         ament_setup_deps = ament_setup_deps,
         template = "@com_github_mvukov_rules_ros2//ros2:launch_exec.sh.tpl",
         substitutions = {
-            "{entry_point}": "$(rootpath {})".format(target_impl),
+            "{entry_point}": "$(rlocationpath {})".format(target_impl),
         },
         tags = ["manual"],
         data = [target_impl],
@@ -100,6 +100,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, idl_deps, **kw
         name = name,
         srcs = [launcher],
         data = [target_impl],
+        use_bash_launcher = True,
         **launcher_target_kwargs
     )
 
