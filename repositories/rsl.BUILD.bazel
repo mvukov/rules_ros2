@@ -1,0 +1,16 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "rsl",
+    srcs = glob(["src/**/*.cpp"]),
+    hdrs = glob(["include/**/*.hpp"]),
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@cpp_polyfills//:tcb_span",
+        "@cpp_polyfills//:tl_expected",
+        "@eigen",
+        "@fmt",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)

@@ -1,0 +1,48 @@
+diff --git a/include/rsl/export.hpp b/include/rsl/export.hpp
+new file mode 100644
+index 0000000..ef35785
+--- /dev/null
++++ b/include/rsl/export.hpp
+@@ -0,0 +1,42 @@
++
++#ifndef RSL_EXPORT_H
++#define RSL_EXPORT_H
++
++#ifdef RSL_STATIC_DEFINE
++#  define RSL_EXPORT
++#  define RSL_NO_EXPORT
++#else
++#  ifndef RSL_EXPORT
++#    ifdef rsl_EXPORTS
++        /* We are building this library */
++#      define RSL_EXPORT __attribute__((visibility("default")))
++#    else
++        /* We are using this library */
++#      define RSL_EXPORT __attribute__((visibility("default")))
++#    endif
++#  endif
++
++#  ifndef RSL_NO_EXPORT
++#    define RSL_NO_EXPORT __attribute__((visibility("hidden")))
++#  endif
++#endif
++
++#ifndef RSL_DEPRECATED
++#  define RSL_DEPRECATED __attribute__ ((__deprecated__))
++#endif
++
++#ifndef RSL_DEPRECATED_EXPORT
++#  define RSL_DEPRECATED_EXPORT RSL_EXPORT RSL_DEPRECATED
++#endif
++
++#ifndef RSL_DEPRECATED_NO_EXPORT
++#  define RSL_DEPRECATED_NO_EXPORT RSL_NO_EXPORT RSL_DEPRECATED
++#endif
++
++#if 0 /* DEFINE_NO_DEPRECATED */
++#  ifndef RSL_NO_DEPRECATED
++#    define RSL_NO_DEPRECATED
++#  endif
++#endif
++
++#endif /* RSL_EXPORT_H */

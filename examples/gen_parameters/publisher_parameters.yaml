@@ -1,0 +1,16 @@
+# This name will become a C++ namespace and a Python class
+publisher:
+  names:
+    type: string_array
+    default_value: ["John Doe", "Jane Doe"]
+    description: "A list of names"
+  publish_frequency_hz:
+    type: double
+    description: "The frequency in Hz at which to publish messages"
+    default_value: 2.0
+    validation:
+      bounds<>: [0.0, 1000.0]
+  publish_topic:
+    type: string
+    default_value: "names"
+    description: "The topic name to use for publishing the topic"

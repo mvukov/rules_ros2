@@ -1,3 +1,4 @@
+Jinja2~=3.1.6
 catkin_pkg
 coverage
 empy==3.3.*
@@ -8,4 +9,5 @@ psutil
 pytest
 pytest-cov
 pyyaml
+typeguard~=4.4.4
 types-pkg-resources==0.1.3

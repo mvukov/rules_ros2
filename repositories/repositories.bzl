@@ -333,3 +333,32 @@ def ros2_repositories():
         strip_prefix = "rcl_logging_syslog-e63257f2d5ca693f286bbcedf2b23720675b7f73",
         urls = ["https://github.com/fujitatomoya/rcl_logging_syslog/archive/e63257f2d5ca693f286bbcedf2b23720675b7f73.zip"],
     )
+
+    maybe(
+        http_archive,
+        name = "generate_parameter_library",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:generate_parameter_library.BUILD.bazel",
+        url = "https://github.com/PickNikRobotics/generate_parameter_library/archive/0.5.0.tar.gz",
+        strip_prefix = "generate_parameter_library-0.5.0",
+        sha256 = "974511231e5c5691d2a643cb0c84129b8470408326cc675f74d2ba8c86f3d8bf",
+    )
+
+    maybe(
+        http_archive,
+        name = "rsl",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rsl.BUILD.bazel",
+        url = "https://github.com/PickNikRobotics/rsl/archive/1.2.0.tar.gz",
+        strip_prefix = "RSL-1.2.0",
+        sha256 = "8f276f620a8957f7999df6f9fa3c52d6187e23813cc31f7873028c69a37b15b9",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rsl_exports.patch"],
+    )
+
+    maybe(
+        http_archive,
+        name = "cpp_polyfills",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:cpp_polyfills.BUILD.bazel",
+        url = "https://github.com/PickNikRobotics/cpp_polyfills/archive/fdabedce1e4eecbb628a87ec45873ca7839432df.tar.gz",
+        strip_prefix = "cpp_polyfills-fdabedce1e4eecbb628a87ec45873ca7839432df",
+        sha256 = "e33a9376b5a768ed734acd8d6be85423248033a322f30f30b67f935f3419a8e8",
+    )
