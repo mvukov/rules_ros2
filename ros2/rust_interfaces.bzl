@@ -27,6 +27,7 @@ load(
     "run_generator",
     "type_description_aspect",
 )
+load("@rules_cc//cc:defs.bzl", "cc_common")
 load("@rules_rust//rust:defs.bzl", "rust_common")
 load("@rules_rust//rust/private:rustc.bzl", "rustc_compile_action")
 load(

@@ -26,4 +26,5 @@ cmake(
     lib_source = ":all_srcs",
     out_static_libs = ["libyaml-cpp.a"],
     visibility = ["//visibility:public"],
+    set_file_prefix_map = True,
 )

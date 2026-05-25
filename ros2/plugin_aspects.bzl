@@ -22,6 +22,7 @@ load(
     "Ros2InterfaceInfo",
     "TypeDescriptionAspectInfo",
 )
+load("@rules_cc//cc:defs.bzl", "cc_common")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 Ros2PluginInfo = provider(
