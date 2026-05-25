@@ -245,10 +245,8 @@ def _field_conversions(message, proto_source, proto_types_to_ros_pkgs):
             sys.exit(f'Error: {proto_source}: field "{name}" has unknown '
                      f'field type value {ftype}.')
 
-        cpp_type = _SCALAR_CPP_TYPE[ftype]
-
         if is_repeated:
-            to_ros.append(f'  ros->{name} = std::vector<{cpp_type}>'
+            to_ros.append(f'  ros->{name}.assign'
                           f'(proto.{name}().begin(), proto.{name}().end());')
             from_ros.append(f'  proto->mutable_{name}()->Assign'
                             f'(ros.{name}.begin(), ros.{name}.end());')
