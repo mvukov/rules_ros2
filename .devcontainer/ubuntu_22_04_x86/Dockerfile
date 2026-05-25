@@ -1,5 +1,5 @@
 # Keep in sync with the image used for CI in .github/workflows/main.yml.
-FROM mvukov/bazel-builder:commit-32e5440bfdfa795c7fdef8885374e5cbbb9976b5
+FROM mvukov/bazel-builder:commit-50c39d97108084a6128062756da32da98be9c8c9
 
 ARG DEBIAN_FRONTEND=noninteractive
 
