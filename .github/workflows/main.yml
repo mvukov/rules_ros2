@@ -50,7 +50,7 @@ jobs:
     needs: configure
     runs-on: ubuntu-22.04
     container:
-      image: mvukov/bazel-builder:commit-32e5440bfdfa795c7fdef8885374e5cbbb9976b5
+      image: mvukov/bazel-builder:commit-50c39d97108084a6128062756da32da98be9c8c9
       options: --user ${{ needs.configure.outputs.uid_gid }} --privileged
 
     # Run bazel test with gcc and clang in each workspace
