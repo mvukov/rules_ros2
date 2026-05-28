@@ -193,6 +193,13 @@ py_library(
         ":tf2_py/tf2_py/_tf2_py.so",
     ],
     imports = ["tf2_py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":py_tf2_msgs",
+        "@ros2_common_interfaces//:py_geometry_msgs",
+        "@ros2_rclpy//:rclpy",
+        "@ros2_rpyutils//:rpyutils",
+    ],
 )
 
 py_library(
