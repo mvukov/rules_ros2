@@ -1,13 +1,13 @@
-#!{{bash_bin}}
+#!{{sh_bin}}
 
-set -o errexit -o nounset -o pipefail
+set -eu
 
-if [[ ! -z "${BAZEL_TEST:-}" ]]; then
+if [ -n "${BAZEL_TEST:-}" ]; then
   bazel_test_output_dir="${TEST_UNDECLARED_OUTPUTS_DIR:-${TEST_TMPDIR}}"
-  if [[ -z "${ROS_HOME:-}" ]]; then
+  if [ -z "${ROS_HOME:-}" ]; then
     export ROS_HOME="${bazel_test_output_dir}"
   fi
-  if [[ -z "${ROS_LOG_DIR:-}" ]]; then
+  if [ -z "${ROS_LOG_DIR:-}" ]; then
     export ROS_LOG_DIR="${bazel_test_output_dir}"
   fi
 fi

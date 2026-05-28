@@ -17,12 +17,13 @@ exports_files([
     "cc_defs.bzl",
     "interfaces.bzl",
     "launch.bzl",
-    "launch.py.tpl",
-    "launch.sh.tpl",
+    "launch_exec.py.tpl",
+    "launch_exec.sh.tpl",
     "plugin.bzl",
     "py_defs.bzl",
     "pytest_wrapper.py.tpl",
     "ros2_action.py",
+    "ros2_launch.py.tpl",
     "ros2_service.py",
     "ros2_topic.py",
     "rust_defs.bzl",
@@ -58,6 +59,7 @@ config_setting(
 py_library(
     name = "ros2_cmd",
     srcs = ["ros2_cmd.py"],
+    imports = [".."],  # this is supposed to be imported as ros2.ros2_cmd
     visibility = ["//visibility:public"],
     deps = [
         "@ros2cli",

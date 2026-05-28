@@ -16,6 +16,7 @@
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "C_COPTS")
+load("@rules_cc//cc:defs.bzl", "CcInfo", "cc_common")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 load("@rules_python//python:defs.bzl", "PyInfo", "py_library")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
@@ -155,6 +156,7 @@ def _idl_adapter_aspect_impl(target, ctx):
 idl_adapter_aspect = aspect(
     implementation = _idl_adapter_aspect_impl,
     attr_aspects = ["deps"],
+    required_providers = [Ros2InterfaceInfo],
     attrs = {
         "_adapter": attr.label(
             default = Label("@ros2_rosidl//:rosidl_adapter_app"),

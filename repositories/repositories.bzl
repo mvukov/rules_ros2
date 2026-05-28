@@ -16,9 +16,9 @@ def ros2_workspace_repositories():
     maybe(
         http_archive,
         name = "rules_python",
-        sha256 = "2f5c284fbb4e86045c2632d3573fc006facbca5d1fa02976e89dc0cd5488b590",
-        strip_prefix = "rules_python-1.6.3",
-        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/1.6.3.tar.gz",
+        sha256 = "2119ca04726066c53b8f1ff42dffa090ea7f3e42a75679f1cfda937406cf7753",
+        strip_prefix = "rules_python-2.0.2",
+        url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/2.0.2.tar.gz",
     )
 
     maybe(
@@ -67,9 +67,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "pybind11",
         build_file = "@com_github_mvukov_rules_ros2//repositories:pybind11.BUILD.bazel",
-        sha256 = "741633da746b7c738bb71f1854f957b9da660bcd2dce68d71949037f0969d0ca",
-        strip_prefix = "pybind11-3.0.1",
-        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v3.0.1.tar.gz"],
+        sha256 = "74b6a2c2b4573a400cafb6ecbf60c98df300cd3d0041296b913d02b2cbbb2676",
+        strip_prefix = "pybind11-3.0.4",
+        urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v3.0.4.tar.gz"],
     )
 
     maybe(
@@ -220,9 +220,9 @@ def ros2_workspace_repositories():
         http_archive,
         name = "eigen",
         build_file = "@com_github_mvukov_rules_ros2//repositories:eigen.BUILD.bazel",
-        sha256 = "b93c667d1b69265cdb4d9f30ec21f8facbbe8b307cf34c0b9942834c6d4fdbe2",
-        strip_prefix = "eigen-3.4.1",
-        urls = ["https://gitlab.com/libeigen/eigen/-/archive/3.4.1/eigen-3.4.1.tar.gz"],
+        sha256 = "e9c326dc8c05cd1e044c71f30f1b2e34a6161a3b6ecf445d56b53ff1669e3dec",
+        strip_prefix = "eigen-5.0.1",
+        urls = ["https://gitlab.com/libeigen/eigen/-/archive/5.0.1/eigen-5.0.1.tar.gz"],
     )
 
     maybe(
