@@ -50,7 +50,7 @@ py_test(
 ros2_cpp_test(
     name = "test_rclcpp",
     size = "small",
-    srcs = ["test_rclcpp.cpp"],
+    srcs = ["test_rclcpp.cc"],
     deps = ["@ros2_rclcpp//:rclcpp"],
 )
 
