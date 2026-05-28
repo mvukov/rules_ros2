@@ -18,9 +18,5 @@ for file in "$@"; do
 done
 
 if [ "$errors" -gt 0 ]; then
-  echo ""
-  echo "Found $errors file(s) with incorrect C++ extension(s)."
-  echo "  Use .h for C++ header files."
-  echo "  Use .cc for C++ source files."
   exit 1
 fi
