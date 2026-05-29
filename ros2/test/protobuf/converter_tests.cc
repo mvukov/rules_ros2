@@ -184,8 +184,8 @@ TEST(EventConverterTest, ToRos) {
   point_proto_ros_msgs::msg::Event ros;
   point_proto_ros_msgs::proto_converters::ToRos(proto, &ros);
 
-  EXPECT_EQ(ros.stamp.sec, 1234567890);
-  EXPECT_EQ(ros.stamp.nanosec, 500000000u);
+  EXPECT_EQ(ros.stamp.seconds, 1234567890);
+  EXPECT_EQ(ros.stamp.nanos, 500000000);
   EXPECT_EQ(ros.name, "test_event");
   EXPECT_EQ(ros.duration.seconds, 60);
   EXPECT_EQ(ros.duration.nanos, 250000000u);
@@ -193,8 +193,8 @@ TEST(EventConverterTest, ToRos) {
 
 TEST(EventConverterTest, FromRos) {
   point_proto_ros_msgs::msg::Event ros;
-  ros.stamp.sec = 987654321;
-  ros.stamp.nanosec = 123456789u;
+  ros.stamp.seconds = 987654321;
+  ros.stamp.nanos = 123456789;
   ros.name = "from_ros_event";
   ros.duration.seconds = 5;
   ros.duration.nanos = 0u;

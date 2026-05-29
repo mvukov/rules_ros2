@@ -34,13 +34,3 @@ py_binary(
         requirement("empy"),
     ],
 )
-
-ros2_cpp_library(
-    name = "common_runtime",
-    srcs = ["common_runtime.cc"],
-    hdrs = ["common_runtime.h"],
-    deps = [
-        "@com_google_protobuf//:timestamp_cc_proto",
-        "@ros2_rcl_interfaces//:cpp_builtin_interfaces",
-    ],
-)

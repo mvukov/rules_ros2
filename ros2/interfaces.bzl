@@ -16,6 +16,7 @@
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "C_COPTS")
+load("@com_google_protobuf//bazel/common:proto_info.bzl", "ProtoInfo")
 load("@rules_cc//cc:defs.bzl", "CcInfo", "cc_common")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 load("@rules_python//python:defs.bzl", "PyInfo", "py_library")
@@ -156,7 +157,6 @@ def _idl_adapter_aspect_impl(target, ctx):
 idl_adapter_aspect = aspect(
     implementation = _idl_adapter_aspect_impl,
     attr_aspects = ["deps"],
-    required_providers = [Ros2InterfaceInfo],
     attrs = {
         "_adapter": attr.label(
             default = Label("@ros2_rosidl//:rosidl_adapter_app"),
@@ -164,8 +164,8 @@ idl_adapter_aspect = aspect(
             cfg = "exec",
         ),
     },
+    required_providers = [[ProtoInfo], [Ros2InterfaceInfo]],
     required_aspect_providers = [Ros2InterfaceInfo],
-    # required_providers = [Ros2InterfaceInfo],
     provides = [IdlAdapterAspectInfo],
 )
 
@@ -652,11 +652,8 @@ cpp_generator_aspect = aspect(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
-    # required_providers = [Ros2InterfaceInfo],
-    required_aspect_providers = [
-        [Ros2InterfaceInfo],
-        [IdlAdapterAspectInfo],
-    ],
+    required_providers = [[ProtoInfo], [Ros2InterfaceInfo]],
+    required_aspect_providers = [[Ros2InterfaceInfo], [IdlAdapterAspectInfo]],
     provides = [CppGeneratorAspectInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
     fragments = ["cpp"],
