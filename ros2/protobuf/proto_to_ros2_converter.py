@@ -17,7 +17,7 @@ For each proto message the tool emits two free functions in namespace
 ``<ros_package_name>::proto_converters``:
 
   <RosType> ToRos(const <ProtoType>& proto);
-  <ProtoType> FromRos(const <RosType>& ros);
+  <ProtoType> ToProto(const <RosType>& ros);
 
 Limitations mirror those of proto_to_ros2_msg.py:
 - Exactly one message definition per proto file.
@@ -205,12 +205,12 @@ def _field_conversions(message, proto_source, proto_types_to_ros_pkgs):
                 to_ros.append('  }')
                 from_ros.append(f'  for (const auto& item : ros.{name}) {{')
                 from_ros.append(
-                    f'    {conv}::FromRos(item, proto->add_{name}());')
+                    f'    {conv}::ToProto(item, proto->add_{name}());')
                 from_ros.append('  }')
             else:
                 to_ros.append(f'  {conv}::ToRos(proto.{name}(), &ros->{name});')
                 from_ros.append(
-                    f'  {conv}::FromRos(ros.{name}, proto->mutable_{name}());')
+                    f'  {conv}::ToProto(ros.{name}, proto->mutable_{name}());')
             continue
 
         # ---- scalar (all remaining types) -----------------------------------
@@ -245,7 +245,7 @@ namespace @(ctx['ros_package_name'])::proto_converters {
 @[for msg in ctx['messages']]
 void ToRos(const @(msg['proto_type'])& proto, @(msg['ros_type'])* ros);
 
-void FromRos(const @(msg['ros_type'])& ros, @(msg['proto_type'])* proto);
+void ToProto(const @(msg['ros_type'])& ros, @(msg['proto_type'])* proto);
 @[end for]
 
 }  // namespace @(ctx['ros_package_name'])::proto_converters
@@ -265,7 +265,7 @@ void ToRos(const @(msg['proto_type'])& proto, @(msg['ros_type'])* ros) {
 @(msg['to_ros_body'])
 }
 
-void FromRos(const @(msg['ros_type'])& ros, @(msg['proto_type'])* proto) {
+void ToProto(const @(msg['ros_type'])& ros, @(msg['proto_type'])* proto) {
 @(msg['from_ros_body'])
 }
 @[end for]

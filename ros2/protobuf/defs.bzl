@@ -252,6 +252,7 @@ cpp_proto_ros2_converter_aspect = aspect(
     required_aspect_providers = [
         [Ros2InterfaceInfo],
         [CppGeneratorAspectInfo],
+        # cc_proto_aspect returns CcInfo.
         [CcInfo],
     ],
     provides = [CppProtoConverterAspectInfo],
