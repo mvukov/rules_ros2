@@ -16,8 +16,8 @@
 For each proto message the tool emits two free functions in namespace
 ``<ros_package_name>::proto_converters``:
 
-  <RosType> ToRos(const <ProtoType>& proto);
-  <ProtoType> ToProto(const <RosType>& ros);
+  void ToRos(const <ProtoType>& proto, <RosType>* ros);
+  void ToProto(const <RosType>& ros, <ProtoType>* proto);
 
 Limitations mirror those of proto_to_ros2_msg.py:
 - Exactly one message definition per proto file.
