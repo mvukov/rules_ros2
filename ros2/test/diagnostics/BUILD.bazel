@@ -11,7 +11,7 @@ ros2_cpp_binary(
 )
 
 ros2_test(
-    name = "diagnostic_heartbeat_test",
+    name = "diagnostic_heartbeat_tests",
     size = "small",
     data = [
         "aggregator_config.yaml",

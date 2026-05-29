@@ -4,7 +4,7 @@
   },
   "customizations": {
     "vscode": {
-      "extensions": []
+      "extensions": ["anthropic.claude-code"]
     }
   },
   "remoteUser": "vscode",
@@ -13,5 +13,8 @@
     "source=/home/${localEnv:USER}/dev/tmp/rules_ros2_cache,target=/home/vscode/.cache,type=bind,consistency=cached"
   ],
   "runArgs": ["--init", "--shm-size=1gb", "--privileged"],
-  "overrideCommand": false
+  "overrideCommand": false,
+  "remoteEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.cache/.claude"
+  }
 }

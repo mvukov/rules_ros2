@@ -98,9 +98,9 @@ ros2_cpp_binary(
 )
 
 sh_test(
-    name = "ros2_cpp_binary_test",
+    name = "ros2_cpp_binary_tests",
     size = "small",
-    srcs = ["ros2_cpp_binary_test.sh"],
+    srcs = ["ros2_cpp_binary_tests.sh"],
     data = [
         ":plugin_tests_binary",
     ],
@@ -121,10 +121,10 @@ ros2_py_binary(
 )
 
 sh_test(
-    name = "ros2_py_library_test",
+    name = "ros2_py_library_tests",
     size = "small",
     srcs = [
-        "ros2_py_binary_test.sh",
+        "ros2_py_binary_tests.sh",
     ],
     data = [
         ":py_loader_tests_binary",

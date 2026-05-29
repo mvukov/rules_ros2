@@ -200,17 +200,18 @@ def _ros2_ament_setup_rule_impl(ctx):
             registered_packages.append(package_name)
         idl_manifest_contents = []
         for src in idl.srcs:
-            if src.extension != "msg":
+            if src.extension not in ("msg", "srv", "action"):
                 continue
+            subdir = src.extension
             src_file = ctx.actions.declare_file(
-                paths.join(prefix_path, "share", package_name, "msg", src.basename),
+                paths.join(prefix_path, "share", package_name, subdir, src.basename),
             )
             ctx.actions.symlink(
                 output = src_file,
                 target_file = src,
             )
             outputs.append(src_file)
-            idl_manifest_contents.append(paths.join("msg", src.basename))
+            idl_manifest_contents.append(paths.join(subdir, src.basename))
 
         idl_manifest = ctx.actions.declare_file(
             paths.join(prefix_path, _RESOURCE_INDEX_PATH, "rosidl_interfaces", package_name),
