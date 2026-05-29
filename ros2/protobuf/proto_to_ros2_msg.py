@@ -220,9 +220,14 @@ def _convert(file_proto, output_path, proto_source, msg_type_map):
             sys.exit(f'Error: {proto_source}: field "{field.name}" has unknown '
                      f'type value {field_type_value}.')
 
+        if is_repeated and field_type_value == FieldDescriptorProto.TYPE_BYTES:
+            sys.exit(f'Error: {proto_source}: field "{field.name}" is '
+                     f'"repeated bytes", which would require uint8[][] — not '
+                     f'supported in ROS 2 msg types.')
+
         ros2_type = _PROTO_TO_ROS_TYPE[field_type_value]
 
-        # proto `bytes` already becomes `uint8[]`; avoid double `[]`.
+        # Proto `bytes` already becomes `uint8[]`; avoid double `[]`.
         if is_repeated and field_type_value != FieldDescriptorProto.TYPE_BYTES:
             ros2_type = ros2_type + '[]'
 
