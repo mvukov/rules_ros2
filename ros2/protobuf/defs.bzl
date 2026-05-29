@@ -37,6 +37,7 @@ load(
 load("@com_google_protobuf//bazel/common:proto_info.bzl", "ProtoInfo")
 load("@com_google_protobuf//bazel/private:cc_proto_aspect.bzl", "cc_proto_aspect")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
+load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 
 CppProtoConverterAspectInfo = provider("TBD", fields = ["cc_info"])
 
