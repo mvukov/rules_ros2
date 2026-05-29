@@ -119,6 +119,30 @@ proto_to_ros2_msg_aspect = aspect(
     provides = [Ros2InterfaceInfo],
 )
 
+def _proto_ros2_interface_library_impl(ctx):
+    dep_info = ctx.attr.dep[Ros2InterfaceInfo]
+    return [
+        DefaultInfo(files = depset(dep_info.info.srcs)),
+        dep_info,
+    ]
+
+proto_ros2_interface_library = rule(
+    doc = """Generates one ROS 2 .msg file per proto source in a proto_library dep.
+
+Downstream interface rules (cpp_ros2_interface_library, py_ros2_interface_library, etc.)
+can consume the generated messages.
+""",
+    attrs = {
+        "dep": attr.label(
+            mandatory = True,
+            aspects = [proto_to_ros2_msg_aspect],
+            providers = [ProtoInfo],
+        ),
+    },
+    provides = [Ros2InterfaceInfo],
+    implementation = _proto_ros2_interface_library_impl,
+)
+
 def _cpp_proto_ros2_interface_library_impl(ctx):
     return cc_generator_impl(ctx, CppGeneratorAspectInfo)
 

@@ -2,7 +2,7 @@
 
 load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
 load("//ros2:cc_defs.bzl", "ros2_cpp_test")
-load("//ros2/protobuf:defs.bzl", "cpp_proto_ros2_converter_library", "cpp_proto_ros2_interface_library")
+load("//ros2/protobuf:defs.bzl", "cpp_proto_ros2_converter_library", "cpp_proto_ros2_interface_library", "proto_ros2_interface_library")
 
 proto_library(
     name = "point_proto",
@@ -21,6 +21,11 @@ proto_library(
     name = "transform_proto",
     srcs = ["transform.proto"],
     deps = [":point_proto"],
+)
+
+proto_ros2_interface_library(
+    name = "point_proto_ros_msgs",
+    dep = ":point_proto",
 )
 
 cpp_proto_ros2_interface_library(
