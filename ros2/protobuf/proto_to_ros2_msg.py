@@ -169,14 +169,15 @@ def _convert(file_proto, output_path, proto_source, msg_type_map):
                 lines.append('')
                 emitted_enums.add(field.type_name)
 
-    # Build the set of fully-qualified names of map-entry nested message types
-    # so that map fields can be detected and rejected below.
     pkg_prefix = '.' + file_proto.package if file_proto.package else ''
-    map_entry_fq_names = {
-        f'{pkg_prefix}.{message.name}.{nested.name}'
-        for nested in message.nested_type
-        if nested.options.map_entry
-    }
+    map_entry_fq_names = set()
+    for nested in message.nested_type:
+        if nested.options.map_entry:
+            map_entry_fq_names.add(f'{pkg_prefix}.{message.name}.{nested.name}')
+        else:
+            sys.exit(
+                f'Error: {proto_source}: message "{message.name}" defines a '
+                f'nested message type "{nested.name}", which is not supported.')
 
     for field in message.field:
         field_type_value = field.type
