@@ -9,31 +9,29 @@ helpers.
 ### `proto_ros2_interface_library`
 
 Generates one ROS 2 `.msg` file for each proto source in a single
-`proto_library` dep and exposes `Ros2InterfaceInfo`. Use this rule when you
+`proto_library` dep. Use this rule when you
 need the generated `.msg` files as input to other interface rules
-(`c_ros2_interface_library`, `py_ros2_interface_library`, etc.) without
-triggering a full C++ compilation.
+(`cpp_ros2_interface_library`, `py_ros2_interface_library`, etc.).
 
 ```python
 load("//ros2/protobuf:defs.bzl", "proto_ros2_interface_library")
 
 proto_ros2_interface_library(
-    name = "point_ros_msgs",
+    name = "point_msgs",
     dep = ":point_proto",
 )
 ```
 
 ### `cpp_proto_ros2_interface_library`
 
-Runs the full pipeline (proto → `.msg` → IDL → C++ headers + type-support
-sources) and produces a `CcInfo` library. Use this rule when you need to
-`#include` the generated message headers in C++ code.
+Runs the full pipeline (proto → `.msg` → ... → C++ code → compilation). Use this rule when you need to
+include the generated message headers in your C++ code.
 
 ```python
 load("//ros2/protobuf:defs.bzl", "cpp_proto_ros2_interface_library")
 
 cpp_proto_ros2_interface_library(
-    name = "point_cpp_ros_msgs",
+    name = "cpp_point_msgs",
     deps = [":point_proto"],
 )
 ```
@@ -43,8 +41,8 @@ Include path: `<ros_package_name>/msg/<MessageName>.hpp`
 
 ### `cpp_proto_ros2_converter_library`
 
-Generates a C++ library with bidirectional conversion functions between the
-proto C++ type and the ROS 2 message type. The generated functions live in
+Generates C++ libraries with bidirectional conversion functions between the
+proto C++ types and the corresponding ROS 2 message type. The generated functions live in
 namespace `<ros_package_name>::proto_converters`:
 
 ```cpp
@@ -63,14 +61,33 @@ cpp_proto_ros2_converter_library(
 
 ## Naming conventions
 
-| Proto source       | Required message name | Generated ROS package  |
-| ------------------ | --------------------- | ---------------------- |
-| `point.proto`      | `Point`               | `point_proto_ros_msgs` |
-| `my_message.proto` | `MyMessage`           | `my_proto_ros_msgs`    |
+The message name must be the PascalCase form of the filename stem.
 
-The message name must be the PascalCase form of the filename stem. The ROS
-package name is derived from the `proto_library` target name with `_ros_msgs`
-appended.
+The ROS package name is derived from the full Bazel label of the
+`proto_library` target:
+
+```
+<bazel_package_path>_<target_name>_ros_msgs
+```
+
+where `/` and `-` in the Bazel package path are replaced with `_`.
+
+| Label                  | Proto source   | Required message name | Generated ROS package         |
+| ---------------------- | -------------- | --------------------- | ----------------------------- |
+| `//src/foo:perf_proto` | `perf.proto`   | `Perf`                | `src_foo_perf_proto_ros_msgs` |
+| `//src/bar:my_proto`   | `my_msg.proto` | `MyMsg`               | `src_bar_my_proto_ros_msgs`   |
+| `//:root_proto`        | `root.proto`   | `Root`                | `root_proto_ros_msgs`         |
+
+Targets at the repository root (empty Bazel package) have no prefix.
+
+Rationale: In a monorepo, multiple Bazel packages can independently define a
+`proto_library` with the same short target name (e.g. `//src/foo:perf_proto`
+and `//src/bar:perf_proto`). Using only the target name for the ROS package
+would produce the same string for both, causing output file collisions when
+both are consumed by the same build target. Incorporating the Bazel package
+path makes the ROS package name as unique as the Bazel label itself, so the
+C++ namespace, include paths, and generated file directories are collision-free
+across the entire repository without any extra user configuration.
 
 ## Type mapping
 

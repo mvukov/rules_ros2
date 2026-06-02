@@ -62,7 +62,8 @@ def _proto_to_ros2_msg_aspect_impl(target, ctx):
 
     msg_files = []
 
-    ros_package_name = target.label.name + "_ros_msgs"
+    pkg = target.label.package.replace("/", "_").replace("-", "_")
+    ros_package_name = (pkg + "_" if pkg else "") + target.label.name + "_ros_msgs"
 
     dep_extra_args, dep_descriptor_sets = _collect_dep_proto_args(ctx.rule.attr.deps)
 

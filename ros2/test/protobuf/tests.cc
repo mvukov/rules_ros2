@@ -13,14 +13,14 @@
 // limitations under the License.
 #include "gtest/gtest.h"
 
-#include "point_proto_ros_msgs/msg/dummy_one.hpp"
-#include "point_proto_ros_msgs/msg/point.hpp"
-#include "transform_proto_ros_msgs/msg/transform.hpp"
+#include "ros2_test_protobuf_point_proto_ros_msgs/msg/dummy_one.hpp"
+#include "ros2_test_protobuf_point_proto_ros_msgs/msg/point.hpp"
+#include "ros2_test_protobuf_transform_proto_ros_msgs/msg/transform.hpp"
 
 namespace {
 
 TEST(DummyOneTest, EnumConstants) {
-  using DummyOne = point_proto_ros_msgs::msg::DummyOne;
+  using DummyOne = ros2_test_protobuf_point_proto_ros_msgs::msg::DummyOne;
   EXPECT_EQ(DummyOne::COLOR_UNKNOWN, 0);
   EXPECT_EQ(DummyOne::COLOR_RED, 1);
   EXPECT_EQ(DummyOne::COLOR_GREEN, 2);
