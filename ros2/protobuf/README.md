@@ -37,7 +37,7 @@ cpp_proto_ros2_interface_library(
 ```
 
 Include path: `<ros_package_name>/msg/<MessageName>.hpp`
-(e.g. `point_proto_ros_msgs/msg/point.hpp`).
+(e.g. `src_foo_point_proto_ros_msgs/msg/Point.hpp` for `//src/foo:point_proto`).
 
 ### `cpp_proto_ros2_converter_library`
 
@@ -63,31 +63,44 @@ cpp_proto_ros2_converter_library(
 
 The message name must be the PascalCase form of the filename stem.
 
-The ROS package name is derived from the full Bazel label of the
-`proto_library` target:
+The ROS package name is derived from the effective proto import path of the
+first source file (respecting `strip_import_prefix`) and the target name:
+
+```
+<import_dir>_<target_name>_ros_msgs
+```
+
+where `<import_dir>` is the directory part of the proto file's import path
+after `strip_import_prefix` is applied, with `/` and `-` replaced by `_`.
+When the import path has no directory component the prefix is omitted.
+
+For ordinary local targets (no `strip_import_prefix`) the import path
+equals the Bazel package path, so the result is equivalent to:
 
 ```
 <bazel_package_path>_<target_name>_ros_msgs
 ```
 
-where `/` and `-` in the Bazel package path are replaced with `_`.
+| Label                                    | `strip_import_prefix` | Proto source                      | Generated ROS package                      |
+| ---------------------------------------- | --------------------- | --------------------------------- | ------------------------------------------ |
+| `//src/foo:perf_proto`                   | _(none)_              | `perf.proto`                      | `src_foo_perf_proto_ros_msgs`              |
+| `//src/bar:my_proto`                     | _(none)_              | `my_msg.proto`                    | `src_bar_my_proto_ros_msgs`                |
+| `//:root_proto`                          | _(none)_              | `root.proto`                      | `root_proto_ros_msgs`                      |
+| `@com_google_protobuf//:timestamp_proto` | `/src`                | `google/protobuf/timestamp.proto` | `google_protobuf_timestamp_proto_ros_msgs` |
 
-| Label                  | Proto source   | Required message name | Generated ROS package         |
-| ---------------------- | -------------- | --------------------- | ----------------------------- |
-| `//src/foo:perf_proto` | `perf.proto`   | `Perf`                | `src_foo_perf_proto_ros_msgs` |
-| `//src/bar:my_proto`   | `my_msg.proto` | `MyMsg`               | `src_bar_my_proto_ros_msgs`   |
-| `//:root_proto`        | `root.proto`   | `Root`                | `root_proto_ros_msgs`         |
-
-Targets at the repository root (empty Bazel package) have no prefix.
+Targets at the repository root with no `strip_import_prefix` (empty import
+directory) have no prefix.
 
 Rationale: In a monorepo, multiple Bazel packages can independently define a
 `proto_library` with the same short target name (e.g. `//src/foo:perf_proto`
 and `//src/bar:perf_proto`). Using only the target name for the ROS package
 would produce the same string for both, causing output file collisions when
-both are consumed by the same build target. Incorporating the Bazel package
-path makes the ROS package name as unique as the Bazel label itself, so the
-C++ namespace, include paths, and generated file directories are collision-free
-across the entire repository without any extra user configuration.
+both are consumed by the same build target. Basing the name on the import path
+rather than the raw Bazel package path also ensures that `strip_import_prefix`
+is respected: e.g. Google's well-known protos strip their `src/` prefix, so
+the generated name starts with `google_protobuf_` rather than
+`src_google_protobuf_`. This makes the ROS package name match the proto import
+namespace that users actually write in their `.proto` files.
 
 ## Type mapping
 

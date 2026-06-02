@@ -26,6 +26,7 @@ Limitations:
 - Proto `bytes` fields map to `uint8[]` in ROS2.
 """
 
+load("@bazel_skylib//lib:paths.bzl", "paths")
 load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
     "CppGeneratorAspectInfo",
@@ -40,6 +41,25 @@ load("@rules_cc//cc:defs.bzl", "CcInfo", "cc_common")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 
 CppProtoConverterAspectInfo = provider("TBD", fields = ["cc_info"])
+
+def _get_ros_package_name(proto_info, label_name):
+    """Derives the ROS package name from a ProtoInfo and the target label name.
+
+    Uses proto_source_root so that strip_import_prefix is respected (e.g.
+    google/protobuf/timestamp.proto gets google_protobuf_* not src_google_*).
+    When there are no direct sources the directory prefix is empty.
+    """
+    sources = proto_info.direct_sources
+    if sources:
+        root = proto_info.proto_source_root
+        src0 = sources[0].path
+        if root != "." and not paths.starts_with(src0, root):
+            fail("proto_source_root must be an ancestor of the source path")
+        logical_dir = paths.dirname(paths.relativize(src0, root))
+        prefix = logical_dir.replace("/", "_").replace("-", "_")
+    else:
+        prefix = ""
+    return (prefix + "_" if prefix else "") + label_name + "_ros_msgs"
 
 def _collect_dep_proto_args(deps):
     """Returns (dep_extra_args, dep_descriptor_sets) for proto deps."""
@@ -62,8 +82,7 @@ def _proto_to_ros2_msg_aspect_impl(target, ctx):
 
     msg_files = []
 
-    pkg = target.label.package.replace("/", "_").replace("-", "_")
-    ros_package_name = (pkg + "_" if pkg else "") + target.label.name + "_ros_msgs"
+    ros_package_name = _get_ros_package_name(proto_info, target.label.name)
 
     dep_extra_args, dep_descriptor_sets = _collect_dep_proto_args(ctx.rule.attr.deps)
 
