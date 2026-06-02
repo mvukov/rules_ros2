@@ -69,6 +69,16 @@ repos:
       - id: prettier
   - repo: local
     hooks:
+      - id: cpp-file-extensions
+        name: Check C++ file extensions (.h and .cc required)
+        entry: repositories/check_cpp_extensions.sh
+        language: script
+        files: \.(hpp|hxx|hh|H|cpp|cxx|c\+\+|C)$
+      - id: test-file-naming
+        name: Check test file naming (no test_ prefix or _test.<ext> suffix)
+        entry: repositories/check_test_naming.sh
+        language: script
+        files: (^|.*/)(test_[^/]*\.(cc|h|py|rs|sh)|[^/]*_tests?\.(cc|h|py|rs|sh))$
       - id: rustfmt
         name: rustfmt
         entry: repositories/rust/rustfmt/rustfmt_wrapper.sh
