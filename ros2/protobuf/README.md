@@ -81,12 +81,12 @@ equals the Bazel package path, so the result is equivalent to:
 <bazel_package_path>_<target_name>_ros_msgs
 ```
 
-| Label                                    | `strip_import_prefix` | Proto source                      | Generated ROS package                      |
-| ---------------------------------------- | --------------------- | --------------------------------- | ------------------------------------------ |
-| `//src/foo:perf_proto`                   | _(none)_              | `perf.proto`                      | `src_foo_perf_proto_ros_msgs`              |
-| `//src/bar:my_proto`                     | _(none)_              | `my_msg.proto`                    | `src_bar_my_proto_ros_msgs`                |
-| `//:root_proto`                          | _(none)_              | `root.proto`                      | `root_proto_ros_msgs`                      |
-| `@com_google_protobuf//:timestamp_proto` | `/src`                | `google/protobuf/timestamp.proto` | `google_protobuf_timestamp_proto_ros_msgs` |
+| Label                                    | `strip_import_prefix` | Generated ROS package                      |
+| ---------------------------------------- | --------------------- | ------------------------------------------ |
+| `//src/foo:perf_proto`                   | _(none)_              | `src_foo_perf_proto_ros_msgs`              |
+| `//src/bar:my_proto`                     | _(none)_              | `src_bar_my_proto_ros_msgs`                |
+| `//:root_proto`                          | _(none)_              | `root_proto_ros_msgs`                      |
+| `@com_google_protobuf//:timestamp_proto` | `/src`                | `google_protobuf_timestamp_proto_ros_msgs` |
 
 Targets at the repository root with no `strip_import_prefix` (empty import
 directory) have no prefix.
