@@ -10,7 +10,7 @@ def test_foo():
     foo.bar.baz.value = 42
     assert foo.bar.baz.value == 42
     with pytest.raises(AttributeError):
-        # This should raise an error because baz is not a member of Foo
+        # This should raise an error because baz is not a member of Foo.
         foo.baz.value = 42
 
 
