@@ -200,9 +200,9 @@ def _ros2_ament_setup_rule_impl(ctx):
             registered_packages.append(package_name)
         idl_manifest_contents = []
         for src in idl.srcs:
-            if src.extension not in ("msg", "srv", "action"):
+            if src.extension not in ("msg", "idl", "srv", "action"):
                 continue
-            subdir = src.extension
+            subdir = src.extension if src.extension != "idl" else src.dirname.split("/")[-1]
             src_file = ctx.actions.declare_file(
                 paths.join(prefix_path, "share", package_name, subdir, src.basename),
             )
@@ -212,6 +212,20 @@ def _ros2_ament_setup_rule_impl(ctx):
             )
             outputs.append(src_file)
             idl_manifest_contents.append(paths.join(subdir, src.basename))
+
+        # Generated IDL files in the output tree such that the rosbag mcap writer can include them in the metadata.
+        # mcap supports both IDL and msg definitions, but not combinations. Therefore, if any handwritten IDL files are
+        # present, the rosbag writer also needs any generated IDL files it depends on.
+        if idl.generated_idl_files != None:
+            for idl in idl.generated_idl_files:
+                src_file = ctx.actions.declare_file(
+                    paths.join(prefix_path, "share", package_name, idl.dirname.split("/")[-1], idl.basename),
+                )
+                ctx.actions.symlink(
+                    output = src_file,
+                    target_file = idl,
+                )
+                outputs.append(src_file)
 
         idl_manifest = ctx.actions.declare_file(
             paths.join(prefix_path, _RESOURCE_INDEX_PATH, "rosidl_interfaces", package_name),

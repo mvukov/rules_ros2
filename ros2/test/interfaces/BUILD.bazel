@@ -1,0 +1,47 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_test")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "cpp_ros2_interface_library",
+    "py_ros2_interface_library",
+    "ros2_interface_library",
+)
+load("@rules_python//python:defs.bzl", "py_test")
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+
+ros2_interface_library(
+    name = "test_messages",
+    srcs = [
+        "msg/Bar.idl",
+        "msg/Baz.msg",
+        "msg/Foo.msg",
+    ],
+)
+
+py_ros2_interface_library(
+    name = "py_test_messages",
+    deps = [":test_messages"],
+)
+
+cpp_ros2_interface_library(
+    name = "cpp_test_messages",
+    deps = [":test_messages"],
+)
+
+ros2_cpp_test(
+    name = "cpp_messages_test",
+    srcs = ["cpp_messages_test.cpp"],
+    deps = [
+        ":cpp_test_messages",
+        "@googletest//:gtest_main",
+        "@ros2_ament_index//:ament_index_cpp",
+    ],
+)
+
+py_test(
+    name = "py_messages_test",
+    srcs = ["py_messages_test.py"],
+    deps = [
+        ":py_test_messages",
+        requirement("pytest"),
+    ],
+)
