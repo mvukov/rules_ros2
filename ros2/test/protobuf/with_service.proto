@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package ros2.test.protobuf;
+
+message WithServiceRequest {
+  bool flag = 1;
+}
+
+message WithServiceResponse {
+  bool result = 1;
+}
+
+service WithService {
+  rpc Call(WithServiceRequest) returns (WithServiceResponse);
+}

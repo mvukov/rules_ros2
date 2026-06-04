@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package ros2.test.protobuf;
+
+message MessageOne {
+  bool x = 1;
+}
+
+message MessageTwo {
+  bool y = 1;
+}

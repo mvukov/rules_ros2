@@ -1,6 +1,8 @@
 """Tests for proto -> ROS2 interface conversion."""
 
 load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
+load("@rules_python//python:defs.bzl", "py_test")
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 load("//ros2:cc_defs.bzl", "ros2_cpp_test")
 load("//ros2/protobuf:defs.bzl", "cpp_proto_ros2_converter_library", "cpp_proto_ros2_interface_library", "proto_ros2_interface_library")
 
@@ -53,5 +55,106 @@ ros2_cpp_test(
     deps = [
         ":cpp_proto_ros2_converters",
         "@googletest//:gtest_main",
+    ],
+)
+
+proto_library(
+    name = "scalars_proto",
+    srcs = ["scalars.proto"],
+)
+
+proto_library(
+    name = "repeated_fields_proto",
+    srcs = ["repeated_fields.proto"],
+    deps = [":point_proto"],
+)
+
+proto_library(
+    name = "file_enum_proto",
+    srcs = ["file_enum.proto"],
+)
+
+proto_library(
+    name = "msg_enum_proto",
+    srcs = ["msg_enum.proto"],
+)
+
+proto_library(
+    name = "no_message_proto",
+    srcs = ["no_message.proto"],
+)
+
+proto_library(
+    name = "two_messages_proto",
+    srcs = ["two_messages.proto"],
+)
+
+proto_library(
+    name = "with_service_proto",
+    srcs = ["with_service.proto"],
+)
+
+proto_library(
+    name = "wrong_message_name_proto",
+    srcs = ["wrong_message_name.proto"],
+)
+
+proto_library(
+    name = "nested_message_proto",
+    srcs = ["nested_message.proto"],
+)
+
+proto_library(
+    name = "oneof_field_proto",
+    srcs = ["oneof_field.proto"],
+)
+
+proto_library(
+    name = "map_field_proto",
+    srcs = ["map_field.proto"],
+)
+
+proto_library(
+    name = "repeated_bytes_proto",
+    srcs = ["repeated_bytes.proto"],
+)
+
+proto_library(
+    name = "foreign_enum_proto",
+    srcs = [
+        "foreign_enum_source.proto",
+        "foreign_enum_usage.proto",
+    ],
+)
+
+py_test(
+    name = "proto_to_ros2_msg_tests",
+    size = "small",
+    srcs = ["tests.py"],
+    args = [
+        "-o",
+        "python_classes=*Tests",
+    ],
+    data = [
+        ":file_enum_proto",
+        ":foreign_enum_proto",
+        ":map_field_proto",
+        ":msg_enum_proto",
+        ":nested_message_proto",
+        ":no_message_proto",
+        ":oneof_field_proto",
+        ":point_proto",
+        ":repeated_bytes_proto",
+        ":repeated_fields_proto",
+        ":scalars_proto",
+        ":transform_proto",
+        ":two_messages_proto",
+        ":with_service_proto",
+        ":wrong_message_name_proto",
+    ],
+    main = "tests.py",
+    deps = [
+        "//ros2/protobuf:proto_to_ros2_msg",
+        requirement("pytest"),
     ],
 )

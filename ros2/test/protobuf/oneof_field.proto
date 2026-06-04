@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package ros2.test.protobuf;
+
+message OneofField {
+  oneof value {
+    int32 num = 1;
+    string str = 2;
+  }
+}
