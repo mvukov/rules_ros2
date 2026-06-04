@@ -145,7 +145,7 @@ TEST(TransformConverterTest, RoundTrip) {
 
 TEST(DummyOneConverterTest, ToRos) {
   ros2::test::protobuf::DummyOne proto;
-  proto.set_color(ros2::test::protobuf::COLOR_RED);
+  proto.set_color(ros2::test::protobuf::DummyOne::COLOR_RED);
 
   ros2_test_protobuf_point_proto_ros_msgs::msg::DummyOne ros;
   ros2_test_protobuf_point_proto_ros_msgs::proto_converters::ToRos(proto, &ros);
@@ -163,12 +163,12 @@ TEST(DummyOneConverterTest, ToProto) {
   ros2_test_protobuf_point_proto_ros_msgs::proto_converters::ToProto(ros,
                                                                      &proto);
 
-  EXPECT_EQ(proto.color(), ros2::test::protobuf::COLOR_GREEN);
+  EXPECT_EQ(proto.color(), ros2::test::protobuf::DummyOne::COLOR_GREEN);
 }
 
 TEST(DummyOneConverterTest, RoundTrip) {
   ros2::test::protobuf::DummyOne original;
-  original.set_color(ros2::test::protobuf::COLOR_BLUE);
+  original.set_color(ros2::test::protobuf::DummyOne::COLOR_BLUE);
 
   ros2_test_protobuf_point_proto_ros_msgs::msg::DummyOne ros;
   ros2_test_protobuf_point_proto_ros_msgs::proto_converters::ToRos(original,
