@@ -127,6 +127,14 @@ proto_library(
     ],
 )
 
+proto_library(
+    name = "sibling_proto",
+    srcs = [
+        "sibling_base.proto",
+        "sibling_ref.proto",
+    ],
+)
+
 py_test(
     name = "proto_to_ros2_msg_tests",
     size = "small",
@@ -147,6 +155,7 @@ py_test(
         ":repeated_bytes_proto",
         ":repeated_fields_proto",
         ":scalars_proto",
+        ":sibling_proto",
         ":transform_proto",
         ":two_messages_proto",
         ":with_service_proto",

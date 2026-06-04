@@ -73,16 +73,13 @@ _PROTO_TO_ROS_TYPE = {
 
 
 def _build_enum_map(file_proto, message):
-    """Build {'.pkg.EnumName': EnumDescriptorProto} for enums in this file.
-
-    Covers top-level enums and enums nested directly inside the message.
+    """Build {'.pkg.Message.EnumName': EnumDescriptorProto} for enums nested
+    directly inside the message.
     """
     enum_map = {}
     pkg_prefix = '.' + file_proto.package if file_proto.package else ''
-    for enum_type in file_proto.enum_type:  # top-level enums
-        enum_map[f'{pkg_prefix}.{enum_type.name}'] = enum_type
     msg_prefix = f'{pkg_prefix}.{message.name}'
-    for enum_type in message.enum_type:  # nested enums
+    for enum_type in message.enum_type:
         enum_map[f'{msg_prefix}.{enum_type.name}'] = enum_type
     return enum_map
 
@@ -149,6 +146,11 @@ def _convert(file_proto, output_path, proto_source, msg_type_map):
         sys.exit(
             f'Error: {proto_source}: message must be named "{expected_name}" '
             f'to match the proto filename, got "{message.name}".')
+
+    if file_proto.enum_type:
+        names = ', '.join(e.name for e in file_proto.enum_type)
+        sys.exit(f'Error: {proto_source}: file-level enum definitions are not '
+                 f'supported ({names}); define enums inside the message.')
 
     lines = [f'# Generated from proto source: {proto_source}', '']
 

@@ -127,8 +127,9 @@ namespace that users actually write in their `.proto` files.
 - **No services.** Service definitions in a proto file cause a build error.
 - **Nested message types** are not supported. All message types used as fields
   must be defined at the top level of their own proto file.
-- **Enums.** Only enums defined in the same proto file are supported.
-  Cross-file enum references are not supported.
+- **Enums.** Only enums defined **inside the message** (nested enum types) are
+  supported. File-level enum definitions cause a build error. Cross-file enum
+  references are not supported.
 - **`oneof` fields** are not supported.
 - **`map` fields** are not supported.
 - **Group fields** are not supported.

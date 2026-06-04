@@ -105,39 +105,22 @@ class ConvertFieldsTests:
         assert 'ros2_test_protobuf_point_proto_ros_msgs/Point point' in content
 
     def test_sibling_proto_same_target(self, tmp_path):
-        """DummyOne references Point; both are in the same proto_library target.
-        """
-        fp = _load('point_proto', 'dummy_one.proto')
-        pkg = 'ros2_test_protobuf_point_proto_ros_msgs'
+        """SiblingRef references SiblingBase; both in the same proto_library."""
+        fp = _load('sibling_proto', 'sibling_ref.proto')
+        pkg = 'ros2_test_protobuf_sibling_proto_ros_msgs'
         msg_type_map = proto_to_ros2_msg._build_msg_type_map(
             dep_descriptor_set_paths=[],
             dep_mapping=[],
-            main_descriptor_set_path=_ds('point_proto'),
-            proto_source=f'{_PKG}/dummy_one.proto',
+            main_descriptor_set_path=_ds('sibling_proto'),
+            proto_source=f'{_PKG}/sibling_ref.proto',
             self_ros_package=pkg,
         )
-        out = tmp_path / 'DummyOne.msg'
-        proto_to_ros2_msg._convert(fp, str(out), f'{_PKG}/dummy_one.proto',
+        out = tmp_path / 'SiblingRef.msg'
+        proto_to_ros2_msg._convert(fp, str(out), f'{_PKG}/sibling_ref.proto',
                                    msg_type_map)
         content = out.read_text()
-        assert f'{pkg}/Point[] points' in content
-
-    def test_file_level_enum_field(self, tmp_path):
-        fp = _load('file_enum_proto', 'file_enum.proto')
-        out = tmp_path / 'FileEnum.msg'
-        proto_to_ros2_msg._convert(fp, str(out), f'{_PKG}/file_enum.proto', {})
-        content = out.read_text()
-        assert 'int32 STATUS_UNKNOWN=0' in content
-        assert 'int32 STATUS_ACTIVE=1' in content
-        assert 'int32 STATUS_INACTIVE=2' in content
-        assert 'int32 status' in content
-
-    def test_repeated_enum_field(self, tmp_path):
-        fp = _load('file_enum_proto', 'file_enum.proto')
-        out = tmp_path / 'FileEnum.msg'
-        proto_to_ros2_msg._convert(fp, str(out), f'{_PKG}/file_enum.proto', {})
-        content = out.read_text()
-        assert 'int32[] tags' in content
+        assert f'{pkg}/SiblingBase base' in content
+        assert f'{pkg}/SiblingBase[] items' in content
 
     def test_message_level_enum(self, tmp_path):
         fp = _load('msg_enum_proto', 'msg_enum.proto')
@@ -147,6 +130,7 @@ class ConvertFieldsTests:
         assert 'int32 KIND_NONE=0' in content
         assert 'int32 KIND_TYPE_A=1' in content
         assert 'int32 kind' in content
+        assert 'int32[] extra_kinds' in content
 
 
 class RejectInvalidProtoTests:
@@ -202,6 +186,12 @@ class RejectInvalidProtoTests:
         fp = _load('foreign_enum_proto', 'foreign_enum_usage.proto')
         self._assert_error(fp, 'foreign_enum_usage.proto', {},
                            'not found in the current proto file', tmp_path)
+
+    def test_rejects_file_level_enum(self, tmp_path):
+        fp = _load('file_enum_proto', 'file_enum.proto')
+        self._assert_error(fp, 'file_enum.proto', {},
+                           'file-level enum definitions are not supported',
+                           tmp_path)
 
     def test_rejects_missing_dep_mapping(self, tmp_path):
         fp = _load('transform_proto', 'transform.proto')

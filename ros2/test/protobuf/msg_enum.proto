@@ -10,4 +10,5 @@ message MsgEnum {
   }
 
   Kind kind = 1;
+  repeated Kind extra_kinds = 2;
 }
