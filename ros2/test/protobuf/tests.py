@@ -12,25 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for proto_to_ros2_msg.py."""
-import os
 import sys
-from pathlib import Path
 
 import pytest
 
 from ros2.protobuf import proto_to_ros2
 from ros2.protobuf import proto_to_ros2_msg
 
-_WORKSPACE = 'com_github_mvukov_rules_ros2'
 _PKG = 'ros2/test/protobuf'
 
 
 def _ds(target: str) -> str:
     """Returns the path to a proto_library's descriptor set in Bazel runfiles.
     """
-    srcdir = os.environ['TEST_SRCDIR']
-    return str(
-        Path(srcdir) / _WORKSPACE / _PKG / f'{target}-descriptor-set.proto.bin')
+    return f'{_PKG}/{target}-descriptor-set.proto.bin'
 
 
 def _load(target: str, proto_file: str):
