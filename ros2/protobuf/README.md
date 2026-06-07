@@ -135,3 +135,5 @@ namespace that users actually write in their `.proto` files.
 - **Group fields** are not supported.
 - **`repeated bytes`** is not supported (`bytes` already maps to `uint8[]`;
   `repeated bytes` would require `uint8[][]`, which is not a valid ROS 2 type).
+- **Deprecated fields.** Fields marked `deprecated = true` are silently skipped
+  and do not appear in the generated `.msg` file.

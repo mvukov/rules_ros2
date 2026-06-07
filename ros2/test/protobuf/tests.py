@@ -11,12 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for proto_to_ros2_msg.py."""
+"""Tests for proto_to_ros2_msg.py and proto_to_ros2_converter.py."""
 import sys
 
 import pytest
 
 from ros2.protobuf import proto_to_ros2
+from ros2.protobuf import proto_to_ros2_converter
 from ros2.protobuf import proto_to_ros2_msg
 
 _PKG = 'ros2/test/protobuf'
@@ -132,6 +133,26 @@ class ConvertFieldsTests:
         assert 'int32 kind' in content
         assert 'int32[] extra_kinds' in content
 
+    def test_deprecated_field_is_skipped(self, tmp_path):
+        fp = _load('deprecated_field_proto', 'deprecated_field.proto')
+        out = tmp_path / 'DeprecatedField.msg'
+        proto_to_ros2_msg._convert(fp, str(out),
+                                   f'{_PKG}/deprecated_field.proto', {})
+        content = out.read_text()
+        assert 'string active' in content
+        assert 'bool keep_me' in content
+        assert 'legacy' not in content
+
+    def test_deprecated_unsupported_type_is_skipped(self, tmp_path):
+        """Deprecated fields are skipped before constraint validation."""
+        fp = _load('deprecated_map_proto', 'deprecated_map.proto')
+        out = tmp_path / 'DeprecatedMap.msg'
+        proto_to_ros2_msg._convert(fp, str(out), f'{_PKG}/deprecated_map.proto',
+                                   {})
+        content = out.read_text()
+        assert 'string label' in content
+        assert 'old_items' not in content
+
 
 class RejectInvalidProtoTests:
     """Tests that the converter rejects each documented constraint violation."""
@@ -197,6 +218,25 @@ class RejectInvalidProtoTests:
         fp = _load('transform_proto', 'transform.proto')
         self._assert_error(fp, 'transform.proto', {}, 'no dep_mapping entry',
                            tmp_path)
+
+
+class ConverterSkipsDeprecatedTests:
+    """Tests that the C++ converter generator skips deprecated fields."""
+
+    def _field_lines(self, target, proto_file):
+        fp = _load(target, proto_file)
+        message = fp.message_type[0]
+        to_ros, from_ros, _ = proto_to_ros2_converter._field_conversions(
+            message, f'{_PKG}/{proto_file}', {})
+        return to_ros, from_ros
+
+    def test_deprecated_scalar_not_in_generated_code(self):
+        to_ros, from_ros = self._field_lines('deprecated_field_proto',
+                                             'deprecated_field.proto')
+        all_lines = to_ros + from_ros
+        assert any('active' in line for line in all_lines)
+        assert any('keep_me' in line for line in all_lines)
+        assert not any('legacy' in line for line in all_lines)
 
 
 if __name__ == '__main__':

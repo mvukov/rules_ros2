@@ -54,6 +54,7 @@ ros2_cpp_test(
     srcs = ["converter_tests.cc"],
     deps = [
         ":cpp_proto_ros2_converters",
+        ":deprecated_field_converters",
         "@googletest//:gtest_main",
     ],
 )
@@ -135,6 +136,21 @@ proto_library(
     ],
 )
 
+proto_library(
+    name = "deprecated_field_proto",
+    srcs = ["deprecated_field.proto"],
+)
+
+cpp_proto_ros2_converter_library(
+    name = "deprecated_field_converters",
+    deps = [":deprecated_field_proto"],
+)
+
+proto_library(
+    name = "deprecated_map_proto",
+    srcs = ["deprecated_map.proto"],
+)
+
 py_test(
     name = "proto_to_ros2_msg_tests",
     size = "small",
@@ -144,6 +160,8 @@ py_test(
         "python_classes=*Tests",
     ],
     data = [
+        ":deprecated_field_proto",
+        ":deprecated_map_proto",
         ":file_enum_proto",
         ":foreign_enum_proto",
         ":map_field_proto",
@@ -163,6 +181,7 @@ py_test(
     ],
     main = "tests.py",
     deps = [
+        "//ros2/protobuf:proto_to_ros2_converter",
         "//ros2/protobuf:proto_to_ros2_msg",
         requirement("pytest"),
     ],

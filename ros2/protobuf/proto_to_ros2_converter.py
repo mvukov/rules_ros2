@@ -24,8 +24,9 @@ Limitations mirror those of proto_to_ros2_msg.py:
 - Service definitions are not supported.
 - Message-type fields require a --dep_mapping entry so the ROS package can
   be resolved.
-- Enum fields are supported (cast to/from int32_t). Only enums defined in
-  the same proto file are supported.
+- Enum fields are supported (cast to/from int32_t). Only enums nested
+  inside the message are supported; file-level enums cause a build error.
+- Fields marked `deprecated = true` are silently skipped (not emitted).
 - Group fields are not supported.
 - Repeated bytes fields are not supported.
 """
@@ -131,6 +132,8 @@ def _field_conversions(message, proto_source, proto_types_to_ros_pkgs):
     dep_pkgs = set()
 
     for field in message.field:
+        if field.options.deprecated:
+            continue
         name = field.name
         is_repeated = field.label == FieldDescriptorProto.LABEL_REPEATED
         ftype = field.type

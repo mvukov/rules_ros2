@@ -13,6 +13,7 @@
 // limitations under the License.
 #include "gtest/gtest.h"
 
+#include "ros2_test_protobuf_deprecated_field_proto_ros_msgs/proto_converters.h"
 #include "ros2_test_protobuf_point_proto_ros_msgs/proto_converters.h"
 #include "ros2_test_protobuf_transform_proto_ros_msgs/proto_converters.h"
 
@@ -234,6 +235,26 @@ TEST(EventConverterTest, RoundTrip) {
                                                                    &ros);
   ros2::test::protobuf::Event recovered;
   ros2_test_protobuf_point_proto_ros_msgs::proto_converters::ToProto(
+      ros, &recovered);
+
+  EXPECT_EQ(original.SerializeAsString(), recovered.SerializeAsString());
+}
+
+// ---------------------------------------------------------------------------
+// DeprecatedField converter tests (verifies deprecated fields are excluded)
+// ---------------------------------------------------------------------------
+
+TEST(DeprecatedFieldConverterTest, RoundTrip) {
+  ros2::test::protobuf::DeprecatedField original;
+  original.set_active("round");
+  original.set_keep_me(true);
+  // legacy is left at its zero default; it is not touched by the converter.
+
+  ros2_test_protobuf_deprecated_field_proto_ros_msgs::msg::DeprecatedField ros;
+  ros2_test_protobuf_deprecated_field_proto_ros_msgs::proto_converters::ToRos(
+      original, &ros);
+  ros2::test::protobuf::DeprecatedField recovered;
+  ros2_test_protobuf_deprecated_field_proto_ros_msgs::proto_converters::ToProto(
       ros, &recovered);
 
   EXPECT_EQ(original.SerializeAsString(), recovered.SerializeAsString());

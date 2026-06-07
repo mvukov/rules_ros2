@@ -19,7 +19,9 @@ Limitations:
 - Message-type fields are supported as cross-package ROS references (e.g.
   `pkg/Type`). The caller must supply --dep_mapping for each imported proto.
 - Enum fields are supported (mapped to int32 with named constants).
-  Only enums defined in the same proto file are supported.
+  Only enums nested inside the message are supported; file-level enum
+  definitions cause a build error.
+- Fields marked `deprecated = true` are silently skipped (not emitted).
 - oneof and map fields are not supported.
 - Group fields are not supported.
 - Repeated scalar and message fields are supported and map to dynamic arrays
@@ -158,6 +160,8 @@ def _convert(file_proto, output_path, proto_source, msg_type_map):
     enum_map = _build_enum_map(file_proto, message)
     emitted_enums = set()
     for field in message.field:
+        if field.options.deprecated:
+            continue
         if field.type == FieldDescriptorProto.TYPE_ENUM:
             if field.type_name not in emitted_enums:
                 enum_desc = enum_map.get(field.type_name)
@@ -182,6 +186,8 @@ def _convert(file_proto, output_path, proto_source, msg_type_map):
                 f'nested message type "{nested.name}", which is not supported.')
 
     for field in message.field:
+        if field.options.deprecated:
+            continue
         field_type_value = field.type
         is_repeated = (field.label == FieldDescriptorProto.LABEL_REPEATED)
 
