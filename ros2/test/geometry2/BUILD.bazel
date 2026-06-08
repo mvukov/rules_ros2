@@ -1,0 +1,100 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_test")
+load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_test")
+load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
+load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+
+ros2_cpp_test(
+    name = "tf2_core_tests",
+    size = "small",
+    srcs = ["tf2_core_tests.cc"],
+    deps = [
+        "@googletest//:gtest",
+        "@ros2_geometry2//:tf2",
+    ],
+)
+
+ros2_cpp_test(
+    name = "tf2_ros_tests",
+    size = "small",
+    srcs = ["tf2_ros_tests.cc"],
+    deps = [
+        "@googletest//:gtest",
+        "@ros2_geometry2//:tf2",
+        "@ros2_geometry2//:tf2_ros",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_cpp_test(
+    name = "tf2_eigen_tests",
+    size = "small",
+    srcs = ["tf2_eigen_tests.cc"],
+    deps = [
+        "@googletest//:gtest",
+        "@ros2_geometry2//:tf2_eigen",
+    ],
+)
+
+ros2_cpp_test(
+    name = "tf2_geometry_msgs_tests",
+    size = "small",
+    srcs = ["tf2_geometry_msgs_tests.cc"],
+    deps = [
+        "@googletest//:gtest",
+        "@ros2_geometry2//:cpp_tf2_geometry_msgs",
+    ],
+)
+
+ros2_cpp_test(
+    name = "tf2_sensor_msgs_tests",
+    size = "small",
+    srcs = ["tf2_sensor_msgs_tests.cc"],
+    deps = [
+        "@googletest//:gtest",
+        "@ros2_geometry2//:cpp_tf2_sensor_msgs",
+    ],
+)
+
+ros2_py_test(
+    name = "tf2_py_tests",
+    size = "small",
+    srcs = ["tf2_py_tests.py"],
+    main = "tf2_py_tests.py",
+    deps = [
+        requirement("pytest"),
+        "@ros2_geometry2//:tf2_py",
+    ],
+)
+
+ros2_py_test(
+    name = "tf2_ros_py_tests",
+    size = "small",
+    srcs = ["tf2_ros_py_tests.py"],
+    main = "tf2_ros_py_tests.py",
+    deps = [
+        requirement("pytest"),
+        "@ros2_geometry2//:tf2_ros_py",
+        "@ros2_rclpy//:rclpy",
+    ],
+)
+
+ros2_test(
+    name = "static_transform_publisher_tests",
+    size = "small",
+    launch_file = "static_transform_publisher_tests.py",
+    nodes = [
+        "@ros2_geometry2//:static_transform_publisher",
+    ],
+    use_pytest = True,
+)
+
+ros2_test(
+    name = "tf2_echo_tests",
+    size = "small",
+    launch_file = "tf2_echo_tests.py",
+    nodes = [
+        "@ros2_geometry2//:static_transform_publisher",
+        "@ros2_geometry2//:tf2_echo",
+    ],
+    use_pytest = True,
+)
