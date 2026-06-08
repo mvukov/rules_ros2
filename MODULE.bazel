@@ -14,7 +14,7 @@ bazel_dep(name = "pybind11_bazel", version = "3.0.0")
 bazel_dep(name = "readerwriterqueue", version = "1.0.6")
 bazel_dep(name = "rules_cc", version = "0.2.16")
 bazel_dep(name = "rules_foreign_cc", version = "0.15.1")
-bazel_dep(name = "rules_python", version = "1.9.1")
+bazel_dep(name = "rules_python", version = "2.0.2")
 bazel_dep(name = "rules_rust", version = "0.68.1")
 bazel_dep(name = "rules_rust_bindgen", version = "0.68.1")
 bazel_dep(name = "rules_shell", version = "0.8.0")
@@ -54,6 +54,11 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
 
 [
     pip.parse(
+        experimental_index_url = "https://pypi.org/simple",
+        experimental_target_platforms = [
+            "cp{}_linux_aarch64".format(python_version.replace(".", "")),
+            "cp{}_linux_x86_64".format(python_version.replace(".", "")),
+        ],
         hub_name = "rules_ros2_pip_deps",
         python_version = python_version,
         requirements_lock = "//:requirements_lock.txt",
