@@ -15,4 +15,4 @@ def test_foo():
 
 
 if __name__ == '__main__':
-    sys.exit(pytest.main())
+    sys.exit(pytest.main([__file__, '-v', *sys.argv[1:]]))
