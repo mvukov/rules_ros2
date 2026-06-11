@@ -199,7 +199,7 @@ def _idl_adapter_aspect_impl(target, ctx):
         IdlAdapterAspectInfo(
             idl_files = idl_files,
             idl_tuples = idl_tuples,
-        )
+        ),
     ]
 
 idl_adapter_aspect = aspect(
