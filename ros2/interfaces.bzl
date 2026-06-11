@@ -188,7 +188,6 @@ def _run_adapter(ctx, package_name, srcs):
 IdlAdapterAspectInfo = provider("TBD", fields = [
     "idl_files",
     "idl_tuples",
-    "idl_deps",
 ])
 
 def _idl_adapter_aspect_impl(target, ctx):
@@ -196,14 +195,11 @@ def _idl_adapter_aspect_impl(target, ctx):
     srcs = target[Ros2InterfaceInfo].info.srcs
     idl_files, idl_tuples = _run_adapter(ctx, package_name, srcs)
 
-    idl_deps = depset(transitive = [depset(dep[IdlAdapterAspectInfo].idl_files) for dep in ctx.rule.attr.deps])
-
     return [
         IdlAdapterAspectInfo(
             idl_files = idl_files,
             idl_tuples = idl_tuples,
-            idl_deps = idl_deps,
-        ),
+        )
     ]
 
 idl_adapter_aspect = aspect(

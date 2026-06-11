@@ -100,7 +100,7 @@ def create_interface_struct(target):
     return struct(
         package_name = target.label.name,
         srcs = target[Ros2InterfaceInfo].info.srcs,
-        idl_files = target[IdlAdapterAspectInfo].idl_files if IdlAdapterAspectInfo in target else None,
+        idl_files = target[IdlAdapterAspectInfo].idl_files if IdlAdapterAspectInfo in target else [],
     )
 
 def _ros2_interface_collector_aspect_impl(target, ctx):
