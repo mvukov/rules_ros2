@@ -20,9 +20,9 @@
 
 namespace {
 
-void check_exists(const std::string& path) {
+bool FileExists(const std::string& path) {
   std::ifstream file(path);
-  EXPECT_TRUE(file.is_open()) << "File does not exist: " << path;
+  return file.is_open();
 }
 
 TEST(TestMessages, MessageFieldsAreAccessible) {
@@ -32,13 +32,13 @@ TEST(TestMessages, MessageFieldsAreAccessible) {
 }
 
 TEST(TestMessages, MessageDefinitionsExist) {
-  auto package_prefix =
+  const auto package_prefix =
       ament_index_cpp::get_package_share_directory("test_messages");
-  check_exists(package_prefix + "/msg/Foo.msg");
-  check_exists(package_prefix + "/msg/Baz.msg");
-  check_exists(package_prefix + "/msg/Foo.idl");
-  check_exists(package_prefix + "/msg/Bar.idl");
-  check_exists(package_prefix + "/msg/Baz.idl");
+  EXPECT_TRUE(FileExists(package_prefix + "/msg/Foo.msg"));
+  EXPECT_TRUE(FileExists(package_prefix + "/msg/Baz.msg"));
+  EXPECT_TRUE(FileExists(package_prefix + "/msg/Foo.idl"));
+  EXPECT_TRUE(FileExists(package_prefix + "/msg/Bar.idl"));
+  EXPECT_TRUE(FileExists(package_prefix + "/msg/Baz.idl"));
 }
 
 }  // namespace
