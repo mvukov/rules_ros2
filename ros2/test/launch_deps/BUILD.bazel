@@ -1,0 +1,24 @@
+load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
+load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+cc_binary(
+    name = "hello",
+    testonly = True,
+    srcs = ["hello.cc"],
+)
+
+ros2_launch(
+    name = "child_launch",
+    testonly = True,
+    launch_file = "child_launch.py",
+    nodes = [":hello"],
+)
+
+ros2_test(
+    name = "launch_deps_tests",
+    size = "small",
+    launch_deps = [":child_launch"],
+    launch_file = "launch_deps_tests.py",
+    use_pytest = True,
+)
