@@ -1,5 +1,4 @@
 import launch
-import launch_pytest
 import launch_pytest.tools
 import pytest
 
@@ -15,7 +14,8 @@ def child_launch_proc():
 @launch_pytest.fixture
 def launch_description(child_launch_proc):
     return launch.LaunchDescription(
-        [child_launch_proc, launch_pytest.actions.ReadyToTest()])
+        [child_launch_proc,
+         launch_pytest.actions.ReadyToTest()])
 
 
 @pytest.mark.launch(fixture=launch_description)
