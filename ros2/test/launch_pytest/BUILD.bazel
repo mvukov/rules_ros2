@@ -6,6 +6,7 @@ cc_binary(
     name = "hello",
     testonly = True,
     srcs = ["hello.cc"],
+    visibility = ["//ros2/test:__subpackages__"],
 )
 
 ros2_test(
