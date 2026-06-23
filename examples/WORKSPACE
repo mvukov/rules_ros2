@@ -71,3 +71,11 @@ rust_setup_stage_3()
 load("@com_github_mvukov_rules_ros2//repositories:rust_setup_stage_4.bzl", "rust_setup_stage_4")
 
 rust_setup_stage_4()
+
+load("@com_github_mvukov_rules_ros2//repositories:ground_control_setup_stage_1.bzl", "ground_control_setup_stage_1")
+
+ground_control_setup_stage_1()
+
+load("@com_github_mvukov_rules_ros2//repositories:ground_control_setup_stage_2.bzl", "ground_control_setup_stage_2")
+
+ground_control_setup_stage_2()
