@@ -289,7 +289,10 @@ def ros2_repositories_impl():
         name = "ros2_rosbag2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosbag2.BUILD.bazel",
         patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosbag2_relax_plugin_errors.patch"],
+        patches = [
+            "@com_github_mvukov_rules_ros2//repositories/patches:rosbag2_relax_plugin_errors.patch",
+            "@com_github_mvukov_rules_ros2//repositories/patches:rosbag2_keyboard-handler.patch",
+        ],
         sha256 = "577abd17d9b8c3763cd7592d77fc685e9e300497c8c8ce9f66a8b9c5fa169a5e",
         strip_prefix = "rosbag2-0.15.15",
         url = "https://github.com/ros2/rosbag2/archive/refs/tags/0.15.15.tar.gz",
