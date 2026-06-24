@@ -1,0 +1,46 @@
+diff --git rmw_cyclonedds_cpp/src/rmw_node.cpp rmw_cyclonedds_cpp/src/rmw_node.cpp
+index 740ae8b..d2b76a2 100644
+--- rmw_cyclonedds_cpp/src/rmw_node.cpp
++++ rmw_cyclonedds_cpp/src/rmw_node.cpp
+@@ -181,6 +181,12 @@ static rmw_ret_t destroy_guard_condition(rmw_guard_condition_t * gc);
+ struct CddsDomain;
+ struct CddsWaitset;
+ 
++static std::unordered_map<const rosidl_message_type_support_t*, std::unique_ptr<rmw_cyclonedds_cpp::BaseCDRWriter>>& get_writers()
++{
++  static std::unordered_map<const rosidl_message_type_support_t*, std::unique_ptr<rmw_cyclonedds_cpp::BaseCDRWriter>> writers;
++  return writers;
++}
++
+ struct Cdds
+ {
+   std::mutex lock;
+@@ -1494,6 +1500,7 @@ extern "C" rmw_ret_t rmw_context_fini(rmw_context_t * context)
+     return RMW_RET_INVALID_ARGUMENT;
+   }
+   rmw_ret_t ret = rmw_init_options_fini(&context->options);
++  get_writers().clear();
+   delete context->impl;
+   *context = rmw_get_zero_initialized_context();
+   return ret;
+@@ -1674,8 +1681,18 @@ extern "C" rmw_ret_t rmw_serialize(
+   rmw_serialized_message_t * serialized_message)
+ {
+   try {
+-    auto writer = rmw_cyclonedds_cpp::make_cdr_writer(
+-      rmw_cyclonedds_cpp::make_message_value_type(type_support));
++    static std::mutex writers_mutex;
++    rmw_cyclonedds_cpp::BaseCDRWriter* writer;
++    std::lock_guard<std::mutex> writers_lock(writers_mutex);
++    {
++      auto& writers = get_writers();
++      auto it = writers.find(type_support);
++      if (it == writers.end()) {
++        std::tie(it, std::ignore) = writers.emplace(type_support, rmw_cyclonedds_cpp::make_cdr_writer(
++          rmw_cyclonedds_cpp::make_message_value_type(type_support)));
++      }
++      writer = it->second.get();
++    }
+ 
+     auto size = writer->get_serialized_size(ros_message);
+     rmw_ret_t ret = rmw_serialized_message_resize(serialized_message, size);
