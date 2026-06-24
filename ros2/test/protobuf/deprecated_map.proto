@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package ros2.test.protobuf;
+
+message DeprecatedMap {
+  string label = 1;
+  map<string, int32> old_items = 2 [deprecated = true];
+}

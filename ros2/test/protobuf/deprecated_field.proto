@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package ros2.test.protobuf;
+
+message DeprecatedField {
+  string active = 1;
+  int32 legacy = 2 [deprecated = true];
+  bool keep_me = 3;
+}

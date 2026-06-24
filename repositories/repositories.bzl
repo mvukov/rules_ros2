@@ -234,6 +234,14 @@ def ros2_workspace_repositories():
         ],
     )
 
+    maybe(
+        http_archive,
+        name = "com_google_protobuf",
+        sha256 = "440848dffa209beb8a04e41cc352762e44f8e91342b2a43aab6af9b30713c2f6",
+        strip_prefix = "protobuf-33.5",
+        urls = ["https://github.com/protocolbuffers/protobuf/archive/refs/tags/v33.5.tar.gz"],
+    )
+
 def ros2_repositories():
     """Import ROS 2 repositories."""
 

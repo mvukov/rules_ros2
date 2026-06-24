@@ -16,6 +16,7 @@
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@com_github_mvukov_rules_ros2//ros2:cc_opts.bzl", "C_COPTS")
+load("@com_google_protobuf//bazel/common:proto_info.bzl", "ProtoInfo")
 load("@rules_cc//cc:defs.bzl", "CcInfo", "cc_common")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
 load("@rules_python//python:defs.bzl", "PyInfo", "py_library")
@@ -26,6 +27,7 @@ Ros2InterfaceInfo = provider(
     fields = [
         "info",
         "deps",
+        "ros_package_name",
     ],
 )
 
@@ -43,6 +45,7 @@ def _ros2_interface_library_impl(ctx):
                     for dep in ctx.attr.deps
                 ],
             ),
+            ros_package_name = ctx.label.name,
         ),
     ]
 
@@ -141,7 +144,7 @@ IdlAdapterAspectInfo = provider("TBD", fields = [
 ])
 
 def _idl_adapter_aspect_impl(target, ctx):
-    package_name = target.label.name
+    package_name = target[Ros2InterfaceInfo].ros_package_name
     srcs = target[Ros2InterfaceInfo].info.srcs
     idl_files, idl_tuples = _run_adapter(ctx, package_name, srcs)
     return [
@@ -154,7 +157,6 @@ def _idl_adapter_aspect_impl(target, ctx):
 idl_adapter_aspect = aspect(
     implementation = _idl_adapter_aspect_impl,
     attr_aspects = ["deps"],
-    required_providers = [Ros2InterfaceInfo],
     attrs = {
         "_adapter": attr.label(
             default = Label("@ros2_rosidl//:rosidl_adapter_app"),
@@ -162,6 +164,8 @@ idl_adapter_aspect = aspect(
             cfg = "exec",
         ),
     },
+    required_providers = [[ProtoInfo], [Ros2InterfaceInfo]],
+    required_aspect_providers = [Ros2InterfaceInfo],
     provides = [IdlAdapterAspectInfo],
 )
 
@@ -291,13 +295,13 @@ def _get_compilation_contexts_from_deps(deps):
     return [dep[CcInfo].compilation_context for dep in deps]
 
 def _get_compilation_contexts_from_aspect_info_deps(deps, aspect_info):
-    return [dep[aspect_info].cc_info.compilation_context for dep in deps]
+    return [dep[aspect_info].cc_info.compilation_context for dep in deps if aspect_info in dep]
 
 def _get_linking_contexts_from_deps(deps):
     return [dep[CcInfo].linking_context for dep in deps]
 
 def _get_linking_contexts_from_aspect_info_deps(deps, aspect_info):
-    return [dep[aspect_info].cc_info.linking_context for dep in deps]
+    return [dep[aspect_info].cc_info.linking_context for dep in deps if aspect_info in dep]
 
 def _compile_cc_generated_code(
         ctx,
@@ -367,7 +371,7 @@ def _compile_cc_generated_code(
     )
 
 def _c_generator_aspect_impl(target, ctx):
-    package_name = target.label.name
+    package_name = target[Ros2InterfaceInfo].ros_package_name
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
 
@@ -492,14 +496,14 @@ c_generator_aspect = aspect(
     fragments = ["cpp"],
 )
 
-def _cc_generator_impl(ctx, aspect_info):
+def cc_generator_impl(ctx, aspect_info):
     cc_info = cc_common.merge_cc_infos(
         direct_cc_infos = [dep[aspect_info].cc_info for dep in ctx.attr.deps],
     )
     return [cc_info]
 
 def _c_ros2_interface_library_impl(ctx):
-    return _cc_generator_impl(ctx, CGeneratorAspectInfo)
+    return cc_generator_impl(ctx, CGeneratorAspectInfo)
 
 c_ros2_interface_library = rule(
     attrs = {
@@ -535,7 +539,7 @@ _TYPESUPPORT_INTROSPECION_GENERATOR_CPP_OUTPUT_MAPPING = [
 ]
 
 def _cpp_generator_aspect_impl(target, ctx):
-    package_name = target.label.name
+    package_name = target[Ros2InterfaceInfo].ros_package_name
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
 
@@ -648,15 +652,15 @@ cpp_generator_aspect = aspect(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
     },
-    required_providers = [Ros2InterfaceInfo],
-    required_aspect_providers = [IdlAdapterAspectInfo],
+    required_providers = [[ProtoInfo], [Ros2InterfaceInfo]],
+    required_aspect_providers = [[Ros2InterfaceInfo], [IdlAdapterAspectInfo]],
     provides = [CppGeneratorAspectInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
     fragments = ["cpp"],
 )
 
 def _cpp_ros2_interface_library_impl(ctx):
-    return _cc_generator_impl(ctx, CppGeneratorAspectInfo)
+    return cc_generator_impl(ctx, CppGeneratorAspectInfo)
 
 cpp_ros2_interface_library = rule(
     attrs = {
@@ -686,7 +690,7 @@ def _get_py_srcs(files):
     return [f for f in files if f.path.endswith(".py")]
 
 def _py_generator_aspect_impl(target, ctx):
-    package_name = target.label.name
+    package_name = target[Ros2InterfaceInfo].ros_package_name
     srcs = target[Ros2InterfaceInfo].info.srcs
     adapter = target[IdlAdapterAspectInfo]
 
@@ -779,32 +783,33 @@ def _py_generator_aspect_impl(target, ctx):
             *relative_path_parts[0:]
         )
 
+    py_deps = [dep for dep in ctx.rule.attr.deps if PyGeneratorAspectInfo in dep]
     py_info = PyGeneratorAspectInfo(
         cc_info = cc_common.merge_cc_infos(
             direct_cc_infos = [compilation_info.cc_info] + [
                 dep[PyGeneratorAspectInfo].cc_info
-                for dep in ctx.rule.attr.deps
+                for dep in py_deps
             ],
         ),
         dynamic_libraries = depset(
             direct = [dynamic_library],
             transitive = [
                 dep[PyGeneratorAspectInfo].dynamic_libraries
-                for dep in ctx.rule.attr.deps
+                for dep in py_deps
             ],
         ),
         transitive_sources = depset(
             direct = _get_py_srcs(all_outputs),
             transitive = [
                 dep[PyGeneratorAspectInfo].transitive_sources
-                for dep in ctx.rule.attr.deps
+                for dep in py_deps
             ],
         ),
         imports = depset(
             direct = [py_import_path],
             transitive = [
                 dep[PyGeneratorAspectInfo].imports
-                for dep in ctx.rule.attr.deps
+                for dep in py_deps
             ],
         ),
         linker_inputs = compilation_info.cc_info.linking_context.linker_inputs,
