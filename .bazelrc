@@ -47,6 +47,7 @@ test --test_output=errors
 build:clang --repo_env=CC=clang
 build:clang --repo_env=CXX=clang++
 build:clang --linkopt="-fuse-ld=lld"
+build:clang --linkopt="-latomic"
 
 # Work around https://github.com/bazelbuild/rules_rust/issues/2125
 build --action_env=CARGO_BAZEL_REPIN=1
