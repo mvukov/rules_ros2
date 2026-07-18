@@ -22,7 +22,6 @@ ros2_cpp_binary(
     ],
     linkopts = [
         "-fvisibility=hidden",
-        "-latomic",
     ],
     linkshared = True,
     deps = [
