@@ -34,12 +34,18 @@ ros2_c_library(
             "@com_github_mvukov_rules_ros2//ros2:rcl_logging_syslog": ["@ros2_rcl_logging_syslog//:rcl_logging_syslog"],
         },
         no_match_error = "Unsupported rcl_logging implementation",
-    ),
-    includes = ["rcl/include"],
+    ) + [
+        "@libyaml",
+    ],
+    includes = [
+        "rcl/include",
+        "rcl/src",
+    ],
     visibility = ["//visibility:public"],
     deps = [
         ":rcl_yaml_param_parser",
         "@ros2_rcl_interfaces//:c_rcl_interfaces",
+        "@ros2_rcl_interfaces//:c_type_description_interfaces",
         "@ros2_rcl_logging//:rcl_logging_interface",
         "@ros2_rcutils//:rcutils",
         "@ros2_rmw_implementation//:rmw_implementation",
