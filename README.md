@@ -49,6 +49,9 @@ ROS 2 packages are by default locked to versions from [release-jazzy-20250820](h
 > care about this. If the deps are not correctly set, you'll only see failures
 > during compilation of the generated code.
 
+> [!NOTE]
+> If you want to use ROS 2 Humble, go to [feature/humble](https://github.com/mvukov/rules_ros2/tree/feature/humble) branch.
+
 ## Alternatives
 
 For alternative approaches, see:
