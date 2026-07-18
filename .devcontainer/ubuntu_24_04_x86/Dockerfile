@@ -1,5 +1,5 @@
 # Keep in sync with the image used for CI in .github/workflows/main.yml.
-FROM mvukov/bazel-builder:commit-50c39d97108084a6128062756da32da98be9c8c9
+FROM mvukov/bazel-builder:commit-6011b9ded2b43b5bdc4122b3f78371c852e367f1
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -27,7 +27,7 @@ RUN apt-get update \
     && apt-get install -y docker-ce-cli
 
 RUN python3 -m pip install \
-    pre-commit==4.0.*
+    pre-commit~=4.6
 
 # Create a non-root user
 # Taken from https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user#_creating-a-nonroot-user
