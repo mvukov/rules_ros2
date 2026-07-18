@@ -16,7 +16,7 @@ build:remote --bes_backend=grpcs://remote.buildbuddy.io
 build:remote --remote_cache=grpcs://remote.buildbuddy.io
 build:remote --remote_timeout=3600
 build:remote --remote_download_toplevel
-build:remote --experimental_remote_cache_compression
+build:remote --remote_cache_compression
 
 # buildbuddy suggestions:
 build:remote --experimental_profile_include_primary_output
