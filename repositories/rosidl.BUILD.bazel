@@ -21,7 +21,7 @@ ros2_c_library(
 
 ros2_c_library(
     name = "rosidl_runtime_c",
-    srcs = glob(["rosidl_runtime_c/src/*.c"]),
+    srcs = glob(["rosidl_runtime_c/src/**/*.c"]),
     hdrs = glob(["rosidl_runtime_c/include/**/*.h"]),
     includes = ["rosidl_runtime_c/include"],
     visibility = ["//visibility:public"],
@@ -92,7 +92,9 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         ":rosidl_cmake",
+        ":rosidl_generator_type_description_lib",
         ":rosidl_parser",
+        ":rosidl_pycommon",
     ],
 )
 
@@ -138,7 +140,9 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         ":rosidl_cmake",
+        ":rosidl_generator_c_lib",
         ":rosidl_parser",
+        ":rosidl_pycommon",
     ],
 )
 
@@ -227,6 +231,7 @@ py_library(
         ":rosidl_cmake",
         ":rosidl_generator_c_lib",
         ":rosidl_parser",
+        ":rosidl_pycommon",
     ],
 )
 
@@ -263,8 +268,10 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         ":rosidl_cmake",
+        ":rosidl_generator_c_lib",
         ":rosidl_generator_cpp_lib",
         ":rosidl_parser",
+        ":rosidl_pycommon",
     ],
 )
 
@@ -288,4 +295,41 @@ filegroup(
     name = "rosidl_typesupport_introspection_generator_cpp_templates",
     srcs = glob(["rosidl_typesupport_introspection_cpp/resource/*.em"]),
     visibility = ["//visibility:public"],
+)
+
+py_library(
+    name = "rosidl_pycommon",
+    srcs = ["rosidl_pycommon/rosidl_pycommon/__init__.py"],
+    imports = ["rosidl_pycommon"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":rosidl_parser",
+        requirement("empy"),
+    ],
+)
+
+py_library(
+    name = "rosidl_generator_type_description_lib",
+    srcs = glob(["rosidl_generator_type_description/rosidl_generator_type_description/*.py"]),
+    imports = ["rosidl_generator_type_description"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":rosidl_parser",
+    ],
+)
+
+_ROSIDL_GENERATOR_TYPE_DESCRIPTION_PY = "rosidl_generator_type_description_app.py"
+
+copy_file(
+    name = "rosidl_generator_type_description_copy",
+    src = "rosidl_generator_type_description/bin/rosidl_generator_type_description",
+    out = _ROSIDL_GENERATOR_TYPE_DESCRIPTION_PY,
+)
+
+py_binary(
+    name = "rosidl_generator_type_description_app",
+    srcs = [_ROSIDL_GENERATOR_TYPE_DESCRIPTION_PY],
+    legacy_create_init = False,
+    visibility = ["//visibility:public"],
+    deps = [":rosidl_generator_type_description_lib"],
 )

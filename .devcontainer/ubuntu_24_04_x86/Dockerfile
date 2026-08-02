@@ -1,5 +1,5 @@
 # Keep in sync with the image used for CI in .github/workflows/main.yml.
-FROM mvukov/bazel-builder:commit-50c39d97108084a6128062756da32da98be9c8c9
+FROM mvukov/bazel-builder:commit-6011b9ded2b43b5bdc4122b3f78371c852e367f1
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -26,8 +26,8 @@ RUN apt-get update \
     && apt-get update \
     && apt-get install -y docker-ce-cli
 
-RUN python3 -m pip install \
-    pre-commit==4.0.*
+RUN python3 -m pip install --break-system-packages \
+    pre-commit~=4.6
 
 # Create a non-root user
 # Taken from https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user#_creating-a-nonroot-user
@@ -46,8 +46,18 @@ RUN echo -e "#!/bin/sh\n\
     && chmod +x /usr/local/share/docker-init.sh
 
 # Create the user and add them to sudoers.
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -s /bin/bash -m $USERNAME \
+RUN if getent group $USER_GID > /dev/null; then \
+        EXISTING_GROUP=$(getent group $USER_GID | cut -d: -f1); \
+        if [ "$EXISTING_GROUP" != "$USERNAME" ]; then groupmod -n $USERNAME $EXISTING_GROUP; fi; \
+    else \
+        groupadd --gid $USER_GID $USERNAME; \
+    fi \
+    && if getent passwd $USER_UID > /dev/null; then \
+        EXISTING_USER=$(getent passwd $USER_UID | cut -d: -f1); \
+        if [ "$EXISTING_USER" != "$USERNAME" ]; then usermod -l $USERNAME -d /home/$USERNAME -m $EXISTING_USER; fi; \
+    else \
+        useradd --uid $USER_UID --gid $USER_GID -s /bin/bash -m $USERNAME; \
+    fi \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 

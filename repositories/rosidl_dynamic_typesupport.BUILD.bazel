@@ -1,0 +1,16 @@
+""" Builds rosidl_dynamic_typesupport.
+"""
+
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_c_library")
+
+ros2_c_library(
+    name = "rosidl_dynamic_typesupport",
+    srcs = glob(["src/**/*.c"]),
+    hdrs = glob(["include/rosidl_dynamic_typesupport/**/*.h"]),
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2_rcutils//:rcutils",
+        "@ros2_rosidl//:rosidl_runtime_c",
+    ],
+)

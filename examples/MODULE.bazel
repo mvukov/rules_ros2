@@ -17,7 +17,7 @@ python.toolchain(
     # Otherwise you will get errors at analysis time like:
     #     configurable attribute "actual" in @@rules_python~~pip~rules_ros2_pip_deps//numpy:_no_matching_repository doesn't match this configuration: No matching wheel for current configuration's Python version.
     #     The current build configuration's Python version doesn't match any of the Python wheels available for this distribution.
-    python_version = "3.10",
+    python_version = "3.12",
 )
 
 register_toolchains(

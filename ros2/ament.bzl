@@ -6,8 +6,10 @@ load("@bazel_skylib//lib:paths.bzl", "paths")
 load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
     "Ros2InterfaceInfo",
+    "c_generator_aspect",
     "cpp_generator_aspect",
     "idl_adapter_aspect",
+    "type_description_aspect",
 )
 load(
     "@com_github_mvukov_rules_ros2//ros2:plugin_aspects.bzl",
@@ -265,6 +267,8 @@ ros2_ament_setup = rule(
         "idl_deps": attr.label_list(
             aspects = [
                 idl_adapter_aspect,
+                type_description_aspect,
+                c_generator_aspect,
                 cpp_generator_aspect,
                 ros2_idl_plugin_aspect,
             ],
@@ -281,7 +285,7 @@ def py_create_ament_setup(ament_prefix_path):
     return "os.environ['AMENT_PREFIX_PATH'] = '{}'".format(ament_prefix_path)
 
 def _py_launcher_rule_impl(ctx):
-    output = ctx.actions.declare_file(ctx.attr.name + ".py")
+    output = ctx.outputs.output
     ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path
 
     substitutions = dicts.add(
@@ -324,6 +328,7 @@ py_launcher_rule = rule(
             mandatory = True,
             allow_single_file = True,
         ),
+        "output": attr.output(mandatory = True),
     },
     implementation = _py_launcher_rule_impl,
 )
@@ -348,6 +353,7 @@ def py_launcher(name, deps, idl_deps = None, **kwargs):
         The label of the expanded .py file (`name + ".py"`).
     """
     ament_setup = name + "_ament_setup"
+    output_name = name + ".py"
     testonly = kwargs.get("testonly", False)
     ros2_ament_setup(
         name = ament_setup,
@@ -359,9 +365,10 @@ def py_launcher(name, deps, idl_deps = None, **kwargs):
     py_launcher_rule(
         name = name,
         ament_setup = ament_setup,
+        output = output_name,
         **kwargs
     )
-    return name + ".py"
+    return output_name
 
 def split_kwargs(**kwargs):
     """Split kwargs into those to be forwarded to the actual binary target and launcher target respectively."""

@@ -11,7 +11,7 @@ Besides Bazel, you will need a C++ compiler and a Python 3 interpreter.
 
 And no, you don't have to install any ROS 2 packages via `apt`.
 
-The code is developed and tested on Ubuntu 22.04 with Python 3.10.
+The code is developed and tested on Ubuntu 24.04 with Python 3.12.
 
 ## What works?
 
@@ -39,7 +39,7 @@ Available features:
 
 Please take a look at the [examples](examples) folder to get started.
 
-ROS 2 packages are by default locked to versions from [release-humble-20250721](https://github.com/ros2/ros2/releases/tag/release-humble-20250721).
+ROS 2 packages are by default locked to versions from [release-jazzy-20250820](https://github.com/ros2/ros2/releases/tag/release-jazzy-20250820).
 
 ## Notes
 
@@ -48,6 +48,9 @@ ROS 2 packages are by default locked to versions from [release-humble-20250721](
 > interface targets are not set correctly, code generation for ROS 2 seems to not
 > care about this. If the deps are not correctly set, you'll only see failures
 > during compilation of the generated code.
+
+> [!NOTE]
+> If you want to use ROS 2 Humble, go to [feature/humble](https://github.com/mvukov/rules_ros2/tree/feature/humble) branch.
 
 ## Alternatives
 
