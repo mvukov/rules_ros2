@@ -102,7 +102,9 @@ def create_interface_struct(target):
     return struct(
         package_name = target.label.name,
         srcs = target[Ros2InterfaceInfo].info.srcs,
-        idl_files = target[IdlAdapterAspectInfo].idl_files if IdlAdapterAspectInfo in target else [],
+        # Tuple, not list: an inline [] here would be an unfrozen value, which depset()
+        # (see Ros2InterfaceCollectorAspectInfo below) rejects as a struct field.
+        idl_files = tuple(target[IdlAdapterAspectInfo].idl_files) if IdlAdapterAspectInfo in target else (),
     )
 
 def _ros2_interface_collector_aspect_impl(target, ctx):
