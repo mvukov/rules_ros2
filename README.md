@@ -52,6 +52,12 @@ ROS 2 packages are by default locked to versions from [release-jazzy-20250820](h
 > [!NOTE]
 > If you want to use ROS 2 Humble, go to [feature/humble](https://github.com/mvukov/rules_ros2/tree/feature/humble) branch.
 
+## Support
+
+Found a bug or have a feature request? Please open a [GitHub issue](https://github.com/mvukov/rules_ros2/issues).
+
+For anything else, feel free to [reach out](https://www.linkedin.com/in/mvukov/).
+
 ## Alternatives
 
 For alternative approaches, see:
