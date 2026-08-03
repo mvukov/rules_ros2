@@ -271,28 +271,28 @@ def ros2_repositories():
         http_archive,
         name = "ros2_xacro",
         build_file = "@com_github_mvukov_rules_ros2//repositories:xacro.BUILD.bazel",
-        sha256 = "6df0d44af8a6bf9f23f0536ce167a0cd7b4c01281100dfea7e17d504363b424d",
-        strip_prefix = "xacro-2.0.13",
-        urls = ["https://github.com/ros/xacro/archive/refs/tags/2.0.13.tar.gz"],
+        sha256 = "f9d94956574015427e59011d4ee113b206e9c10a27a0c01d4b08ee4268d76741",
+        strip_prefix = "xacro-2.1.1",
+        urls = ["https://github.com/ros/xacro/archive/refs/tags/2.1.1.tar.gz"],
     )
 
-    # Version copied from https://github.com/ros2/orocos_kdl_vendor/blob/0.2.5/orocos_kdl_vendor/CMakeLists.txt#L58.
+    # Version copied from https://github.com/ros2/orocos_kdl_vendor/blob/0.5.2/orocos_kdl_vendor/CMakeLists.txt#L19.
     maybe(
         http_archive,
         name = "orocos_kdl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:orocos_kdl.BUILD.bazel",
-        sha256 = "22df47f63d91d014af2675029c23da83748575c12a6481fda3ed9235907cc259",
-        strip_prefix = "orocos_kinematics_dynamics-507de66205e14b12c8c65f25eafc05c4dc66e21e",
-        urls = ["https://github.com/orocos/orocos_kinematics_dynamics/archive/507de66205e14b12c8c65f25eafc05c4dc66e21e.tar.gz"],
+        sha256 = "8acf1dc9c2f7ae37d747f16ce1e8e3cb40eb9187b8950aa2871f944b55520816",
+        strip_prefix = "orocos_kinematics_dynamics-ce4bcb65a050615b6d7f21bc60fbb2656515791b",
+        urls = ["https://github.com/orocos/orocos_kinematics_dynamics/archive/ce4bcb65a050615b6d7f21bc60fbb2656515791b.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "ros2_urdf",
         build_file = "@com_github_mvukov_rules_ros2//repositories:urdf.BUILD.bazel",
-        sha256 = "a762eb57dc7f60b9ada0240fd7c609f0dc5028ef0b4b65972daf91e009e52cf6",
-        strip_prefix = "urdf-2.6.0",
-        urls = ["https://github.com/ros2/urdf/archive/refs/tags/2.6.0.tar.gz"],
+        sha256 = "7bd84e41f20c50719de2eeff1d8be58dbc6cafcd93ea88dc58072d5dcf8f8ca5",
+        strip_prefix = "urdf-2.10.1",
+        urls = ["https://github.com/ros2/urdf/archive/refs/tags/2.10.1.tar.gz"],
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:urdf_plugin_loader_fix.patch"],
     )
@@ -301,9 +301,9 @@ def ros2_repositories():
         http_archive,
         name = "ros2_diagnostics",
         build_file = "@com_github_mvukov_rules_ros2//repositories:diagnostics.BUILD.bazel",
-        sha256 = "a723dae7acf0f00ee643c076c7c81299be0254919f29225ec7a89dc14cb8ea6f",
-        strip_prefix = "diagnostics-9f402787ea2c9b3dd4d7e51a9986810e8a3400ba",
-        urls = ["https://github.com/ros/diagnostics/archive/9f402787ea2c9b3dd4d7e51a9986810e8a3400ba.zip"],
+        sha256 = "bf275beae52d3f75e7a8cb7568723651fc8ab2e6e247e261052107643a71228d",
+        strip_prefix = "diagnostics-4.5.7",
+        urls = ["https://github.com/ros/diagnostics/archive/refs/tags/4.5.7.tar.gz"],
     )
 
     maybe(
