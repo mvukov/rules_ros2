@@ -256,13 +256,13 @@ def _type_description_aspect_impl(target, ctx):
     type_description_files = []
     type_description_tuples = []
     for src in srcs:
-        extension = src.extension
+        idl_type_name = _get_idl_type_name(src)
         stem = _get_stem(src)
-        relative_file = "{}/{}/{}.json".format(package_name, extension, stem)
+        relative_file = "{}/{}/{}.json".format(package_name, idl_type_name, stem)
         type_description_file = ctx.actions.declare_file(relative_file)
         type_description_files.append(type_description_file)
         type_description_tuples.append(
-            "{}/{}.idl:{}".format(extension, stem, type_description_file.path),
+            "{}/{}.idl:{}".format(idl_type_name, stem, type_description_file.path),
         )
 
     transitive_type_description_files = depset(
