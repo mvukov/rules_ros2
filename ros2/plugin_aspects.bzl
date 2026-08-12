@@ -16,9 +16,11 @@
 
 load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "CGeneratorAspectInfo",
     "CppGeneratorAspectInfo",
     "IdlAdapterAspectInfo",
     "Ros2InterfaceInfo",
+    "TypeDescriptionAspectInfo",
 )
 load("@rules_cc//cc:defs.bzl", "cc_common")
 load("@rules_cc//cc:toolchain_utils.bzl", "find_cpp_toolchain")
@@ -100,6 +102,9 @@ def create_interface_struct(target):
     return struct(
         package_name = target.label.name,
         srcs = target[Ros2InterfaceInfo].info.srcs,
+        # Tuple, not list: an inline [] here would be an unfrozen value, which depset()
+        # (see Ros2InterfaceCollectorAspectInfo below) rejects as a struct field.
+        idl_files = tuple(target[IdlAdapterAspectInfo].idl_files) if IdlAdapterAspectInfo in target else (),
     )
 
 def _ros2_interface_collector_aspect_impl(target, ctx):
@@ -126,6 +131,7 @@ ros2_interface_collector_aspect = aspect(
     implementation = _ros2_interface_collector_aspect_impl,
     attr_aspects = _ROS2_COLLECTOR_ATTR_ASPECTS,
     provides = [Ros2InterfaceCollectorAspectInfo],
+    required_aspect_providers = [IdlAdapterAspectInfo],
 )
 
 Ros2IdlPluginAspectInfo = provider(

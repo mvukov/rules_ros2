@@ -21,9 +21,11 @@ load(
     "CGeneratorAspectInfo",
     "IdlAdapterAspectInfo",
     "Ros2InterfaceInfo",
+    "TypeDescriptionAspectInfo",
     "c_generator_aspect",
     "idl_adapter_aspect",
     "run_generator",
+    "type_description_aspect",
 )
 load("@rules_cc//cc:defs.bzl", "cc_common")
 load("@rules_rust//rust:defs.bzl", "rust_common")
@@ -157,7 +159,7 @@ def _rust_generator_aspect_impl(target, ctx):
         extra_generated_outputs = extra_generated_outputs,
         mnemonic = "Ros2IdlGeneratorRust",
         progress_message = "Generating Rust IDL interfaces for %{label}",
-        generator_env = {"ROS_DISTRO": "humble"},
+        generator_env = {"ROS_DISTRO": "jazzy"},
     )
 
     # Ideally dep_variant_info could be a depset, and all dep propagation should
@@ -229,6 +231,7 @@ rust_generator_aspect = aspect(
     required_providers = [Ros2InterfaceInfo],
     required_aspect_providers = [
         [IdlAdapterAspectInfo],
+        [TypeDescriptionAspectInfo],
         [CGeneratorAspectInfo],
     ],
     provides = [RustGeneratorAspectInfo],
@@ -271,6 +274,7 @@ rust_ros2_interface_library = rule(
             mandatory = True,
             aspects = [
                 idl_adapter_aspect,
+                type_description_aspect,
                 c_generator_aspect,
                 rust_generator_aspect,
             ],

@@ -38,9 +38,16 @@ string_flag(
     name = "rcl_logging_impl",
     build_setting_default = "spdlog",
     values = [
+        "noop",
         "spdlog",
         "syslog",
     ],
+)
+
+config_setting(
+    name = "rcl_logging_noop",
+    flag_values = {":rcl_logging_impl": "noop"},
+    visibility = ["//visibility:public"],
 )
 
 config_setting(
