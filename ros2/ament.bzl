@@ -195,6 +195,14 @@ def _ros2_ament_setup_rule_impl(ctx):
         ] + [idls_from_deps],
     ).to_list()
 
+    # Track generated and symlinked files to dedup outputs. It can happen that Ros2PluginCollectorAspectInfo sees a
+    # target such as builtin_interfaces multiple times via different edges of the dependency graph.  Those different
+    # paths can be introduced via config transitions (one concrete example is a C++ node with some IDL deps and a Python
+    # node that shares at least one of those IDL deps; when the Python node uses aspect_rules_py, it lands on a
+    # different configuration, because aspect_rules_py introduces their python_transition). Deduping here is an easy
+    # fix.
+    output_paths = {}
+
     for idl in idls:
         package_name = idl.package_name
         if package_name not in registered_packages:
@@ -205,9 +213,11 @@ def _ros2_ament_setup_rule_impl(ctx):
             if src.extension not in ("msg", "srv", "action"):
                 continue
             subdir = src.extension
-            src_file = ctx.actions.declare_file(
-                paths.join(prefix_path, "share", package_name, subdir, src.basename),
-            )
+            src_file_path = paths.join(prefix_path, "share", package_name, subdir, src.basename)
+            if src_file_path in output_paths:
+                continue
+            output_paths[src_file_path] = True
+            src_file = ctx.actions.declare_file(src_file_path)
             ctx.actions.symlink(
                 output = src_file,
                 target_file = src,
@@ -219,21 +229,26 @@ def _ros2_ament_setup_rule_impl(ctx):
         # mcap supports both IDL and msg definitions, but not combinations. Therefore, if any handwritten IDL files are
         # present, the rosbag writer also needs any generated IDL files it depends on.
         if idl.idl_files != None:
-            for idl in idl.idl_files:
-                subdir = idl.dirname.split("/")[-1]
-                src_file = ctx.actions.declare_file(
-                    paths.join(prefix_path, "share", package_name, subdir, idl.basename),
-                )
+            for idl_file in idl.idl_files:
+                subdir = idl_file.dirname.split("/")[-1]
+                src_file_path = paths.join(prefix_path, "share", package_name, subdir, idl_file.basename)
+                if src_file_path in output_paths:
+                    continue
+                output_paths[src_file_path] = True
+                src_file = ctx.actions.declare_file(src_file_path)
+
                 ctx.actions.symlink(
                     output = src_file,
-                    target_file = idl,
+                    target_file = idl_file,
                 )
                 outputs.append(src_file)
                 idl_manifest_contents.append(paths.join(subdir, src.basename))
 
-        idl_manifest = ctx.actions.declare_file(
-            paths.join(prefix_path, _RESOURCE_INDEX_PATH, "rosidl_interfaces", package_name),
-        )
+        idl_manifest_path = paths.join(prefix_path, _RESOURCE_INDEX_PATH, "rosidl_interfaces", package_name)
+        if idl_manifest_path in output_paths:
+            continue
+        output_paths[idl_manifest_path] = True
+        idl_manifest = ctx.actions.declare_file(idl_manifest_path)
         ctx.actions.write(idl_manifest, "\n".join([p for p in idl_manifest_contents]))
         outputs.append(idl_manifest)
 
