@@ -4,7 +4,7 @@
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
 load("@rules_python//python:defs.bzl", "py_binary")
 
-def ros2_launch(name, launch_file, nodes = None, deps = None, data = None, idl_deps = None, **kwargs):
+def ros2_launch(name, launch_file, nodes = None, deps = None, data = None, idl_deps = None, launch_deps = None, **kwargs):
     """ Defines a ROS 2 deployment.
 
     Args:
@@ -14,14 +14,18 @@ def ros2_launch(name, launch_file, nodes = None, deps = None, data = None, idl_d
         deps: Additional Python deps that can be used by the launch file.
         data: Additional data that can be used by the launch file.
         idl_deps: Additional IDL deps that are used as runtime plugins.
+        launch_deps: Other ros2_launch targets included by this launch file.
+            Their runfiles are propagated into this launch target, and their
+            ROS 2 runtime deps are included in the generated ament setup.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
     launcher = "{}_launch".format(name)
     nodes = nodes or []
     deps = deps or []
+    launch_deps = launch_deps or []
     launch_script = py_launcher(
         launcher,
-        deps = nodes + deps,
+        deps = nodes + deps + launch_deps,
         idl_deps = idl_deps,
         template = "@com_github_mvukov_rules_ros2//ros2:ros2_launch.py.tpl",
         substitutions = {
@@ -35,7 +39,7 @@ def ros2_launch(name, launch_file, nodes = None, deps = None, data = None, idl_d
     py_binary(
         name = name,
         srcs = [launcher],
-        data = nodes + [launch_file] + data,
+        data = nodes + [launch_file] + data + launch_deps,
         main = launch_script,
         deps = [
             "@ros2_launch_ros//:ros2launch",
