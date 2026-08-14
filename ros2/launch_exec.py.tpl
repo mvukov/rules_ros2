@@ -1,5 +1,6 @@
 import os
 import sys
+from python.runfiles import runfiles
 
 env = os.environ.copy()
 
@@ -16,5 +17,5 @@ if not ament_prefix_path:
 else:
     env["AMENT_PREFIX_PATH"] = ament_prefix_path
 
-entry_point = "{entry_point}"
+entry_point = runfiles.Create().Rlocation("{entry_point}")
 os.execve(entry_point, [entry_point, *sys.argv[1:]], env)

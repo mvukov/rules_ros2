@@ -12,10 +12,12 @@ if [ -n "${BAZEL_TEST:-}" ]; then
   fi
 fi
 
+ENTRYPOINT="$(rlocation {entry_point})"
+
 ament_prefix_path="{{ament_prefix_path}}"
 if [ -z "${ament_prefix_path}" ]; then
   unset AMENT_PREFIX_PATH
-  exec {entry_point} "$@"
+  exec ${ENTRYPOINT} "$@"
 else
-  AMENT_PREFIX_PATH="${ament_prefix_path}" exec {entry_point} "$@"
+  AMENT_PREFIX_PATH="${ament_prefix_path}" exec ${ENTRYPOINT} "$@"
 fi
