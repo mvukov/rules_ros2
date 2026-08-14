@@ -27,6 +27,7 @@ Available features:
 - Logging backends:
   - `spdlog` (default): `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=spdlog`
   - `syslog`: `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=syslog`
+  - `noop`: `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=noop`
 - Utilities:
   - [`foxglove_bridge`](https://github.com/foxglove/ros-foxglove-bridge) for visualization and debugging
   - `ros2_bag` for handling rosbags
