@@ -15,7 +15,7 @@ bazel_dep(name = "readerwriterqueue", version = "1.0.6")
 bazel_dep(name = "rules_cc", version = "0.2.16")
 bazel_dep(name = "rules_foreign_cc", version = "0.15.1")
 bazel_dep(name = "rules_python", version = "2.0.2")
-bazel_dep(name = "rules_rust", version = "0.68.1")
+bazel_dep(name = "rules_rust", version = "0.71.3")
 bazel_dep(name = "rules_rust_bindgen", version = "0.68.1")
 bazel_dep(name = "rules_shell", version = "0.8.0")
 bazel_dep(name = "spdlog", version = "1.17.0")
@@ -88,7 +88,7 @@ rust.toolchain(
 )
 
 # Keep specs in sync with repositories/rust_setup_stage_3.bzl
-crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
+crate = use_extension("@rules_rust//crate_universe:extensions.bzl", "crate")
 crate.spec(
     package = "async-std",
     version = "1.13",
@@ -143,6 +143,7 @@ crate.spec(
 crate.from_cargo(
     name = "rules_ros2_crate_index",
     cargo_lockfile = "//repositories/rust:Cargo.lock",
+    lockfile = "//repositories/rust:Cargo.Bazel.lock",
 )
 use_repo(crate, "rules_ros2_crate_index")
 
