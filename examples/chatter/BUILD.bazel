@@ -1,5 +1,6 @@
 load("@com_github_mvukov_rules_ros2//ros2:bag.bzl", "ros2_bag")
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load("@com_github_mvukov_rules_ros2//ros2:interface.bzl", "ros2_interface")
 load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
 load("@com_github_mvukov_rules_ros2//ros2:rust_interfaces.bzl", "rust_ros2_interface_library")
 load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
@@ -73,6 +74,13 @@ ros2_test(
 
 ros2_topic(
     name = "topic",
+    deps = [
+        "@ros2_common_interfaces//:py_std_msgs",
+    ],
+)
+
+ros2_interface(
+    name = "interface",
     deps = [
         "@ros2_common_interfaces//:py_std_msgs",
     ],
