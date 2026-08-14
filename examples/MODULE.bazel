@@ -32,9 +32,11 @@ use_repo(
     # Required for bazel test:
     "ros2_common_interfaces",
     "ros2_geometry2",
+    "ros2_image_common",
     "ros2_launch",
     "ros2_launch_ros",
     "ros2_message_filters",
+    "ros2_pluginlib",
     "ros2_rcl_interfaces",
     "ros2_rclcpp",
     "ros2_rcutils",
