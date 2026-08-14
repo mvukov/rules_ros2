@@ -7,6 +7,7 @@ load(
     "py_ros2_interface_library",
     "ros2_interface_library",
 )
+load("@com_github_mvukov_rules_ros2//ros2/test:ros2_cpp_opt_test.bzl", "ros2_cpp_opt_test")
 load("@rules_python//python:defs.bzl", "py_test")
 
 py_test(
@@ -65,4 +66,11 @@ ros2_cpp_test(
         "@googletest//:gtest",
         "@ros2_rclcpp//:rclcpp",
     ],
+)
+
+ros2_cpp_opt_test(
+    name = "test_rclcpp_opt",
+    size = "small",
+    srcs = ["test_rclcpp.cpp"],
+    deps = ["@ros2_rclcpp//:rclcpp"],
 )
