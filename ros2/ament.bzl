@@ -215,6 +215,22 @@ def _ros2_ament_setup_rule_impl(ctx):
             outputs.append(src_file)
             idl_manifest_contents.append(paths.join(subdir, src.basename))
 
+        # Generated IDL files in the output tree such that the rosbag mcap writer can include them in the metadata.
+        # mcap supports both IDL and msg definitions, but not combinations. Therefore, if any handwritten IDL files are
+        # present, the rosbag writer also needs any generated IDL files it depends on.
+        if idl.idl_files != None:
+            for idl in idl.idl_files:
+                subdir = idl.dirname.split("/")[-1]
+                src_file = ctx.actions.declare_file(
+                    paths.join(prefix_path, "share", package_name, subdir, idl.basename),
+                )
+                ctx.actions.symlink(
+                    output = src_file,
+                    target_file = idl,
+                )
+                outputs.append(src_file)
+                idl_manifest_contents.append(paths.join(subdir, src.basename))
+
         idl_manifest = ctx.actions.declare_file(
             paths.join(prefix_path, _RESOURCE_INDEX_PATH, "rosidl_interfaces", package_name),
         )
@@ -240,6 +256,17 @@ def _ros2_ament_setup_rule_impl(ctx):
     ]
 
 ros2_ament_setup = rule(
+    doc = """Assembles an ament index (package.xml, .msg/.srv/.action files, plugin manifests, ...) for use at runtime.
+
+Note on generated IDL files: rosidl code generation (and with it, the .idl files produced from
+.msg/.srv/.action definitions) only runs for a `ros2_interface_library` if something in the
+dependency graph actually generates language bindings for it (e.g. `cpp_ros2_interface_library`
+or `py_ros2_interface_library`), or the `ros2_interface_library` is listed directly in `idl_deps`.
+A `ros2_interface_library` that's only reachable through `deps`/`data` without any such
+lang-bindings target still gets its .msg/.srv/.action sources registered in the ament index, but
+no .idl file is generated or embedded for it. This mainly matters for the rosbag mcap writer,
+which uses the generated .idl files (falling back to .msg/.srv/.action with a warning otherwise).
+""",
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
@@ -249,6 +276,11 @@ ros2_ament_setup = rule(
             ],
         ),
         "idl_deps": attr.label_list(
+            doc = """Interface/plugin targets to additionally generate language bindings and IDL files for.
+
+Unlike `deps`, listing a `ros2_interface_library` here forces rosidl code generation to run for
+it directly, which is what makes its generated .idl file available (see the rule doc above).
+""",
             aspects = [
                 idl_adapter_aspect,
                 type_description_aspect,

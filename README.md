@@ -27,6 +27,7 @@ Available features:
 - Logging backends:
   - `spdlog` (default): `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=spdlog`
   - `syslog`: `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=syslog`
+  - `noop`: `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=noop`
 - Utilities:
   - [`foxglove_bridge`](https://github.com/foxglove/ros-foxglove-bridge) for visualization and debugging
   - `ros2_bag` for handling rosbags
@@ -51,6 +52,12 @@ ROS 2 packages are by default locked to versions from [release-jazzy-20250820](h
 
 > [!NOTE]
 > If you want to use ROS 2 Humble, go to [feature/humble](https://github.com/mvukov/rules_ros2/tree/feature/humble) branch.
+
+## Support
+
+Found a bug or have a feature request? Please open a [GitHub issue](https://github.com/mvukov/rules_ros2/issues).
+
+For anything else, feel free to [reach out](https://www.linkedin.com/in/mvukov/).
 
 ## Alternatives
 

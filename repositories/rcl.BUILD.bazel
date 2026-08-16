@@ -30,6 +30,7 @@ ros2_c_library(
     hdrs = glob(["rcl/include/**/*.h"]),
     implementation_deps = select(
         {
+            "@com_github_mvukov_rules_ros2//ros2:rcl_logging_noop": ["@ros2_rcl_logging//:rcl_logging_noop"],
             "@com_github_mvukov_rules_ros2//ros2:rcl_logging_spdlog": ["@ros2_rcl_logging//:rcl_logging_spdlog"],
             "@com_github_mvukov_rules_ros2//ros2:rcl_logging_syslog": ["@ros2_rcl_logging_syslog//:rcl_logging_syslog"],
         },
