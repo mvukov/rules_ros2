@@ -138,8 +138,7 @@ cache_entries_without_shm = {
 cmake(
     name = "cyclonedds",
     build_args = [
-        "--",
-        "-j4",
+        "--parallel",
     ],
     cache_entries = select(
         {

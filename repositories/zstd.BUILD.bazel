@@ -12,8 +12,7 @@ filegroup(
 cmake(
     name = "zstd",
     build_args = [
-        "--",
-        "-j4",
+        "--parallel",
     ],
     cache_entries = {
         "ZSTD_BUILD_PROGRAMS": "OFF",

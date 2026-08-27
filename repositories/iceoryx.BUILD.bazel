@@ -25,8 +25,7 @@ cache_entries_qnx = {
 cmake(
     name = "iceoryx",
     build_args = [
-        "--",  # <- Pass options to the native tool.
-        "-j4",
+        "--parallel",
     ],
     cache_entries = selects.with_or(
         {
