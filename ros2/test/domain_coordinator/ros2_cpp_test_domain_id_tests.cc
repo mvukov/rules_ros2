@@ -70,7 +70,7 @@ std::optional<int> ParseDomainId(const char* variable) {
   return static_cast<int>(domain_id);
 }
 
-TEST(Ros2CppTestDomainIdTests,
+TEST(TestRos2CppTestDomainId,
      GivenRos2CppTest_WhenRunning_ExpectRosDomainIdHeldByParent) {
   if (!IsParentResolver()) {
     // The resolver execs the test instead of being its parent if isolation is

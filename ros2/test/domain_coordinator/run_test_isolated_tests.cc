@@ -100,7 +100,7 @@ int ExitCode(const Result& result) {
   return WIFEXITED(result.status) ? WEXITSTATUS(result.status) : -1;
 }
 
-TEST(RunTestIsolatedTests,
+TEST(TestRunTestIsolated,
      GivenNoRosDomainId_WhenRunning_ExpectReservedDomainIdAndNoExtraFds) {
   const Result result = RunResolver({Probe(), "report"}, {});
 
@@ -109,7 +109,7 @@ TEST(RunTestIsolatedTests,
               MatchesRegex("ros_domain_id=[0-9]+ held=1 extra_fds=0\n"));
 }
 
-TEST(RunTestIsolatedTests,
+TEST(TestRunTestIsolated,
      GivenEmptyRosDomainId_WhenRunning_ExpectReservedDomainId) {
   const Result result = RunResolver({Probe(), "report"}, {"ROS_DOMAIN_ID="});
 
@@ -117,7 +117,7 @@ TEST(RunTestIsolatedTests,
               MatchesRegex("ros_domain_id=[0-9]+ held=1 extra_fds=0\n"));
 }
 
-TEST(RunTestIsolatedTests,
+TEST(TestRunTestIsolated,
      GivenRosDomainId_WhenRunning_ExpectRosDomainIdRespected) {
   const Result result = RunResolver({Probe(), "report"}, {"ROS_DOMAIN_ID=7"});
 
@@ -125,7 +125,7 @@ TEST(RunTestIsolatedTests,
   EXPECT_THAT(result.output, MatchesRegex("ros_domain_id=7 held=. .*\n"));
 }
 
-TEST(RunTestIsolatedTests,
+TEST(TestRunTestIsolated,
      GivenDisableRosIsolation_WhenRunning_ExpectNoRosDomainId) {
   const Result result =
       RunResolver({Probe(), "report"}, {"DISABLE_ROS_ISOLATION="});
@@ -133,13 +133,12 @@ TEST(RunTestIsolatedTests,
   EXPECT_THAT(result.output, MatchesRegex("ros_domain_id=<unset> .*\n"));
 }
 
-TEST(RunTestIsolatedTests,
-     GivenCommandExitCode_WhenRunning_ExpectSameExitCode) {
+TEST(TestRunTestIsolated, GivenCommandExitCode_WhenRunning_ExpectSameExitCode) {
   EXPECT_THAT(ExitCode(RunResolver({Probe(), "exit", "3"}, {})), Eq(3));
   EXPECT_THAT(ExitCode(RunResolver({Probe(), "exit", "0"}, {})), Eq(0));
 }
 
-TEST(RunTestIsolatedTests,
+TEST(TestRunTestIsolated,
      GivenCommandKilledBySignal_WhenRunning_ExpectKilledBySameSignal) {
   const Result result = RunResolver({Probe(), "kill"}, {});
 
@@ -147,7 +146,7 @@ TEST(RunTestIsolatedTests,
   EXPECT_THAT(WTERMSIG(result.status), Eq(SIGKILL));
 }
 
-TEST(RunTestIsolatedTests,
+TEST(TestRunTestIsolated,
      GivenMissingCommand_WhenRunning_ExpectCommandNotFoundExitCode) {
   EXPECT_THAT(ExitCode(RunResolver({"rules_ros2_nonexistent_command"},
                                    {"PATH=/nonexistent"})),
@@ -157,7 +156,7 @@ TEST(RunTestIsolatedTests,
               Eq(127));
 }
 
-TEST(RunTestIsolatedTests, GivenNoCommand_WhenRunning_ExpectFailure) {
+TEST(TestRunTestIsolated, GivenNoCommand_WhenRunning_ExpectFailure) {
   EXPECT_THAT(ExitCode(RunResolver({}, {})), Eq(EXIT_FAILURE));
 }
 
