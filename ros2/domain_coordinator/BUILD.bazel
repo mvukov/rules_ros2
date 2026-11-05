@@ -1,8 +1,8 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
 
-# Unit tests live next to the sources. Tests that need ros2_cpp_test live in
-# //ros2/test/domain_coordinator instead, since //ros2:cc_defs.bzl depends on
-# :run_test_isolated.
+# Tests live next to the sources, except for tests that need ros2_cpp_test:
+# those live in //ros2/test/domain_coordinator, since //ros2:cc_defs.bzl
+# depends on :run_test_isolated.
 
 cc_library(
     name = "domain_coordinator",
@@ -22,6 +22,32 @@ cc_test(
     name = "domain_coordinator_tests",
     size = "small",
     srcs = ["domain_coordinator_tests.cc"],
+    deps = [
+        ":domain_coordinator",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_binary(
+    name = "probe",
+    testonly = True,
+    srcs = ["probe.cc"],
+    deps = [":domain_coordinator"],
+)
+
+cc_test(
+    name = "run_test_isolated_tests",
+    size = "small",
+    srcs = ["run_test_isolated_tests.cc"],
+    data = [
+        ":probe",
+        ":run_test_isolated",
+    ],
+    env = {
+        "PROBE": "$(rootpath :probe)",
+        "RUN_TEST_ISOLATED": "$(rootpath :run_test_isolated)",
+    },
     deps = [
         ":domain_coordinator",
         "@googletest//:gtest",
