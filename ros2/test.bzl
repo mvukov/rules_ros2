@@ -5,7 +5,7 @@ load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_test")
 load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
-def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_deps = None, use_pytest = False, **kwargs):
+def ros2_test(name, launch_file, nodes = None, deps = None, data = None, use_pytest = False, **kwargs):
     """ Defines a ROS 2 test.
 
     For lighter options, e.g. you don't need a launch file, please take a look at:
@@ -21,19 +21,20 @@ def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_dep
         nodes: A list of ROS 2 nodes in the test target.
         deps: Additional Python deps that can be used by the launch file.
         data: Additional data that can be used by the launch file.
-        idl_deps: Additional IDL deps that are used as runtime plugins.
         use_pytest: If true, use pytest as the test driver.
-        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
+        **kwargs: Forwarded to the underlying py_binary; see
+            https://bazel.build/reference/be/common-definitions#common-attributes-tests.
+            Also accepts `idl_deps`: additional IDL deps used as runtime plugins.
     """
     nodes = nodes or []
     data = data or []
     deps = deps or []
     if use_pytest:
-        _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs)
+        _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, **kwargs)
     else:
-        _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs)
+        _ros2_launch_testing_test(name, nodes, launch_file, deps, data, **kwargs)
 
-def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs):
+def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, **kwargs):
     launch_py = "{}_launch_py".format(name)
     launch_script = launch_py + ".py"
     expand_template(
@@ -52,7 +53,6 @@ def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **
         name = name,
         srcs = [launch_py],
         main = launch_script,
-        idl_deps = idl_deps,
         data = nodes + [launch_file] + data,
         deps = [
             "@ros2_launch//:launch_testing",
@@ -61,7 +61,7 @@ def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **
         **kwargs
     )
 
-def _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs):
+def _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, **kwargs):
     launch_py = "{}_launch_py".format(name)
     launch_script = launch_py + ".py"
     expand_template(
@@ -80,7 +80,6 @@ def _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, idl_deps, **k
         name = name,
         srcs = [launch_py, launch_file],
         main = launch_script,
-        idl_deps = idl_deps,
         data = nodes + data,
         deps = [
             "@ros2_launch//:launch_pytest",
