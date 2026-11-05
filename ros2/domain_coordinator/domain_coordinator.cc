@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ros2/ros_domain_id/ros_domain_id.h"
+#include "ros2/domain_coordinator/domain_coordinator.h"
 
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -23,7 +23,7 @@
 #include <cstdio>
 #include <cstring>
 
-namespace ros_domain_id {
+namespace domain_coordinator {
 namespace {
 
 // Closes `socket_fd` and prints an error on failure.
@@ -97,4 +97,4 @@ DomainIdReservation::~DomainIdReservation() {
   }
 }
 
-}  // namespace ros_domain_id
+}  // namespace domain_coordinator

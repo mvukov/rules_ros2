@@ -14,7 +14,7 @@
 
 // Usage: probe report | probe exit <code> | probe kill
 //
-// A child command for resolve_ros_domain_id_tests:
+// A child command for run_test_isolated_tests:
 // - report: prints "ros_domain_id=<value or <unset>> held=<0|1> extra_fds=<n>"
 //   where held tells whether the port of ROS_DOMAIN_ID is in use and
 //   extra_fds is the number of open fds other than stdin/stdout/stderr.
@@ -30,7 +30,7 @@
 #include <cstring>
 #include <optional>
 
-#include "ros2/ros_domain_id/ros_domain_id.h"
+#include "ros2/domain_coordinator/domain_coordinator.h"
 
 namespace {
 
@@ -58,8 +58,8 @@ int Report() {
   bool held = false;
   if (ros_domain_id != nullptr) {
     const int domain_id = std::atoi(ros_domain_id);
-    held = !ros_domain_id::DomainIdReservation::Reserve(
-                ros_domain_id::kPortBase, domain_id, domain_id)
+    held = !domain_coordinator::DomainIdReservation::Reserve(
+                domain_coordinator::kPortBase, domain_id, domain_id)
                 .has_value();
   }
   std::printf("ros_domain_id=%s held=%d extra_fds=%d\n",

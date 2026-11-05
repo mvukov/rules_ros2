@@ -85,6 +85,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, **kwargs):
     ament_setup_deps = [target_impl] if set_up_ament else None
     sh_exec_launcher(
         launcher,
+        is_test = is_test,
         ament_setup_deps = ament_setup_deps,
         template = "@com_github_mvukov_rules_ros2//ros2:launch_exec.sh.tpl",
         substitutions = {

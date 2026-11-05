@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Usage: resolve_ros_domain_id <command> [<args>...]
+// Usage: run_test_isolated <command> [<args>...]
 //
 // A C++ port of run_test_isolated.py from
 // https://github.com/ros2/ament_cmake_ros/tree/jazzy.
 //
 // Runs the given command with a ROS_DOMAIN_ID that is not used by any other
-// resolve_ros_domain_id process, such that commands (e.g. tests) can run in
+// run_test_isolated process, such that commands (e.g. tests) can run in
 // parallel without ROS cross-talk. If ROS_DOMAIN_ID is already set to a
 // non-empty value, it is respected. Isolation can be disabled by setting
 // DISABLE_ROS_ISOLATION to any value, including an empty one or "0". In both
@@ -42,7 +42,7 @@
 #include <optional>
 #include <string>
 
-#include "ros2/ros_domain_id/ros_domain_id.h"
+#include "ros2/domain_coordinator/domain_coordinator.h"
 
 namespace {
 
@@ -131,21 +131,21 @@ int Run(int argc, char** argv) {
   if (argc < 2) {
     std::fprintf(stderr,
                  "There should be at least one argument given to "
-                 "resolve_ros_domain_id\n");
+                 "run_test_isolated\n");
     return EXIT_FAILURE;
   }
   char** command = argv + 1;
-  const ros_domain_id::Mode mode = ros_domain_id::DecideMode(
+  const domain_coordinator::Mode mode = domain_coordinator::DecideMode(
       std::getenv("ROS_DOMAIN_ID"), std::getenv("DISABLE_ROS_ISOLATION"));
-  if (mode == ros_domain_id::Mode::kPassThrough) {
+  if (mode == domain_coordinator::Mode::kPassThrough) {
     return Exec(command);
   }
 
   // Released on return, i.e. once the command exited.
-  const std::optional<ros_domain_id::DomainIdReservation> reservation =
-      ros_domain_id::DomainIdReservation::Reserve(ros_domain_id::kPortBase,
-                                                  ros_domain_id::kMinDomainId,
-                                                  ros_domain_id::kMaxDomainId);
+  const std::optional<domain_coordinator::DomainIdReservation> reservation =
+      domain_coordinator::DomainIdReservation::Reserve(
+          domain_coordinator::kPortBase, domain_coordinator::kMinDomainId,
+          domain_coordinator::kMaxDomainId);
   if (!reservation.has_value()) {
     return EXIT_FAILURE;
   }

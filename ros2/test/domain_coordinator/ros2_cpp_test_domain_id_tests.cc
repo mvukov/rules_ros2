@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Checks that ros2_cpp_test runs the test via resolve_ros_domain_id, i.e. that
-// the parent process is resolve_ros_domain_id and holds the reservation of the
+// Checks that ros2_cpp_test runs the test via run_test_isolated, i.e. that
+// the parent process is run_test_isolated and holds the reservation of the
 // ROS_DOMAIN_ID of the test.
 
 #include <unistd.h>
@@ -27,7 +27,7 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "ros2/ros_domain_id/ros_domain_id.h"
+#include "ros2/domain_coordinator/domain_coordinator.h"
 
 namespace {
 
@@ -35,8 +35,8 @@ using ::testing::Eq;
 using ::testing::Ge;
 using ::testing::Optional;
 
-using ros_domain_id::DomainIdReservation;
-using ros_domain_id::kPortBase;
+using domain_coordinator::DomainIdReservation;
+using domain_coordinator::kPortBase;
 
 // Returns the path of the executable of the parent process.
 std::string ParentExecutable() {
@@ -47,7 +47,7 @@ std::string ParentExecutable() {
 }
 
 bool IsParentResolver() {
-  const std::string suffix = "/resolve_ros_domain_id";
+  const std::string suffix = "/run_test_isolated";
   const std::string parent = ParentExecutable();
   return parent.size() >= suffix.size() &&
          parent.compare(parent.size() - suffix.size(), suffix.size(), suffix) ==
@@ -79,7 +79,7 @@ TEST(Ros2CppTestDomainIdTests,
         std::getenv("ROS_DOMAIN_ID") != nullptr) {
       GTEST_SKIP() << "ROS domain isolation is disabled by the environment";
     }
-    FAIL() << "Not run via resolve_ros_domain_id: " << ParentExecutable();
+    FAIL() << "Not run via run_test_isolated: " << ParentExecutable();
   }
   const std::optional<int> domain_id = ParseDomainId("ROS_DOMAIN_ID");
   ASSERT_THAT(domain_id, Optional(Ge(0)));

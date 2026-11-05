@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Black-box tests of resolve_ros_domain_id, which is run with an explicitly
+// Black-box tests of run_test_isolated, which is run with an explicitly
 // built environment, such that the environment of the test doesn't matter.
 
 #include <fcntl.h>
@@ -28,7 +28,7 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "ros2/ros_domain_id/ros_domain_id.h"
+#include "ros2/domain_coordinator/domain_coordinator.h"
 
 namespace {
 
@@ -45,7 +45,7 @@ struct Result {
 // status and stdout.
 Result RunResolver(const std::vector<std::string>& args,
                    const std::vector<std::string>& env) {
-  const char* resolver = std::getenv("RESOLVE_ROS_DOMAIN_ID");
+  const char* resolver = std::getenv("RUN_TEST_ISOLATED");
   EXPECT_THAT(resolver, NotNull());
   if (resolver == nullptr) {
     return {};
@@ -100,7 +100,7 @@ int ExitCode(const Result& result) {
   return WIFEXITED(result.status) ? WEXITSTATUS(result.status) : -1;
 }
 
-TEST(ResolveRosDomainIdTests,
+TEST(RunTestIsolatedTests,
      GivenNoRosDomainId_WhenRunning_ExpectReservedDomainIdAndNoExtraFds) {
   const Result result = RunResolver({Probe(), "report"}, {});
 
@@ -109,7 +109,7 @@ TEST(ResolveRosDomainIdTests,
               MatchesRegex("ros_domain_id=[0-9]+ held=1 extra_fds=0\n"));
 }
 
-TEST(ResolveRosDomainIdTests,
+TEST(RunTestIsolatedTests,
      GivenEmptyRosDomainId_WhenRunning_ExpectReservedDomainId) {
   const Result result = RunResolver({Probe(), "report"}, {"ROS_DOMAIN_ID="});
 
@@ -117,7 +117,7 @@ TEST(ResolveRosDomainIdTests,
               MatchesRegex("ros_domain_id=[0-9]+ held=1 extra_fds=0\n"));
 }
 
-TEST(ResolveRosDomainIdTests,
+TEST(RunTestIsolatedTests,
      GivenRosDomainId_WhenRunning_ExpectRosDomainIdRespected) {
   const Result result = RunResolver({Probe(), "report"}, {"ROS_DOMAIN_ID=7"});
 
@@ -125,7 +125,7 @@ TEST(ResolveRosDomainIdTests,
   EXPECT_THAT(result.output, MatchesRegex("ros_domain_id=7 held=. .*\n"));
 }
 
-TEST(ResolveRosDomainIdTests,
+TEST(RunTestIsolatedTests,
      GivenDisableRosIsolation_WhenRunning_ExpectNoRosDomainId) {
   const Result result =
       RunResolver({Probe(), "report"}, {"DISABLE_ROS_ISOLATION="});
@@ -133,13 +133,13 @@ TEST(ResolveRosDomainIdTests,
   EXPECT_THAT(result.output, MatchesRegex("ros_domain_id=<unset> .*\n"));
 }
 
-TEST(ResolveRosDomainIdTests,
+TEST(RunTestIsolatedTests,
      GivenCommandExitCode_WhenRunning_ExpectSameExitCode) {
   EXPECT_THAT(ExitCode(RunResolver({Probe(), "exit", "3"}, {})), Eq(3));
   EXPECT_THAT(ExitCode(RunResolver({Probe(), "exit", "0"}, {})), Eq(0));
 }
 
-TEST(ResolveRosDomainIdTests,
+TEST(RunTestIsolatedTests,
      GivenCommandKilledBySignal_WhenRunning_ExpectKilledBySameSignal) {
   const Result result = RunResolver({Probe(), "kill"}, {});
 
@@ -147,7 +147,7 @@ TEST(ResolveRosDomainIdTests,
   EXPECT_THAT(WTERMSIG(result.status), Eq(SIGKILL));
 }
 
-TEST(ResolveRosDomainIdTests,
+TEST(RunTestIsolatedTests,
      GivenMissingCommand_WhenRunning_ExpectCommandNotFoundExitCode) {
   EXPECT_THAT(ExitCode(RunResolver({"rules_ros2_nonexistent_command"},
                                    {"PATH=/nonexistent"})),
@@ -157,7 +157,7 @@ TEST(ResolveRosDomainIdTests,
               Eq(127));
 }
 
-TEST(ResolveRosDomainIdTests, GivenNoCommand_WhenRunning_ExpectFailure) {
+TEST(RunTestIsolatedTests, GivenNoCommand_WhenRunning_ExpectFailure) {
   EXPECT_THAT(ExitCode(RunResolver({}, {})), Eq(EXIT_FAILURE));
 }
 

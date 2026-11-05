@@ -5,23 +5,23 @@ cc_binary(
     name = "probe",
     testonly = True,
     srcs = ["probe.cc"],
-    deps = ["//ros2/ros_domain_id"],
+    deps = ["//ros2/domain_coordinator"],
 )
 
 cc_test(
-    name = "resolve_ros_domain_id_tests",
+    name = "run_test_isolated_tests",
     size = "small",
-    srcs = ["resolve_ros_domain_id_tests.cc"],
+    srcs = ["run_test_isolated_tests.cc"],
     data = [
         ":probe",
-        "//ros2/ros_domain_id:resolve_ros_domain_id",
+        "//ros2/domain_coordinator:run_test_isolated",
     ],
     env = {
         "PROBE": "$(rootpath :probe)",
-        "RESOLVE_ROS_DOMAIN_ID": "$(rootpath //ros2/ros_domain_id:resolve_ros_domain_id)",
+        "RUN_TEST_ISOLATED": "$(rootpath //ros2/domain_coordinator:run_test_isolated)",
     },
     deps = [
-        "//ros2/ros_domain_id",
+        "//ros2/domain_coordinator",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],
@@ -33,7 +33,7 @@ ros2_cpp_test(
     srcs = ["ros2_cpp_test_domain_id_tests.cc"],
     set_up_ament = False,
     deps = [
-        "//ros2/ros_domain_id",
+        "//ros2/domain_coordinator",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],

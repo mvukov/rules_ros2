@@ -307,15 +307,17 @@ def _sh_exec_launcher_rule_impl(ctx):
     if ctx.attr.ament_setup != None:
         ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path or ""
 
-    resolve_ros_domain_id = ""
-    if ctx.attr.resolve_ros_domain_id != None:
-        resolve_ros_domain_id = ctx.executable.resolve_ros_domain_id.short_path
+    # Like the entry point, relative to the runfiles directory, which is the
+    # working directory of the launcher. Empty if the entry point is run directly.
+    run_test_isolated = ""
+    if ctx.attr.run_test_isolated != None:
+        run_test_isolated = ctx.executable.run_test_isolated.short_path
 
     substitutions = dicts.add(
         ctx.attr.substitutions,
         {
             "{{ament_prefix_path}}": ament_prefix_path,
-            "{{resolve_ros_domain_id}}": resolve_ros_domain_id,
+            "{{run_test_isolated}}": run_test_isolated,
             "{{sh_bin}}": ctx.toolchains[SH_TOOLCHAIN].path,
         },
     )
@@ -332,8 +334,8 @@ def _sh_exec_launcher_rule_impl(ctx):
     runfiles = ctx.runfiles(transitive_files = files)
     if ctx.attr.ament_setup != None:
         runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
-    if ctx.attr.resolve_ros_domain_id != None:
-        runfiles = runfiles.merge(ctx.attr.resolve_ros_domain_id[DefaultInfo].default_runfiles)
+    if ctx.attr.run_test_isolated != None:
+        runfiles = runfiles.merge(ctx.attr.run_test_isolated[DefaultInfo].default_runfiles)
     return [
         DefaultInfo(
             files = files,
@@ -347,7 +349,7 @@ sh_exec_launcher_rule = rule(
             providers = [Ros2AmentSetupInfo],
         ),
         "data": attr.label_list(allow_files = True),
-        "resolve_ros_domain_id": attr.label(
+        "run_test_isolated": attr.label(
             doc = "If set, the entry point is run via this executable, which reserves a unique ROS_DOMAIN_ID.",
             executable = True,
             cfg = "target",
@@ -362,18 +364,20 @@ sh_exec_launcher_rule = rule(
     toolchains = [SH_TOOLCHAIN],
 )
 
-def sh_exec_launcher(name, ament_setup_deps = None, idl_deps = None, **kwargs):
+def sh_exec_launcher(name, is_test, ament_setup_deps = None, idl_deps = None, **kwargs):
     """Generates a shell script that sets up the ROS 2 environment and exec()s a binary.
 
     Used by `ros2_cpp_binary`/`ros2_cpp_test`, `ros2_py_binary`/`ros2_py_test`, and `ros2_rust_test` to
     wrap a compiled executable or a `py_binary`/`py_test`.  The generated shell script is the `srcs` of
     an `sh_binary`/`sh_test` target.  Requires /bin/sh at runtime.
 
-    For test targets (`testonly = True`), the binary is run via `resolve_ros_domain_id` such that
+    For tests (`is_test = True`), the binary is run via `run_test_isolated` such that
     tests running in parallel get unique ROS_DOMAIN_IDs.
 
     Args:
         name: Name for the launcher rule target.
+        is_test: If true, the launcher wraps a test.  Independent of `testonly`, which only
+            restricts who may depend on the launcher.
         ament_setup_deps: Dependencies for ament setup.  If None, ament setup is skipped.
         idl_deps: Additional IDL dependencies used as runtime plugins.
         **kwargs: Forwarded to `sh_exec_launcher_rule` (e.g. `template`, `substitutions`, `data`, `tags`, `testonly`)
@@ -389,13 +393,13 @@ def sh_exec_launcher(name, ament_setup_deps = None, idl_deps = None, **kwargs):
             tags = ["manual"],
             testonly = testonly,
         )
-    resolve_ros_domain_id = None
-    if testonly:
-        resolve_ros_domain_id = "@com_github_mvukov_rules_ros2//ros2/ros_domain_id:resolve_ros_domain_id"
+    run_test_isolated = None
+    if is_test:
+        run_test_isolated = "@com_github_mvukov_rules_ros2//ros2/domain_coordinator:run_test_isolated"
     sh_exec_launcher_rule(
         name = name,
         ament_setup = ament_setup,
-        resolve_ros_domain_id = resolve_ros_domain_id,
+        run_test_isolated = run_test_isolated,
         **kwargs
     )
 

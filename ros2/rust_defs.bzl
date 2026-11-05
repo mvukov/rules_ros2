@@ -30,6 +30,7 @@ def ros2_rust_test(name, **kwargs):
     launcher = "{}_launch".format(name)
     sh_exec_launcher(
         name = launcher,
+        is_test = True,
         template = "@com_github_mvukov_rules_ros2//ros2:launch_exec.sh.tpl",
         substitutions = {
             "{entry_point}": "$(rootpath {})".format(target_impl),

@@ -20,15 +20,15 @@
 // is reserved for as long as the socket stays open. The socket is
 // close-on-exec, so exec'd processes don't inherit the reservation.
 
-#ifndef ROS2_ROS_DOMAIN_ID_ROS_DOMAIN_ID_H_
-#define ROS2_ROS_DOMAIN_ID_ROS_DOMAIN_ID_H_
+#ifndef ROS2_DOMAIN_COORDINATOR_DOMAIN_COORDINATOR_H_
+#define ROS2_DOMAIN_COORDINATOR_DOMAIN_COORDINATOR_H_
 
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
 #include <optional>
 
-namespace ros_domain_id {
+namespace domain_coordinator {
 
 // Matches the port base of upstream domain_coordinator, such that reservations
 // are coordinated with upstream processes. It's above the DDS ports for domain
@@ -103,6 +103,6 @@ class DomainIdReservation {
   int socket_fd_;
 };
 
-}  // namespace ros_domain_id
+}  // namespace domain_coordinator
 
-#endif  // ROS2_ROS_DOMAIN_ID_ROS_DOMAIN_ID_H_
+#endif  // ROS2_DOMAIN_COORDINATOR_DOMAIN_COORDINATOR_H_

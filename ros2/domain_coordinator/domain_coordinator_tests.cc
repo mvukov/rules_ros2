@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ros2/ros_domain_id/ros_domain_id.h"
+#include "ros2/domain_coordinator/domain_coordinator.h"
 
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -27,7 +27,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-namespace ros_domain_id {
+namespace domain_coordinator {
 namespace {
 
 using ::testing::Eq;
@@ -218,4 +218,4 @@ TEST(TestDomainIdReservation,
 }
 
 }  // namespace
-}  // namespace ros_domain_id
+}  // namespace domain_coordinator
