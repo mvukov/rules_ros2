@@ -5,6 +5,10 @@
   bazel: {
     ignorePaths: ["repositories/ros2_repositories_impl.bzl"],
   },
+  // config:base ignores **/examples/** by default, and we want examples/MODULE.bazel to be updated.
+  "bazel-module": {
+    ignorePaths: [],
+  },
   pip_requirements: {
     enabled: false,
   },
@@ -20,32 +24,10 @@
     {
       matchManagers: ["bazel"],
       matchDepNames: [
-        "bazel_features",
-        "bazel_skylib",
-        "boringssl",
-        "curl",
-        "googletest",
-        "eigen",
-        "fmt",
         "foxglove_bridge",
-        "libyaml",
-        "lz4",
-        "nlohmann_json",
-        "pybind11",
         "ros2_rust",
         "ros2_rosidl_runtime_rs",
         "ros2_rosidl_rust",
-        "rules_foreign_cc",
-        "rules_license",
-        "rules_python",
-        "rules_rust",
-        "rules_rust_bindgen",
-        "spdlog",
-        "tinyxml2",
-        "websocketpp",
-        "yaml-cpp",
-        "zlib",
-        "zstd",
       ],
       enabled: true,
     },

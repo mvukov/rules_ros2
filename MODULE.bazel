@@ -84,10 +84,9 @@ register_toolchains(
 
 rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
 rust.toolchain(
-    edition = "2021",  # Keep specs in sync with repositories/rust_setup_stage_2.bzl
+    edition = "2021",
 )
 
-# Keep specs in sync with repositories/rust_setup_stage_3.bzl
 crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
 crate.spec(
     package = "async-std",
@@ -118,10 +117,14 @@ crate.spec(
     package = "serde-big-array",
     version = "0.5",
 )
+
+# Not used by rclrs, used for testing.
 crate.spec(
     package = "serde_json",
     version = "1",
 )
+
+# Not used by rclrs, but handy to have.
 crate.spec(
     package = "signal-hook",
     version = "0.3",
