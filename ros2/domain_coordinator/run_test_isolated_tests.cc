@@ -21,6 +21,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <climits>
 #include <cstdlib>
 #include <optional>
 #include <string>
@@ -41,13 +42,24 @@ struct Result {
   std::string output;
 };
 
-// Runs the resolver with `args` and the environment `env`, and returns its wait
-// status and stdout.
+// Returns the absolute path of the runfile at `variable`, or "" if unset.
+std::string AbsoluteRunfile(const char* variable) {
+  const char* path = std::getenv(variable);
+  EXPECT_THAT(path, NotNull());
+  char absolute_path[PATH_MAX];
+  if (path == nullptr || realpath(path, absolute_path) == nullptr) {
+    return "";
+  }
+  return absolute_path;
+}
+
+// Runs the resolver with `args` and the environment `env` in the working
+// directory `cwd` (if non-empty), and returns its wait status and stdout.
 Result RunResolver(const std::vector<std::string>& args,
-                   const std::vector<std::string>& env) {
-  const char* resolver = std::getenv("RUN_TEST_ISOLATED");
-  EXPECT_THAT(resolver, NotNull());
-  if (resolver == nullptr) {
+                   const std::vector<std::string>& env,
+                   const std::string& cwd = "") {
+  const std::string resolver = AbsoluteRunfile("RUN_TEST_ISOLATED");
+  if (resolver.empty()) {
     return {};
   }
 
@@ -70,9 +82,12 @@ Result RunResolver(const std::vector<std::string>& args,
   posix_spawn_file_actions_t file_actions;
   posix_spawn_file_actions_init(&file_actions);
   posix_spawn_file_actions_adddup2(&file_actions, pipe_fds[1], STDOUT_FILENO);
+  if (!cwd.empty()) {
+    posix_spawn_file_actions_addchdir_np(&file_actions, cwd.c_str());
+  }
   pid_t pid = 0;
-  const int spawn_error = posix_spawn(&pid, resolver, &file_actions, nullptr,
-                                      argv.data(), envp.data());
+  const int spawn_error = posix_spawn(&pid, resolver.c_str(), &file_actions,
+                                      nullptr, argv.data(), envp.data());
   posix_spawn_file_actions_destroy(&file_actions);
   close(pipe_fds[1]);
   EXPECT_THAT(spawn_error, Eq(0));
@@ -148,11 +163,37 @@ TEST(TestRunTestIsolated,
 
 TEST(TestRunTestIsolated,
      GivenMissingCommand_WhenRunning_ExpectCommandNotFoundExitCode) {
-  EXPECT_THAT(ExitCode(RunResolver({"rules_ros2_nonexistent_command"},
-                                   {"PATH=/nonexistent"})),
+  EXPECT_THAT(ExitCode(RunResolver({"./rules_ros2_nonexistent_command"}, {})),
               Eq(127));
-  EXPECT_THAT(ExitCode(RunResolver({"rules_ros2_nonexistent_command"},
-                                   {"PATH=/nonexistent", "ROS_DOMAIN_ID=7"})),
+  EXPECT_THAT(ExitCode(RunResolver({"./rules_ros2_nonexistent_command"},
+                                   {"ROS_DOMAIN_ID=7"})),
+              Eq(127));
+}
+
+// A command without a slash, e.g. the runfiles path of a target in a root
+// package, must be run from the working directory.
+TEST(TestRunTestIsolated,
+     GivenCommandNameInWorkingDirectory_WhenRunning_ExpectItRun) {
+  const std::string probe = AbsoluteRunfile("PROBE");
+  ASSERT_FALSE(probe.empty());
+  const std::string probe_dir = probe.substr(0, probe.rfind('/'));
+  const std::string probe_name = probe.substr(probe.rfind('/') + 1);
+
+  EXPECT_THAT(ExitCode(RunResolver({probe_name, "exit", "3"}, {}, probe_dir)),
+              Eq(3));
+  EXPECT_THAT(ExitCode(RunResolver({probe_name, "exit", "3"},
+                                   {"ROS_DOMAIN_ID=7"}, probe_dir)),
+              Eq(3));
+}
+
+// A command without a slash must not be searched in PATH.
+TEST(TestRunTestIsolated,
+     GivenCommandNameOnlyInPath_WhenRunning_ExpectCommandNotFoundExitCode) {
+  const std::string path = "PATH=/usr/bin:/bin";
+  ASSERT_THAT(access("/bin/true", X_OK), Eq(0));
+
+  EXPECT_THAT(ExitCode(RunResolver({"true"}, {path}, "/")), Eq(127));
+  EXPECT_THAT(ExitCode(RunResolver({"true"}, {path, "ROS_DOMAIN_ID=7"}, "/")),
               Eq(127));
 }
 

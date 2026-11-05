@@ -1,3 +1,4 @@
+// Copyright 2019 Apex.AI, Inc.
 // Copyright 2026 Milan Vukov
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +14,9 @@
 // limitations under the License.
 
 // Usage: run_test_isolated <command> [<args>...]
+//
+// <command> is a path, either absolute or relative to the working directory;
+// it is not searched in PATH, since in Bazel it's a runfiles path.
 //
 // A C++ port of run_test_isolated.py from
 // https://github.com/ros2/ament_cmake_ros/tree/jazzy.
@@ -62,10 +66,10 @@ void ForwardSignal(int signal_number) {
   }
 }
 
-// Replaces the current process with `argv[0]` searched in PATH.
+// Replaces the current process with the executable at path `argv[0]`.
 // Returns only on failure, with the exit code to report.
 int Exec(char** argv) {
-  execvp(argv[0], argv);
+  execv(argv[0], argv);
   const int exec_errno = errno;
   std::fprintf(stderr, "Failed to execute '%s': %s\n", argv[0],
                std::strerror(exec_errno));
@@ -73,9 +77,9 @@ int Exec(char** argv) {
                               : kCommandNotExecutableExitCode;
 }
 
-// Runs `argv[0]` searched in PATH in a child process, forwards signals to it,
-// and returns its exit code once it exits. If the child is killed by a signal,
-// kills the current process with the same signal.
+// Runs the executable at path `argv[0]` in a child process, forwards signals to
+// it, and returns its exit code once it exits. If the child is killed by a
+// signal, kills the current process with the same signal.
 int SpawnAndWait(char** argv) {
   // Signals are blocked until the handlers know the child's PID, such that
   // none is lost.

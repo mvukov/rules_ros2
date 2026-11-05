@@ -1,3 +1,5 @@
+// Copyright 2019 Apex.AI, Inc.
+// Copyright 2021 Fraunhofer FKIE
 // Copyright 2026 Milan Vukov
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
