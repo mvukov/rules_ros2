@@ -1,9 +1,8 @@
 """ Implements a macro for setting up a ROS 2 bag app.
 """
 
-load("@bazel_skylib//lib:paths.bzl", "paths")
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
-load("@rules_python//python:defs.bzl", "py_binary")
+load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_binary")
+load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
 
 def ros2_bag(name, idl_deps = None, **kwargs):
     """ Defines a binary target for a bag app.
@@ -13,21 +12,23 @@ def ros2_bag(name, idl_deps = None, **kwargs):
         idl_deps: Additional IDL deps that are used as runtime type-support plugins.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
-    launcher = "{}_launch".format(name)
-    launch_script = py_launcher(
-        launcher,
-        deps = ["@ros2_rosbag2//:ros2bag"],
-        idl_deps = idl_deps,
+    launch_py = "{}_launch_py".format(name)
+    launch_script = launch_py + ".py"
+    expand_template(
+        name = launch_py,
         template = "@com_github_mvukov_rules_ros2//ros2:bag.py.tpl",
+        out = launch_script,
         substitutions = {},
         tags = ["manual"],
     )
 
     deps = kwargs.pop("deps", [])
-    py_binary(
+    ros2_py_binary(
         name = name,
-        srcs = [launcher],
+        srcs = [launch_py],
         main = launch_script,
+        set_up_ament = True,
+        idl_deps = idl_deps,
         deps = [
             "@com_github_mvukov_rules_ros2//ros2:ros2_cmd",
             "@ros2_rosbag2//:ros2bag",

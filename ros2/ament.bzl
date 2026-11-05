@@ -26,7 +26,6 @@ load(
     "expand_template_impl",
 )
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("@rules_python//python:defs.bzl", "PyInfo")
 
 _AMENT_SETUP_MODULE = "ament_setup"
 
@@ -294,98 +293,6 @@ it directly, which is what makes its generated .idl file available (see the rule
     implementation = _ros2_ament_setup_rule_impl,
 )
 
-def py_create_ament_setup(ament_prefix_path):
-    """ The client code must do `import os`. """
-    if ament_prefix_path == None:
-        return "os.unsetenv('AMENT_PREFIX_PATH')"
-    return "os.environ['AMENT_PREFIX_PATH'] = '{}'".format(ament_prefix_path)
-
-def _py_launcher_rule_impl(ctx):
-    output = ctx.outputs.output
-    ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path
-
-    substitutions = dicts.add(
-        ctx.attr.substitutions,
-        {
-            "{ament_setup}": py_create_ament_setup(ament_prefix_path),
-        },
-    )
-
-    expand_template_impl(
-        ctx,
-        template = ctx.file.template,
-        output = output,
-        substitutions = substitutions,
-        is_executable = False,
-    )
-
-    files = depset([output])
-    runfiles = ctx.runfiles(transitive_files = files)
-    runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
-    return [
-        DefaultInfo(
-            files = files,
-            runfiles = runfiles,
-        ),
-        PyInfo(
-            transitive_sources = files,
-        ),
-    ]
-
-py_launcher_rule = rule(
-    attrs = {
-        "ament_setup": attr.label(
-            mandatory = True,
-            providers = [Ros2AmentSetupInfo],
-        ),
-        "data": attr.label_list(allow_files = True),
-        "substitutions": attr.string_dict(mandatory = True),
-        "template": attr.label(
-            mandatory = True,
-            allow_single_file = True,
-        ),
-        "output": attr.output(mandatory = True),
-    },
-    implementation = _py_launcher_rule_impl,
-)
-
-def py_launcher(name, deps, idl_deps = None, **kwargs):
-    """Expands a Python file template with ament setup and returns the label of the expanded .py file.
-
-    The generated .py file is intended to be used as the `main` of a `py_binary` or `py_test` target.
-    Used by ros2launch, rosbag, and ros2 test rules.  The ament prefix path is substituted into the template
-    so the entry point script itself configures the ROS 2 plugin environment.
-
-    See `sh_exec_launcher` / `py_exec_launcher` for the exec-wrapper variants used by `ros2_cpp_binary` and
-    `ros2_py_binary`.
-
-    Args:
-        name: Name for the launcher rule target.
-        deps: Dependencies used for ament setup.
-        idl_deps: Additional IDL dependencies used as runtime plugins.
-        **kwargs: Forwarded to `py_launcher_rule` (typically `template`, `substitutions`, `data`, `tags`).
-
-    Returns:
-        The label of the expanded .py file (`name + ".py"`).
-    """
-    ament_setup = name + "_ament_setup"
-    output_name = name + ".py"
-    testonly = kwargs.get("testonly", False)
-    ros2_ament_setup(
-        name = ament_setup,
-        deps = deps,
-        idl_deps = idl_deps,
-        tags = ["manual"],
-        testonly = testonly,
-    )
-    py_launcher_rule(
-        name = name,
-        ament_setup = ament_setup,
-        output = output_name,
-        **kwargs
-    )
-    return output_name
-
 def split_kwargs(**kwargs):
     """Split kwargs into those to be forwarded to the actual binary target and launcher target respectively."""
     launcher_attrs = ["args", "env", "flaky", "size", "tags", "timeout", "toolchains", "visibility"]
@@ -446,11 +353,9 @@ sh_exec_launcher_rule = rule(
 def sh_exec_launcher(name, ament_setup_deps = None, idl_deps = None, **kwargs):
     """Generates a shell script that sets up the ROS 2 environment and exec()s a binary.
 
-    Used by `ros2_cpp_binary`/`ros2_cpp_test` and `ros2_rust_test` to wrap a compiled executable.
-    The generated shell script is the `srcs` of an `sh_binary`/`sh_test` target.  Requires /bin/sh at
-    runtime.
-
-    See `py_exec_launcher` for a Python equivalent that does not require /bin/sh.
+    Used by `ros2_cpp_binary`/`ros2_cpp_test`, `ros2_py_binary`/`ros2_py_test`, and `ros2_rust_test` to
+    wrap a compiled executable or a `py_binary`/`py_test`.  The generated shell script is the `srcs` of
+    an `sh_binary`/`sh_test` target.  Requires /bin/sh at runtime.
 
     Args:
         name: Name for the launcher rule target.
@@ -470,83 +375,6 @@ def sh_exec_launcher(name, ament_setup_deps = None, idl_deps = None, **kwargs):
             testonly = testonly,
         )
     sh_exec_launcher_rule(
-        name = name,
-        ament_setup = ament_setup,
-        **kwargs
-    )
-
-def _py_exec_launcher_rule_impl(ctx):
-    output = ctx.actions.declare_file(ctx.attr.name + ".py")
-    ament_prefix_path = ""
-    if ctx.attr.ament_setup != None:
-        ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path or ""
-
-    substitutions = dicts.add(
-        ctx.attr.substitutions,
-        {
-            "{{ament_prefix_path}}": ament_prefix_path,
-        },
-    )
-
-    expand_template_impl(
-        ctx,
-        template = ctx.file.template,
-        output = output,
-        substitutions = substitutions,
-        is_executable = False,
-    )
-
-    files = depset([output])
-    runfiles = ctx.runfiles(transitive_files = files)
-    if ctx.attr.ament_setup != None:
-        runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
-    return [
-        DefaultInfo(
-            files = files,
-            runfiles = runfiles,
-        ),
-    ]
-
-py_exec_launcher_rule = rule(
-    attrs = {
-        "ament_setup": attr.label(
-            providers = [Ros2AmentSetupInfo],
-        ),
-        "data": attr.label_list(allow_files = True),
-        "substitutions": attr.string_dict(mandatory = True),
-        "template": attr.label(
-            mandatory = True,
-            allow_single_file = True,
-        ),
-    },
-    implementation = _py_exec_launcher_rule_impl,
-)
-
-def py_exec_launcher(name, ament_setup_deps = None, idl_deps = None, **kwargs):
-    """Generates a Python script that sets up the ROS 2 environment and os.execve()s a binary.
-
-    Used by `ros2_py_binary`/`ros2_py_test` to wrap a `py_binary`.  The generated script is the `srcs`
-    of a `py_binary`/`py_test` target.  Unlike `sh_exec_launcher`, does not require /bin/sh, making it
-    compatible with distroless OCI images.
-
-    Args:
-        name: Name for the launcher rule target.
-        ament_setup_deps: Dependencies for ament setup.  If None, ament setup is skipped.
-        idl_deps: Additional IDL dependencies used as runtime plugins.
-        **kwargs: Forwarded to `py_exec_launcher_rule` (e.g. `template`, `substitutions`, `data`, `tags`, `testonly`).
-    """
-    testonly = kwargs.get("testonly", False)
-    ament_setup = None
-    if ament_setup_deps != None:
-        ament_setup = name + "_ament_setup"
-        ros2_ament_setup(
-            name = ament_setup,
-            deps = ament_setup_deps,
-            idl_deps = idl_deps,
-            tags = ["manual"],
-            testonly = testonly,
-        )
-    py_exec_launcher_rule(
         name = name,
         ament_setup = ament_setup,
         **kwargs

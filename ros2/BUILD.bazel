@@ -16,7 +16,6 @@ exports_files([
     "cc_defs.bzl",
     "interfaces.bzl",
     "launch.bzl",
-    "launch_exec.py.tpl",
     "launch_exec.sh.tpl",
     "plugin.bzl",
     "py_defs.bzl",
