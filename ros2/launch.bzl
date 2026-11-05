@@ -4,7 +4,7 @@
 load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_binary")
 load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
 
-def ros2_launch(name, launch_file, nodes = None, deps = None, data = None, **kwargs):
+def ros2_launch(name, launch_file, nodes = None, deps = None, data = None, idl_deps = None, **kwargs):
     """ Defines a ROS 2 deployment.
 
     Args:
@@ -13,9 +13,9 @@ def ros2_launch(name, launch_file, nodes = None, deps = None, data = None, **kwa
         nodes: A list of ROS 2 nodes for the deployment.
         deps: Additional Python deps that can be used by the launch file.
         data: Additional data that can be used by the launch file.
+        idl_deps: Additional IDL deps that are used as runtime plugins.
         **kwargs: Forwarded to the underlying ros2_py_binary; see
             https://bazel.build/reference/be/common-definitions#common-attributes-binaries.
-            Also accepts `idl_deps`: additional IDL deps used as runtime plugins.
     """
     launch_py = "{}_launch_py".format(name)
     nodes = nodes or []
@@ -38,6 +38,7 @@ def ros2_launch(name, launch_file, nodes = None, deps = None, data = None, **kwa
         srcs = [launch_py],
         main = launch_script,
         set_up_ament = True,
+        idl_deps = idl_deps,
         data = nodes + [launch_file] + data,
         deps = [
             "@ros2_launch_ros//:ros2launch",

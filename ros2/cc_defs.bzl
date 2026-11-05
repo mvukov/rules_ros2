@@ -66,8 +66,7 @@ def ros2_c_binary(name, ros2_package_name = None, **kwargs):
     """
     _ros2_cc_target(cc_binary, "c", name, ros2_package_name, **kwargs)
 
-def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, **kwargs):
-    idl_deps = kwargs.pop("idl_deps", None)
+def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, idl_deps, **kwargs):
     if idl_deps != None and len(idl_deps) > 0:
         set_up_ament = True
     is_test = target == cc_test
@@ -105,7 +104,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, **kwargs):
         **launcher_target_kwargs
     )
 
-def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, **kwargs):
+def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, idl_deps = None, **kwargs):
     """ Defines a ROS 2 C++ binary.
 
     Adds common ROS 2 C++ definitions on top of a cc_binary.
@@ -116,13 +115,13 @@ def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, **kwar
             Otherwise, the `name` is used as the package name.
         set_up_ament: If true, sets up ament file tree for the binary target.
             Implied if `idl_deps` is non-empty.
+        idl_deps: Additional IDL deps that are used as runtime plugins.
         **kwargs: Forwarded to the underlying cc_binary; see
             https://bazel.build/reference/be/common-definitions#common-attributes-binaries.
-            Also accepts `idl_deps`: additional IDL deps used as runtime plugins.
     """
-    _ros2_cpp_exec(cc_binary, name, ros2_package_name, set_up_ament, **kwargs)
+    _ros2_cpp_exec(cc_binary, name, ros2_package_name, set_up_ament, idl_deps, **kwargs)
 
-def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, **kwargs):
+def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, idl_deps = None, **kwargs):
     """ Defines a ROS 2 C++ test.
 
     Adds common ROS 2 C++ definitions on top of a cc_test.
@@ -139,8 +138,8 @@ def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, **kwargs)
             Otherwise, the `name` is used as the package name.
         set_up_ament: If true, sets up ament file tree for the test target.
             Implied if `idl_deps` is non-empty.
+        idl_deps: Additional IDL deps that are used as runtime plugins.
         **kwargs: Forwarded to the underlying cc_test; see
             https://bazel.build/reference/be/common-definitions#common-attributes-tests.
-            Also accepts `idl_deps`: additional IDL deps used as runtime plugins.
     """
-    _ros2_cpp_exec(cc_test, name, ros2_package_name, set_up_ament, **kwargs)
+    _ros2_cpp_exec(cc_test, name, ros2_package_name, set_up_ament, idl_deps, **kwargs)
