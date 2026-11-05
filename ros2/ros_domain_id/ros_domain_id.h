@@ -17,10 +17,8 @@
 //
 // To coordinate ROS_DOMAIN_IDs between multiple processes, a TCP port
 // kPortBase + ROS_DOMAIN_ID is bound. If binding succeeds, the ROS_DOMAIN_ID
-// is reserved for as long as the socket stays open. Note that every descendant
-// that doesn't close inherited file descriptors (e.g. a background job) holds
-// the reservation as well, possibly beyond the lifetime of the reserving
-// process.
+// is reserved for as long as the socket stays open. The socket is
+// close-on-exec, so exec'd processes don't inherit the reservation.
 
 #ifndef ROS2_ROS_DOMAIN_ID_ROS_DOMAIN_ID_H_
 #define ROS2_ROS_DOMAIN_ID_ROS_DOMAIN_ID_H_

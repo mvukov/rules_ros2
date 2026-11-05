@@ -21,11 +21,18 @@
 // resolve_ros_domain_id process, such that commands (e.g. tests) can run in
 // parallel without ROS cross-talk. If ROS_DOMAIN_ID is already set to a
 // non-empty value, it is respected. Isolation can be disabled by setting
-// DISABLE_ROS_ISOLATION to any value, including an empty one or "0".
+// DISABLE_ROS_ISOLATION to any value, including an empty one or "0". In both
+// cases, this process is replaced by the command.
 //
-// The reservation is held by the command and by all of its descendants that
-// don't close inherited file descriptors.
+// Otherwise, the command runs in a child process while this process holds the
+// reservation, which is released once the command exits. The command doesn't
+// inherit the reservation socket. SIGHUP, SIGINT and SIGTERM are forwarded to
+// the command. The exit code of the command is returned; if the command is
+// killed by a signal, this process kills itself with the same signal.
 
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include <cerrno>
@@ -42,9 +49,20 @@ namespace {
 // Exit codes following the shell convention.
 constexpr int kCommandNotFoundExitCode = 127;
 constexpr int kCommandNotExecutableExitCode = 126;
+constexpr int kKilledBySignalExitCodeBase = 128;
+
+constexpr int kForwardedSignals[] = {SIGHUP, SIGINT, SIGTERM};
+
+volatile sig_atomic_t g_child_pid = 0;
+
+void ForwardSignal(int signal_number) {
+  if (g_child_pid > 0) {
+    kill(g_child_pid, signal_number);
+  }
+}
 
 // Replaces the current process with `argv[0]` searched in PATH.
-// Returns only on failure.
+// Returns only on failure, with the exit code to report.
 int Exec(char** argv) {
   execvp(argv[0], argv);
   const int exec_errno = errno;
@@ -54,23 +72,76 @@ int Exec(char** argv) {
                               : kCommandNotExecutableExitCode;
 }
 
-}  // namespace
+// Runs `argv[0]` searched in PATH in a child process, forwards signals to it,
+// and returns its exit code once it exits. If the child is killed by a signal,
+// kills the current process with the same signal.
+int SpawnAndWait(char** argv) {
+  // Signals are blocked until the handlers know the child's PID, such that
+  // none is lost.
+  sigset_t forwarded_signals;
+  sigemptyset(&forwarded_signals);
+  for (const int signal_number : kForwardedSignals) {
+    sigaddset(&forwarded_signals, signal_number);
+  }
+  sigset_t original_mask;
+  sigprocmask(SIG_BLOCK, &forwarded_signals, &original_mask);
 
-int main(int argc, char** argv) {
+  struct sigaction action{};
+  action.sa_handler = ForwardSignal;
+  action.sa_flags = SA_RESTART;
+  sigemptyset(&action.sa_mask);
+  for (const int signal_number : kForwardedSignals) {
+    sigaction(signal_number, &action, nullptr);
+  }
+
+  const pid_t child_pid = fork();
+  if (child_pid < 0) {
+    std::fprintf(stderr, "Failed to fork: %s\n", std::strerror(errno));
+    return EXIT_FAILURE;
+  }
+  if (child_pid == 0) {
+    // exec resets the handlers, but not the mask.
+    sigprocmask(SIG_SETMASK, &original_mask, nullptr);
+    _exit(Exec(argv));
+  }
+  g_child_pid = child_pid;
+  sigprocmask(SIG_SETMASK, &original_mask, nullptr);
+
+  int status = 0;
+  while (waitpid(child_pid, &status, 0) < 0) {
+    if (errno != EINTR) {
+      std::fprintf(stderr, "Failed to wait for '%s': %s\n", argv[0],
+                   std::strerror(errno));
+      return EXIT_FAILURE;
+    }
+  }
+  if (WIFEXITED(status)) {
+    return WEXITSTATUS(status);
+  }
+  if (WIFSIGNALED(status)) {
+    const int signal_number = WTERMSIG(status);
+    signal(signal_number, SIG_DFL);
+    raise(signal_number);
+    return kKilledBySignalExitCodeBase + signal_number;
+  }
+  return EXIT_FAILURE;
+}
+
+int Run(int argc, char** argv) {
   if (argc < 2) {
     std::fprintf(stderr,
                  "There should be at least one argument given to "
                  "resolve_ros_domain_id\n");
     return EXIT_FAILURE;
   }
+  char** command = argv + 1;
   const ros_domain_id::Mode mode = ros_domain_id::DecideMode(
       std::getenv("ROS_DOMAIN_ID"), std::getenv("DISABLE_ROS_ISOLATION"));
   if (mode == ros_domain_id::Mode::kPassThrough) {
-    return Exec(argv + 1);
+    return Exec(command);
   }
 
-  // The reservation socket is inherited by the command, which then holds the
-  // reservation for its whole lifetime.
+  // Released on return, i.e. once the command exited.
   const std::optional<ros_domain_id::DomainIdReservation> reservation =
       ros_domain_id::DomainIdReservation::Reserve(ros_domain_id::kPortBase,
                                                   ros_domain_id::kMinDomainId,
@@ -84,5 +155,9 @@ int main(int argc, char** argv) {
                  std::strerror(errno));
     return EXIT_FAILURE;
   }
-  return Exec(argv + 1);
+  return SpawnAndWait(command);
 }
+
+}  // namespace
+
+int main(int argc, char** argv) { return Run(argc, argv); }

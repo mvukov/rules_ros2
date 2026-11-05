@@ -57,10 +57,8 @@ std::optional<DomainIdReservation> DomainIdReservation::Reserve(
     return std::nullopt;
   }
   int socket_fd = -1;
-  // Not close-on-exec: an exec'd process inherits the socket and thereby
-  // holds the reservation.
   const auto try_bind = [port_base, &socket_fd](int domain_id) {
-    const int fd = socket(AF_INET, SOCK_STREAM, 0);
+    const int fd = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, 0);
     if (fd < 0) {
       return errno;
     }
