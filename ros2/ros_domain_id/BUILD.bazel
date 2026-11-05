@@ -4,6 +4,7 @@ cc_library(
     name = "ros_domain_id",
     srcs = ["ros_domain_id.cc"],
     hdrs = ["ros_domain_id.h"],
+    visibility = ["//ros2/test/ros_domain_id:__pkg__"],
 )
 
 cc_binary(

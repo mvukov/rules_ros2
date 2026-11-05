@@ -1,0 +1,12 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_test")
+
+ros2_cpp_test(
+    name = "resolve_ros_domain_id_tests",
+    size = "small",
+    srcs = ["resolve_ros_domain_id_tests.cc"],
+    set_up_ament = False,
+    deps = [
+        "//ros2/ros_domain_id",
+        "@googletest//:gtest_main",
+    ],
+)

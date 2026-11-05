@@ -15,7 +15,7 @@ fi
 ament_prefix_path="{{ament_prefix_path}}"
 if [ -z "${ament_prefix_path}" ]; then
   unset AMENT_PREFIX_PATH
-  exec {entry_point} "$@"
+  exec {{resolve_ros_domain_id}} {entry_point} "$@"
 else
-  AMENT_PREFIX_PATH="${ament_prefix_path}" exec {entry_point} "$@"
+  AMENT_PREFIX_PATH="${ament_prefix_path}" exec {{resolve_ros_domain_id}} {entry_point} "$@"
 fi

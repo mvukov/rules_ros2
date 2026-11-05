@@ -307,10 +307,15 @@ def _sh_exec_launcher_rule_impl(ctx):
     if ctx.attr.ament_setup != None:
         ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path or ""
 
+    resolve_ros_domain_id = ""
+    if ctx.attr.resolve_ros_domain_id != None:
+        resolve_ros_domain_id = ctx.executable.resolve_ros_domain_id.short_path
+
     substitutions = dicts.add(
         ctx.attr.substitutions,
         {
             "{{ament_prefix_path}}": ament_prefix_path,
+            "{{resolve_ros_domain_id}}": resolve_ros_domain_id,
             "{{sh_bin}}": ctx.toolchains[SH_TOOLCHAIN].path,
         },
     )
@@ -327,6 +332,8 @@ def _sh_exec_launcher_rule_impl(ctx):
     runfiles = ctx.runfiles(transitive_files = files)
     if ctx.attr.ament_setup != None:
         runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
+    if ctx.attr.resolve_ros_domain_id != None:
+        runfiles = runfiles.merge(ctx.attr.resolve_ros_domain_id[DefaultInfo].default_runfiles)
     return [
         DefaultInfo(
             files = files,
@@ -340,6 +347,11 @@ sh_exec_launcher_rule = rule(
             providers = [Ros2AmentSetupInfo],
         ),
         "data": attr.label_list(allow_files = True),
+        "resolve_ros_domain_id": attr.label(
+            doc = "If set, the entry point is run via this executable, which reserves a unique ROS_DOMAIN_ID.",
+            executable = True,
+            cfg = "target",
+        ),
         "substitutions": attr.string_dict(mandatory = True),
         "template": attr.label(
             mandatory = True,
@@ -356,6 +368,9 @@ def sh_exec_launcher(name, ament_setup_deps = None, idl_deps = None, **kwargs):
     Used by `ros2_cpp_binary`/`ros2_cpp_test`, `ros2_py_binary`/`ros2_py_test`, and `ros2_rust_test` to
     wrap a compiled executable or a `py_binary`/`py_test`.  The generated shell script is the `srcs` of
     an `sh_binary`/`sh_test` target.  Requires /bin/sh at runtime.
+
+    For test targets (`testonly = True`), the binary is run via `resolve_ros_domain_id` such that
+    tests running in parallel get unique ROS_DOMAIN_IDs.
 
     Args:
         name: Name for the launcher rule target.
@@ -374,9 +389,13 @@ def sh_exec_launcher(name, ament_setup_deps = None, idl_deps = None, **kwargs):
             tags = ["manual"],
             testonly = testonly,
         )
+    resolve_ros_domain_id = None
+    if testonly:
+        resolve_ros_domain_id = "@com_github_mvukov_rules_ros2//ros2/ros_domain_id:resolve_ros_domain_id"
     sh_exec_launcher_rule(
         name = name,
         ament_setup = ament_setup,
+        resolve_ros_domain_id = resolve_ros_domain_id,
         **kwargs
     )
 
