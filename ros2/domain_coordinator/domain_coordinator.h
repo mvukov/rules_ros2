@@ -19,6 +19,11 @@
 // kPortBase + ROS_DOMAIN_ID is bound. If binding succeeds, the ROS_DOMAIN_ID
 // is reserved for as long as the socket stays open. The socket is
 // close-on-exec, so exec'd processes don't inherit the reservation.
+//
+// Ports are scoped to a network namespace: processes in different namespaces,
+// e.g. Bazel tests under --sandbox_default_allow_network=false on Linux, don't
+// see each other's reservations. They don't need to, since the namespaces
+// already isolate their DDS traffic.
 
 #ifndef ROS2_DOMAIN_COORDINATOR_DOMAIN_COORDINATOR_H_
 #define ROS2_DOMAIN_COORDINATOR_DOMAIN_COORDINATOR_H_
@@ -31,7 +36,8 @@
 namespace domain_coordinator {
 
 // Matches the port base of upstream domain_coordinator, such that reservations
-// are coordinated with upstream processes. It's above the DDS ports for domain
+// are coordinated with processes using upstream ament_cmake_ros (e.g. colcon
+// test runs on the same host). It's above the DDS ports for domain
 // IDs up to kMaxDomainId (7400 + 250 * domain ID + offsets). Note that it is in
 // Linux's ephemeral port range: if a port is taken by an outgoing connection,
 // the corresponding domain ID is skipped.

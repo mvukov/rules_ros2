@@ -372,7 +372,10 @@ def sh_exec_launcher(name, is_test, ament_setup_deps = None, idl_deps = None, **
     an `sh_binary`/`sh_test` target.  Requires /bin/sh at runtime.
 
     For tests (`is_test = True`), the binary is run via `run_test_isolated` such that
-    tests running in parallel get unique ROS_DOMAIN_IDs.
+    tests running in parallel get unique ROS_DOMAIN_IDs. Under the Linux network sandbox
+    (--sandbox_default_allow_network=false), each test has its own network namespace, so
+    reservations don't see each other and every test may get the same ROS_DOMAIN_ID; that's
+    fine since the namespace already isolates the tests.
 
     Args:
         name: Name for the launcher rule target.

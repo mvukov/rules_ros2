@@ -13,7 +13,12 @@ def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_dep
     * ros2_py_test in //ros2:py_defs.bzl
 
     Please make sure that --sandbox_default_allow_network=false is set in .bazelrc.
-    This ensures proper network isolation.
+    On Linux, this runs each sandboxed test in its own network namespace, which isolates
+    its DDS traffic from other tests. On top of that, the test is run via
+    //ros2/domain_coordinator:run_test_isolated, which gives it a ROS_DOMAIN_ID unique among
+    tests running at the same time; this matters if the network sandbox is not in effect
+    (e.g. with the local strategy or the requires-network tag). A non-empty ROS_DOMAIN_ID,
+    e.g. set via --test_env, is respected; setting DISABLE_ROS_ISOLATION disables this.
 
     Args:
         name: A unique target name.

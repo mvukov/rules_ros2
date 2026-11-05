@@ -18,8 +18,9 @@
 // https://github.com/ros2/ament_cmake_ros/tree/jazzy.
 //
 // Runs the given command with a ROS_DOMAIN_ID that is not used by any other
-// run_test_isolated process, such that commands (e.g. tests) can run in
-// parallel without ROS cross-talk. If ROS_DOMAIN_ID is already set to a
+// run_test_isolated process (this one or upstream's) in the same network
+// namespace, such that commands (e.g. tests) can run in parallel without ROS
+// cross-talk; see domain_coordinator.h. If ROS_DOMAIN_ID is already set to a
 // non-empty value, it is respected. Isolation can be disabled by setting
 // DISABLE_ROS_ISOLATION to any value, including an empty one or "0". In both
 // cases, this process is replaced by the command.
