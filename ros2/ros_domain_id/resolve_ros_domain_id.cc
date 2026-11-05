@@ -43,10 +43,6 @@ namespace {
 constexpr int kCommandNotFoundExitCode = 127;
 constexpr int kCommandNotExecutableExitCode = 126;
 
-bool IsSetAndNonEmpty(const char* value) {
-  return value != nullptr && value[0] != '\0';
-}
-
 // Replaces the current process with `argv[0]` searched in PATH.
 // Returns only on failure.
 int Exec(char** argv) {
@@ -67,9 +63,9 @@ int main(int argc, char** argv) {
                  "resolve_ros_domain_id\n");
     return EXIT_FAILURE;
   }
-  const bool isolate = !IsSetAndNonEmpty(std::getenv("ROS_DOMAIN_ID")) &&
-                       std::getenv("DISABLE_ROS_ISOLATION") == nullptr;
-  if (!isolate) {
+  const ros_domain_id::Mode mode = ros_domain_id::DecideMode(
+      std::getenv("ROS_DOMAIN_ID"), std::getenv("DISABLE_ROS_ISOLATION"));
+  if (mode == ros_domain_id::Mode::kPassThrough) {
     return Exec(argv + 1);
   }
 

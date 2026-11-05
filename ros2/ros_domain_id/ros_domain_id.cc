@@ -36,42 +36,53 @@ void CloseSocket(int socket_fd) {
 
 }  // namespace
 
+Mode DecideMode(const char* ros_domain_id, const char* disable_ros_isolation) {
+  const bool has_ros_domain_id =
+      ros_domain_id != nullptr && ros_domain_id[0] != '\0';
+  if (has_ros_domain_id || disable_ros_isolation != nullptr) {
+    return Mode::kPassThrough;
+  }
+  return Mode::kIsolate;
+}
+
 std::optional<DomainIdReservation> DomainIdReservation::Reserve(
     int port_base, int min_domain_id, int max_domain_id) {
   constexpr int kMaxPort = 65535;
+  // Written such that no addition can overflow.
   if (min_domain_id < 0 || min_domain_id > max_domain_id ||
-      port_base + min_domain_id < 1 || port_base + max_domain_id > kMaxPort) {
+      max_domain_id > kMaxPort || port_base < 1 - min_domain_id ||
+      port_base > kMaxPort - max_domain_id) {
     std::fprintf(stderr, "Invalid domain ID range [%d, %d] for port base %d\n",
                  min_domain_id, max_domain_id, port_base);
     return std::nullopt;
   }
+  int socket_fd = -1;
   // Not close-on-exec: an exec'd process inherits the socket and thereby
   // holds the reservation.
-  const int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-  if (socket_fd < 0) {
-    std::fprintf(stderr, "Failed to create a socket: %s\n",
-                 std::strerror(errno));
+  const auto try_bind = [port_base, &socket_fd](int domain_id) {
+    const int fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (fd < 0) {
+      return errno;
+    }
+    sockaddr_in address{};
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = htonl(INADDR_ANY);
+    address.sin_port = htons(static_cast<uint16_t>(port_base + domain_id));
+    if (bind(fd, reinterpret_cast<const sockaddr*>(&address),
+             sizeof(address)) != 0) {
+      const int bind_errno = errno;
+      CloseSocket(fd);
+      return bind_errno;
+    }
+    socket_fd = fd;
+    return 0;
+  };
+  const std::optional<int> domain_id =
+      FindFreeDomainId(min_domain_id, max_domain_id, try_bind);
+  if (!domain_id.has_value()) {
     return std::nullopt;
   }
-  sockaddr_in address{};
-  address.sin_family = AF_INET;
-  address.sin_addr.s_addr = htonl(INADDR_ANY);
-  // On Linux, a failed bind leaves the socket unbound, so binding is retried
-  // on the same socket for each candidate domain ID.
-  int bind_errno = 0;
-  for (int domain_id = min_domain_id; domain_id <= max_domain_id; ++domain_id) {
-    address.sin_port = htons(static_cast<uint16_t>(port_base + domain_id));
-    if (bind(socket_fd, reinterpret_cast<const sockaddr*>(&address),
-             sizeof(address)) == 0) {
-      return DomainIdReservation(domain_id, socket_fd);
-    }
-    bind_errno = errno;
-  }
-  std::fprintf(
-      stderr, "Failed to reserve a ROS domain ID in [%d, %d]. Last error: %s\n",
-      min_domain_id, max_domain_id, std::strerror(bind_errno));
-  CloseSocket(socket_fd);
-  return std::nullopt;
+  return DomainIdReservation(*domain_id, socket_fd);
 }
 
 DomainIdReservation::DomainIdReservation(int domain_id, int socket_fd)

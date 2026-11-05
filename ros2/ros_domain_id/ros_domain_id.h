@@ -17,15 +17,17 @@
 //
 // To coordinate ROS_DOMAIN_IDs between multiple processes, a TCP port
 // kPortBase + ROS_DOMAIN_ID is bound. If binding succeeds, the ROS_DOMAIN_ID
-// is reserved for as long as the socket stays open. The socket is inherited
-// across exec, such that an exec'd process keeps holding the reservation.
-// Note that every descendant that doesn't close inherited file descriptors
-// (e.g. a background job) holds the reservation as well, possibly beyond the
-// lifetime of the reserving process.
+// is reserved for as long as the socket stays open. Note that every descendant
+// that doesn't close inherited file descriptors (e.g. a background job) holds
+// the reservation as well, possibly beyond the lifetime of the reserving
+// process.
 
 #ifndef ROS2_ROS_DOMAIN_ID_ROS_DOMAIN_ID_H_
 #define ROS2_ROS_DOMAIN_ID_ROS_DOMAIN_ID_H_
 
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
 #include <optional>
 
 namespace ros_domain_id {
@@ -38,6 +40,44 @@ namespace ros_domain_id {
 inline constexpr int kPortBase = 32768;
 inline constexpr int kMinDomainId = 1;
 inline constexpr int kMaxDomainId = 100;
+
+// Returns the first domain ID in [`min_domain_id`, `max_domain_id`] for which
+// `try_bind(domain_id)` returns 0. A return value of EADDRINUSE means that the
+// domain ID is taken and the next one is tried; any other value is treated as
+// an errno that makes further attempts pointless. Returns std::nullopt if no
+// domain ID could be bound. Errors are printed to stderr.
+template <typename TryBind>
+std::optional<int> FindFreeDomainId(int min_domain_id, int max_domain_id,
+                                    TryBind&& try_bind) {
+  for (int domain_id = min_domain_id; domain_id <= max_domain_id; ++domain_id) {
+    const int bind_errno = try_bind(domain_id);
+    if (bind_errno == 0) {
+      return domain_id;
+    }
+    if (bind_errno != EADDRINUSE) {
+      std::fprintf(stderr, "Failed to reserve ROS domain ID %d: %s\n",
+                   domain_id, std::strerror(bind_errno));
+      return std::nullopt;
+    }
+  }
+  std::fprintf(stderr,
+               "Failed to reserve a ROS domain ID in [%d, %d]: all are taken\n",
+               min_domain_id, max_domain_id);
+  return std::nullopt;
+}
+
+enum class Mode {
+  // Run the command as is.
+  kPassThrough,
+  // Run the command with a reserved ROS_DOMAIN_ID.
+  kIsolate,
+};
+
+// Decides the mode from the values of the environment variables ROS_DOMAIN_ID
+// and DISABLE_ROS_ISOLATION, where nullptr means unset. A non-empty
+// ROS_DOMAIN_ID is respected. DISABLE_ROS_ISOLATION disables isolation if set
+// to any value, including an empty one or "0".
+Mode DecideMode(const char* ros_domain_id, const char* disable_ros_isolation);
 
 // Holds a reserved domain ID; the reservation is released on destruction.
 class DomainIdReservation {
