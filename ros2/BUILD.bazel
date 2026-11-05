@@ -12,7 +12,7 @@ exports_files([
     "ament_setup.cc.tpl",
     "ament_setup.h.tpl",
     "bag.bzl",
-    "bag.py.tpl",
+    "bag.py",
     "cc_defs.bzl",
     "interfaces.bzl",
     "launch.bzl",
