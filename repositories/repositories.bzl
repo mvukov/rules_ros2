@@ -55,7 +55,9 @@ def ros2_repositories():
         urls = ["https://github.com/ros/xacro/archive/refs/tags/2.1.1.tar.gz"],
     )
 
-    # Version copied from https://github.com/ros2/orocos_kdl_vendor/blob/0.5.2/orocos_kdl_vendor/CMakeLists.txt#L19.
+    # Version originally copied from https://github.com/ros2/orocos_kdl_vendor/blob/0.5.2/orocos_kdl_vendor/CMakeLists.txt#L19.
+    # NOTE: orocos_kdl_vendor is not part of Lyrical anymore (kdl_parser uses
+    # the system liborocos-kdl there), so this pin is maintained manually.
     http_archive(
         name = "orocos_kdl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:orocos_kdl.BUILD.bazel",
