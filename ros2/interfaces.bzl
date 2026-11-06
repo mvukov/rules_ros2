@@ -1103,7 +1103,11 @@ def py_ros2_interface_library(name, deps, **kwargs):
         name = name,
         deps = [
             name_py,
+            # Generated code imports rosidl_buffer (uint8[] fields) and
+            # rosidl_pycommon.interface_base_classes at runtime.
+            "@ros2_rosidl//:rosidl_buffer_py",
             "@ros2_rosidl//:rosidl_parser",
+            "@ros2_rosidl//:rosidl_pycommon",
             requirement("numpy"),
         ],
         **kwargs
