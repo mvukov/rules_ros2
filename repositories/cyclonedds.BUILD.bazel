@@ -102,6 +102,9 @@ cache_entries = {
     "ENABLE_NETWORK_PARTITIONS": "ON",
     "ENABLE_SECURITY": "OFF",
     "ENABLE_SSL": "OFF",  # TODO(mvukov) Here we could use openssl/boringssl.
+    "ENABLE_TCP_TLS": "OFF",
+    # Iceoryx2 is not supported (yet).
+    "ENABLE_ICEORYX2": "OFF",
     "ENABLE_TOPIC_DISCOVERY": "OFF",
     "ENABLE_TYPE_DISCOVERY": "OFF",
     "WERROR": "OFF",
@@ -126,13 +129,15 @@ cache_entries_qnx = {
     "CMAKE_SYSTEM_NAME": "QNX",
 }
 
+# NOTE: Since Cyclone DDS 11 shared memory is provided by the Iceoryx PSMX
+# plugin. With a static build the plugin is linked into libddsc.a.
 cache_entries_with_shm = {
-    "ENABLE_SHM": "ON",
+    "ENABLE_ICEORYX": "ON",
     "CMAKE_PREFIX_PATH": "$$EXT_BUILD_DEPS/iceoryx",
 }
 
 cache_entries_without_shm = {
-    "ENABLE_SHM": "OFF",
+    "ENABLE_ICEORYX": "OFF",
 }
 
 cmake(
