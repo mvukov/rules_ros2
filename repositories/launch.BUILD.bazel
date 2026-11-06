@@ -14,6 +14,8 @@ py_library(
         "@osrf_pycommon",
         "@ros2_ament_index//:ament_index_python",
         requirement("lark_parser"),
+        requirement("pyyaml"),
+        requirement("typing_extensions"),
     ],
 )
 
