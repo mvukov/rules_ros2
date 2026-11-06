@@ -28,7 +28,7 @@ ros2_c_library(
     ],
     hdrs = [
         "tracetools/include/tracetools/tracetools.h",
-        "tracetools/include/tracetools/visibility_control.hpp",
+        "tracetools/include/tracetools/visibility_control.h",
         ":config_h",
     ],
     includes = ["tracetools/include/"],
