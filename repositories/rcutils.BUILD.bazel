@@ -2,39 +2,7 @@
 """
 
 load("@bazel_skylib//lib:selects.bzl", "selects")
-load(
-    "@com_github_mvukov_rules_ros2//repositories:logging_macros.bzl",
-    "logging_macros",
-)
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_c_library")
-load("@rules_python//python:defs.bzl", "py_binary", "py_library")
-load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
-
-_GENERATE_LOGGING_MACROS_PY = "@com_github_mvukov_rules_ros2//repositories:generate_rcutils_logging_macros.py"
-
-py_library(
-    name = "logging_generator",
-    srcs = ["rcutils/logging.py"],
-    visibility = ["//visibility:public"],
-    deps = [requirement("empy")],
-)
-
-py_binary(
-    name = "generate_logging_macros",
-    srcs = [_GENERATE_LOGGING_MACROS_PY],
-    main = _GENERATE_LOGGING_MACROS_PY,
-    deps = [
-        ":logging_generator",
-        requirement("empy"),
-    ],
-)
-
-logging_macros(
-    name = "logging_macros",
-    generator = ":generate_logging_macros",
-    output = "include/rcutils/logging_macros.h",
-    template = "resource/logging_macros.h.em",
-)
 
 ros2_c_library(
     name = "rcutils",
@@ -55,7 +23,7 @@ ros2_c_library(
         },
         no_match_error = "Supported OSs: Android, Linux, macOS, QNX",
     ),
-    hdrs = glob(["include/**/*.h"]) + [":logging_macros"],
+    hdrs = glob(["include/**/*.h"]),
     includes = ["include"],
     linkopts = selects.with_or(
         {
