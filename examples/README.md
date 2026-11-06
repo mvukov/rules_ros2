@@ -7,44 +7,29 @@ in your very own (mono)repo.
 
 It's important to note here that this folder is
 a yet another [repository](https://bazel.build/concepts/build-ref#repositories).
-Regarding handling of [external dependencies](https://bazel.build/external/overview),
-there are two ways to set up your repo to use this repo. In the following it is
-explained how to set up each of them with some pros and cons.
+External dependencies are handled with
+[bzlmod](https://bazel.build/external/overview#bzlmod). Please take a look at the
+`MODULE.bazel` file in this folder to get an idea how to set up yourself.
 
-### WORKSPACE-file based setup
+This folder imports `rules_ros2` with a `local_path_override`. In a normal workflow,
+you would typically import `rules_ros2` into your (mono)repo as follows:
 
-This is [traditional](https://bazel.build/versions/7.5.0/external/overview#workspace-system) way of setting up external dependencies that Bazel-team plans to phase out.
-Please take a look at the `WORKSPACE` file in this folder to get an idea how to set up yourself.
-
-This approach allows one to customize a Python interpreter and Python deps
-in `requirements.txt` file. In particular, the user is responsible to define the interpreter
-and requirements lock file in their repo. The official interpreter version for ROS 2 Jazzy is 3.12
-and in `WORKSPACE` file a 3.12 interpreter is setup up. Please pay attention that
-resolved dependencies in `requirements_lock.txt` file are resolved for Python 3.12.
-
-If you want to use this approach, make sure you have the following lines in your `.bazelrc` file:
-
-```bash
-common --noenable_bzlmod --enable_workspace
+```starlark
+bazel_dep(name = "com_github_mvukov_rules_ros2")
+archive_override(
+    module_name = "com_github_mvukov_rules_ros2",
+    # Here you can use e.g. `openssl dgst -sha256 -binary <archive> | base64` to compute the hash.
+    integrity = "sha256-<base64-encoded sha256 of the .tar.gz archive below>",
+    strip_prefix = "rules_ros2-<git commit SHA>",
+    urls = ["https://github.com/mvukov/rules_ros2/archive/<git commit SHA>.tar.gz"],
+)
 ```
 
-### [bzlmod](https://bazel.build/versions/7.5.0/external/overview#bzlmod)-based setup
-
-This is the new external dependency subsystem. Please take a look at the `MODULE.bazel` file in this folder to get an idea how to set up yourself.
-
-With this approach, `rules_ros2` defines a Python 3.12 interpreter and defines the hub with resolved Python deps. If you want a different intepreter and/or you want to extend the Python requirements files with extra deps you might want to use in your monorepo, you'll need to patch `requirements_lock.txt` file and this repo.
-
-This is the default way for handling external deps since Bazel 7.
-
-If you want to be more explicit and explicitly disable the workspace-based setup, you can add the following lines in your `.bazelrc` file:
-
-```bash
-common --enable_bzlmod --noenable_workspace
-```
+`rules_ros2` defines a Python 3.12 interpreter and defines the hub with resolved Python deps. If you want a different intepreter and/or you want to extend the Python requirements files with extra deps you might want to use in your monorepo, you'll need to patch `requirements_lock.txt` file and this repo.
 
 ## The rest of the setup
 
-Besides setting up your workspace/bzlmod file, please make sure you copy the `.bazelrc`
+Besides setting up your `MODULE.bazel` file, please make sure you copy the `.bazelrc`
 file as well to your monorepo -- or at least adjust your own using the provided
 one.
 

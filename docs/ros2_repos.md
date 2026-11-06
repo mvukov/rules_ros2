@@ -21,5 +21,18 @@ please update `repositories/ros2_repo_mappings.yaml`. If you changed the config
 yaml file, please rerun the resolver app as shown above.
 
 Naturally, what if you want to override an auto-generated definition?
-Since all definitions use `maybe` Bazel macro, it is sufficient to define an
-`http_archive` repo with the same name _before_ the auto-generated definition.
+All definitions are exposed through the `non_module_deps` module extension, so
+in your root `MODULE.bazel` you can replace any of them with
+[`override_repo`](https://bazel.build/rules/lib/globals/module#override_repo):
+
+```starlark
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "my_ros2_rclcpp",
+    # ...
+)
+
+rules_ros2_non_module_deps = use_extension("@com_github_mvukov_rules_ros2//ros2:extensions.bzl", "non_module_deps")
+override_repo(rules_ros2_non_module_deps, ros2_rclcpp = "my_ros2_rclcpp")
+```
