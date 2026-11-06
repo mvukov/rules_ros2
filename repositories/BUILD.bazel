@@ -1,7 +1,5 @@
 exports_files([
-    "logging_macros.bzl",
     "generate_rclcpp_interface.py",
-    "generate_rclcpp_logging_macros.py",
     "rclcpp_interfaces.bzl",
     "repositories.bzl",
     "ros2_repo_mappings.yaml",
