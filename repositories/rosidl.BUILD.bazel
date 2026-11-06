@@ -19,6 +19,18 @@ ros2_c_library(
     visibility = ["//visibility:public"],
 )
 
+ros2_cpp_library(
+    name = "rosidl_buffer",
+    srcs = ["rosidl_buffer/src/c_helpers.cpp"],
+    hdrs = glob([
+        "rosidl_buffer/include/**/*.h",
+        "rosidl_buffer/include/**/*.hpp",
+    ]),
+    includes = ["rosidl_buffer/include"],
+    local_defines = ["ROSIDL_BUFFER_BUILDING_DLL"],
+    visibility = ["//visibility:public"],
+)
+
 ros2_c_library(
     name = "rosidl_runtime_c",
     srcs = glob(["rosidl_runtime_c/src/**/*.c"]),
@@ -26,6 +38,7 @@ ros2_c_library(
     includes = ["rosidl_runtime_c/include"],
     visibility = ["//visibility:public"],
     deps = [
+        ":rosidl_buffer",
         ":rosidl_typesupport_interface",
         "@ros2_rcutils//:rcutils",
     ],
@@ -130,7 +143,10 @@ ros2_cpp_library(
     hdrs = glob(["rosidl_runtime_cpp/include/**/*.hpp"]),
     includes = ["rosidl_runtime_cpp/include"],
     visibility = ["//visibility:public"],
-    deps = [":rosidl_runtime_c"],
+    deps = [
+        ":rosidl_buffer",
+        ":rosidl_runtime_c",
+    ],
 )
 
 py_library(
@@ -299,7 +315,7 @@ filegroup(
 
 py_library(
     name = "rosidl_pycommon",
-    srcs = ["rosidl_pycommon/rosidl_pycommon/__init__.py"],
+    srcs = glob(["rosidl_pycommon/rosidl_pycommon/*.py"]),
     imports = ["rosidl_pycommon"],
     visibility = ["//visibility:public"],
     deps = [
