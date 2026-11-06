@@ -1,56 +1,41 @@
 {
-  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
-  extends: [
-    'config:recommended',
-  ],
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:recommended"],
   dependencyDashboard: true,
   bazel: {
-    ignorePaths: [
-      'repositories/ros2_repositories_impl.bzl',
-    ],
+    ignorePaths: ["repositories/ros2_repositories_impl.bzl"],
   },
-  'bazel-module': {
+  // config:recommended ignores **/examples/** by default, and we want examples/MODULE.bazel to be updated.
+  "bazel-module": {
     ignorePaths: [],
   },
   pip_requirements: {
     enabled: false,
   },
-  'pre-commit': {
+  "pre-commit": {
     enabled: true,
   },
   packageRules: [
     {
-      matchManagers: [
-        'bazel',
-      ],
+      matchManagers: ["bazel"],
+      matchPackageNames: ["*"],
       enabled: false,
-      matchPackageNames: [
-        '*',
-      ],
     },
     {
-      matchManagers: [
-        'bazel',
-      ],
+      matchManagers: ["bazel"],
       matchDepNames: [
-        'foxglove_bridge',
-        'ros2_rust',
-        'ros2_rosidl_runtime_rs',
-        'ros2_rosidl_rust',
+        "foxglove_bridge",
+        "ros2_rust",
+        "ros2_rosidl_runtime_rs",
+        "ros2_rosidl_rust",
       ],
       enabled: true,
     },
     {
-      matchManagers: [
-        'pre-commit',
-      ],
-      groupName: 'pre-commit-deps',
-      matchPackageNames: [
-        '*',
-      ],
+      matchManagers: ["pre-commit"],
+      matchPackageNames: ["*"],
+      groupName: "pre-commit-deps",
     },
   ],
-  schedule: [
-    'every 1 months on the first day of the month',
-  ],
+  schedule: ["every 1 months on the first day of the month"],
 }
