@@ -9,10 +9,11 @@ ros2_cpp_library(
     srcs = glob([
         "src/*.cpp",
     ]),
-    hdrs = glob(["include/**/*.h"]),
+    hdrs = glob(["include/**/*.hpp"]),
     includes = ["include"],
     visibility = ["//visibility:public"],
     deps = [
+        "@ros2_common_interfaces//:cpp_std_msgs",
         "@ros2_rclcpp//:rclcpp",
         "@ros2_rcutils//:rcutils",
     ],
@@ -20,9 +21,7 @@ ros2_cpp_library(
 
 py_library(
     name = "py_message_filters",
-    srcs = [
-        "src/message_filters/__init__.py",
-    ],
+    srcs = glob(["src/message_filters/*.py"]),
     imports = ["src"],
     visibility = ["//visibility:public"],
     deps = [
