@@ -30,3 +30,19 @@ ros2_cpp_library(
     visibility = ["//visibility:public"],
     deps = [":rmw"],
 )
+
+ros2_cpp_library(
+    name = "rmw_security_common",
+    srcs = ["rmw_security_common/src/security.cpp"],
+    hdrs = glob([
+        "rmw_security_common/include/**/*.h",
+        "rmw_security_common/include/**/*.hpp",
+    ]),
+    includes = ["rmw_security_common/include"],
+    local_defines = ["RMW_SECURITY_COMMON_BUILDING_LIBRARY"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":rmw",
+        "@ros2_rcutils//:rcutils",
+    ],
+)
