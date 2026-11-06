@@ -106,7 +106,10 @@ cache_entries = {
     # Iceoryx2 is not supported (yet).
     "ENABLE_ICEORYX2": "OFF",
     "ENABLE_TOPIC_DISCOVERY": "OFF",
-    "ENABLE_TYPE_DISCOVERY": "OFF",
+    # rmw_cyclonedds >= 4 registers dynamic types and calls
+    # dds_create_topic_descriptor(DDS_FIND_SCOPE_GLOBAL, ...), which is only
+    # supported with type discovery.
+    "ENABLE_TYPE_DISCOVERY": "ON",
     "WERROR": "OFF",
     "WITH_FREERTOS": "OFF",
     "WITH_LWIP": "OFF",
