@@ -84,6 +84,7 @@ def _ros2_cpp_exec(target, name, ros2_package_name, set_up_ament, idl_deps, **kw
     ament_setup_deps = [target_impl] if set_up_ament else None
     sh_exec_launcher(
         launcher,
+        is_test = is_test,
         ament_setup_deps = ament_setup_deps,
         template = "@com_github_mvukov_rules_ros2//ros2:launch_exec.sh.tpl",
         substitutions = {
@@ -113,8 +114,10 @@ def ros2_cpp_binary(name, ros2_package_name = None, set_up_ament = False, idl_de
         ros2_package_name: If given, defines a ROS package name for the target.
             Otherwise, the `name` is used as the package name.
         set_up_ament: If true, sets up ament file tree for the binary target.
+            Implied if `idl_deps` is non-empty.
         idl_deps: Additional IDL deps that are used as runtime plugins.
-        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
+        **kwargs: Forwarded to the underlying cc_binary; see
+            https://bazel.build/reference/be/common-definitions#common-attributes-binaries.
     """
     _ros2_cpp_exec(cc_binary, name, ros2_package_name, set_up_ament, idl_deps, **kwargs)
 
@@ -127,14 +130,21 @@ def ros2_cpp_test(name, ros2_package_name = None, set_up_ament = True, idl_deps 
     otherwise to $TEST_TMPDIR, see https://bazel.build/reference/test-encyclopedia#initial-conditions)
 
     Please make sure that --sandbox_default_allow_network=false is set in .bazelrc.
-    This ensures proper network isolation.
+    On Linux, this runs each sandboxed test in its own network namespace, which isolates
+    its DDS traffic from other tests. On top of that, the test is run via
+    //ros2/domain_coordinator:run_test_isolated, which gives it a ROS_DOMAIN_ID unique among
+    tests running at the same time; this matters if the network sandbox is not in effect
+    (e.g. with the local strategy or the requires-network tag). A non-empty ROS_DOMAIN_ID,
+    e.g. set via --test_env, is respected; setting DISABLE_ROS_ISOLATION disables this.
 
     Args:
         name: A unique target name.
         ros2_package_name: If given, defines a ROS package name for the target.
             Otherwise, the `name` is used as the package name.
         set_up_ament: If true, sets up ament file tree for the test target.
+            Implied if `idl_deps` is non-empty.
         idl_deps: Additional IDL deps that are used as runtime plugins.
-        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
+        **kwargs: Forwarded to the underlying cc_test; see
+            https://bazel.build/reference/be/common-definitions#common-attributes-tests.
     """
     _ros2_cpp_exec(cc_test, name, ros2_package_name, set_up_ament, idl_deps, **kwargs)
