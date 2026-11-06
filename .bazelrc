@@ -46,7 +46,9 @@ test --test_output=errors
 # To use a clang compiler, invoke Bazel with `--config=clang`.
 build:clang --repo_env=CC=clang
 build:clang --repo_env=CXX=clang++
-build:clang --linkopt="-fuse-ld=lld"
+# NOTE: Don't force `-fuse-ld=lld`: rules_cc auto-detects lld and passes its
+# absolute path, whereas a bare `lld` may not be found by clang (e.g. if only
+# a versioned `ld.lld-<N>` is on PATH).
 build:clang --linkopt="-latomic"
 
 # Work around https://github.com/bazelbuild/rules_rust/issues/2125
