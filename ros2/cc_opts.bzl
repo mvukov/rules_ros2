@@ -1,4 +1,4 @@
 """ Defines commonly used C/C++ options.
 """
 
-C_COPTS = ["-std=c11"]
+C_COPTS = ["-std=c17"]
