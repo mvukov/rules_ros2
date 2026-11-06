@@ -73,6 +73,10 @@ rust.toolchain(
 
 crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
 crate.spec(
+    package = "ament_rs",
+    version = "0.3",
+)
+crate.spec(
     package = "async-std",
     version = "1.13",
 )
@@ -81,8 +85,14 @@ crate.spec(
     version = "0.3.6",
 )
 crate.spec(
+    package = "cfg-if",
+    version = "1.0.0",
+)
+
+# rclrs requests "0.3", but it uses UnboundedReceiver::try_recv, available since 0.3.31.
+crate.spec(
     package = "futures",
-    version = "0.3",
+    version = "0.3.31",
 )
 crate.spec(
     features = [
@@ -93,13 +103,17 @@ crate.spec(
     version = "2.6",
 )
 crate.spec(
+    package = "libloading",
+    version = "0.8",
+)
+crate.spec(
     features = ["derive"],
     package = "serde",
     version = "1",
 )
 crate.spec(
     package = "serde-big-array",
-    version = "0.5",
+    version = "0.5.1",
 )
 
 # Not used by rclrs, used for testing.
