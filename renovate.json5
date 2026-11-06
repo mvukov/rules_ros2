@@ -23,13 +23,18 @@
     },
     {
       matchManagers: ["bazel"],
+      matchDepNames: ["foxglove_bridge"],
+      enabled: true,
+    },
+    {
+      matchManagers: ["bazel"],
       matchDepNames: [
-        "foxglove_bridge",
         "ros2_rust",
         "ros2_rosidl_runtime_rs",
         "ros2_rosidl_rust",
       ],
       enabled: true,
+      groupName: "ros2-rust-deps",
     },
     {
       matchManagers: ["pre-commit"],
