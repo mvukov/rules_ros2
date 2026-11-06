@@ -13,12 +13,22 @@ def ros2_repositories():
     http_archive(
         name = "ros2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
-        sha256 = "7e55ac684cb1647e463f2bebcaa55bf14164c38d2fa011c0c4e44bafe8140f46",
-        strip_prefix = "ros2-release-jazzy-20250820",
-        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-jazzy-20250820.tar.gz"],
+        sha256 = "6906704f349210d956babf13f12114f527ab525ae8f2d283ec834d6bea51617e",
+        strip_prefix = "ros2-release-lyrical-20260807",
+        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-lyrical-20260807.tar.gz"],
     )
 
     ros2_repositories_impl()
+
+    # NOTE: osrf_pycommon is not part of the Lyrical ros2.repos anymore,
+    # but launch still depends on it.
+    http_archive(
+        name = "osrf_pycommon",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:osrf_pycommon.BUILD.bazel",
+        sha256 = "441afd5c3476474a1e5760070fec18860992a4659e84a6a4b59e49217d7cc6af",
+        strip_prefix = "osrf_pycommon-2.1.7",
+        url = "https://github.com/osrf/osrf_pycommon/archive/refs/tags/2.1.7.tar.gz",
+    )
 
     # ros2-devel branch
     http_archive(
@@ -52,16 +62,6 @@ def ros2_repositories():
         sha256 = "8acf1dc9c2f7ae37d747f16ce1e8e3cb40eb9187b8950aa2871f944b55520816",
         strip_prefix = "orocos_kinematics_dynamics-ce4bcb65a050615b6d7f21bc60fbb2656515791b",
         urls = ["https://github.com/orocos/orocos_kinematics_dynamics/archive/ce4bcb65a050615b6d7f21bc60fbb2656515791b.tar.gz"],
-    )
-
-    http_archive(
-        name = "ros2_urdf",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:urdf.BUILD.bazel",
-        sha256 = "7bd84e41f20c50719de2eeff1d8be58dbc6cafcd93ea88dc58072d5dcf8f8ca5",
-        strip_prefix = "urdf-2.10.1",
-        urls = ["https://github.com/ros2/urdf/archive/refs/tags/2.10.1.tar.gz"],
-        patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:urdf_plugin_loader_fix.patch"],
     )
 
     http_archive(
@@ -107,6 +107,9 @@ def ros2_repositories():
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rclrs.patch"],
     )
 
+    # NOTE: rosidl_rust is part of the Lyrical ros2.repos (0.4.12), but is
+    # intentionally kept as a manual pin such that all Rust-related deps
+    # (ros2_rust, rosidl_runtime_rs, rosidl_rust) are updated together.
     http_archive(
         name = "ros2_rosidl_rust",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_rust.BUILD.bazel",

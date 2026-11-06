@@ -17,7 +17,6 @@ repositories:
     build_file: "@com_github_mvukov_rules_ros2//repositories:geometry2.BUILD.bazel"
   iceoryx:
     name: iceoryx
-    strip_prefix: iceoryx-2.0.6
     build_file: "@com_github_mvukov_rules_ros2//repositories:iceoryx.BUILD.bazel"
   image_common:
     name: ros2_image_common
@@ -45,9 +44,6 @@ repositories:
   message_filters:
     name: ros2_message_filters
     build_file: "@com_github_mvukov_rules_ros2//repositories:message_filters.BUILD.bazel"
-  osrf_pycommon:
-    name: osrf_pycommon
-    build_file: "@com_github_mvukov_rules_ros2//repositories:osrf_pycommon.BUILD.bazel"
   pluginlib:
     name: ros2_pluginlib
     build_file: "@com_github_mvukov_rules_ros2//repositories:pluginlib.BUILD.bazel"
@@ -63,10 +59,6 @@ repositories:
   rclcpp:
     name: ros2_rclcpp
     build_file: "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel"
-    patch_cmds: ["patch"]
-    patch_args: ["-p1"]
-    patches:
-      - "@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_do-not-allocate-in-signal-handler.patch"
   rclpy:
     name: ros2_rclpy
     build_file: "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel"
@@ -141,6 +133,12 @@ repositories:
   unique_identifier_msgs:
     name: ros2_unique_identifier_msgs
     build_file: "@com_github_mvukov_rules_ros2//repositories:unique_identifier_msgs.BUILD.bazel"
+  urdf:
+    name: ros2_urdf
+    build_file: "@com_github_mvukov_rules_ros2//repositories:urdf.BUILD.bazel"
+    patch_args: ["-p1"]
+    patches:
+      - "@com_github_mvukov_rules_ros2//repositories/patches:urdf_plugin_loader_fix.patch"
   urdfdom:
     name: ros2_urdfdom
     build_file: "@com_github_mvukov_rules_ros2//repositories:urdfdom.BUILD.bazel"

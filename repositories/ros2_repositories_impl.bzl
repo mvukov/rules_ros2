@@ -5,73 +5,73 @@ def ros2_repositories_impl():
     http_archive(
         name = "ros2_ament_index",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ament_index.BUILD.bazel",
-        sha256 = "ddc8a03a9bd2a7ae3cc8a69ceaca77762d8524addc2d7260a99261ced410f29b",
-        strip_prefix = "ament_index-1.8.1",
-        url = "https://github.com/ament/ament_index/archive/refs/tags/1.8.1.tar.gz",
+        sha256 = "d8c59bd406bb583fdf34690071126171364797269e7b5889dfdab1e13a4859b0",
+        strip_prefix = "ament_index-1.13.3",
+        url = "https://github.com/ament/ament_index/archive/refs/tags/1.13.3.tar.gz",
     )
 
     http_archive(
         name = "ros2_class_loader",
         build_file = "@com_github_mvukov_rules_ros2//repositories:class_loader.BUILD.bazel",
-        sha256 = "e2ee605412020b35e061851bb3afbad6616b8568421682f34f0903ed9bb5c657",
-        strip_prefix = "class_loader-2.7.0",
-        url = "https://github.com/ros/class_loader/archive/refs/tags/2.7.0.tar.gz",
+        sha256 = "0b52b226f30c9a1f033a7deaf45dc803ac5237bef6c6a0bfe532d78731473a47",
+        strip_prefix = "class_loader-2.9.4",
+        url = "https://github.com/ros/class_loader/archive/refs/tags/2.9.4.tar.gz",
     )
 
     http_archive(
         name = "ros2_common_interfaces",
         build_file = "@com_github_mvukov_rules_ros2//repositories:common_interfaces.BUILD.bazel",
-        sha256 = "00b2c65720ac3275ba899c5b4de67b9c65a4f537fec3e2324b91f55ad1a44c67",
-        strip_prefix = "common_interfaces-5.3.6",
-        url = "https://github.com/ros2/common_interfaces/archive/refs/tags/5.3.6.tar.gz",
+        sha256 = "bfd13b7a60d0cdaf2878e819e58b94a9b5ed9dd606cc85bf012517f84c5b1b58",
+        strip_prefix = "common_interfaces-5.9.3",
+        url = "https://github.com/ros2/common_interfaces/archive/refs/tags/5.9.3.tar.gz",
     )
 
     http_archive(
         name = "cyclonedds",
         build_file = "@com_github_mvukov_rules_ros2//repositories:cyclonedds.BUILD.bazel",
-        sha256 = "ec3ec898c52b02f939a969cd1a276e219420e5e8419b21cea276db35b4821848",
-        strip_prefix = "cyclonedds-0.10.5",
-        url = "https://github.com/eclipse-cyclonedds/cyclonedds/archive/refs/tags/0.10.5.tar.gz",
+        sha256 = "c25d46075ad6b5cee564bda9e5f49509e9a6dbb1a8b858e708eb360d335cf973",
+        strip_prefix = "cyclonedds-11.0.1",
+        url = "https://github.com/eclipse-cyclonedds/cyclonedds/archive/refs/tags/11.0.1.tar.gz",
     )
 
     http_archive(
         name = "ros2_geometry2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:geometry2.BUILD.bazel",
-        sha256 = "d36096e8276906603b7041364755d74198548a38faa7c72182e1be788f9218a5",
-        strip_prefix = "geometry2-0.36.14",
-        url = "https://github.com/ros2/geometry2/archive/refs/tags/0.36.14.tar.gz",
+        sha256 = "a01308bb10dd7ca5dda0895a8560eb0b33a1500a38daad8330bed22be1e4af12",
+        strip_prefix = "geometry2-0.45.9",
+        url = "https://github.com/ros2/geometry2/archive/refs/tags/0.45.9.tar.gz",
     )
 
     http_archive(
         name = "iceoryx",
-        strip_prefix = "iceoryx-2.0.6",
         build_file = "@com_github_mvukov_rules_ros2//repositories:iceoryx.BUILD.bazel",
-        sha256 = "a2add8ffee0c3357ef985cc46c7de79ccb754ea2bed02c61f2ff805ab2c869f1",
-        url = "https://github.com/eclipse-iceoryx/iceoryx/archive/refs/tags/v2.0.6.tar.gz",
+        sha256 = "fd1ada708105057481900dab66135fc246f14e9d8a371818fa150b3f7a7342b8",
+        strip_prefix = "iceoryx-35311bfe5338392d65b18f148de70b803f6fc48e",
+        url = "https://github.com/eclipse-iceoryx/iceoryx/archive/35311bfe5338392d65b18f148de70b803f6fc48e.tar.gz",
     )
 
     http_archive(
         name = "ros2_image_common",
         build_file = "@com_github_mvukov_rules_ros2//repositories:image_common.BUILD.bazel",
-        sha256 = "8d8f969530bd613dc17b560536fb750b8d4d38652c0d969b0709f0d5c26a8eaf",
-        strip_prefix = "image_common-5.1.7",
-        url = "https://github.com/ros-perception/image_common/archive/refs/tags/5.1.7.tar.gz",
+        sha256 = "1ee7bdda301cc3939f2f6c7cdb337266d2086871131b48fc3864befbb91a1e34",
+        strip_prefix = "image_common-6.4.10",
+        url = "https://github.com/ros-perception/image_common/archive/refs/tags/6.4.10.tar.gz",
     )
 
     http_archive(
         name = "ros2_kdl_parser",
         build_file = "@com_github_mvukov_rules_ros2//repositories:kdl_parser.BUILD.bazel",
-        sha256 = "bc45fe59e1f6e66d069f6b02091928f41ccdd481ab779b20435b871391547141",
-        strip_prefix = "kdl_parser-2.11.0",
-        url = "https://github.com/ros/kdl_parser/archive/refs/tags/2.11.0.tar.gz",
+        sha256 = "19373b82d5136c967e920825ec0d1517ea44bcbca76f147b73fb96f259dd0ba3",
+        strip_prefix = "kdl_parser-3.0.1",
+        url = "https://github.com/ros/kdl_parser/archive/refs/tags/3.0.1.tar.gz",
     )
 
     http_archive(
         name = "ros2_keyboard_handler",
         build_file = "@com_github_mvukov_rules_ros2//repositories:keyboard_handler.BUILD.bazel",
-        sha256 = "cfe90e57dd0236339a6ea569bf06f154e732d9de4d62274f6c7ca451fcc6740e",
-        strip_prefix = "keyboard_handler-0.3.1",
-        url = "https://github.com/ros-tooling/keyboard_handler/archive/refs/tags/0.3.1.tar.gz",
+        sha256 = "4afe8a7dd98061bd471a17bdd68ec9d1f1affb3f33ab161cd11e4e68a46b6dd4",
+        strip_prefix = "keyboard_handler-0.5.1",
+        url = "https://github.com/ros-tooling/keyboard_handler/archive/refs/tags/0.5.1.tar.gz",
     )
 
     http_archive(
@@ -79,140 +79,129 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:launch.BUILD.bazel",
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:launch_no_log_dir_latest_symlink.patch"],
-        sha256 = "cce1f50cc0d94fa0aa0369d1814589334239ff27b5d0f479c9dc92952673e44e",
-        strip_prefix = "launch-3.4.6",
-        url = "https://github.com/ros2/launch/archive/refs/tags/3.4.6.tar.gz",
+        sha256 = "b8acb7e065ffaac47d141e7efe72c83f19e6d5367573bbe7c31788e29fab2064",
+        strip_prefix = "launch-3.9.8",
+        url = "https://github.com/ros2/launch/archive/refs/tags/3.9.8.tar.gz",
     )
 
     http_archive(
         name = "ros2_launch_ros",
         build_file = "@com_github_mvukov_rules_ros2//repositories:launch_ros.BUILD.bazel",
-        sha256 = "8cf6a440f3243afbd11112a18bb255831005b3869d2eae86075969a3c6d2b762",
-        strip_prefix = "launch_ros-0.26.8",
-        url = "https://github.com/ros2/launch_ros/archive/refs/tags/0.26.8.tar.gz",
+        sha256 = "3739f7f69b06043a5bc1028892f455b77fe9152ed8e680bf6ccc5f2c916cb287",
+        strip_prefix = "launch_ros-0.29.9",
+        url = "https://github.com/ros2/launch_ros/archive/refs/tags/0.29.9.tar.gz",
     )
 
     http_archive(
         name = "ros2_libstatistics_collector",
         build_file = "@com_github_mvukov_rules_ros2//repositories:libstatistics_collector.BUILD.bazel",
-        sha256 = "512a146494ff0b148e31d2e1a8311d69f978d87542f310d93b190507b5027daa",
-        strip_prefix = "libstatistics_collector-1.7.4",
-        url = "https://github.com/ros-tooling/libstatistics_collector/archive/refs/tags/1.7.4.tar.gz",
+        sha256 = "07dd1f6d79ec6023f014a152e7a1ff06693a2cc16b58dc9368c076e76f5bec69",
+        strip_prefix = "libstatistics_collector-2.1.2",
+        url = "https://github.com/ros-tooling/libstatistics_collector/archive/refs/tags/2.1.2.tar.gz",
     )
 
     http_archive(
         name = "ros2_message_filters",
         build_file = "@com_github_mvukov_rules_ros2//repositories:message_filters.BUILD.bazel",
-        sha256 = "6b0eb408d79d1e382131ddff925f479030a37f5d6ce0ded8b0619f215bd60e3b",
-        strip_prefix = "message_filters-4.11.7",
-        url = "https://github.com/ros2/message_filters/archive/refs/tags/4.11.7.tar.gz",
-    )
-
-    http_archive(
-        name = "osrf_pycommon",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:osrf_pycommon.BUILD.bazel",
-        sha256 = "441afd5c3476474a1e5760070fec18860992a4659e84a6a4b59e49217d7cc6af",
-        strip_prefix = "osrf_pycommon-2.1.7",
-        url = "https://github.com/osrf/osrf_pycommon/archive/refs/tags/2.1.7.tar.gz",
+        sha256 = "7134ef1287b03d4247e82a02cdf78ad189d55c149fb9de7978dedb2b2ee0a0f5",
+        strip_prefix = "message_filters-7.4.2",
+        url = "https://github.com/ros2/message_filters/archive/refs/tags/7.4.2.tar.gz",
     )
 
     http_archive(
         name = "ros2_pluginlib",
         build_file = "@com_github_mvukov_rules_ros2//repositories:pluginlib.BUILD.bazel",
-        sha256 = "330b27568683455654db44493062ec47a1383f191eea080de604b6953b59006c",
-        strip_prefix = "pluginlib-5.4.2",
-        url = "https://github.com/ros/pluginlib/archive/refs/tags/5.4.2.tar.gz",
+        sha256 = "1decb1fad90cde3575b32641a822534c4d5348a0463ae4f36305a65b498f81b7",
+        strip_prefix = "pluginlib-5.8.4",
+        url = "https://github.com/ros/pluginlib/archive/refs/tags/5.8.4.tar.gz",
     )
 
     http_archive(
         name = "ros2_rcl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcl.BUILD.bazel",
-        sha256 = "07ad74d7b3e55c65beac9cc4b5cd4521fc713bec28cc44f42e2f91ad77f8ffeb",
-        strip_prefix = "rcl-9.2.7",
-        url = "https://github.com/ros2/rcl/archive/refs/tags/9.2.7.tar.gz",
+        sha256 = "a306dc4bfabf888ea5f93c57037ee9afd5171c22828683bf00d09173454f2dd7",
+        strip_prefix = "rcl-10.4.4",
+        url = "https://github.com/ros2/rcl/archive/refs/tags/10.4.4.tar.gz",
     )
 
     http_archive(
         name = "ros2_rcl_interfaces",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcl_interfaces.BUILD.bazel",
-        sha256 = "615b846e09bf1dab7f6c162dcbfb72aa19bff922827022afddb9f0ef7b649f7f",
-        strip_prefix = "rcl_interfaces-2.0.3",
-        url = "https://github.com/ros2/rcl_interfaces/archive/refs/tags/2.0.3.tar.gz",
+        sha256 = "d41decda13490374ac05eaf42a433ac11ecb8f01d51bc0d84bc2a37228d1eb9c",
+        strip_prefix = "rcl_interfaces-2.4.5",
+        url = "https://github.com/ros2/rcl_interfaces/archive/refs/tags/2.4.5.tar.gz",
     )
 
     http_archive(
         name = "ros2_rcl_logging",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcl_logging.BUILD.bazel",
-        sha256 = "1b4d245d859c5c38032c1659adb48037fb911dcb833199a81bbc5336633a59b3",
-        strip_prefix = "rcl_logging-3.1.1",
-        url = "https://github.com/ros2/rcl_logging/archive/refs/tags/3.1.1.tar.gz",
+        sha256 = "60fb13b6f16d83eaff7f739d6242d587c94256a2d7742e21f2f174a824ab3680",
+        strip_prefix = "rcl_logging-3.4.1",
+        url = "https://github.com/ros2/rcl_logging/archive/refs/tags/3.4.1.tar.gz",
     )
 
     http_archive(
         name = "ros2_rclcpp",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rclcpp.BUILD.bazel",
-        patch_cmds = ["patch"],
-        patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rclcpp_do-not-allocate-in-signal-handler.patch"],
-        sha256 = "17c6f49a507886af53fc2185b1de6b9c54013b113e3675042760e442b9c3d5ea",
-        strip_prefix = "rclcpp-28.1.11",
-        url = "https://github.com/ros2/rclcpp/archive/refs/tags/28.1.11.tar.gz",
+        sha256 = "c43ba1c64c421543cbcde68ae76910229b63041f6294bfb0d1f381db4593efd7",
+        strip_prefix = "rclcpp-32.0.2",
+        url = "https://github.com/ros2/rclcpp/archive/refs/tags/32.0.2.tar.gz",
     )
 
     http_archive(
         name = "ros2_rclpy",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rclpy.BUILD.bazel",
-        sha256 = "29f2196258544a2b9a904ab9632dd2fba05d41e110897d29ee9cb1fdfbc5aa37",
-        strip_prefix = "rclpy-7.1.5",
-        url = "https://github.com/ros2/rclpy/archive/refs/tags/7.1.5.tar.gz",
+        sha256 = "c3b9d6d51754afb08d6e454a19348148f43506cedc5fdc82872d784b0f7851dc",
+        strip_prefix = "rclpy-10.0.10",
+        url = "https://github.com/ros2/rclpy/archive/refs/tags/10.0.10.tar.gz",
     )
 
     http_archive(
         name = "ros2_rcpputils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcpputils.BUILD.bazel",
-        sha256 = "c902d899378a1da632b07303d9dbdd1d34da484cc958077ab9f0de49f6bbe2a1",
-        strip_prefix = "rcpputils-2.11.2",
-        url = "https://github.com/ros2/rcpputils/archive/refs/tags/2.11.2.tar.gz",
+        sha256 = "1c3b086dbfad7ce6ae079d6539324d20aebe2169c853383faee262fa9dfc1b1c",
+        strip_prefix = "rcpputils-2.14.5",
+        url = "https://github.com/ros2/rcpputils/archive/refs/tags/2.14.5.tar.gz",
     )
 
     http_archive(
         name = "ros2_rcutils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcutils.BUILD.bazel",
-        sha256 = "9dbb2ce13bedba50505540319dbfb9542148c12c550d3c03bec73109d7cd6754",
-        strip_prefix = "rcutils-6.7.3",
-        url = "https://github.com/ros2/rcutils/archive/refs/tags/6.7.3.tar.gz",
+        sha256 = "fd1dce4d7bb9bb9739c80ae18f4ee1e39fb1d38bbc4bf5c627695b28a937d842",
+        strip_prefix = "rcutils-7.1.2",
+        url = "https://github.com/ros2/rcutils/archive/refs/tags/7.1.2.tar.gz",
     )
 
     http_archive(
         name = "ros2_resource_retriever",
         build_file = "@com_github_mvukov_rules_ros2//repositories:resource_retriever.BUILD.bazel",
-        sha256 = "cc1d10e74f7d00f56e350426340b53e6df5dab1795d2f3b79fb431d4678ef213",
-        strip_prefix = "resource_retriever-3.4.4",
-        url = "https://github.com/ros/resource_retriever/archive/refs/tags/3.4.4.tar.gz",
+        sha256 = "46d1b902f94b6f14a14fc7f6557106d7ededc5ad071fdaaa37d46f914e08eea0",
+        strip_prefix = "resource_retriever-3.9.3",
+        url = "https://github.com/ros/resource_retriever/archive/refs/tags/3.9.3.tar.gz",
     )
 
     http_archive(
         name = "ros2_rmw",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw.BUILD.bazel",
-        sha256 = "46f4ca1cf6a50ade9cfbb303f7c3e6417222575dcf350edb1a6d441b18826106",
-        strip_prefix = "rmw-7.3.2",
-        url = "https://github.com/ros2/rmw/archive/refs/tags/7.3.2.tar.gz",
+        sha256 = "3e5653f732e81b0dfa3cd07f0d267f60903ca2b5b63bb581522290580d59df97",
+        strip_prefix = "rmw-7.10.1",
+        url = "https://github.com/ros2/rmw/archive/refs/tags/7.10.1.tar.gz",
     )
 
     http_archive(
         name = "ros2_rmw_cyclonedds",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_cyclonedds.BUILD.bazel",
-        sha256 = "5b2035e371c59f1301f6e1241bad06fd6776d971f0b79f28beed2eeb68dfa10f",
-        strip_prefix = "rmw_cyclonedds-2.2.3",
-        url = "https://github.com/ros2/rmw_cyclonedds/archive/refs/tags/2.2.3.tar.gz",
+        sha256 = "77d1c0f03c9011b2e751ad022d8df166feb835c68320b286d65e86f11228e306",
+        strip_prefix = "rmw_cyclonedds-4.1.4",
+        url = "https://github.com/ros2/rmw_cyclonedds/archive/refs/tags/4.1.4.tar.gz",
     )
 
     http_archive(
         name = "ros2_rmw_dds_common",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_dds_common.BUILD.bazel",
-        sha256 = "e28253ea93755d9875593e65a65b1ed8ad8532a25e09727487ebc0b5310b5910",
-        strip_prefix = "rmw_dds_common-3.1.0",
-        url = "https://github.com/ros2/rmw_dds_common/archive/refs/tags/3.1.0.tar.gz",
+        sha256 = "24ca71bf240627dc0ab70898409bb6f58679254b67cc6ee85ec3aff73f9c51c5",
+        strip_prefix = "rmw_dds_common-6.0.0",
+        url = "https://github.com/ros2/rmw_dds_common/archive/refs/tags/6.0.0.tar.gz",
     )
 
     http_archive(
@@ -220,33 +209,33 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_implementation.BUILD.bazel",
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_implementation_library_path.patch"],
-        sha256 = "75a9b0ed5f4f1d95bb95f9c5ef6651ff5138bba262fad7c78e19429c64bf20d3",
-        strip_prefix = "rmw_implementation-2.15.6",
-        url = "https://github.com/ros2/rmw_implementation/archive/refs/tags/2.15.6.tar.gz",
+        sha256 = "68e16c0257390b168adc7292d8c839fa19f6fe4c5d63b534bb54e578fbe3a4d4",
+        strip_prefix = "rmw_implementation-3.1.6",
+        url = "https://github.com/ros2/rmw_implementation/archive/refs/tags/3.1.6.tar.gz",
     )
 
     http_archive(
         name = "ros2_robot_state_publisher",
         build_file = "@com_github_mvukov_rules_ros2//repositories:robot_state_publisher.BUILD.bazel",
-        sha256 = "650687e3511d4b65ceef6ac1c93a61ae60b84a3c4eb14846478587d65f50da7a",
-        strip_prefix = "robot_state_publisher-3.3.3",
-        url = "https://github.com/ros/robot_state_publisher/archive/refs/tags/3.3.3.tar.gz",
+        sha256 = "36ff27a88e4b03e96b8989f166781b6dd402eb3003864d30744e7cba3f4fb252",
+        strip_prefix = "robot_state_publisher-3.5.5",
+        url = "https://github.com/ros/robot_state_publisher/archive/refs/tags/3.5.5.tar.gz",
     )
 
     http_archive(
         name = "ros2_tracing",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2_tracing.BUILD.bazel",
-        sha256 = "91474a3efa55a04b2d23b10afa04fa018e1fb8022f3bed77c0bf13563427b79b",
-        strip_prefix = "ros2_tracing-8.2.4",
-        url = "https://github.com/ros2/ros2_tracing/archive/refs/tags/8.2.4.tar.gz",
+        sha256 = "b3ba5f5ea8b0214959b56792b3faa39d7018b0f3cca6a8b7593753674b0412ab",
+        strip_prefix = "ros2_tracing-8.10.2",
+        url = "https://github.com/ros2/ros2_tracing/archive/refs/tags/8.10.2.tar.gz",
     )
 
     http_archive(
         name = "ros2cli",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2cli.BUILD.bazel",
-        sha256 = "a5bf2edc495eb7d91a5ab48c2a917d1efb46e97dcbdff5e241434cf68d5519a7",
-        strip_prefix = "ros2cli-0.32.5",
-        url = "https://github.com/ros2/ros2cli/archive/refs/tags/0.32.5.tar.gz",
+        sha256 = "ccb568b121f7aa2f558c6bedf15c32b4997c6dd95f212dc1b84b52a7fe1cef06",
+        strip_prefix = "ros2cli-0.40.8",
+        url = "https://github.com/ros2/ros2cli/archive/refs/tags/0.40.8.tar.gz",
     )
 
     http_archive(
@@ -254,9 +243,9 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosbag2.BUILD.bazel",
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosbag2_relax_plugin_errors.patch", "@com_github_mvukov_rules_ros2//repositories/patches:rosbag2_load_plugin_cli_extensions.patch"],
-        sha256 = "a1d59918e741b1f97a7c82d7943ea5b757a7b839bde200fe9bc1f0a5130fea4d",
-        strip_prefix = "rosbag2-0.26.9",
-        url = "https://github.com/ros2/rosbag2/archive/refs/tags/0.26.9.tar.gz",
+        sha256 = "1f4389efa43ee13a39dd113bfb2cebb942c7c2ebd79bd23adf5543eee9c634de",
+        strip_prefix = "rosbag2-0.33.3",
+        url = "https://github.com/ros2/rosbag2/archive/refs/tags/0.33.3.tar.gz",
     )
 
     http_archive(
@@ -264,17 +253,17 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl.BUILD.bazel",
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosidl_rm_unnecessary_asserts.patch", "@com_github_mvukov_rules_ros2//repositories/patches:rosidl_fix_rosidl_typesupport_introspection_generator.patch"],
-        sha256 = "834390cf1fea54f158c45b83cd5e2cc442e0c7c275fda172c01d57f67ce8fcbf",
-        strip_prefix = "rosidl-4.6.6",
-        url = "https://github.com/ros2/rosidl/archive/refs/tags/4.6.6.tar.gz",
+        sha256 = "66a8a29216a1d9a736812f6cdd3c78ebcd9365e8c6757d78792cb3f918293b7b",
+        strip_prefix = "rosidl-5.2.1",
+        url = "https://github.com/ros2/rosidl/archive/refs/tags/5.2.1.tar.gz",
     )
 
     http_archive(
         name = "ros2_rosidl_dynamic_typesupport",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_dynamic_typesupport.BUILD.bazel",
-        sha256 = "3a7076212e7450411dd728300efe09ef10c1c0714b1e98b805da2142f98e0f6f",
-        strip_prefix = "rosidl_dynamic_typesupport-0.1.2",
-        url = "https://github.com/ros2/rosidl_dynamic_typesupport/archive/refs/tags/0.1.2.tar.gz",
+        sha256 = "1db9ea8e48afad3e85fa403f032485a6721699286c74733736c223bfaac76ba2",
+        strip_prefix = "rosidl_dynamic_typesupport-0.4.1",
+        url = "https://github.com/ros2/rosidl_dynamic_typesupport/archive/refs/tags/0.4.1.tar.gz",
     )
 
     http_archive(
@@ -282,17 +271,17 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_python.BUILD.bazel",
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosidl_python_fix_imports.patch"],
-        sha256 = "4b31bfc74364acc86d14c40204875704f415da409b3a72ef5eca451d2b3bca85",
-        strip_prefix = "rosidl_python-0.22.1",
-        url = "https://github.com/ros2/rosidl_python/archive/refs/tags/0.22.1.tar.gz",
+        sha256 = "7dd1abc536d1080d0ad0a398204f65f35e014c780c7d6c7a3da107eac0e6e9d8",
+        strip_prefix = "rosidl_python-0.27.2",
+        url = "https://github.com/ros2/rosidl_python/archive/refs/tags/0.27.2.tar.gz",
     )
 
     http_archive(
         name = "ros2_rosidl_runtime_py",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_runtime_py.BUILD.bazel",
-        sha256 = "d1b5504348faa455e5df33ea256d888524dede01ea17b04268d1ea589bd168d2",
-        strip_prefix = "rosidl_runtime_py-0.13.1",
-        url = "https://github.com/ros2/rosidl_runtime_py/archive/refs/tags/0.13.1.tar.gz",
+        sha256 = "32ba2efa1144465eb03ede479bd58dc88711851c045860b6e8fcc56554435624",
+        strip_prefix = "rosidl_runtime_py-0.15.2",
+        url = "https://github.com/ros2/rosidl_runtime_py/archive/refs/tags/0.15.2.tar.gz",
     )
 
     http_archive(
@@ -300,39 +289,49 @@ def ros2_repositories_impl():
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_typesupport.BUILD.bazel",
         patch_args = ["-p1"],
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rosidl_typesupport_generate_true_c_code.patch"],
-        sha256 = "f3a16b95e6f92bf2ce55a5b1afd70d7d2a1afe20684451bb17703d808482dd32",
-        strip_prefix = "rosidl_typesupport-3.2.2",
-        url = "https://github.com/ros2/rosidl_typesupport/archive/refs/tags/3.2.2.tar.gz",
+        sha256 = "d3cc52967b30e18ccb4a90c9f582f10e0ab3a02e155242879ec8956fa0abdcbf",
+        strip_prefix = "rosidl_typesupport-3.4.2",
+        url = "https://github.com/ros2/rosidl_typesupport/archive/refs/tags/3.4.2.tar.gz",
     )
 
     http_archive(
         name = "ros2_rpyutils",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rpyutils.BUILD.bazel",
-        sha256 = "7846fd4aa0a3bb4d2a21359cb7a84931ef54cabd6ca5fd4a10bc1ee9452cf32b",
-        strip_prefix = "rpyutils-0.4.1",
-        url = "https://github.com/ros2/rpyutils/archive/refs/tags/0.4.1.tar.gz",
+        sha256 = "652f0eae54e6620b4841912ec17f93c16b3126af9ce50dea17437ce69f113144",
+        strip_prefix = "rpyutils-0.7.2",
+        url = "https://github.com/ros2/rpyutils/archive/refs/tags/0.7.2.tar.gz",
     )
 
     http_archive(
         name = "ros2_unique_identifier_msgs",
         build_file = "@com_github_mvukov_rules_ros2//repositories:unique_identifier_msgs.BUILD.bazel",
-        sha256 = "848e99fb813809a0ff41c4df0f75be42abf13fab40fcc8df9de8db6a009c3931",
-        strip_prefix = "unique_identifier_msgs-2.5.0",
-        url = "https://github.com/ros2/unique_identifier_msgs/archive/refs/tags/2.5.0.tar.gz",
+        sha256 = "990364f1e920a7159bae45267dba51d61aa1683ffd6d66e98362f33dc68c9c97",
+        strip_prefix = "unique_identifier_msgs-2.8.1",
+        url = "https://github.com/ros2/unique_identifier_msgs/archive/refs/tags/2.8.1.tar.gz",
+    )
+
+    http_archive(
+        name = "ros2_urdf",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:urdf.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:urdf_plugin_loader_fix.patch"],
+        sha256 = "39938843efee5ca6ed1a63d7d0daecc9300cc4744914578d324535984ad33a29",
+        strip_prefix = "urdf-2.13.2",
+        url = "https://github.com/ros2/urdf/archive/refs/tags/2.13.2.tar.gz",
     )
 
     http_archive(
         name = "ros2_urdfdom",
         build_file = "@com_github_mvukov_rules_ros2//repositories:urdfdom.BUILD.bazel",
-        sha256 = "9978dc742b18332ef952c06acb6bac7e8f58ed0592e9eb81779880c930ba0a69",
-        strip_prefix = "urdfdom-4.0.2",
-        url = "https://github.com/ros/urdfdom/archive/refs/tags/4.0.2.tar.gz",
+        sha256 = "3305bb725095c78ca3408a510e11f530cd9bb45229779084695b21b2e693bde9",
+        strip_prefix = "urdfdom-6.0.0",
+        url = "https://github.com/ros/urdfdom/archive/refs/tags/6.0.0.tar.gz",
     )
 
     http_archive(
         name = "ros2_urdfdom_headers",
         build_file = "@com_github_mvukov_rules_ros2//repositories:urdfdom_headers.BUILD.bazel",
-        sha256 = "7602e37c6715fbf4cec3f0ded1e860157796423dc79da062a0e5ccb1226dc8e6",
-        strip_prefix = "urdfdom_headers-1.1.2",
-        url = "https://github.com/ros/urdfdom_headers/archive/refs/tags/1.1.2.tar.gz",
+        sha256 = "314b322696cbc64d87c31e859f1d4e9983873c1db2706d13d7c2aa8c1a31119e",
+        strip_prefix = "urdfdom_headers-3.0.0",
+        url = "https://github.com/ros/urdfdom_headers/archive/refs/tags/3.0.0.tar.gz",
     )
