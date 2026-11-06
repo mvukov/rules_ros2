@@ -1,5 +1,4 @@
 exports_files([
-    "deps.bzl",
     "logging_macros.bzl",
     "generate_rclcpp_interface.py",
     "generate_rclcpp_logging_macros.py",
