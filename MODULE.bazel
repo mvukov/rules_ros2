@@ -15,8 +15,8 @@ bazel_dep(name = "readerwriterqueue", version = "1.0.6")
 bazel_dep(name = "rules_cc", version = "0.2.16")
 bazel_dep(name = "rules_foreign_cc", version = "0.15.1")
 bazel_dep(name = "rules_python", version = "2.0.2")
-bazel_dep(name = "rules_rust", version = "0.68.1")
-bazel_dep(name = "rules_rust_bindgen", version = "0.68.1")
+bazel_dep(name = "rules_rust", version = "0.75.0")
+bazel_dep(name = "rules_rust_bindgen", version = "0.75.0")
 bazel_dep(name = "rules_shell", version = "0.8.0")
 bazel_dep(name = "spdlog", version = "1.17.0")
 bazel_dep(name = "sqlite3", version = "3.51.2")
@@ -29,47 +29,31 @@ bazel_dep(name = "zstd", version = "1.5.7")
 
 bazel_dep(name = "googletest", version = "1.17.0.bcr.2", dev_dependency = True)
 
-http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
-_PYTHON_VERSIONS = [
-    "3.12",
-    "3.13",
-]
-
-_DEFAULT_PYTHON = "3.12"
+_PYTHON_VERSION = "3.12"
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
-
-[
-    python.toolchain(
-        is_default = python_version == _DEFAULT_PYTHON,
-        python_version = python_version,
-    )
-    for python_version in _PYTHON_VERSIONS
-]
+python.toolchain(
+    is_default = True,
+    python_version = _PYTHON_VERSION,
+)
 
 pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
-
-[
-    pip.parse(
-        experimental_index_url = "https://pypi.org/simple",
-        hub_name = "rules_ros2_pip_deps",
-        python_version = python_version,
-        requirements_lock = "//:requirements_lock.txt",
-        target_platforms = [
-            "linux_aarch64",
-            "linux_x86_64",
-        ],
-    )
-    for python_version in _PYTHON_VERSIONS
-]
-
+pip.parse(
+    experimental_index_url = "https://pypi.org/simple",
+    hub_name = "rules_ros2_pip_deps",
+    python_version = _PYTHON_VERSION,
+    requirements_lock = "//:requirements_lock.txt",
+    target_platforms = [
+        "linux_aarch64",
+        "linux_x86_64",
+    ],
+)
 use_repo(pip, "rules_ros2_pip_deps")
 
 dev_pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip", dev_dependency = True)
 dev_pip.parse(
     hub_name = "rules_ros2_resolver_deps",
-    python_version = "3.12",
+    python_version = _PYTHON_VERSION,
     requirements_lock = "//repositories/private:resolver_requirements_lock.txt",
 )
 use_repo(dev_pip, "rules_ros2_resolver_deps")
@@ -84,10 +68,9 @@ register_toolchains(
 
 rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
 rust.toolchain(
-    edition = "2021",  # Keep specs in sync with repositories/rust_setup_stage_2.bzl
+    edition = "2021",
 )
 
-# Keep specs in sync with repositories/rust_setup_stage_3.bzl
 crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
 crate.spec(
     package = "async-std",
@@ -118,10 +101,14 @@ crate.spec(
     package = "serde-big-array",
     version = "0.5",
 )
+
+# Not used by rclrs, used for testing.
 crate.spec(
     package = "serde_json",
     version = "1",
 )
+
+# Not used by rclrs, but handy to have.
 crate.spec(
     package = "signal-hook",
     version = "0.3",
