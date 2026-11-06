@@ -31,6 +31,26 @@ ros2_cpp_library(
     visibility = ["//visibility:public"],
 )
 
+ros2_cpp_binary(
+    name = "rosidl_buffer_py/rosidl_buffer/_rosidl_buffer_py.so",
+    srcs = ["rosidl_buffer_py/src/rosidl_buffer_py.cpp"],
+    copts = ["-fvisibility=hidden"],
+    linkopts = ["-fvisibility=hidden"],
+    linkshared = True,
+    deps = [
+        ":rosidl_buffer",
+        "@pybind11",
+    ],
+)
+
+py_library(
+    name = "rosidl_buffer_py",
+    srcs = glob(["rosidl_buffer_py/rosidl_buffer/*.py"]),
+    data = [":rosidl_buffer_py/rosidl_buffer/_rosidl_buffer_py.so"],
+    imports = ["rosidl_buffer_py"],
+    visibility = ["//visibility:public"],
+)
+
 ros2_c_library(
     name = "rosidl_runtime_c",
     srcs = glob(["rosidl_runtime_c/src/**/*.c"]),
