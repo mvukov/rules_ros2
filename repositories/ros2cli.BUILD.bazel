@@ -128,6 +128,7 @@ py_library(
     deps = [
         ":ros2cli",
         "@ros2_ament_index//:ament_index_python",
+        "@ros2_rosidl//:rosidl_adapter_lib",
         "@ros2_rosidl_runtime_py//:rosidl_runtime_py",
     ],
 )
