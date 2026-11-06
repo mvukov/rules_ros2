@@ -1,0 +1,9 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+# Second stage of every ros2_* launcher: sets up the ROS 2 environment and
+# exec()s the wrapped program. See //ros2:launcher.bzl.
+cc_binary(
+    name = "ros2_exec",
+    srcs = ["ros2_exec.cc"],
+    visibility = ["//visibility:public"],
+)
