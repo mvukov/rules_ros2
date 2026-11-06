@@ -88,13 +88,13 @@ def ros2_repositories():
         urls = ["https://github.com/foxglove/mcap/archive/refs/tags/releases/cpp/v1.4.1.tar.gz"],
     )
 
-    # NOTE: Use the jazzy branch.
+    # NOTE: Use the lyrical branch.
     http_archive(
         name = "ros2_rcl_logging_syslog",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcl_logging_syslog.BUILD.bazel",
-        sha256 = "748a39586307ce375999f0b6a861e5b36c992d6aaeffa2641f2213171f37affb",
-        strip_prefix = "rcl_logging_syslog-1b8165639d34f6321f725de5b4d72effb2d15314",
-        urls = ["https://github.com/fujitatomoya/rcl_logging_syslog/archive/1b8165639d34f6321f725de5b4d72effb2d15314.zip"],
+        sha256 = "41a776ed413ae261a0fa0de9969d7fd335090a909a1d63de03a47b5d051c1075",
+        strip_prefix = "rcl_logging_syslog-de09bdb0b8b6315aefad18688ee30c4ebaecb5d5",
+        urls = ["https://github.com/fujitatomoya/rcl_logging_syslog/archive/de09bdb0b8b6315aefad18688ee30c4ebaecb5d5.zip"],
     )
 
     http_archive(
