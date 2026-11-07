@@ -39,12 +39,42 @@ def ros2_repositories():
         urls = ["https://github.com/swri-robotics/gps_umd/archive/fc782811804fafb12ee479a48a2aa2e9ee942e2d.tar.gz"],
     )
 
+    # NOTE: Since Lyrical, foxglove_bridge is released from the foxglove-sdk
+    # repository (the ROS 2 bridge in ros-foxglove-bridge is discontinued).
     http_archive(
         name = "foxglove_bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
-        sha256 = "9548f6a53794cfcd6dcae570e6e82aa2c7670d177269ecf612838655d7ba7dcc",
-        strip_prefix = "ros-foxglove-bridge-0.7.9",
-        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.9.tar.gz"],
+        sha256 = "c3fe5eb142f79cc5c3ed693baeb3f05dd53673ddc1f7eb61967e1974a6201d43",
+        strip_prefix = "foxglove-sdk-ros-v3.6.3/ros/src/foxglove_bridge",
+        urls = ["https://github.com/foxglove/foxglove-sdk/archive/refs/tags/ros-v3.6.3.tar.gz"],
+    )
+
+    # Prebuilt Foxglove (C/C++) SDK used by foxglove_bridge.
+    # Version and hashes copied from
+    # https://github.com/foxglove/foxglove-sdk/blob/ros-v3.6.3/ros/src/foxglove_bridge/CMakeLists.txt
+    http_archive(
+        name = "foxglove_sdk_x86_64",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_sdk.BUILD.bazel",
+        sha256 = "71bf8ded6907f2abb528b7844d9d441d82b93e0679c88724fc1144e6567be2d9",
+        strip_prefix = "foxglove",
+        urls = ["https://github.com/foxglove/foxglove-sdk/releases/download/sdk%2Fv0.30.2/foxglove-v0.30.2-cpp-x86_64-unknown-linux-gnu.zip"],
+    )
+
+    http_archive(
+        name = "foxglove_sdk_aarch64",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_sdk.BUILD.bazel",
+        sha256 = "9e388b0374ef2c3aa152bcfd1d7f4a8105283abd39cb5ea4ae74619bcfeb7fd7",
+        strip_prefix = "foxglove",
+        urls = ["https://github.com/foxglove/foxglove-sdk/releases/download/sdk%2Fv0.30.2/foxglove-v0.30.2-cpp-aarch64-unknown-linux-gnu.zip"],
+    )
+
+    # Version from the Lyrical rosdistro.
+    http_archive(
+        name = "rosx_introspection",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rosx_introspection.BUILD.bazel",
+        sha256 = "00d0d7a6e5ed5e93a8cff84befb48c1c5b0adfa3da42b27237e18ce994ca7793",
+        strip_prefix = "rosx_introspection-2.3.0",
+        urls = ["https://github.com/facontidavide/rosx_introspection/archive/refs/tags/2.3.0.tar.gz"],
     )
 
     http_archive(

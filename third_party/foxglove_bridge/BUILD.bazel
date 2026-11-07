@@ -37,20 +37,26 @@ py_library(
     visibility = ["//visibility:public"],
 )
 
+# Upstream smoke tests (foxglove-sdk ros/src/foxglove_bridge/tests).
 ros2_cpp_test(
     name = "tests",
-    size = "small",
-    srcs = ["foxglove_bridge_tests.cc"],
-    env = {"ROS_DISTRO": "jazzy"},
+    size = "medium",
+    srcs = ["@foxglove_bridge//:tests/smoke_test.cpp"],
+    env = {"ROS_DISTRO": "lyrical"},
     flaky = True,
     idl_deps = [
-        "@ros2_rcl_interfaces//:rcl_interfaces",
         "@ros2_common_interfaces//:std_msgs",
+        "@ros2_common_interfaces//:std_srvs",
+        "@ros2_rcl_interfaces//:rcl_interfaces",
+        "@ros2_rcl_interfaces//:type_description_interfaces",
     ],
+    local_defines = ["ASIO_STANDALONE"],
     tags = ["cpu:2"],
     deps = [
         "@foxglove_bridge//:foxglove_bridge_component",
+        "@foxglove_bridge//:test_client",
         "@googletest//:gtest",
         "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_common_interfaces//:cpp_std_srvs",
     ],
 )
