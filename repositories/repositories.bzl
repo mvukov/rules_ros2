@@ -106,12 +106,14 @@ def ros2_repositories():
         urls = ["https://github.com/ros/diagnostics/archive/refs/tags/4.4.7.tar.gz"],
     )
 
+    # NOTE: Same commit as console_bridge_vendor on the lyrical branch,
+    # see https://github.com/ros2/console_bridge_vendor/blob/lyrical/CMakeLists.txt.
     http_archive(
         name = "console_bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:console_bridge.BUILD.bazel",
-        sha256 = "303a619c01a9e14a3c82eb9762b8a428ef5311a6d46353872ab9a904358be4a4",
-        strip_prefix = "console_bridge-1.0.2",
-        urls = ["https://github.com/ros/console_bridge/archive/1.0.2.tar.gz"],
+        sha256 = "1a662b9f197349cc0e0ec8cd4997cfa2a2d5b2743fc570272644c377e9b8c2a9",
+        strip_prefix = "console_bridge-81ec67f6daf3cd19ef506e00f02efb1645597b9c",
+        urls = ["https://github.com/ros/console_bridge/archive/81ec67f6daf3cd19ef506e00f02efb1645597b9c.tar.gz"],
     )
 
     # NOTE: Keep in sync with rosbag2 mcap_vendor/CMakeLists.txt.
