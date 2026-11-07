@@ -155,7 +155,21 @@ Known limitations / follow-ups:
 
 - Not built: image_transport_py, rosidl_buffer_backend{,\_registry} (only used by Fast-DDS/Zenoh buffer backends). rcl_logging_implementation (runtime-selected logging) is intentionally not built; the build-time logging select is kept.
 - foxglove_bridge is built with REMOTE_ACCESS OFF (static prebuilt Foxglove C SDK 0.30.2); remote access could become a build flag later.
-- orocos_kdl is now pinned manually (orocos_kdl_vendor is gone in Lyrical); rosdistro lyrical has orocos_kdl_vendor 0.8.0 if the pin should be re-derived.
+- orocos_kdl: our pin is the same commit as orocos_kdl_vendor 0.8.0 (Lyrical rosdistro); the vendor package is only missing from the Lyrical ros2.repos.
 - Version-dependent values to keep in sync on future bumps: cdds*version.hpp (rmw_cyclonedds.BUILD.bazel), urdfdom_compatibility.h (urdf.BUILD.bazel), RESOURCE_RETRIEVER_VERSION*\* (foxglove_bridge.BUILD.bazel), ament_version_header() versions (ament_index, rclcpp), ros_distro cfgs (rosidl_runtime_rs, ros2_rust, rust_interfaces.bzl).
 - ASan reports a pre-existing ODR violation: librmw_cyclonedds.so statically embeds rcutils (and others) next to the shared copies in fastbuild tests.
 - Scratchpad paths mentioned above (/tmp/claude-1000/...) are session-local and may no longer exist.
+
+## Manual pins audit (2026-11-07, after the user asked about diagnostics/console_bridge/mcap)
+
+Pins outside ros2.repos were initially only checked for "still builds". Audited against what Lyrical ships:
+| Pin | Before | After | Reference | Commit |
+|---|---|---|---|---|
+| mcap | cpp v1.4.1 | cpp v2.1.3 | rosbag2 0.33 mcap_vendor/CMakeLists.txt | cf2b8a4 |
+| diagnostics | 4.5.7 (Rolling line!) | 4.4.7 | rosdistro lyrical; minor tracks distro (Jazzy 4.2, Kilted 4.3, Lyrical 4.4, Rolling 4.5) | 487e269 |
+| console_bridge | 1.0.2 | 81ec67f (1.0.2 + 6 CMake/CI-only commits) | console_bridge_vendor lyrical branch | 4d5c0ca |
+| gps_umd | ros2-devel commit (pkg 1.0.4) | 3.1.1 | rosdistro lyrical (adds RTK status constants) | e442e1e |
+| rcl_logging_syslog | lyrical branch head (pkg 0.1.2) | 0.2.0 | rosdistro lyrical (released from rolling); same sources | 9067344 |
+| xacro 2.1.1, osrf_pycommon 2.1.7, orocos_kdl ce4bcb6, rosx_introspection 2.3.0, rosidl_rust 0.5.0 | — | unchanged | already match Lyrical | — |
+LESSON: for pins outside ros2.repos, check the Lyrical rosdistro release (ros/rosdistro lyrical/distribution.yaml) or the corresponding \*\_vendor package, not branch names.
+Verification: rosbag2 tests (mcap_tests 8/8 reruns), diagnostics test, gps_msgs C++ compile test, C++ node test with syslog and noop logging backends; full `bazel test //...` rerun: 38/38 with gcc and clang.
