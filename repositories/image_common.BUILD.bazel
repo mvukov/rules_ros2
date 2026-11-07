@@ -37,12 +37,15 @@ ros2_cpp_library(
     srcs = [
         "image_transport/src/camera_common.cpp",
         "image_transport/src/publisher.cpp",
+        "image_transport/src/publisher_plugin.cpp",
         "image_transport/src/single_subscriber_publisher.cpp",
+        "image_transport/src/subscriber_plugin.cpp",
     ],
     hdrs = [
         "image_transport/include/image_transport/camera_common.hpp",
         "image_transport/include/image_transport/exception.hpp",
         "image_transport/include/image_transport/loader_fwds.hpp",
+        "image_transport/include/image_transport/node_interfaces.hpp",
         "image_transport/include/image_transport/publisher.hpp",
         "image_transport/include/image_transport/publisher_plugin.hpp",
         "image_transport/include/image_transport/simple_publisher_plugin.hpp",
@@ -51,6 +54,7 @@ ros2_cpp_library(
         "image_transport/include/image_transport/subscriber_plugin.hpp",
         "image_transport/include/image_transport/visibility_control.hpp",
     ],
+    implementation_deps = ["@tinyxml2"],
     includes = ["image_transport/include"],
     visibility = ["//visibility:public"],
     deps = [
