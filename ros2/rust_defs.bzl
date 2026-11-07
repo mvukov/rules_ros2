@@ -1,9 +1,9 @@
 """ Defines commonly used Rust macros.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_exec_launcher", "split_kwargs")
-load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_test")
-load("@rules_shell//shell:sh_test.bzl", "sh_test")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "split_kwargs")
+load("@com_github_mvukov_rules_ros2//ros2:launcher.bzl", "ros2_launcher")
+load("@rules_rust//rust:defs.bzl", "rust_test")
 
 def ros2_rust_test(name, **kwargs):
     """ Defines a ROS 2 Rust test.
@@ -27,21 +27,9 @@ def ros2_rust_test(name, **kwargs):
         **test_kwargs
     )
 
-    launcher = "{}_launch".format(name)
-    sh_exec_launcher(
-        name = launcher,
-        template = "@com_github_mvukov_rules_ros2//ros2:launch_exec.sh.tpl",
-        substitutions = {
-            "{entry_point}": "$(rootpath {})".format(target_impl),
-        },
-        tags = ["manual"],
-        data = [target_impl],
-        testonly = True,
-    )
-
-    sh_test(
+    ros2_launcher(
         name = name,
-        srcs = [launcher],
-        data = [target_impl],
+        entrypoint = target_impl,
+        is_test = True,
         **launcher_target_kwargs
     )

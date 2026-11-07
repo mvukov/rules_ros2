@@ -1,9 +1,9 @@
 """ Defines commonly used Python macros.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_exec_launcher", "split_kwargs")
-load("@com_github_mvukov_rules_ros2//third_party:symlink.bzl", "symlink")
-load("@rules_python//python:defs.bzl", "py_binary", "py_test")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "split_kwargs")
+load("@com_github_mvukov_rules_ros2//ros2:launcher.bzl", "ros2_launcher")
+load("@rules_python//python:defs.bzl", "py_binary")
 
 def _ros2_py_exec(target, name, srcs, main, set_up_ament, testonly, **kwargs):
     set_up_launcher = testonly or set_up_ament
@@ -22,34 +22,12 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, testonly, **kwargs):
         **binary_kwargs
     )
 
-    target_impl_symlink = target_impl + "_symlink"
-    symlink(
-        name = target_impl_symlink,
-        executable = target_impl,
-        testonly = testonly,
-        tags = ["manual"],
-    )
-
-    launcher = "{}_launch".format(name)
-    ament_setup_deps = [target_impl] if set_up_ament else None
-    py_exec_launcher(
-        launcher,
-        ament_setup_deps = ament_setup_deps,
-        template = "@com_github_mvukov_rules_ros2//ros2:launch_exec.py.tpl",
-        substitutions = {
-            "{entry_point}": "$(rootpath {})".format(target_impl_symlink),
-        },
-        tags = ["manual"],
-        data = [target_impl_symlink],
-        testonly = testonly,
-    )
-
-    py_target = py_test if testonly else py_binary
-    py_target(
+    ros2_launcher(
         name = name,
-        srcs = [launcher],
-        main = launcher + ".py",
-        data = [target_impl_symlink],
+        entrypoint = target_impl,
+        is_test = testonly,
+        ament_setup_deps = [target_impl] if set_up_ament else None,
+        testonly = testonly,
         **launcher_target_kwargs
     )
 
