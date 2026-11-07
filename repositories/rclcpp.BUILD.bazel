@@ -5,6 +5,10 @@ load(
     "@com_github_mvukov_rules_ros2//repositories:rclcpp_interfaces.bzl",
     "rclcpp_interfaces",
 )
+load(
+    "@com_github_mvukov_rules_ros2//repositories:version_header.bzl",
+    "ament_version_header",
+)
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
 load("@rules_python//python:defs.bzl", "py_binary")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
@@ -33,6 +37,14 @@ rclcpp_interfaces(
     traits_template = "rclcpp/resource/interface_traits.hpp.em",
 )
 
+# NOTE: Keep the version in sync with the rclcpp version.
+ament_version_header(
+    name = "rclcpp_version_h",
+    package_name = "rclcpp",
+    out = "rclcpp/include/rclcpp/version.h",
+    version = "32.0.2",
+)
+
 ros2_cpp_library(
     name = "rclcpp",
     srcs = glob(
@@ -43,7 +55,10 @@ ros2_cpp_library(
         # Not compiled upstream (stale: does not match the GenericService API).
         exclude = ["rclcpp/src/rclcpp/create_generic_service.cpp"],
     ),
-    hdrs = glob(["rclcpp/include/**/*.hpp"]) + [":rclcpp_interfaces"],
+    hdrs = glob(["rclcpp/include/**/*.hpp"]) + [
+        ":rclcpp_interfaces",
+        ":rclcpp_version_h",
+    ],
     copts = ["-w"],
     includes = [
         "include",
