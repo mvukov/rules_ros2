@@ -20,6 +20,13 @@ for a ROS 2 repo that's already mapped or add another ROS 2 repo,
 please update `repositories/ros2_repo_mappings.yaml`. If you changed the config
 yaml file, please rerun the resolver app as shown above.
 
+Repositories that are not part of `ros2.repos` (e.g. `osrf_pycommon`, which
+was dropped from `ros2.repos` in Lyrical) are pinned manually in
+`repositories/repositories.bzl`. When you move a repository from the mappings
+yaml file to a manual pin, first remove its entry from
+`repositories/ros2_repositories_impl.bzl` by hand: otherwise the module
+extension defines the repository twice and the resolver can't run.
+
 Naturally, what if you want to override an auto-generated definition?
 All definitions are exposed through the `non_module_deps` module extension, so
 in your root `MODULE.bazel` you can replace any of them with

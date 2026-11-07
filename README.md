@@ -7,7 +7,7 @@ This repo provides functionality to build and use ROS 2 with Bazel.
 ## Prerequisites
 
 You will need to install Bazel, see [here](https://docs.bazel.build/versions/master/install.html).
-Besides Bazel, you will need a C++ compiler and a Python 3 interpreter.
+Besides Bazel, you will need a C++ compiler with C++20 support and a Python 3 interpreter.
 
 And no, you don't have to install any ROS 2 packages via `apt`.
 
@@ -29,7 +29,7 @@ Available features:
   - `syslog`: `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=syslog`
   - `noop`: `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=noop`
 - Utilities:
-  - [`foxglove_bridge`](https://github.com/foxglove/ros-foxglove-bridge) for visualization and debugging
+  - [`foxglove_bridge`](https://github.com/foxglove/foxglove-sdk/tree/main/ros) for visualization and debugging
   - `ros2_bag` for handling rosbags
   - `ros2_lifecycle` for handling node lifecycle
   - `ros2_node` for handling nodes
@@ -40,7 +40,7 @@ Available features:
 
 Please take a look at the [examples](examples) folder to get started.
 
-ROS 2 packages are by default locked to versions from [release-jazzy-20250820](https://github.com/ros2/ros2/releases/tag/release-jazzy-20250820).
+ROS 2 packages are by default locked to versions from [release-lyrical-20260807](https://github.com/ros2/ros2/releases/tag/release-lyrical-20260807).
 
 ## Notes
 
