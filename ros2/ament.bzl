@@ -173,14 +173,19 @@ def _ros2_ament_setup_rule_impl(ctx):
         if package_name not in registered_packages:
             outputs.append(_write_package_xml(ctx, prefix_path, package_name))
             registered_packages.append(package_name)
-        dynamic_library = ctx.actions.declare_file(
-            paths.join(prefix_path, "lib", "lib" + package_name + "__" + "rosidl_typesupport_cpp" + ".so"),
-        )
-        ctx.actions.symlink(
-            output = dynamic_library,
-            target_file = plugin.dynamic_library,
-        )
-        outputs.append(dynamic_library)
+
+        # The plugin library contains both the rosidl_typesupport_cpp and
+        # the rosidl_typesupport_introspection_cpp type supports. Expose it
+        # under both names, as tools like generic service clients load both.
+        for typesupport in ["rosidl_typesupport_cpp", "rosidl_typesupport_introspection_cpp"]:
+            dynamic_library = ctx.actions.declare_file(
+                paths.join(prefix_path, "lib", "lib" + package_name + "__" + typesupport + ".so"),
+            )
+            ctx.actions.symlink(
+                output = dynamic_library,
+                target_file = plugin.dynamic_library,
+            )
+            outputs.append(dynamic_library)
 
     idls_from_deps = depset(
         transitive = [
