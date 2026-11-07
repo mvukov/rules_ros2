@@ -85,9 +85,9 @@ def ros2_repositories():
         urls = ["https://github.com/ros/xacro/archive/refs/tags/2.1.1.tar.gz"],
     )
 
-    # Version originally copied from https://github.com/ros2/orocos_kdl_vendor/blob/0.5.2/orocos_kdl_vendor/CMakeLists.txt#L19.
-    # NOTE: orocos_kdl_vendor is not part of Lyrical anymore (kdl_parser uses
-    # the system liborocos-kdl there), so this pin is maintained manually.
+    # Same commit as orocos_kdl_vendor 0.8.0 (Lyrical rosdistro), see
+    # https://github.com/ros2/orocos_kdl_vendor/blob/0.8.0/orocos_kdl_vendor/CMakeLists.txt#L19.
+    # NOTE: orocos_kdl_vendor is not part of the Lyrical ros2.repos.
     http_archive(
         name = "orocos_kdl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:orocos_kdl.BUILD.bazel",
@@ -125,13 +125,13 @@ def ros2_repositories():
         urls = ["https://github.com/foxglove/mcap/archive/refs/tags/releases/cpp/v2.1.3.tar.gz"],
     )
 
-    # NOTE: Use the lyrical branch.
+    # Version from the Lyrical rosdistro (released from the rolling branch).
     http_archive(
         name = "ros2_rcl_logging_syslog",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcl_logging_syslog.BUILD.bazel",
-        sha256 = "41a776ed413ae261a0fa0de9969d7fd335090a909a1d63de03a47b5d051c1075",
-        strip_prefix = "rcl_logging_syslog-de09bdb0b8b6315aefad18688ee30c4ebaecb5d5",
-        urls = ["https://github.com/fujitatomoya/rcl_logging_syslog/archive/de09bdb0b8b6315aefad18688ee30c4ebaecb5d5.zip"],
+        sha256 = "23cf6a710b950c8bf519c7aaecccb35994e45b99d4673543170433eb5a2063d9",
+        strip_prefix = "rcl_logging_syslog-0.2.0",
+        urls = ["https://github.com/fujitatomoya/rcl_logging_syslog/archive/refs/tags/0.2.0.tar.gz"],
     )
 
     http_archive(
