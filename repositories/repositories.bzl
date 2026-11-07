@@ -112,12 +112,13 @@ def ros2_repositories():
         urls = ["https://github.com/ros/console_bridge/archive/1.0.2.tar.gz"],
     )
 
+    # NOTE: Keep in sync with rosbag2 mcap_vendor/CMakeLists.txt.
     http_archive(
         name = "mcap",
         build_file = "@com_github_mvukov_rules_ros2//repositories:mcap.BUILD.bazel",
-        sha256 = "69bcd33e1590201ea180e9e6ba8a22f3e8e7e2283e9ebcbff6a2c7134d8341db",
-        strip_prefix = "mcap-releases-cpp-v1.4.1/cpp/mcap",
-        urls = ["https://github.com/foxglove/mcap/archive/refs/tags/releases/cpp/v1.4.1.tar.gz"],
+        sha256 = "181a7c52cc982444cdef533087b321538b025fcc5eec258e0489d68b9ce53ded",
+        strip_prefix = "mcap-releases-cpp-v2.1.3/cpp/mcap",
+        urls = ["https://github.com/foxglove/mcap/archive/refs/tags/releases/cpp/v2.1.3.tar.gz"],
     )
 
     # NOTE: Use the lyrical branch.
