@@ -144,6 +144,7 @@ def _rust_generator_aspect_impl(target, ctx):
     for ext in ["action", "msg", "srv"]:
         if any([f.extension == ext for f in srcs]):
             extra_generated_outputs.append("rust/src/{}.rs".format(ext))
+            extra_generated_outputs.append("rust/src/{}/rmw.rs".format(ext))
 
     interface_outputs, _ = run_generator(
         ctx,
