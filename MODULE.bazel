@@ -107,6 +107,12 @@ crate.spec(
     package = "libloading",
     version = "0.8",
 )
+
+# Not used by rclrs, used for testing rosidl_runtime_rs.
+crate.spec(
+    package = "quickcheck",
+    version = "1",
+)
 crate.spec(
     features = ["derive"],
     package = "serde",

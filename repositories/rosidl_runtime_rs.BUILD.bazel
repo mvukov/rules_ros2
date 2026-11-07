@@ -1,16 +1,47 @@
 """ Builds rosidl_runtime_rs.
 """
 
-load("@rules_rust//rust:defs.bzl", "rust_library")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+
+# NOTE: Bazel doesn't run build.rs, which derives this cfg from ROS_DISTRO.
+# It selects the C struct layout of sequences (Lyrical added buffer flags).
+_RUSTC_FLAGS = ["--cfg=ros_distro=\"lyrical\""]
 
 rust_library(
     name = "rosidl_runtime_rs",
     srcs = glob(["rosidl_runtime_rs/src/**/*.rs"]),
     crate_features = ["serde"],
     edition = "2021",
-    rustc_flags = ["--cfg=ros_distro=\"jazzy\""],
+    rustc_flags = _RUSTC_FLAGS,
     visibility = ["//visibility:public"],
     deps = [
         "@rules_ros2_crate_index//:serde",
+    ],
+)
+
+# Reports the layout of the C sequence structs, see build.rs (abi_check).
+cc_library(
+    name = "sequence_abi_probe",
+    testonly = True,
+    srcs = ["rosidl_runtime_rs/src/sequence_abi.c"],
+    deps = [
+        "@ros2_rcl_interfaces//:c_builtin_interfaces",
+        "@ros2_rosidl//:rosidl_runtime_c",
+    ],
+)
+
+rust_test(
+    name = "rosidl_runtime_rs_tests",
+    size = "small",
+    crate = ":rosidl_runtime_rs",
+    crate_features = ["serde"],
+    rustc_flags = _RUSTC_FLAGS + ["--cfg=has_c_abi_probe"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":sequence_abi_probe",
+        "@ros2_rosidl//:rosidl_runtime_c",
+        "@rules_ros2_crate_index//:quickcheck",
+        "@rules_ros2_crate_index//:serde_json",
     ],
 )
