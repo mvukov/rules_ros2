@@ -96,12 +96,14 @@ def ros2_repositories():
         urls = ["https://github.com/orocos/orocos_kinematics_dynamics/archive/ce4bcb65a050615b6d7f21bc60fbb2656515791b.tar.gz"],
     )
 
+    # NOTE: The minor version tracks the ROS distro (4.4.x is Lyrical),
+    # see https://github.com/ros/rosdistro/blob/master/lyrical/distribution.yaml.
     http_archive(
         name = "ros2_diagnostics",
         build_file = "@com_github_mvukov_rules_ros2//repositories:diagnostics.BUILD.bazel",
-        sha256 = "bf275beae52d3f75e7a8cb7568723651fc8ab2e6e247e261052107643a71228d",
-        strip_prefix = "diagnostics-4.5.7",
-        urls = ["https://github.com/ros/diagnostics/archive/refs/tags/4.5.7.tar.gz"],
+        sha256 = "fbb737a5bf61a271c8a35a44142bedcd1be26abb17b649551fd8d76aa6bd15c8",
+        strip_prefix = "diagnostics-4.4.7",
+        urls = ["https://github.com/ros/diagnostics/archive/refs/tags/4.4.7.tar.gz"],
     )
 
     http_archive(
