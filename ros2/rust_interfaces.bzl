@@ -160,7 +160,7 @@ def _rust_generator_aspect_impl(target, ctx):
         extra_generated_outputs = extra_generated_outputs,
         mnemonic = "Ros2IdlGeneratorRust",
         progress_message = "Generating Rust IDL interfaces for %{label}",
-        generator_env = {"ROS_DISTRO": "jazzy"},
+        generator_env = {"ROS_DISTRO": "lyrical"},
     )
 
     # Ideally dep_variant_info could be a depset, and all dep propagation should

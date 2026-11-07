@@ -142,6 +142,7 @@ def ros2_repositories():
     # NOTE: rosidl_rust is part of the Lyrical ros2.repos (0.4.12), but is
     # intentionally kept as a manual pin such that all Rust-related deps
     # (ros2_rust, rosidl_runtime_rs, rosidl_rust) are updated together.
+    # 0.5.0 is the version from the Lyrical rosdistro.
     http_archive(
         name = "ros2_rosidl_rust",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_rust.BUILD.bazel",
