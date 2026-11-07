@@ -30,13 +30,13 @@ def ros2_repositories():
         url = "https://github.com/osrf/osrf_pycommon/archive/refs/tags/2.1.7.tar.gz",
     )
 
-    # ros2-devel branch
+    # Version from the Lyrical rosdistro.
     http_archive(
         name = "ros2_gps_umd",
         build_file = "@com_github_mvukov_rules_ros2//repositories:gps_umd.BUILD.bazel",
-        sha256 = "64a96f93053d0d59e8fcccceab5408a7d666dd813d4c12df139ef24d916f49ab",
-        strip_prefix = "gps_umd-fc782811804fafb12ee479a48a2aa2e9ee942e2d",
-        urls = ["https://github.com/swri-robotics/gps_umd/archive/fc782811804fafb12ee479a48a2aa2e9ee942e2d.tar.gz"],
+        sha256 = "fa5f550c141a1412b633c072b0b6ea352b977050383506e75dff50f9436ee9ec",
+        strip_prefix = "gps_umd-3.1.1",
+        urls = ["https://github.com/swri-robotics/gps_umd/archive/refs/tags/3.1.1.tar.gz"],
     )
 
     # NOTE: Since Lyrical, foxglove_bridge is released from the foxglove-sdk
