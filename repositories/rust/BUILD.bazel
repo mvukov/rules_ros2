@@ -16,3 +16,11 @@ toolchain(
     toolchain = "bindgen_toolchain_impl",
     toolchain_type = "@rules_rust_bindgen//:toolchain_type",
 )
+
+# Re-exported for downstream modules (e.g. the examples), which cannot use
+# @rules_ros2_crate_index directly.
+alias(
+    name = "signal-hook",
+    actual = "@rules_ros2_crate_index//:signal-hook",
+    visibility = ["//visibility:public"],
+)

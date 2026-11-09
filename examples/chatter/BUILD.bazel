@@ -39,8 +39,8 @@ rust_binary(
     srcs = ["talker.rs"],
     deps = [
         ":rust_std_msgs",
+        "@com_github_mvukov_rules_ros2//repositories/rust:signal-hook",
         "@ros2_rust//:rclrs",
-        "@rules_ros2_crate_index//:signal-hook",
     ],
 )
 
