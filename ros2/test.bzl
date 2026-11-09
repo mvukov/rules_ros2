@@ -1,9 +1,13 @@
 """ Defines ROS 2 testing functionality.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
-load("@rules_python//python:defs.bzl", "py_test")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "split_kwargs")
+load("@com_github_mvukov_rules_ros2//ros2:launcher.bzl", "ros2_launcher")
+load("@rules_python//python:defs.bzl", "py_binary")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
+
+_LAUNCH_TESTING_MAIN = "@com_github_mvukov_rules_ros2//ros2:ros2_launch_testing.py"
+_PYTEST_MAIN = "@com_github_mvukov_rules_ros2//ros2:pytest_wrapper.py"
 
 def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_deps = None, use_pytest = False, **kwargs):
     """ Defines a ROS 2 test.
@@ -11,6 +15,9 @@ def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_dep
     For lighter options, e.g. you don't need a launch file, please take a look at:
     * ros2_cpp_test in //ros2:cc_defs.bzl and
     * ros2_py_test in //ros2:py_defs.bzl
+
+    Defaults ROS_HOME and ROS_LOG_DIR to $TEST_UNDECLARED_OUTPUTS_DIR (if set,
+    otherwise to $TEST_TMPDIR, see https://bazel.build/reference/test-encyclopedia#initial-conditions)
 
     Please make sure that --sandbox_default_allow_network=false is set in .bazelrc.
     This ensures proper network isolation.
@@ -29,60 +36,44 @@ def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_dep
     data = data or []
     deps = deps or []
     if use_pytest:
-        _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs)
-    else:
-        _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs)
-
-def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs):
-    launcher = "{}_launch".format(name)
-    launch_script = py_launcher(
-        launcher,
-        deps = nodes + deps,
-        idl_deps = idl_deps,
-        template = "@com_github_mvukov_rules_ros2//ros2:test.py.tpl",
-        substitutions = {
-            "{launch_file}": "$(rootpath {})".format(launch_file),
-        },
-        data = [launch_file],
-        testonly = True,
-        tags = ["manual"],
-    )
-
-    py_test(
-        name = name,
-        srcs = [launcher],
-        data = nodes + [launch_file] + data,
-        main = launch_script,
-        deps = [
-            "@ros2_launch//:launch_testing",
-            "@ros2_launch_ros//:launch_testing_ros",
-        ] + deps,
-        **kwargs
-    )
-
-def _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs):
-    launcher = "{}_launch".format(name)
-    launch_script = py_launcher(
-        launcher,
-        deps = nodes + deps,
-        idl_deps = idl_deps,
-        template = "@com_github_mvukov_rules_ros2//ros2:pytest_wrapper.py.tpl",
-        substitutions = {},
-        testonly = True,
-        tags = ["manual"],
-    )
-
-    py_test(
-        name = name,
-        srcs = [launcher, launch_file],
-        main = launch_script,
-        data = nodes + data,
-        args = kwargs.pop("args", []) + ["$(rootpath :%s)" % launch_file],
-        deps = [
+        main = _PYTEST_MAIN
+        srcs = [main, launch_file]
+        impl_data = nodes + data
+        impl_deps = [
             "@ros2_launch//:launch_pytest",
             requirement("coverage"),
             requirement("pytest"),
             requirement("pytest-cov"),
-        ] + deps,
-        **kwargs
+        ]
+    else:
+        main = _LAUNCH_TESTING_MAIN
+        srcs = [main]
+        impl_data = nodes + [launch_file] + data
+        impl_deps = [
+            "@ros2_launch//:launch_testing",
+            "@ros2_launch_ros//:launch_testing_ros",
+        ]
+
+    launcher_target_kwargs, test_kwargs = split_kwargs(**kwargs)
+    target_impl = name + "_impl"
+    py_binary(
+        name = target_impl,
+        srcs = srcs,
+        main = main,
+        data = impl_data,
+        tags = ["manual"],
+        testonly = True,
+        deps = impl_deps + deps,
+        **test_kwargs
+    )
+
+    # The launch file is passed as the first argument to the test driver.
+    ros2_launcher(
+        name = name,
+        entrypoint = target_impl,
+        is_test = True,
+        ament_setup_deps = nodes + deps,
+        idl_deps = idl_deps,
+        runfile_args = [launch_file],
+        **launcher_target_kwargs
     )

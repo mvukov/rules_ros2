@@ -1,7 +1,6 @@
-import os
+"""Entry point of `ros2_bag` targets."""
 import sys
 
-import ros2.ros2_cmd
 import ros2bag.verb.convert
 import ros2bag.verb.info
 import ros2bag.verb.list
@@ -10,7 +9,7 @@ import ros2bag.verb.record
 import ros2bag.verb.reindex
 import ros2cli.cli
 
-{ament_setup}
+import ros2.ros2_cmd
 
 COMMAND_EXTENSIONS = {
     'convert': ros2bag.verb.convert.ConvertVerb(),

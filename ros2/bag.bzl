@@ -1,9 +1,11 @@
 """ Implements a macro for setting up a ROS 2 bag app.
 """
 
-load("@bazel_skylib//lib:paths.bzl", "paths")
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "split_kwargs")
+load("@com_github_mvukov_rules_ros2//ros2:launcher.bzl", "ros2_launcher")
 load("@rules_python//python:defs.bzl", "py_binary")
+
+_BAG_MAIN = "@com_github_mvukov_rules_ros2//ros2:ros2_bag.py"
 
 def ros2_bag(name, idl_deps = None, **kwargs):
     """ Defines a binary target for a bag app.
@@ -13,24 +15,29 @@ def ros2_bag(name, idl_deps = None, **kwargs):
         idl_deps: Additional IDL deps that are used as runtime type-support plugins.
         **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
     """
-    launcher = "{}_launch".format(name)
-    launch_script = py_launcher(
-        launcher,
-        deps = ["@ros2_rosbag2//:ros2bag"],
-        idl_deps = idl_deps,
-        template = "@com_github_mvukov_rules_ros2//ros2:bag.py.tpl",
-        substitutions = {},
-        tags = ["manual"],
-    )
+    launcher_target_kwargs, binary_kwargs = split_kwargs(**kwargs)
+    testonly = binary_kwargs.get("testonly", False)
+    deps = binary_kwargs.pop("deps", [])
 
-    deps = kwargs.pop("deps", [])
+    target_impl = name + "_impl"
     py_binary(
-        name = name,
-        srcs = [launcher],
-        main = launch_script,
+        name = target_impl,
+        srcs = [_BAG_MAIN],
+        main = _BAG_MAIN,
+        tags = ["manual"],
         deps = [
             "@com_github_mvukov_rules_ros2//ros2:ros2_cmd",
             "@ros2_rosbag2//:ros2bag",
         ] + deps,
-        **kwargs
+        **binary_kwargs
+    )
+
+    ros2_launcher(
+        name = name,
+        entrypoint = target_impl,
+        is_test = False,
+        ament_setup_deps = [target_impl],
+        idl_deps = idl_deps,
+        testonly = testonly,
+        **launcher_target_kwargs
     )
