@@ -1,11 +1,11 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["config:base"],
+  extends: ["config:recommended"],
   dependencyDashboard: true,
   bazel: {
     ignorePaths: ["repositories/ros2_repositories_impl.bzl"],
   },
-  // config:base ignores **/examples/** by default, and we want examples/MODULE.bazel to be updated.
+  // config:recommended ignores **/examples/** by default, and we want examples/MODULE.bazel to be updated.
   "bazel-module": {
     ignorePaths: [],
   },
@@ -18,22 +18,27 @@
   packageRules: [
     {
       matchManagers: ["bazel"],
-      matchPackagePatterns: ["*"],
+      matchPackageNames: ["*"],
       enabled: false,
     },
     {
       matchManagers: ["bazel"],
+      matchDepNames: ["foxglove_bridge"],
+      enabled: true,
+    },
+    {
+      matchManagers: ["bazel"],
       matchDepNames: [
-        "foxglove_bridge",
         "ros2_rust",
         "ros2_rosidl_runtime_rs",
         "ros2_rosidl_rust",
       ],
       enabled: true,
+      groupName: "ros2-rust-deps",
     },
     {
       matchManagers: ["pre-commit"],
-      matchPackagePatterns: ["*"],
+      matchPackageNames: ["*"],
       groupName: "pre-commit-deps",
     },
   ],
