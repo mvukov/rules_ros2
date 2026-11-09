@@ -71,7 +71,7 @@ rust.toolchain(
     edition = "2021",
 )
 
-crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
+crate = use_extension("@rules_rust//crate_universe:extensions.bzl", "crate")
 crate.spec(
     package = "ament_rs",
     version = "0.3",
@@ -144,6 +144,8 @@ crate.spec(
 crate.from_cargo(
     name = "rules_ros2_crate_index",
     cargo_lockfile = "//repositories/rust:Cargo.lock",
+    # Required by rules_rust for crate indexes of non-root modules.
+    lockfile = "//repositories/rust:Cargo.Bazel.lock",
 )
 use_repo(crate, "rules_ros2_crate_index")
 

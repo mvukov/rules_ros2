@@ -7,8 +7,10 @@ local_path_override(
 )
 
 bazel_dep(name = "rules_cc", version = "0.2.28")
-bazel_dep(name = "rules_python", version = "1.9.1")
+bazel_dep(name = "rules_python", version = "2.0.2")
 bazel_dep(name = "rules_rust", version = "0.75.0")
+
+bazel_dep(name = "googletest", version = "1.18.0.bcr.1", dev_dependency = True)
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(
@@ -30,6 +32,7 @@ use_repo(
     rules_ros2_non_module_deps,
     # Check the rules_ros2 root MODULE.bazel for a full list of available non-module repos
     # Required for bazel test:
+    "iceoryx",
     "ros2_common_interfaces",
     "ros2_geometry2",
     "ros2_launch",
@@ -39,6 +42,7 @@ use_repo(
     "ros2_rclcpp",
     "ros2_rcutils",
     "ros2_robot_state_publisher",
+    "ros2_rosbag2",
     "ros2_rust",
     "ros2_unique_identifier_msgs",
     "ros2cli",

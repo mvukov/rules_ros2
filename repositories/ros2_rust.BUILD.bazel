@@ -65,10 +65,10 @@ rust_library(
         "rclrs/src/rcl_bindings_generated.rs",
     ],
     edition = "2021",
+    link_deps = [":rcl_wrapper"],
     rustc_flags = ["--cfg=ros_distro=\"jazzy\""],
     visibility = ["//visibility:public"],
     deps = [
-        ":rcl_wrapper",
         ":rust_interfaces",
         "@ros2_rosidl_runtime_rs//:rosidl_runtime_rs",
         "@rules_ros2_crate_index//:ament_rs",
