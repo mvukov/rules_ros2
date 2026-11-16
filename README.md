@@ -40,7 +40,7 @@ Available features:
 
 Please take a look at the [examples](examples) folder to get started.
 
-ROS 2 packages are by default locked to versions from [release-jazzy-20250820](https://github.com/ros2/ros2/releases/tag/release-jazzy-20250820).
+ROS 2 packages are by default locked to versions from [release-jazzy-20260618](https://github.com/ros2/ros2/releases/tag/release-jazzy-20260618).
 
 ## Notes
 
