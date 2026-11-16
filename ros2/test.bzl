@@ -1,8 +1,8 @@
 """ Defines ROS 2 testing functionality.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_launcher")
-load("@rules_python//python:defs.bzl", "py_test")
+load("@com_github_mvukov_rules_ros2//ros2:py_defs.bzl", "ros2_py_test")
+load("@com_github_mvukov_rules_ros2//third_party:expand_template.bzl", "expand_template")
 load("@rules_ros2_pip_deps//:requirements.bzl", "requirement")
 
 def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_deps = None, use_pytest = False, **kwargs):
@@ -13,7 +13,12 @@ def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_dep
     * ros2_py_test in //ros2:py_defs.bzl
 
     Please make sure that --sandbox_default_allow_network=false is set in .bazelrc.
-    This ensures proper network isolation.
+    On Linux, this runs each sandboxed test in its own network namespace, which isolates
+    its DDS traffic from other tests. On top of that, the test is run via
+    //ros2/domain_coordinator:run_test_isolated, which gives it a ROS_DOMAIN_ID unique among
+    tests running at the same time; this matters if the network sandbox is not in effect
+    (e.g. with the local strategy or the requires-network tag). A non-empty ROS_DOMAIN_ID,
+    e.g. set via --test_env, is respected; setting DISABLE_ROS_ISOLATION disables this.
 
     Args:
         name: A unique target name.
@@ -23,7 +28,8 @@ def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_dep
         data: Additional data that can be used by the launch file.
         idl_deps: Additional IDL deps that are used as runtime plugins.
         use_pytest: If true, use pytest as the test driver.
-        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
+        **kwargs: Forwarded to the underlying ros2_py_test; see
+            https://bazel.build/reference/be/common-definitions#common-attributes-tests.
     """
     nodes = nodes or []
     data = data or []
@@ -34,12 +40,12 @@ def ros2_test(name, launch_file, nodes = None, deps = None, data = None, idl_dep
         _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs)
 
 def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs):
-    launcher = "{}_launch".format(name)
-    launch_script = py_launcher(
-        launcher,
-        deps = nodes + deps,
-        idl_deps = idl_deps,
+    launch_py = "{}_launch_py".format(name)
+    launch_script = launch_py + ".py"
+    expand_template(
+        name = launch_py,
         template = "@com_github_mvukov_rules_ros2//ros2:test.py.tpl",
+        out = launch_script,
         substitutions = {
             "{launch_file}": "$(rootpath {})".format(launch_file),
         },
@@ -48,11 +54,12 @@ def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **
         tags = ["manual"],
     )
 
-    py_test(
+    ros2_py_test(
         name = name,
-        srcs = [launcher],
-        data = nodes + [launch_file] + data,
+        srcs = [launch_py],
         main = launch_script,
+        idl_deps = idl_deps,
+        data = nodes + [launch_file] + data,
         deps = [
             "@ros2_launch//:launch_testing",
             "@ros2_launch_ros//:launch_testing_ros",
@@ -61,23 +68,26 @@ def _ros2_launch_testing_test(name, nodes, launch_file, deps, data, idl_deps, **
     )
 
 def _ros2_launch_pytest_test(name, nodes, launch_file, deps, data, idl_deps, **kwargs):
-    launcher = "{}_launch".format(name)
-    launch_script = py_launcher(
-        launcher,
-        deps = nodes + deps,
-        idl_deps = idl_deps,
+    launch_py = "{}_launch_py".format(name)
+    launch_script = launch_py + ".py"
+    expand_template(
+        name = launch_py,
         template = "@com_github_mvukov_rules_ros2//ros2:pytest_wrapper.py.tpl",
-        substitutions = {},
+        out = launch_script,
+        substitutions = {
+            "{launch_file}": "$(rootpath {})".format(launch_file),
+        },
+        data = [launch_file],
         testonly = True,
         tags = ["manual"],
     )
 
-    py_test(
+    ros2_py_test(
         name = name,
-        srcs = [launcher, launch_file],
+        srcs = [launch_py, launch_file],
         main = launch_script,
+        idl_deps = idl_deps,
         data = nodes + data,
-        args = kwargs.pop("args", []) + ["$(rootpath :%s)" % launch_file],
         deps = [
             "@ros2_launch//:launch_pytest",
             requirement("coverage"),

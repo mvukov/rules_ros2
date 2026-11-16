@@ -24,13 +24,13 @@ constexpr uint8_t HELLO_WORLD_BINARY[] = {0,   1,   0,   0,   12,  0,   0,
 constexpr auto ONE_SECOND = std::chrono::seconds(1);
 constexpr auto DEFAULT_TIMEOUT = std::chrono::seconds(10);
 
-TEST(SmokeTest, testConnection) {
+TEST(TestFoxgloveBridge, testConnection) {
   foxglove::Client<websocketpp::config::asio_client> wsClient;
   EXPECT_EQ(std::future_status::ready,
             wsClient.connect(URI).wait_for(DEFAULT_TIMEOUT));
 }
 
-TEST(SmokeTest, testSubscription) {
+TEST(TestFoxgloveBridge, testSubscription) {
   // Publish a string message on a latched ros topic
   const std::string topic_name = "/pub_topic";
   std_msgs::msg::String rosMsg;
@@ -70,7 +70,7 @@ TEST(SmokeTest, testSubscription) {
   }
 }
 
-TEST(SmokeTest, testSubscriptionParallel) {
+TEST(TestFoxgloveBridge, testSubscriptionParallel) {
   // Publish a string message on a latched ros topic
   const std::string topic_name = "/pub_topic";
   std_msgs::msg::String rosMsg;
@@ -119,7 +119,7 @@ TEST(SmokeTest, testSubscriptionParallel) {
   }
 }
 
-TEST(SmokeTest, testPublishing) {
+TEST(TestFoxgloveBridge, testPublishing) {
   foxglove::ClientAdvertisement advertisement;
   advertisement.channelId = 1;
   advertisement.topic = "/foo";
