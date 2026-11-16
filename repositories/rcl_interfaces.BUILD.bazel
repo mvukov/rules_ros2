@@ -65,7 +65,10 @@ ros2_interface_library(
     name = "rosgraph_msgs",
     srcs = glob(["rosgraph_msgs/msg/*.msg"]),
     visibility = ["//visibility:public"],
-    deps = [":builtin_interfaces"],
+    deps = [
+        ":builtin_interfaces",
+        ":rcl_interfaces",
+    ],
 )
 
 ros2_interface_library(
