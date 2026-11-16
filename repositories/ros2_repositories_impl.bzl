@@ -3,14 +3,6 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def ros2_repositories_impl():
     http_archive(
-        name = "ros2_ament_cmake_ros",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:ament_cmake_ros.BUILD.bazel",
-        sha256 = "cbc0ea301b18ddbab676c6cfb3e93d9099576d8abb47995b04239f7d8b880e25",
-        strip_prefix = "ament_cmake_ros-0.12.0",
-        url = "https://github.com/ros2/ament_cmake_ros/archive/refs/tags/0.12.0.tar.gz",
-    )
-
-    http_archive(
         name = "ros2_ament_index",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ament_index.BUILD.bazel",
         sha256 = "ddc8a03a9bd2a7ae3cc8a69ceaca77762d8524addc2d7260a99261ced410f29b",
