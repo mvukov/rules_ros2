@@ -132,7 +132,9 @@ int SpawnAndWait(char** argv) {
   return EXIT_FAILURE;
 }
 
-int Run(int argc, char** argv) {
+}  // namespace
+
+int main(int argc, char** argv) {
   if (argc < 2) {
     std::fprintf(stderr,
                  "There should be at least one argument given to "
@@ -162,7 +164,3 @@ int Run(int argc, char** argv) {
   }
   return SpawnAndWait(command);
 }
-
-}  // namespace
-
-int main(int argc, char** argv) { return Run(argc, argv); }
