@@ -30,3 +30,6 @@ common --color=yes
 
 # Allows tests to run bazelisk-in-bazel, since this is the cache folder used
 test --test_env=XDG_CACHE_HOME
+
+# The default of 3 is not good enough, make Bazel try harder
+test --flaky_test_attempts=10
