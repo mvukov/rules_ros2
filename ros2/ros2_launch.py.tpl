@@ -1,10 +1,7 @@
-import os
 import sys
 
 from ros2cli import cli
 from ros2launch.command import launch
-
-{ament_setup}
 
 LAUNCH_FILE = '{launch_file}'
 

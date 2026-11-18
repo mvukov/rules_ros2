@@ -1,11 +1,13 @@
 """ Defines commonly used Python macros.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "py_exec_launcher", "split_kwargs")
+load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_exec_launcher", "split_kwargs")
 load("@com_github_mvukov_rules_ros2//third_party:symlink.bzl", "symlink")
-load("@rules_python//python:defs.bzl", "py_binary", "py_test")
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
 
-def _ros2_py_exec(target, name, srcs, main, set_up_ament, testonly, **kwargs):
+def _ros2_py_exec(target, name, srcs, main, set_up_ament, testonly, idl_deps, **kwargs):
     set_up_launcher = testonly or set_up_ament
     if set_up_launcher == False:
         target(name = name, srcs = srcs, main = main, **kwargs)
@@ -32,28 +34,29 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, testonly, **kwargs):
 
     launcher = "{}_launch".format(name)
     ament_setup_deps = [target_impl] if set_up_ament else None
-    py_exec_launcher(
+    sh_exec_launcher(
         launcher,
+        is_test = testonly,
         ament_setup_deps = ament_setup_deps,
-        template = "@com_github_mvukov_rules_ros2//ros2:launch_exec.py.tpl",
+        template = "@com_github_mvukov_rules_ros2//ros2:launch_exec.sh.tpl",
         substitutions = {
             "{entry_point}": "$(rootpath {})".format(target_impl_symlink),
         },
         tags = ["manual"],
         data = [target_impl_symlink],
+        idl_deps = idl_deps,
         testonly = testonly,
     )
 
-    py_target = py_test if testonly else py_binary
-    py_target(
+    sh_target = sh_test if testonly else sh_binary
+    sh_target(
         name = name,
         srcs = [launcher],
-        main = launcher + ".py",
         data = [target_impl_symlink],
         **launcher_target_kwargs
     )
 
-def ros2_py_binary(name, srcs, main, set_up_ament = False, **kwargs):
+def ros2_py_binary(name, srcs, main, set_up_ament = False, idl_deps = None, **kwargs):
     """ Defines a ROS 2 Python binary.
 
     Args:
@@ -61,7 +64,9 @@ def ros2_py_binary(name, srcs, main, set_up_ament = False, **kwargs):
         srcs: List of source files.
         main: Source file to use as entrypoint.
         set_up_ament: If true, sets up ament file tree for the binary target.
-        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-binaries
+        idl_deps: Additional IDL deps that are used as runtime plugins.
+        **kwargs: Forwarded to the underlying py_binary; see
+            https://bazel.build/reference/be/common-definitions#common-attributes-binaries.
     """
     _ros2_py_exec(
         py_binary,
@@ -70,24 +75,32 @@ def ros2_py_binary(name, srcs, main, set_up_ament = False, **kwargs):
         main,
         set_up_ament,
         testonly = False,
+        idl_deps = idl_deps,
         **kwargs
     )
 
-def ros2_py_test(name, srcs, main, set_up_ament = True, **kwargs):
+def ros2_py_test(name, srcs, main, set_up_ament = True, idl_deps = None, **kwargs):
     """ Defines a ROS 2 Python test.
 
     Defaults ROS_HOME and ROS_LOG_DIR to $TEST_UNDECLARED_OUTPUTS_DIR (if set,
     otherwise to $TEST_TMPDIR, see https://bazel.build/reference/test-encyclopedia#initial-conditions)
 
     Please make sure that --sandbox_default_allow_network=false is set in .bazelrc.
-    This ensures proper network isolation.
+    On Linux, this runs each sandboxed test in its own network namespace, which isolates
+    its DDS traffic from other tests. On top of that, the test is run via
+    //ros2/domain_coordinator:run_test_isolated, which gives it a ROS_DOMAIN_ID unique among
+    tests running at the same time; this matters if the network sandbox is not in effect
+    (e.g. with the local strategy or the requires-network tag). A non-empty ROS_DOMAIN_ID,
+    e.g. set via --test_env, is respected; setting DISABLE_ROS_ISOLATION disables this.
 
     Args:
         name: A unique target name.
         srcs: List of source files.
         main: Source file to use as entrypoint.
         set_up_ament: If true, sets up ament file tree for the test target.
-        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
+        idl_deps: Additional IDL deps that are used as runtime plugins.
+        **kwargs: Forwarded to the underlying py_test; see
+            https://bazel.build/reference/be/common-definitions#common-attributes-tests.
     """
     _ros2_py_exec(
         py_binary,
@@ -96,10 +109,11 @@ def ros2_py_test(name, srcs, main, set_up_ament = True, **kwargs):
         main,
         set_up_ament,
         testonly = True,
+        idl_deps = idl_deps,
         **kwargs
     )
 
-def ros2_py_exec(name, srcs, main, rule_impl, set_up_ament, testonly, **kwargs):
+def ros2_py_exec(name, srcs, main, rule_impl, set_up_ament, testonly, idl_deps = None, **kwargs):
     """ Defines a ROS 2 Python target using a user-specified rule.
 
     Args:
@@ -112,7 +126,9 @@ def ros2_py_exec(name, srcs, main, rule_impl, set_up_ament, testonly, **kwargs):
             * Sets AMENT_PREFIX_PATH to point to a generated ament file tree
             * Defaults ROS_HOME and ROS_LOG_DIR to $TEST_UNDECLARED_OUTPUTS_DIR (if set,
               otherwise to $TEST_TMPDIR, see https://bazel.build/reference/test-encyclopedia#initial-conditions)
-        **kwargs: https://bazel.build/reference/be/common-definitions#common-attributes-tests
+        idl_deps: Additional IDL deps that are used as runtime plugins.
+        **kwargs: Forwarded to `rule_impl`; see
+            https://bazel.build/reference/be/common-definitions#common-attributes-tests.
     """
     _ros2_py_exec(
         target = rule_impl,
@@ -121,5 +137,6 @@ def ros2_py_exec(name, srcs, main, rule_impl, set_up_ament, testonly, **kwargs):
         main = main,
         set_up_ament = set_up_ament,
         testonly = testonly,
+        idl_deps = idl_deps,
         **kwargs
     )
