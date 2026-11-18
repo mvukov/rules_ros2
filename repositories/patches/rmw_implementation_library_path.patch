@@ -1,16 +1,17 @@
 diff --git a/rmw_implementation/src/functions.cpp b/rmw_implementation/src/functions.cpp
-index 892eb40..fb6e391 100644
+index 90cd853..11326e2 100644
 --- a/rmw_implementation/src/functions.cpp
 +++ b/rmw_implementation/src/functions.cpp
-@@ -20,7 +20,6 @@
+@@ -21,8 +21,6 @@
  #include <stdexcept>
  #include <string>
  
 -#include "ament_index_cpp/get_resources.hpp"
- 
+-
  #include "rcutils/allocator.h"
  #include "rcutils/format_string.h"
-@@ -82,48 +81,16 @@ load_library()
+ #include "rcutils/types/string_array.h"
+@@ -84,48 +82,16 @@ load_library()
    // 3. If that fails, try loading all other implementations available in turn
    //    until one succeeds or we run out of options.
  
@@ -44,8 +45,8 @@ index 892eb40..fb6e391 100644
 -  // OK, we failed to load the default RMW.  Fetch all of the ones we can
 -  // find and attempt to load them one-by-one.
 -  rmw_reset_error();
--  const std::map<std::string, std::string> packages_with_prefixes = ament_index_cpp::get_resources(
--    "rmw_typesupport");
+-  const std::map<std::string, std::filesystem::path> packages_with_prefixes =
+-    ament_index_cpp::get_resources_by_name("rmw_typesupport");
 -  for (const auto & package_prefix_pair : packages_with_prefixes) {
 -    if (package_prefix_pair.first != "rmw_implementation") {
 -      ret = attempt_to_load_one_rmw(package_prefix_pair.first);

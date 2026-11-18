@@ -1,4 +1,4 @@
-""" Builds foxglove_bridge.
+""" Builds foxglove_bridge (from the foxglove-sdk repository).
 """
 
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
@@ -8,46 +8,74 @@ load(
 )
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
-expand_template(
-    name = "version_cpp",
-    out = "foxglove_bridge/src/version.cpp",
-    substitutions = {
-        "@FOXGLOVE_BRIDGE_VERSION@": "N/A",
-        "@FOXGLOVE_BRIDGE_GIT_HASH@": "N/A",
-    },
-    template = "foxglove_bridge_base/src/version.cpp.in",
+alias(
+    name = "foxglove_sdk",
+    actual = select(
+        {
+            "@platforms//cpu:aarch64": "@foxglove_sdk_aarch64//:foxglove",
+            "@platforms//cpu:x86_64": "@foxglove_sdk_x86_64//:foxglove",
+        },
+        no_match_error = "foxglove_bridge supports only x86_64 and aarch64 Linux",
+    ),
 )
 
-cc_library(
-    name = "foxglove_bridge_base",
-    srcs = glob(["foxglove_bridge_base/src/**/*.cpp"]) + [":version_cpp"],
-    hdrs = glob(["foxglove_bridge_base/include/foxglove_bridge/**/*.hpp"]),
-    copts = ["-std=c++17"],
-    includes = ["foxglove_bridge_base/include"],
-    deps = [
-        "@boringssl//:ssl",
-        "@nlohmann_json//:json",
-        "@websocketpp",
-    ],
+expand_template(
+    name = "version_hpp",
+    out = "include/foxglove_bridge/version.hpp",
+    substitutions = {
+        "@FOXGLOVE_BRIDGE_VERSION@": "3.6.3",
+        "@FOXGLOVE_BRIDGE_GIT_HASH@": "N/A",
+    },
+    template = "include/foxglove_bridge/version.hpp.in",
 )
 
 ros2_cpp_library(
     name = "foxglove_bridge_component",
     srcs = [
-        "ros2_foxglove_bridge/src/generic_client.cpp",
-        "ros2_foxglove_bridge/src/message_definition_cache.cpp",
-        "ros2_foxglove_bridge/src/param_utils.cpp",
-        "ros2_foxglove_bridge/src/parameter_interface.cpp",
-        "ros2_foxglove_bridge/src/ros2_foxglove_bridge.cpp",
+        "src/generic_client.cpp",
+        "src/message_definition_cache.cpp",
+        "src/param_utils.cpp",
+        "src/parameter_interface.cpp",
+        "src/ros2_foxglove_bridge.cpp",
     ],
-    hdrs = glob(["ros2_foxglove_bridge/include/foxglove_bridge/*.hpp"]),
-    includes = ["ros2_foxglove_bridge/include"],
+    hdrs = glob(["include/foxglove_bridge/*.hpp"]) + [":version_hpp"],
+    includes = ["include"],
+    # NOTE: Keep in sync with the resource_retriever version.
+    local_defines = [
+        "RESOURCE_RETRIEVER_VERSION_MAJOR=3",
+        "RESOURCE_RETRIEVER_VERSION_MINOR=9",
+        "RESOURCE_RETRIEVER_VERSION_PATCH=3",
+    ],
     visibility = ["//visibility:public"],
     deps = [
-        ":foxglove_bridge_base",
+        ":foxglove_sdk",
+        "@ros2_ament_index//:ament_index_cpp",
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_rcl_interfaces//:cpp_rcl_interfaces",
         "@ros2_rcl_interfaces//:cpp_rosgraph_msgs",
         "@ros2_rclcpp//:rclcpp",
         "@ros2_rclcpp//:rclcpp_components",
+        "@ros2_rcpputils//:rcpputils",
+        "@ros2_rcutils//:rcutils",
         "@ros2_resource_retriever//:resource_retriever",
+        "@ros2_rosidl//:rosidl_typesupport_introspection_cpp",
+        "@rosx_introspection",
     ],
+)
+
+# The WebSocket test client used by upstream tests.
+cc_library(
+    name = "test_client",
+    hdrs = glob(["tests/client/*.hpp"]),
+    includes = ["tests"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@nlohmann_json//:json",
+        "@websocketpp",
+    ],
+)
+
+exports_files(
+    ["tests/smoke_test.cpp"],
+    visibility = ["//visibility:public"],
 )

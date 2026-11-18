@@ -1,8 +1,20 @@
 """ Builds ament_index.
 """
 
+load(
+    "@com_github_mvukov_rules_ros2//repositories:version_header.bzl",
+    "ament_version_header",
+)
 load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_python//python:defs.bzl", "py_library")
+
+# NOTE: Keep the version in sync with the ament_index version.
+ament_version_header(
+    name = "ament_index_cpp_version_h",
+    package_name = "ament_index_cpp",
+    out = "ament_index_cpp/include/ament_index_cpp/version.h",
+    version = "1.13.3",
+)
 
 cc_library(
     name = "ament_index_cpp",
@@ -10,7 +22,7 @@ cc_library(
     hdrs = glob([
         "ament_index_cpp/include/ament_index_cpp/*.hpp",
         "ament_index_cpp/include/ament_index_cpp/*.h",
-    ]),
+    ]) + [":ament_index_cpp_version_h"],
     includes = ["ament_index_cpp/include"],
     visibility = ["//visibility:public"],
 )

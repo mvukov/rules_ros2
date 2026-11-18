@@ -1,12 +1,10 @@
-diff --git a/launch/launch/logging/__init__.py b/launch/launch/logging/__init__.py
-index 207a8ed..6a07d72 100644
 --- a/launch/launch/logging/__init__.py
 +++ b/launch/launch/logging/__init__.py
-@@ -82,24 +82,6 @@ def _make_unique_log_dir(*, base_path):
+@@ -90,24 +90,6 @@
              return log_dir
  
  
--def _renew_latest_log_dir(*, log_dir):
+-def _renew_latest_log_dir(*, log_dir: str) -> bool:
 -    """
 -    Renew the symbolic link to the latest logging directory.
 -
@@ -27,7 +25,7 @@ index 207a8ed..6a07d72 100644
  class LaunchConfig:
      """Launch Logging Configuration class."""
  
-@@ -137,18 +119,6 @@ class LaunchConfig:
+@@ -160,18 +142,6 @@
              self._log_dir = _make_unique_log_dir(
                  base_path=_get_logging_directory()
              )

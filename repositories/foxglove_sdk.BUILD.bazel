@@ -1,0 +1,42 @@
+""" Builds the C++ wrapper of the prebuilt Foxglove SDK.
+
+Mirrors foxglove_sdk_add_cpp_library(... REMOTE_ACCESS OFF) from the SDK's CMake
+package config: the C++ wrapper sources are compiled against our toolchain and
+statically linked against the prebuilt (Rust) C library.
+"""
+
+load("@rules_cc//cc:defs.bzl", "cc_import", "cc_library")
+
+cc_import(
+    name = "foxglove_c_static",
+    static_library = "lib/libfoxglove.a",
+)
+
+cc_library(
+    name = "foxglove_c",
+    hdrs = glob(["include/foxglove-c/**/*.h"]),
+    includes = ["include"],
+    linkopts = [
+        "-lpthread",
+        "-ldl",
+        "-lm",
+    ],
+    deps = [":foxglove_c_static"],
+)
+
+cc_library(
+    name = "foxglove",
+    srcs = glob(
+        [
+            "src/*.cpp",
+            "src/*.hpp",
+        ],
+        # Remote access requires the shared (cdylib) C library.
+        exclude = ["src/remote_access.cpp"],
+    ),
+    hdrs = glob(["include/foxglove/**/*.hpp"]),
+    copts = ["-w"],
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+    deps = [":foxglove_c"],
+)

@@ -13,28 +13,68 @@ def ros2_repositories():
     http_archive(
         name = "ros2",
         build_file = "@com_github_mvukov_rules_ros2//repositories:ros2.BUILD.bazel",
-        sha256 = "11b132de0af6576f24f6cd2cb917a7ee5370d58b959342f0e8f0bc84c694d892",
-        strip_prefix = "ros2-release-jazzy-20260618",
-        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-jazzy-20260618.tar.gz"],
+        sha256 = "6906704f349210d956babf13f12114f527ab525ae8f2d283ec834d6bea51617e",
+        strip_prefix = "ros2-release-lyrical-20260807",
+        urls = ["https://github.com/ros2/ros2/archive/refs/tags/release-lyrical-20260807.tar.gz"],
     )
 
     ros2_repositories_impl()
 
-    # ros2-devel branch
+    # NOTE: osrf_pycommon is not part of the Lyrical ros2.repos anymore,
+    # but launch still depends on it.
+    http_archive(
+        name = "osrf_pycommon",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:osrf_pycommon.BUILD.bazel",
+        sha256 = "441afd5c3476474a1e5760070fec18860992a4659e84a6a4b59e49217d7cc6af",
+        strip_prefix = "osrf_pycommon-2.1.7",
+        url = "https://github.com/osrf/osrf_pycommon/archive/refs/tags/2.1.7.tar.gz",
+    )
+
+    # Version from the Lyrical rosdistro.
     http_archive(
         name = "ros2_gps_umd",
         build_file = "@com_github_mvukov_rules_ros2//repositories:gps_umd.BUILD.bazel",
-        sha256 = "64a96f93053d0d59e8fcccceab5408a7d666dd813d4c12df139ef24d916f49ab",
-        strip_prefix = "gps_umd-fc782811804fafb12ee479a48a2aa2e9ee942e2d",
-        urls = ["https://github.com/swri-robotics/gps_umd/archive/fc782811804fafb12ee479a48a2aa2e9ee942e2d.tar.gz"],
+        sha256 = "fa5f550c141a1412b633c072b0b6ea352b977050383506e75dff50f9436ee9ec",
+        strip_prefix = "gps_umd-3.1.1",
+        urls = ["https://github.com/swri-robotics/gps_umd/archive/refs/tags/3.1.1.tar.gz"],
     )
 
+    # NOTE: Since Lyrical, foxglove_bridge is released from the foxglove-sdk
+    # repository (the ROS 2 bridge in ros-foxglove-bridge is discontinued).
     http_archive(
         name = "foxglove_bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_bridge.BUILD.bazel",
-        sha256 = "9548f6a53794cfcd6dcae570e6e82aa2c7670d177269ecf612838655d7ba7dcc",
-        strip_prefix = "ros-foxglove-bridge-0.7.9",
-        urls = ["https://github.com/foxglove/ros-foxglove-bridge/archive/refs/tags/0.7.9.tar.gz"],
+        sha256 = "c3fe5eb142f79cc5c3ed693baeb3f05dd53673ddc1f7eb61967e1974a6201d43",
+        strip_prefix = "foxglove-sdk-ros-v3.6.3/ros/src/foxglove_bridge",
+        urls = ["https://github.com/foxglove/foxglove-sdk/archive/refs/tags/ros-v3.6.3.tar.gz"],
+    )
+
+    # Prebuilt Foxglove (C/C++) SDK used by foxglove_bridge.
+    # Version and hashes copied from
+    # https://github.com/foxglove/foxglove-sdk/blob/ros-v3.6.3/ros/src/foxglove_bridge/CMakeLists.txt
+    http_archive(
+        name = "foxglove_sdk_x86_64",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_sdk.BUILD.bazel",
+        sha256 = "71bf8ded6907f2abb528b7844d9d441d82b93e0679c88724fc1144e6567be2d9",
+        strip_prefix = "foxglove",
+        urls = ["https://github.com/foxglove/foxglove-sdk/releases/download/sdk%2Fv0.30.2/foxglove-v0.30.2-cpp-x86_64-unknown-linux-gnu.zip"],
+    )
+
+    http_archive(
+        name = "foxglove_sdk_aarch64",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:foxglove_sdk.BUILD.bazel",
+        sha256 = "9e388b0374ef2c3aa152bcfd1d7f4a8105283abd39cb5ea4ae74619bcfeb7fd7",
+        strip_prefix = "foxglove",
+        urls = ["https://github.com/foxglove/foxglove-sdk/releases/download/sdk%2Fv0.30.2/foxglove-v0.30.2-cpp-aarch64-unknown-linux-gnu.zip"],
+    )
+
+    # Version from the Lyrical rosdistro.
+    http_archive(
+        name = "rosx_introspection",
+        build_file = "@com_github_mvukov_rules_ros2//repositories:rosx_introspection.BUILD.bazel",
+        sha256 = "00d0d7a6e5ed5e93a8cff84befb48c1c5b0adfa3da42b27237e18ce994ca7793",
+        strip_prefix = "rosx_introspection-2.3.0",
+        urls = ["https://github.com/facontidavide/rosx_introspection/archive/refs/tags/2.3.0.tar.gz"],
     )
 
     http_archive(
@@ -45,7 +85,9 @@ def ros2_repositories():
         urls = ["https://github.com/ros/xacro/archive/refs/tags/2.1.1.tar.gz"],
     )
 
-    # Version copied from https://github.com/ros2/orocos_kdl_vendor/blob/0.5.2/orocos_kdl_vendor/CMakeLists.txt#L19.
+    # Same commit as orocos_kdl_vendor 0.8.0 (Lyrical rosdistro), see
+    # https://github.com/ros2/orocos_kdl_vendor/blob/0.8.0/orocos_kdl_vendor/CMakeLists.txt#L19.
+    # NOTE: orocos_kdl_vendor is not part of the Lyrical ros2.repos.
     http_archive(
         name = "orocos_kdl",
         build_file = "@com_github_mvukov_rules_ros2//repositories:orocos_kdl.BUILD.bazel",
@@ -54,47 +96,42 @@ def ros2_repositories():
         urls = ["https://github.com/orocos/orocos_kinematics_dynamics/archive/ce4bcb65a050615b6d7f21bc60fbb2656515791b.tar.gz"],
     )
 
-    http_archive(
-        name = "ros2_urdf",
-        build_file = "@com_github_mvukov_rules_ros2//repositories:urdf.BUILD.bazel",
-        sha256 = "7bd84e41f20c50719de2eeff1d8be58dbc6cafcd93ea88dc58072d5dcf8f8ca5",
-        strip_prefix = "urdf-2.10.1",
-        urls = ["https://github.com/ros2/urdf/archive/refs/tags/2.10.1.tar.gz"],
-        patch_args = ["-p1"],
-        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:urdf_plugin_loader_fix.patch"],
-    )
-
+    # NOTE: The minor version tracks the ROS distro (4.4.x is Lyrical),
+    # see https://github.com/ros/rosdistro/blob/master/lyrical/distribution.yaml.
     http_archive(
         name = "ros2_diagnostics",
         build_file = "@com_github_mvukov_rules_ros2//repositories:diagnostics.BUILD.bazel",
-        sha256 = "bf275beae52d3f75e7a8cb7568723651fc8ab2e6e247e261052107643a71228d",
-        strip_prefix = "diagnostics-4.5.7",
-        urls = ["https://github.com/ros/diagnostics/archive/refs/tags/4.5.7.tar.gz"],
+        sha256 = "fbb737a5bf61a271c8a35a44142bedcd1be26abb17b649551fd8d76aa6bd15c8",
+        strip_prefix = "diagnostics-4.4.7",
+        urls = ["https://github.com/ros/diagnostics/archive/refs/tags/4.4.7.tar.gz"],
     )
 
+    # NOTE: Same commit as console_bridge_vendor on the lyrical branch,
+    # see https://github.com/ros2/console_bridge_vendor/blob/lyrical/CMakeLists.txt.
     http_archive(
         name = "console_bridge",
         build_file = "@com_github_mvukov_rules_ros2//repositories:console_bridge.BUILD.bazel",
-        sha256 = "303a619c01a9e14a3c82eb9762b8a428ef5311a6d46353872ab9a904358be4a4",
-        strip_prefix = "console_bridge-1.0.2",
-        urls = ["https://github.com/ros/console_bridge/archive/1.0.2.tar.gz"],
+        sha256 = "1a662b9f197349cc0e0ec8cd4997cfa2a2d5b2743fc570272644c377e9b8c2a9",
+        strip_prefix = "console_bridge-81ec67f6daf3cd19ef506e00f02efb1645597b9c",
+        urls = ["https://github.com/ros/console_bridge/archive/81ec67f6daf3cd19ef506e00f02efb1645597b9c.tar.gz"],
     )
 
+    # NOTE: Keep in sync with rosbag2 mcap_vendor/CMakeLists.txt.
     http_archive(
         name = "mcap",
         build_file = "@com_github_mvukov_rules_ros2//repositories:mcap.BUILD.bazel",
-        sha256 = "69bcd33e1590201ea180e9e6ba8a22f3e8e7e2283e9ebcbff6a2c7134d8341db",
-        strip_prefix = "mcap-releases-cpp-v1.4.1/cpp/mcap",
-        urls = ["https://github.com/foxglove/mcap/archive/refs/tags/releases/cpp/v1.4.1.tar.gz"],
+        sha256 = "181a7c52cc982444cdef533087b321538b025fcc5eec258e0489d68b9ce53ded",
+        strip_prefix = "mcap-releases-cpp-v2.1.3/cpp/mcap",
+        urls = ["https://github.com/foxglove/mcap/archive/refs/tags/releases/cpp/v2.1.3.tar.gz"],
     )
 
-    # NOTE: Use the jazzy branch.
+    # Version from the Lyrical rosdistro (released from the rolling branch).
     http_archive(
         name = "ros2_rcl_logging_syslog",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rcl_logging_syslog.BUILD.bazel",
-        sha256 = "748a39586307ce375999f0b6a861e5b36c992d6aaeffa2641f2213171f37affb",
-        strip_prefix = "rcl_logging_syslog-1b8165639d34f6321f725de5b4d72effb2d15314",
-        urls = ["https://github.com/fujitatomoya/rcl_logging_syslog/archive/1b8165639d34f6321f725de5b4d72effb2d15314.zip"],
+        sha256 = "23cf6a710b950c8bf519c7aaecccb35994e45b99d4673543170433eb5a2063d9",
+        strip_prefix = "rcl_logging_syslog-0.2.0",
+        urls = ["https://github.com/fujitatomoya/rcl_logging_syslog/archive/refs/tags/0.2.0.tar.gz"],
     )
 
     http_archive(
@@ -107,6 +144,10 @@ def ros2_repositories():
         patches = ["@com_github_mvukov_rules_ros2//repositories/patches:ros2_rust_fix_rclrs.patch"],
     )
 
+    # NOTE: rosidl_rust is part of the Lyrical ros2.repos (0.4.12), but is
+    # intentionally kept as a manual pin such that all Rust-related deps
+    # (ros2_rust, rosidl_runtime_rs, rosidl_rust) are updated together.
+    # 0.5.0 is the version from the Lyrical rosdistro.
     http_archive(
         name = "ros2_rosidl_rust",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rosidl_rust.BUILD.bazel",

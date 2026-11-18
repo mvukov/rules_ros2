@@ -5,8 +5,13 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
     name = "resource_retriever",
-    srcs = ["resource_retriever/src/retriever.cpp"],
-    hdrs = glob(["resource_retriever/include/resource_retriever/*.hpp"]),
+    srcs = [
+        "resource_retriever/src/plugins/curl_retriever.cpp",
+        "resource_retriever/src/plugins/filesystem_retriever.cpp",
+        "resource_retriever/src/plugins/retriever_plugin.cpp",
+        "resource_retriever/src/retriever.cpp",
+    ],
+    hdrs = glob(["resource_retriever/include/resource_retriever/**/*.hpp"]),
     includes = ["resource_retriever/include"],
     visibility = ["//visibility:public"],
     deps = [
