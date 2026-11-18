@@ -145,7 +145,7 @@ Status (2026-11-07): all steps done. Root workspace `bazel test //...` 38/38 (gc
 
 Decisions for the maintainer:
 
-- PRE-EXISTING, also on main: `bazel build //...` in examples/ fails for the Rust chatter nodes, //chatter:bag and //zero_copy. rules_ros2's crate.from_cargo has no `lockfile` (crate_universe rejects that in a non-root module), and examples/MODULE.bazel doesn't use_repo ros2_rosbag2/iceoryx/googletest. CI misses it because of `test --build_tests_only`. Probably a separate PR.
+- RESOLVED by main #675 (merged in 853312d): PRE-EXISTING, also on main: `bazel build //...` in examples/ fails for the Rust chatter nodes, //chatter:bag and //zero_copy. rules_ros2's crate.from_cargo has no `lockfile` (crate_universe rejects that in a non-root module), and examples/MODULE.bazel doesn't use_repo ros2_rosbag2/iceoryx/googletest. CI misses it because of `test --build_tests_only`. Probably a separate PR.
 - No `feature/jazzy` branch exists (README points to feature/humble and feature/jazzy_workspace only). Consider creating one from main before merging this, and add a README note.
 - Branch history contains two non-Lyrical commits at its base: 5d1fc8c (don't force -fuse-ld=lld; not on main yet) and 56a8feb (googletest bump, same change as #673 on main). Decide whether they ship with this PR.
 - foxglove_bridge services now work (see 4234405) but the 'services' capability is still disabled in third_party/foxglove_bridge/params.py (old TBD).
@@ -173,3 +173,11 @@ Pins outside ros2.repos were initially only checked for "still builds". Audited 
 | xacro 2.1.1, osrf_pycommon 2.1.7, orocos_kdl ce4bcb6, rosx_introspection 2.3.0, rosidl_rust 0.5.0 | — | unchanged | already match Lyrical | — |
 LESSON: for pins outside ros2.repos, check the Lyrical rosdistro release (ros/rosdistro lyrical/distribution.yaml) or the corresponding \*\_vendor package, not branch names.
 Verification: rosbag2 tests (mcap_tests 8/8 reruns), diagnostics test, gps_msgs C++ compile test, C++ node test with syslog and noop logging backends; full `bazel test //...` rerun: 38/38 with gcc and clang.
+
+## Merge of main (2026-11-18, 853312d)
+
+Merged origin/main (#670-#679, incl. #661 sh/launch refactor + domain coordinator, #675 examples build fix, #679 release-jazzy-20260618).
+Conflicts resolved in favor of Lyrical: README.md + repositories.bzl (keep release-lyrical-20260807), ros2_repositories_impl.bzl (ours; resolver output identical), ros2_rust.BUILD.bazel (main's link_deps + ros_distro=lyrical), foxglove_bridge_tests.cc (kept deleted; upstream smoke tests instead).
+Auto-merged and verified: ros2/ament.bzl keeps the introspection typesupport symlinks; mappings yaml and rcl_interfaces.BUILD.bazel already had main's #679 changes.
+Cargo.Bazel.lock (new in #675) repinned for quickcheck.
+Verified: root bazel test //... 41/41 (gcc+clang; 3 new domain coordinator tests); examples bazel test //... 2/2 and full bazel build //... (Rust chatter, bag, zero_copy now build).
