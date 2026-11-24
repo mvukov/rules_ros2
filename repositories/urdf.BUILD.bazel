@@ -1,12 +1,12 @@
 """ Builds urdf.
 """
 
+load(
+    "@com_github_mvukov_rules_ros2//repositories:version_header.bzl",
+    "package_version_template",
+)
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
 load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
-load(
-    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
-    "expand_template",
-)
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
@@ -34,14 +34,14 @@ ros2_cpp_library(
     ],
 )
 
-expand_template(
+package_version_template(
     name = "urdfdom_compatibility_h",
     out = "urdf/urdfdom_compatibility.h",
+    package_xml = "@ros2_urdfdom_headers//:package.xml",
     substitutions = {
-        # Keep in sync with the urdfdom_headers version.
-        "@URDFDOM_HEADERS_MAJOR_VERSION@": "3",
-        "@URDFDOM_HEADERS_MINOR_VERSION@": "0",
-        "@URDFDOM_HEADERS_REVISION_VERSION@": "0",
+        "@URDFDOM_HEADERS_MAJOR_VERSION@": "{major}",
+        "@URDFDOM_HEADERS_MINOR_VERSION@": "{minor}",
+        "@URDFDOM_HEADERS_REVISION_VERSION@": "{patch}",
     },
     template = "urdf/urdfdom_compatibility.h.in",
 )

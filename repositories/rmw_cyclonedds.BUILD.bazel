@@ -1,21 +1,21 @@
 """ Builds rmw_cyclonedds.
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
 load(
-    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
-    "expand_template",
+    "@com_github_mvukov_rules_ros2//repositories:version_header.bzl",
+    "package_version_template",
 )
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
 
-# NOTE: Keep in sync with the cyclonedds version.
-# CDDS_VERSION == 1100 selects the Cyclone DDS >= 0.11 code paths
+# CDDS_VERSION >= 1100 selects the Cyclone DDS >= 0.11 code paths
 # (shared memory via the Iceoryx PSMX plugin, no iceoryx_binding_c needed).
-expand_template(
+package_version_template(
     name = "cdds_version_hpp",
     out = "rmw_cyclonedds_cpp/src/cdds_version.hpp",
+    package_xml = "@cyclonedds//:package.xml",
     substitutions = {
-        "@CycloneDDS_VERSION_MAJOR@": "11",
-        "@CycloneDDS_VERSION_MINOR@": "0",
+        "@CycloneDDS_VERSION_MAJOR@": "{major}",
+        "@CycloneDDS_VERSION_MINOR@": "{minor}",
     },
     template = "rmw_cyclonedds_cpp/src/cdds_version.hpp.in",
 )
