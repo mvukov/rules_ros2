@@ -1,40 +1,60 @@
-""" Generates <package>/version.h like ament_generate_version_header().
+""" Generates version headers from package.xml files.
 """
 
-load("@bazel_skylib//rules:write_file.bzl", "write_file")
+_GENERATOR = "@com_github_mvukov_rules_ros2//repositories:generate_version_header"
 
-def ament_version_header(name, out, package_name, version):
+def ament_version_header(name, package_xml, out, **kwargs):
     """ Generates a version header equivalent to ament_cmake_gen_version_h.
+
+    The package name and version are read from the given package.xml.
 
     Mirrors https://github.com/ament/ament_cmake/blob/rolling/ament_cmake_gen_version_h/cmake/version.h.in
 
     Args:
         name: A unique target name.
+        package_xml: The package.xml of the package, e.g. "rclcpp/package.xml".
         out: The output header path.
-        package_name: The ROS package name, e.g. rclcpp.
-        version: The package version, e.g. "32.0.2". Keep it in sync with
-            the version of the package.
+        **kwargs: Common rule arguments, passed to the underlying genrule.
     """
-    major, minor, patch = version.split(".")
-    p = package_name.upper()
-    write_file(
+    native.genrule(
         name = name,
-        out = out,
-        content = [
-            "#ifndef {}__VERSION_H_".format(p),
-            "#define {}__VERSION_H_".format(p),
-            "#define {}_VERSION_MAJOR ({})".format(p, major),
-            "#define {}_VERSION_MINOR ({})".format(p, minor),
-            "#define {}_VERSION_PATCH ({})".format(p, patch),
-            "#define {}_VERSION_STR \"{}\"".format(p, version),
-            "#define {}_VERSION_GTE(major, minor, patch) ( \\".format(p),
-            "     (major < {}_VERSION_MAJOR) ? true \\".format(p),
-            "     : ((major > {}_VERSION_MAJOR) ? false \\".format(p),
-            "     : ((minor < {}_VERSION_MINOR) ? true \\".format(p),
-            "     : ((minor > {}_VERSION_MINOR) ? false \\".format(p),
-            "     : ((patch < {}_VERSION_PATCH) ? true \\".format(p),
-            "     : ((patch > {}_VERSION_PATCH) ? false \\".format(p),
-            "     : true))))))",
-            "#endif  // {}__VERSION_H_".format(p),
-        ],
+        srcs = [package_xml],
+        outs = [out],
+        cmd = "$(execpath {}) $(execpath {}) $@".format(_GENERATOR, package_xml),
+        tools = [_GENERATOR],
+        **kwargs
+    )
+
+def package_version_template(name, package_xml, template, out, substitutions, **kwargs):
+    """ Expands a version template with the version from a package.xml.
+
+    Every substitution key must be present in the template, and no
+    CMake-style @PLACEHOLDER@ may remain in the output.
+
+    Args:
+        name: A unique target name.
+        package_xml: The package.xml of the package.
+        template: The template to expand, e.g. "include/foo/version.hpp.in".
+        out: The output file path.
+        substitutions: A dict mapping template keys to values. Values may use
+            the {name}, {version}, {major}, {minor} and {patch} fields, which
+            are read from the package.xml.
+        **kwargs: Common rule arguments, passed to the underlying genrule.
+    """
+    args = " ".join([
+        "--substitution '{}={}'".format(key, value)
+        for key, value in substitutions.items()
+    ])
+    native.genrule(
+        name = name,
+        srcs = [package_xml, template],
+        outs = [out],
+        cmd = "$(execpath {}) $(execpath {}) $@ --template $(execpath {}) {}".format(
+            _GENERATOR,
+            package_xml,
+            template,
+            args,
+        ),
+        tools = [_GENERATOR],
+        **kwargs
     )

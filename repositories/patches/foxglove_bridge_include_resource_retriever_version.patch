@@ -1,0 +1,10 @@
+--- a/src/ros2_foxglove_bridge.cpp
++++ b/src/ros2_foxglove_bridge.cpp
+@@ -10,6 +10,7 @@
+ 
+ #include <rclcpp/version.h>
+ #include <resource_retriever/retriever.hpp>
++#include <resource_retriever/version.h>
+ 
+ #include <foxglove_bridge/cdr_serializer.hpp>
+ #include <foxglove_bridge/ros2_foxglove_bridge.hpp>

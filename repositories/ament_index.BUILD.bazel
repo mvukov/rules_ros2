@@ -8,12 +8,10 @@ load(
 load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_python//python:defs.bzl", "py_library")
 
-# NOTE: Keep the version in sync with the ament_index version.
 ament_version_header(
     name = "ament_index_cpp_version_h",
-    package_name = "ament_index_cpp",
     out = "ament_index_cpp/include/ament_index_cpp/version.h",
-    version = "1.13.3",
+    package_xml = "ament_index_cpp/package.xml",
 )
 
 cc_library(

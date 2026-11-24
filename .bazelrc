@@ -24,6 +24,12 @@ build --sandbox_default_allow_network=false
 # Flipped to true in Bazel 8. This is a recommended flag.
 build --incompatible_disallow_empty_glob
 
+# curl from BCR is by default built with HTTP(S) support only. In ROS 2 Jazzy,
+# resource_retriever uses curl to fetch file:// and package:// resources,
+# e.g. foxglove_bridge uses resource_retriever to serve assets like meshes.
+# This is a recommended flag.
+common --@curl//:http_only=false
+
 # Will probably be flipped in Bazel 9.
 build --incompatible_autoload_externally=
 

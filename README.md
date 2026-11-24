@@ -29,7 +29,7 @@ Available features:
   - `syslog`: `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=syslog`
   - `noop`: `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=noop`
 - Utilities:
-  - [`foxglove_bridge`](https://github.com/foxglove/foxglove-sdk/tree/main/ros) for visualization and debugging
+  - [`foxglove_bridge`](https://github.com/foxglove/foxglove-sdk/tree/main/ros/src/foxglove_bridge) for visualization and debugging
   - `ros2_bag` for handling rosbags
   - `ros2_lifecycle` for handling node lifecycle
   - `ros2_node` for handling nodes
@@ -55,6 +55,17 @@ ROS 2 packages are by default locked to versions from [release-lyrical-20260807]
 
 > [!NOTE]
 > If you want to use ROS 2 Humble, go to the [feature/humble](https://github.com/mvukov/rules_ros2/tree/feature/humble) branch.
+
+> [!NOTE]
+> The [curl](https://registry.bazel.build/modules/curl) module from BCR is by
+> default built with HTTP(S) support only. In ROS 2 Jazzy, `resource_retriever`
+> uses curl to fetch `file://` and `package://` resources. For example,
+> `foxglove_bridge` relies on it to serve assets (e.g. meshes) to Foxglove.
+> To enable this, add the following to your `.bazelrc`:
+>
+> ```
+> common --@curl//:http_only=false
+> ```
 
 ## Support
 

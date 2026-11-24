@@ -1,8 +1,8 @@
 """ Defines commonly used Python macros.
 """
 
+load("@bazel_skylib//rules:native_binary.bzl", "native_binary")
 load("@com_github_mvukov_rules_ros2//ros2:ament.bzl", "sh_exec_launcher", "split_kwargs")
-load("@com_github_mvukov_rules_ros2//third_party:symlink.bzl", "symlink")
 load("@rules_python//python:defs.bzl", "py_binary")
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 load("@rules_shell//shell:sh_test.bzl", "sh_test")
@@ -25,9 +25,10 @@ def _ros2_py_exec(target, name, srcs, main, set_up_ament, testonly, idl_deps, **
     )
 
     target_impl_symlink = target_impl + "_symlink"
-    symlink(
+    native_binary(
         name = target_impl_symlink,
-        executable = target_impl,
+        src = target_impl,
+        out = target_impl_symlink,
         testonly = testonly,
         tags = ["manual"],
     )

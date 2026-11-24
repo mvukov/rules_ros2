@@ -1,3 +1,5 @@
+load("@rules_python//python:defs.bzl", "py_binary")
+
 exports_files([
     "generate_rclcpp_interface.py",
     "rclcpp_interfaces.bzl",
@@ -5,3 +7,9 @@ exports_files([
     "ros2_repo_mappings.yaml",
     "ros2_repositories_impl.bzl",
 ])
+
+py_binary(
+    name = "generate_version_header",
+    srcs = ["generate_version_header.py"],
+    visibility = ["//visibility:public"],
+)

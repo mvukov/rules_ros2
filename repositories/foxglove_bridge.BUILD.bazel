@@ -1,11 +1,11 @@
 """ Builds foxglove_bridge (from the foxglove-sdk repository).
 """
 
-load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
 load(
-    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
-    "expand_template",
+    "@com_github_mvukov_rules_ros2//repositories:version_header.bzl",
+    "package_version_template",
 )
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 alias(
@@ -19,11 +19,12 @@ alias(
     ),
 )
 
-expand_template(
+package_version_template(
     name = "version_hpp",
     out = "include/foxglove_bridge/version.hpp",
+    package_xml = "package.xml",
     substitutions = {
-        "@FOXGLOVE_BRIDGE_VERSION@": "3.6.3",
+        "@FOXGLOVE_BRIDGE_VERSION@": "{version}",
         "@FOXGLOVE_BRIDGE_GIT_HASH@": "N/A",
     },
     template = "include/foxglove_bridge/version.hpp.in",
@@ -40,12 +41,6 @@ ros2_cpp_library(
     ],
     hdrs = glob(["include/foxglove_bridge/*.hpp"]) + [":version_hpp"],
     includes = ["include"],
-    # NOTE: Keep in sync with the resource_retriever version.
-    local_defines = [
-        "RESOURCE_RETRIEVER_VERSION_MAJOR=3",
-        "RESOURCE_RETRIEVER_VERSION_MINOR=9",
-        "RESOURCE_RETRIEVER_VERSION_PATCH=3",
-    ],
     visibility = ["//visibility:public"],
     deps = [
         ":foxglove_sdk",

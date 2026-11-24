@@ -37,12 +37,10 @@ rclcpp_interfaces(
     traits_template = "rclcpp/resource/interface_traits.hpp.em",
 )
 
-# NOTE: Keep the version in sync with the rclcpp version.
 ament_version_header(
     name = "rclcpp_version_h",
-    package_name = "rclcpp",
     out = "rclcpp/include/rclcpp/version.h",
-    version = "32.0.2",
+    package_xml = "rclcpp/package.xml",
 )
 
 ros2_cpp_library(

@@ -1,7 +1,19 @@
 """ Builds resource_retriever.
 """
 
+load(
+    "@com_github_mvukov_rules_ros2//repositories:version_header.bzl",
+    "ament_version_header",
+)
 load("@rules_cc//cc:defs.bzl", "cc_library")
+
+# NOTE: Upstream doesn't generate this header. It's here such that dependents
+# (e.g. foxglove_bridge) can check the resource_retriever version.
+ament_version_header(
+    name = "resource_retriever_version_h",
+    out = "resource_retriever/include/resource_retriever/version.h",
+    package_xml = "resource_retriever/package.xml",
+)
 
 cc_library(
     name = "resource_retriever",
@@ -11,7 +23,9 @@ cc_library(
         "resource_retriever/src/plugins/retriever_plugin.cpp",
         "resource_retriever/src/retriever.cpp",
     ],
-    hdrs = glob(["resource_retriever/include/resource_retriever/**/*.hpp"]),
+    hdrs = glob(["resource_retriever/include/resource_retriever/**/*.hpp"]) + [
+        ":resource_retriever_version_h",
+    ],
     includes = ["resource_retriever/include"],
     visibility = ["//visibility:public"],
     deps = [

@@ -47,6 +47,8 @@ def ros2_repositories():
         sha256 = "c3fe5eb142f79cc5c3ed693baeb3f05dd53673ddc1f7eb61967e1974a6201d43",
         strip_prefix = "foxglove-sdk-ros-v3.6.3/ros/src/foxglove_bridge",
         urls = ["https://github.com/foxglove/foxglove-sdk/archive/refs/tags/ros-v3.6.3.tar.gz"],
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:foxglove_bridge_include_resource_retriever_version.patch"],
     )
 
     # Prebuilt Foxglove (C/C++) SDK used by foxglove_bridge.
