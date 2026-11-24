@@ -1,0 +1,30 @@
+""" Builds rosx_introspection.
+"""
+
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
+
+ros2_cpp_library(
+    name = "rosx_introspection",
+    srcs = glob([
+        "src/*.cpp",
+        "src/ros_utils/*.cpp",
+        "src/ros_utils/*.hpp",
+    ]),
+    hdrs = glob([
+        "include/rosx_introspection/**/*.h",
+        "include/rosx_introspection/**/*.hpp",
+    ]),
+    copts = ["-w"],
+    # Always use the nonstd span implementation to guarantee ABI compatibility
+    # when consumers compile with C++20 (where std::span exists).
+    defines = ["span_CONFIG_SELECT_SPAN=1"],
+    implementation_deps = ["@rapidjson"],
+    includes = ["include"],
+    local_defines = ["ROSX_HAS_JSON"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@ros2_ament_index//:ament_index_cpp",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rosbag2//:rosbag2_cpp",
+    ],
+)
