@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "foxglove_bridge/ros2_foxglove_bridge.hpp"
+#include "foxglove_bridge/utils.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 int main(int argc, char* argv[]) {
@@ -32,16 +33,25 @@ int main(int argc, char* argv[]) {
     constexpr int DEFAULT_NUM_THREADS = 0;
     dummyNode->declare_parameter(numThreadsDescription.name,
                                  DEFAULT_NUM_THREADS, numThreadsDescription);
-    numThreads = static_cast<size_t>(
+    numThreads = foxglove_bridge::saturatingToSizeT(
         dummyNode->get_parameter(numThreadsDescription.name).as_int());
   }
 
-  auto executor = rclcpp::executors::MultiThreadedExecutor(
-      rclcpp::ExecutorOptions{}, numThreads);
+  {
+    auto executor = rclcpp::executors::MultiThreadedExecutor::make_shared(
+        rclcpp::ExecutorOptions{}, numThreads);
 
-  auto node = std::make_shared<foxglove_bridge::FoxgloveBridge>();
-  executor.add_node(node);
-  executor.spin();
+    auto node = std::make_shared<foxglove_bridge::FoxgloveBridge>();
+    executor->add_node(node->get_node_base_interface());
+    try {
+      executor->spin();
+    } catch (const rclcpp::exceptions::RCLError& e) {
+      RCLCPP_WARN(node->get_logger(), "Shutting down: %s", e.what());
+    }
+    executor->remove_node(node->get_node_base_interface());
+    // node and executor go out of scope here; the node destructor stops the
+    // server while ROS is still valid.
+  }
   rclcpp::shutdown();
   return EXIT_SUCCESS;
 }
