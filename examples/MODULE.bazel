@@ -33,6 +33,8 @@ use_repo(
     rules_ros2_non_module_deps,
     # Check the rules_ros2 root MODULE.bazel for a full list of available non-module repos
     # Required for bazel test:
+    # For the --@cyclonedds//:enable_shm flag, see zero_copy/README.md.
+    "cyclonedds",
     "iceoryx",
     "ros2_common_interfaces",
     "ros2_geometry2",

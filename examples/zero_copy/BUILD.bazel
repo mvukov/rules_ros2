@@ -119,7 +119,10 @@ ros2_cpp_binary(
 ros2_test(
     name = "tests",
     size = "small",
-    data = ["cyclonedds.xml"],
+    data = [
+        "cyclonedds.xml",
+        "roudi.toml",
+    ],
     launch_file = "tests.py",
     nodes = [
         ":talker",
