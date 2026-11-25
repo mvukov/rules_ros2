@@ -9,4 +9,3 @@ psutil
 pytest~=7.4
 pytest-cov
 pyyaml
-types-pkg-resources==0.1.3
