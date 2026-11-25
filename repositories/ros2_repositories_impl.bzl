@@ -191,6 +191,8 @@ def ros2_repositories_impl():
     http_archive(
         name = "ros2_rmw_cyclonedds",
         build_file = "@com_github_mvukov_rules_ros2//repositories:rmw_cyclonedds.BUILD.bazel",
+        patch_args = ["-p1"],
+        patches = ["@com_github_mvukov_rules_ros2//repositories/patches:rmw_cyclonedds_init_array_is_self_contained.patch"],
         sha256 = "77d1c0f03c9011b2e751ad022d8df166feb835c68320b286d65e86f11228e306",
         strip_prefix = "rmw_cyclonedds-4.1.4",
         url = "https://github.com/ros2/rmw_cyclonedds/archive/refs/tags/4.1.4.tar.gz",

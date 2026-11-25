@@ -1,0 +1,14 @@
+diff --git a/rmw_cyclonedds_cpp/src/TypeSupport2.hpp b/rmw_cyclonedds_cpp/src/TypeSupport2.hpp
+index 77f08dc..e51d118 100644
+--- a/rmw_cyclonedds_cpp/src/TypeSupport2.hpp
++++ b/rmw_cyclonedds_cpp/src/TypeSupport2.hpp
+@@ -230,7 +230,8 @@ protected:
+ 
+ public:
+   ArrayValueType(const AnyValueType * element_value_type, size_t size)
+-  : m_element_value_type(element_value_type), m_size(size)
++  : m_element_value_type(element_value_type), m_size(size),
++    m_is_self_contained(element_value_type->is_self_contained())
+   {
+   }
+   const AnyValueType * element_value_type() const {return m_element_value_type;}
