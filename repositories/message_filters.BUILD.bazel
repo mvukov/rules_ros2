@@ -20,9 +20,7 @@ ros2_cpp_library(
 
 py_library(
     name = "py_message_filters",
-    srcs = [
-        "src/message_filters/__init__.py",
-    ],
+    srcs = glob(["src/message_filters/*.py"]),
     imports = ["src"],
     visibility = ["//visibility:public"],
     deps = [
