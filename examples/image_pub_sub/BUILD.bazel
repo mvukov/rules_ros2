@@ -1,0 +1,81 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+load("@com_github_mvukov_rules_ros2//ros2:launch.bzl", "ros2_launch")
+load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
+load("@com_github_mvukov_rules_ros2//ros2:test.bzl", "ros2_test")
+load("@com_github_mvukov_rules_ros2//ros2:topic.bzl", "ros2_topic")
+
+ros2_cpp_binary(
+    name = "image_publisher",
+    srcs = ["image_publisher.cc"],
+    data = [
+        ":rotated_plugin",
+    ],
+    set_up_ament = True,
+    deps = [
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_image_common//:image_transport",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "image_resizer",
+    srcs = ["image_resizer.cc"],
+    data = [
+        ":rotated_plugin",
+    ],
+    set_up_ament = True,
+    deps = [
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_image_common//:image_transport",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_plugin(
+    name = "rotated_plugin",
+    srcs = [
+        "rotated_publisher.cc",
+        "rotated_publisher.h",
+        "rotated_subscriber.cc",
+        "rotated_subscriber.h",
+    ],
+    plugin_specs = [
+        {
+            "base_class_type": "image_transport::PublisherPlugin",
+            "class_name": "image_transport/rotated_pub",
+            "class_type": "image_pub_sub::RotatedPublisher",
+        },
+        {
+            "base_class_type": "image_transport::SubscriberPlugin",
+            "class_name": "image_transport/rotated_sub",
+            "class_type": "image_pub_sub::RotatedSubscriber",
+        },
+    ],
+    deps = [
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_image_common//:image_transport",
+        "@ros2_pluginlib//:pluginlib",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_test(
+    name = "tests",
+    size = "small",
+    launch_file = "tests.py",
+    nodes = [
+        ":image_publisher",
+        ":image_resizer",
+    ],
+    deps = [
+        "@ros2_common_interfaces//:py_sensor_msgs",
+    ],
+)
+
+ros2_topic(
+    name = "topic",
+    deps = [
+        "@ros2_common_interfaces//:py_sensor_msgs",
+    ],
+)
