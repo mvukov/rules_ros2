@@ -8,6 +8,7 @@ rust_library(
     srcs = glob(["rosidl_runtime_rs/src/**/*.rs"]),
     crate_features = ["serde"],
     edition = "2021",
+    rustc_flags = ["--cfg=ros_distro=\"jazzy\""],
     visibility = ["//visibility:public"],
     deps = [
         "@rules_ros2_crate_index//:serde",

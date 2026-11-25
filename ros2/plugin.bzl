@@ -16,14 +16,6 @@
 
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
 load(
-    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
-    "CppGeneratorAspectInfo",
-    "IdlAdapterAspectInfo",
-    "Ros2InterfaceInfo",
-    "cpp_generator_aspect",
-    "idl_adapter_aspect",
-)
-load(
     "@com_github_mvukov_rules_ros2//ros2:plugin_aspects.bzl",
     "Ros2PluginInfo",
     "create_dynamic_library",

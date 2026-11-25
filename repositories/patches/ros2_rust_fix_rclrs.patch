@@ -1,163 +1,123 @@
 diff --git a/rclrs/src/action.rs b/rclrs/src/action.rs
-index 62b1543..97c372a 100644
+index 46556d7..be193e6 100644
 --- a/rclrs/src/action.rs
 +++ b/rclrs/src/action.rs
-@@ -9,9 +9,11 @@ pub use action_goal_receiver::*;
- pub(crate) mod action_server;
+@@ -10,7 +10,7 @@ pub(crate) mod action_server;
  pub use action_server::*;
  
--use crate::{log_error, rcl_bindings::*, vendor::builtin_interfaces::msg::Time, DropGuard};
-+use crate::{log_error, rcl_bindings::*, DropGuard};
+ use crate::{log_error, rcl_bindings::*, DropGuard};
+-use ros_env::builtin_interfaces::msg::Time;
++use builtin_interfaces::msg::Time;
  use std::fmt;
  
-+use builtin_interfaces::msg::Time;
-+
  #[cfg(feature = "serde")]
- use serde::{Deserialize, Serialize};
- 
 diff --git a/rclrs/src/action/action_client.rs b/rclrs/src/action/action_client.rs
-index af02651..aeae08a 100644
+index 3cff3b8..2fa9790 100644
 --- a/rclrs/src/action/action_client.rs
 +++ b/rclrs/src/action/action_client.rs
-@@ -2,12 +2,13 @@ use super::empty_goal_status_array;
- use crate::{
-     log_warn,
-     rcl_bindings::*,
--    vendor::{action_msgs::srv::CancelGoal_Response, builtin_interfaces::msg::Time},
-     CancelResponse, CancelResponseCode, DropGuard, GoalStatus, GoalStatusCode, GoalUuid,
-     MultiCancelResponse, Node, NodeHandle, QoSProfile, RclPrimitive, RclPrimitiveHandle,
-     RclPrimitiveKind, RclrsError, ReadyKind, TakeFailedAsNone, ToResult, Waitable,
-     WaitableLifecycle, ENTITY_LIFECYCLE_MUTEX,
+@@ -5,7 +5,7 @@ use crate::{
+     RclPrimitive, RclPrimitiveHandle, RclPrimitiveKind, RclrsError, ReadyKind, TakeFailedAsNone,
+     ToResult, Waitable, WaitableLifecycle, ENTITY_LIFECYCLE_MUTEX,
  };
-+use action_msgs::srv::CancelGoal_Response;
-+use builtin_interfaces::msg::Time;
+-use ros_env::{action_msgs::srv::CancelGoal_Response, builtin_interfaces::msg::Time};
++use {action_msgs::srv::CancelGoal_Response, builtin_interfaces::msg::Time};
  use rosidl_runtime_rs::{Action, Message, RmwFeedbackMessage, RmwGoalResponse, RmwResultResponse};
  use std::{
      any::Any,
 diff --git a/rclrs/src/action/action_client/goal_client.rs b/rclrs/src/action/action_client/goal_client.rs
-index 61d2773..e283a8d 100644
+index f06f9d0..7efb128 100644
 --- a/rclrs/src/action/action_client/goal_client.rs
 +++ b/rclrs/src/action/action_client/goal_client.rs
-@@ -1,7 +1,8 @@
+@@ -1,7 +1,7 @@
  use crate::{
--    vendor::builtin_interfaces::msg::Time, CancellationClient, FeedbackClient, GoalStatus,
-+    CancellationClient, FeedbackClient, GoalStatus,
-     GoalStatusCode, ResultClient, StatusWatcher,
+     CancellationClient, FeedbackClient, GoalStatus, GoalStatusCode, ResultClient, StatusWatcher,
  };
-+use  builtin_interfaces::msg::Time;
+-use ros_env::builtin_interfaces::msg::Time;
++use builtin_interfaces::msg::Time;
  use rosidl_runtime_rs::Action;
  use std::{
      pin::Pin,
 diff --git a/rclrs/src/action/action_server.rs b/rclrs/src/action/action_server.rs
-index e75ea30..82f0d87 100644
+index 979f8ab..63ba562 100644
 --- a/rclrs/src/action/action_server.rs
 +++ b/rclrs/src/action/action_server.rs
-@@ -1,11 +1,12 @@
- use super::empty_goal_status_array;
- use crate::{
-     action::GoalUuid, error::ToResult, rcl_bindings::*,
--    vendor::action_msgs::srv::CancelGoal_Response, ActionGoalReceiver, CancelResponseCode,
-+    ActionGoalReceiver, CancelResponseCode,
-     DropGuard, GoalStatusCode, Node, NodeHandle, QoSProfile, RclPrimitive, RclPrimitiveHandle,
-     RclPrimitiveKind, RclrsError, ReadyKind, TakeFailedAsNone, Waitable, WaitableLifecycle,
-     ENTITY_LIFECYCLE_MUTEX,
+@@ -6,7 +6,7 @@ use crate::{
+     WaitableLifecycle, ENTITY_LIFECYCLE_MUTEX,
  };
-+use action_msgs::srv::CancelGoal_Response;
  use futures::future::BoxFuture;
+-use ros_env::action_msgs::srv::CancelGoal_Response;
++use action_msgs::srv::CancelGoal_Response;
  use rosidl_runtime_rs::{Action, Message, RmwGoalRequest, RmwResultRequest};
  use std::{
+     any::Any,
 diff --git a/rclrs/src/action/action_server/cancellation_state.rs b/rclrs/src/action/action_server/cancellation_state.rs
-index 9dc166f..8a17283 100644
+index e34c043..569b6d2 100644
 --- a/rclrs/src/action/action_server/cancellation_state.rs
 +++ b/rclrs/src/action/action_server/cancellation_state.rs
-@@ -2,12 +2,10 @@ use super::ActionServerHandle;
- use crate::{
-     log_error,
-     rcl_bindings::*,
--    vendor::{
--        action_msgs::{msg::GoalInfo, srv::CancelGoal_Response},
--        unique_identifier_msgs::msg::UUID,
--    },
-     CancelResponseCode, GoalUuid, Node, RclrsErrorFilter, ToResult,
- };
-+use action_msgs::{msg::GoalInfo, srv::CancelGoal_Response};
-+use unique_identifier_msgs::msg::UUID;
- use futures::{
-     future::{select, Either},
+@@ -7,7 +7,7 @@ use futures::{
      pin_mut,
-diff --git a/rclrs/src/lib.rs b/rclrs/src/lib.rs
-index 408d52b..ff867d7 100644
---- a/rclrs/src/lib.rs
-+++ b/rclrs/src/lib.rs
-@@ -196,7 +196,6 @@ mod subscription;
- mod time;
- mod time_source;
- mod timer;
--pub mod vendor;
- mod wait_set;
- mod worker;
- 
+ };
+ use futures_lite::future::race;
+-use ros_env::{
++use {
+     action_msgs::{msg::GoalInfo, srv::CancelGoal_Response},
+     unique_identifier_msgs::msg::UUID,
+ };
 diff --git a/rclrs/src/parameter.rs b/rclrs/src/parameter.rs
-index fe9fa09..9625c61 100644
+index 1ff3415..993ea62 100644
 --- a/rclrs/src/parameter.rs
 +++ b/rclrs/src/parameter.rs
 @@ -8,7 +8,7 @@ pub use range::*;
  use service::*;
  pub use value::*;
  
--use crate::vendor::rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue};
+-use ros_env::rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue};
 +use rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue};
  
  use crate::{
      call_string_getter_with_rcl_node, rcl_bindings::*, Node, RclrsError, ENTITY_LIFECYCLE_MUTEX,
 diff --git a/rclrs/src/parameter/range.rs b/rclrs/src/parameter/range.rs
-index 6a46d2f..356b7a3 100644
+index fbbe55e..c891f66 100644
 --- a/rclrs/src/parameter/range.rs
 +++ b/rclrs/src/parameter/range.rs
-@@ -1,7 +1,7 @@
- use crate::{
--    vendor::rcl_interfaces::msg::rmw::{FloatingPointRange, IntegerRange},
-     DeclarationError, ParameterValue, ParameterVariant,
- };
+@@ -1,5 +1,5 @@
+ use crate::{DeclarationError, ParameterValue, ParameterVariant};
+-use ros_env::rcl_interfaces::msg::rmw::{FloatingPointRange, IntegerRange};
 +use rcl_interfaces::msg::rmw::{FloatingPointRange, IntegerRange};
  use rosidl_runtime_rs::{seq, BoundedSequence};
  
  impl From<ParameterRange<f64>> for ParameterRanges {
 diff --git a/rclrs/src/parameter/service.rs b/rclrs/src/parameter/service.rs
-index 5d1c252..680a30e 100644
+index 79ea85e..26d416e 100644
 --- a/rclrs/src/parameter/service.rs
 +++ b/rclrs/src/parameter/service.rs
 @@ -3,7 +3,7 @@ use std::{
      sync::{Arc, Mutex},
  };
  
--use crate::vendor::rcl_interfaces::{msg::rmw::*, srv::rmw::*};
+-use ros_env::rcl_interfaces::{msg::rmw::*, srv::rmw::*};
 +use rcl_interfaces::{msg::rmw::*, srv::rmw::*};
  use rosidl_runtime_rs::Sequence;
  
- use super::ParameterMap;
+ use super::{OnChangeCallback, ParameterMap};
 diff --git a/rclrs/src/parameter/value.rs b/rclrs/src/parameter/value.rs
-index ff0c86c..e32d551 100644
+index e646b30..f811c5e 100644
 --- a/rclrs/src/parameter/value.rs
 +++ b/rclrs/src/parameter/value.rs
-@@ -3,10 +3,11 @@ use std::{ffi::CStr, sync::Arc};
- use crate::{
-     parameter::{ParameterRange, ParameterRanges},
-     rcl_bindings::*,
--    vendor::rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue},
+@@ -6,7 +6,7 @@ use crate::{
      ParameterValueError,
  };
  
+-use ros_env::rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue};
 +use rcl_interfaces::msg::rmw::{ParameterType, ParameterValue as RmwParameterValue};
-+
+ 
  /// A parameter value.
  ///
- /// Such a value can be specified in YAML format on the command line, or in a parameter file.
 diff --git a/rclrs/src/rcl_bindings.rs b/rclrs/src/rcl_bindings.rs
-index cf1743c..047a35c 100644
+index 8d557d8..047a35c 100644
 --- a/rclrs/src/rcl_bindings.rs
 +++ b/rclrs/src/rcl_bindings.rs
-@@ -11,39 +11,7 @@
+@@ -11,46 +11,7 @@
  #![allow(clippy::all)]
  #![allow(missing_docs)]
  
@@ -183,6 +143,13 @@ index cf1743c..047a35c 100644
 -                "/src/rcl_bindings_generated_kilted.rs",
 -                )
 -            );
+-    } else if #[cfg(ros_distro="lyrical")] {
+-        include!(
+-            concat!(
+-                env!("CARGO_MANIFEST_DIR"),
+-                "/src/rcl_bindings_generated_lyrical.rs",
+-                )
+-            );
 -    } else if #[cfg(ros_distro="rolling")] {
 -        include!(
 -            concat!(
@@ -199,35 +166,25 @@ index cf1743c..047a35c 100644
  pub const RMW_GID_STORAGE_SIZE: usize = rmw_gid_storage_size_constant;
  pub const RCL_ACTION_UUID_SIZE: usize = rcl_action_uuid_size_constant;
 diff --git a/rclrs/src/time.rs b/rclrs/src/time.rs
-index 1b8250d..e2b4b89 100644
+index 6bd526f..24c07ea 100644
 --- a/rclrs/src/time.rs
 +++ b/rclrs/src/time.rs
-@@ -1,4 +1,4 @@
--use crate::{rcl_bindings::*, vendor::builtin_interfaces};
-+use crate::rcl_bindings::*;
+@@ -1,5 +1,5 @@
+ use crate::rcl_bindings::*;
+-use ros_env::builtin_interfaces;
++use builtin_interfaces;
  use std::{
      num::TryFromIntError,
      ops::{Add, Sub},
-@@ -6,6 +6,8 @@ use std::{
-     time::Duration,
- };
- 
-+use builtin_interfaces;
-+
- /// Struct that represents time.
- #[derive(Clone, Debug)]
- pub struct Time {
 diff --git a/rclrs/src/time_source.rs b/rclrs/src/time_source.rs
-index bb2c52f..33bf7ed 100644
+index a3c27bb..33bf7ed 100644
 --- a/rclrs/src/time_source.rs
 +++ b/rclrs/src/time_source.rs
-@@ -1,9 +1,9 @@
- use crate::{
-     clock::{Clock, ClockSource, ClockType},
--    vendor::rosgraph_msgs::msg::Clock as ClockMsg,
+@@ -3,7 +3,7 @@ use crate::{
      IntoPrimitiveOptions, Node, NodeState, QoSProfile, ReadOnlyParameter, Subscription,
      QOS_PROFILE_CLOCK,
  };
+-use ros_env::rosgraph_msgs::msg::Clock as ClockMsg;
 +use rosgraph_msgs::msg::Clock as ClockMsg;
  use std::sync::{Arc, Mutex, RwLock, Weak};
  

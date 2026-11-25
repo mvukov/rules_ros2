@@ -66,7 +66,7 @@ class TestTalkerListenerLink(unittest.TestCase):
         msgs_rx = []
 
         sub = self.node.create_subscription(std_msgs.msg.String, 'topic',
-                                            lambda msg: msgs_rx.append(msg), 10)
+                                            msgs_rx.append, 10)
         try:
             # Wait until the talker transmits two messages over the ROS topic.
             end_time = time.time() + 10

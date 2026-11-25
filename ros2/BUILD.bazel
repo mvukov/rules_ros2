@@ -13,16 +13,15 @@ exports_files([
     "ament_setup.cc.tpl",
     "ament_setup.h.tpl",
     "bag.bzl",
-    "bag.py.tpl",
     "cc_defs.bzl",
     "interfaces.bzl",
     "launch.bzl",
-    "launch_exec.py.tpl",
     "launch_exec.sh.tpl",
     "plugin.bzl",
     "py_defs.bzl",
     "pytest_wrapper.py.tpl",
     "ros2_action.py",
+    "ros2_bag.py",
     "ros2_launch.py.tpl",
     "ros2_service.py",
     "ros2_topic.py",
@@ -39,9 +38,16 @@ string_flag(
     name = "rcl_logging_impl",
     build_setting_default = "spdlog",
     values = [
+        "noop",
         "spdlog",
         "syslog",
     ],
+)
+
+config_setting(
+    name = "rcl_logging_noop",
+    flag_values = {":rcl_logging_impl": "noop"},
+    visibility = ["//visibility:public"],
 )
 
 config_setting(

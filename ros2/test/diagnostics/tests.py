@@ -82,7 +82,7 @@ class TestHeartbeatDiagnostic(unittest.TestCase):
         try:
             # Start listener node and wait for messages to be received.
             diagnostics_listener = DiagnosticsListener()
-            thread = threading.Thread(target=lambda node: rclpy.spin(node),
+            thread = threading.Thread(target=rclpy.spin,
                                       args=(diagnostics_listener,))
             thread.start()
             event_triggered = diagnostics_listener.both_messages_received.wait(

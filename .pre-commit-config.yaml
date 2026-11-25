@@ -1,14 +1,14 @@
 default_language_version:
-  python: python3.10
-  node: 18.16.0
+  python: python3.12
+  node: 24.18.0
 
-default_stages: [commit]
+default_stages: [pre-commit]
 
 exclude: (.*\.patch)
 
 repos:
   - repo: https://github.com/keith/pre-commit-buildifier
-    rev: 8.2.1
+    rev: 10.1.0
     hooks:
       - id: buildifier
         args:
@@ -44,17 +44,17 @@ repos:
       - id: yapf
         args: [-i, --style, .style.yapf]
   - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.16.0
+    rev: v3.19.0
     hooks:
       - id: reorder-python-imports
         args: [--py37-plus]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.13
+    rev: v0.17.4
     hooks:
-      - id: ruff
+      - id: ruff-check
         args: [--fix, --show-fixes, --exit-non-zero-on-fix]
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v21.1.8
+    rev: v23.1.5
     hooks:
       - id: clang-format
         exclude_types: [json]

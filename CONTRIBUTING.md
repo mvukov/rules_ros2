@@ -7,8 +7,8 @@ you get your changes merged smoothly.
 
 1. **Fork** the repository and clone your fork locally.
 2. Open the repo in the provided dev container
-   (`.devcontainer/ubuntu_22_04_x86/`) — it comes with all required tooling
-   pre-installed (Bazel, C++ compiler, Python 3.10, Rust, Docker socket, and
+   (`.devcontainer/ubuntu_24_04_x86/`) — it comes with all required tooling
+   pre-installed (Bazel, C++ compilers, Python interpreter, Docker socket, and
    the right shared-memory settings). In VS Code, choose
    **Dev Containers: Reopen in Container** from the command palette.
 

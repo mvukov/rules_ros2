@@ -13,7 +13,6 @@ py_library(
         "@ros2_rclpy//:rclpy",
         requirement("packaging"),
         requirement("psutil"),
-        requirement("types-pkg-resources"),
     ],
 )
 
@@ -26,7 +25,6 @@ py_library(
         "@ros2_ament_index//:ament_index_python",
         requirement("catkin_pkg"),
         requirement("empy"),
-        requirement("types-pkg-resources"),
     ],
 )
 
@@ -40,6 +38,7 @@ py_library(
         "@ros2_rosidl_runtime_py//:rosidl_runtime_py",
         requirement("numpy"),
         requirement("pyyaml"),
+        requirement("argcomplete"),
     ],
 )
 

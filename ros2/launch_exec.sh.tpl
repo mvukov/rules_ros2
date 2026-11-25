@@ -12,10 +12,13 @@ if [ -n "${BAZEL_TEST:-}" ]; then
   fi
 fi
 
+# If set, runs the entry point with a unique ROS_DOMAIN_ID.
+run_test_isolated="{{run_test_isolated}}"
+
 ament_prefix_path="{{ament_prefix_path}}"
 if [ -z "${ament_prefix_path}" ]; then
   unset AMENT_PREFIX_PATH
-  exec {entry_point} "$@"
+  exec ${run_test_isolated:+"${run_test_isolated}"} {entry_point} "$@"
 else
-  AMENT_PREFIX_PATH="${ament_prefix_path}" exec {entry_point} "$@"
+  AMENT_PREFIX_PATH="${ament_prefix_path}" exec ${run_test_isolated:+"${run_test_isolated}"} {entry_point} "$@"
 fi

@@ -1,0 +1,80 @@
+# Keep in sync with the image used for CI in .github/workflows/main.yml.
+FROM mvukov/bazel-builder:commit-6011b9ded2b43b5bdc4122b3f78371c852e367f1
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && apt-get install -y --no-install-recommends \
+    bash-completion \
+    curl \
+    git \
+    gnupg \
+    libacl1-dev \
+    mc \
+    net-tools \
+    openssh-client \
+    python3 \
+    python3-pip \
+    sudo \
+    unzip
+
+# https://github.com/microsoft/vscode-dev-containers/tree/main/containers/docker-from-docker
+# Install Docker CE CLI
+RUN apt-get update \
+    && apt-get install -y apt-transport-https ca-certificates curl gnupg2 lsb-release \
+    && curl -fsSL https://download.docker.com/linux/$(lsb_release -is | tr '[:upper:]' '[:lower:]')/gpg | apt-key add - 2>/dev/null \
+    && echo "deb [arch=amd64] https://download.docker.com/linux/$(lsb_release -is | tr '[:upper:]' '[:lower:]') $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list \
+    && apt-get update \
+    && apt-get install -y docker-ce-cli
+
+# Install GitHub CLI
+# https://github.com/cli/cli/blob/trunk/docs/install_linux.md#debian
+RUN mkdir -p -m 755 /etc/apt/keyrings \
+    && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+    && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list \
+    && apt-get update \
+    && apt-get install -y gh
+
+RUN python3 -m pip install --break-system-packages \
+    pre-commit~=4.6
+
+# Create a non-root user
+# Taken from https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user#_creating-a-nonroot-user
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+RUN echo -e "#!/bin/sh\n\
+    sudoIf() { if [ \"\$(id -u)\" -ne 0 ]; then sudo \"\$@\"; else \"\$@\"; fi }\n\
+    SOCKET_GID=\$(stat -c '%g' /var/run/docker.sock) \n\
+    if [ \"${SOCKET_GID}\" != '0' ]; then\n\
+        if [ \"\$(cat /etc/group | grep :\${SOCKET_GID}:)\" = '' ]; then sudoIf groupadd --gid \${SOCKET_GID} docker-host; fi \n\
+        if [ \"\$(id ${USERNAME} | grep -E \"groups=.*(=|,)\${SOCKET_GID}\(\")\" = '' ]; then sudoIf usermod -aG \${SOCKET_GID} ${USERNAME}; fi\n\
+    fi\n\
+    exec \"\$@\"" > /usr/local/share/docker-init.sh \
+    && chmod +x /usr/local/share/docker-init.sh
+
+# Create the user and add them to sudoers.
+RUN if getent group $USER_GID > /dev/null; then \
+        EXISTING_GROUP=$(getent group $USER_GID | cut -d: -f1); \
+        if [ "$EXISTING_GROUP" != "$USERNAME" ]; then groupmod -n $USERNAME $EXISTING_GROUP; fi; \
+    else \
+        groupadd --gid $USER_GID $USERNAME; \
+    fi \
+    && if getent passwd $USER_UID > /dev/null; then \
+        EXISTING_USER=$(getent passwd $USER_UID | cut -d: -f1); \
+        if [ "$EXISTING_USER" != "$USERNAME" ]; then usermod -l $USERNAME -d /home/$USERNAME -m $EXISTING_USER; fi; \
+    else \
+        useradd --uid $USER_UID --gid $USER_GID -s /bin/bash -m $USERNAME; \
+    fi \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
+
+USER $USERNAME
+
+# VS Code overrides ENTRYPOINT and CMD when executing `docker run` by default.
+# Setting the ENTRYPOINT to docker-init.sh will configure non-root access to
+# the Docker socket if "overrideCommand": false is set in devcontainer.json.
+# The script will also execute CMD if you need to alter startup behaviors.
+ENTRYPOINT [ "/usr/local/share/docker-init.sh" ]
+CMD [ "sleep", "infinity" ]

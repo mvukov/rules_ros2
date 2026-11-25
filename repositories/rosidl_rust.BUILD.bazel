@@ -26,11 +26,17 @@ py_binary(
         requirement("empy"),
         "@ros2_rosidl//:rosidl_cmake",
         "@ros2_rosidl//:rosidl_parser",
+        "@ros2_rosidl//:rosidl_pycommon",
     ],
 )
 
 filegroup(
     name = "rosidl_generator_rs_templates",
-    srcs = glob(["rosidl_generator_rs/resource/*.em"]),
+    # NOTE: Top-level templates must come first: run_generator derives
+    # template_dir from the first file.
+    srcs = glob(["rosidl_generator_rs/resource/*.em"]) + glob(
+        ["rosidl_generator_rs/resource/**/*.em"],
+        exclude = ["rosidl_generator_rs/resource/*.em"],
+    ),
     visibility = ["//visibility:public"],
 )

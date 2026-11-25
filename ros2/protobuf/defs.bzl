@@ -31,9 +31,11 @@ load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
     "CppGeneratorAspectInfo",
     "Ros2InterfaceInfo",
+    "c_generator_aspect",
     "cc_generator_impl",
     "cpp_generator_aspect",
     "idl_adapter_aspect",
+    "type_description_aspect",
 )
 load("@com_google_protobuf//bazel/common:proto_info.bzl", "ProtoInfo")
 load("@com_google_protobuf//bazel/private:cc_proto_aspect.bzl", "cc_proto_aspect")
@@ -176,7 +178,13 @@ whose name matches the PascalCase form of the filename stem.
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
-            aspects = [proto_to_ros2_msg_aspect, idl_adapter_aspect, cpp_generator_aspect],
+            aspects = [
+                proto_to_ros2_msg_aspect,
+                idl_adapter_aspect,
+                type_description_aspect,
+                c_generator_aspect,
+                cpp_generator_aspect,
+            ],
             providers = [ProtoInfo],
         ),
     },
@@ -327,6 +335,8 @@ whose name matches the PascalCase form of the filename stem.
             aspects = [
                 proto_to_ros2_msg_aspect,
                 idl_adapter_aspect,
+                type_description_aspect,
+                c_generator_aspect,
                 cpp_generator_aspect,
                 cc_proto_aspect,
                 cpp_proto_ros2_converter_aspect,

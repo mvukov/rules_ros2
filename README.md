@@ -11,7 +11,7 @@ Besides Bazel, you will need a C++ compiler and a Python 3 interpreter.
 
 And no, you don't have to install any ROS 2 packages via `apt`.
 
-The code is developed and tested on Ubuntu 22.04 with Python 3.10.
+The code is developed and tested on Ubuntu 24.04 with Python 3.12.
 
 ## What works?
 
@@ -27,8 +27,9 @@ Available features:
 - Logging backends:
   - `spdlog` (default): `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=spdlog`
   - `syslog`: `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=syslog`
+  - `noop`: `--@com_github_mvukov_rules_ros2//ros2:rcl_logging_impl=noop`
 - Utilities:
-  - [`foxglove_bridge`](https://github.com/foxglove/ros-foxglove-bridge) for visualization and debugging
+  - [`foxglove_bridge`](https://github.com/foxglove/foxglove-sdk/tree/main/ros/src/foxglove_bridge) for visualization and debugging
   - `ros2_bag` for handling rosbags
   - `ros2_lifecycle` for handling node lifecycle
   - `ros2_node` for handling nodes
@@ -39,7 +40,7 @@ Available features:
 
 Please take a look at the [examples](examples) folder to get started.
 
-ROS 2 packages are by default locked to versions from [release-humble-20250721](https://github.com/ros2/ros2/releases/tag/release-humble-20250721).
+ROS 2 packages are by default locked to versions from [release-jazzy-20260618](https://github.com/ros2/ros2/releases/tag/release-jazzy-20260618).
 
 ## Notes
 
@@ -48,6 +49,29 @@ ROS 2 packages are by default locked to versions from [release-humble-20250721](
 > interface targets are not set correctly, code generation for ROS 2 seems to not
 > care about this. If the deps are not correctly set, you'll only see failures
 > during compilation of the generated code.
+
+> [!NOTE]
+> If you want to use the legacy WORKSPACE-based Bazel workflow, go to the [feature/jazzy_workspace](https://github.com/mvukov/rules_ros2/tree/feature/jazzy_workspace) branch.
+
+> [!NOTE]
+> If you want to use ROS 2 Humble, go to the [feature/humble](https://github.com/mvukov/rules_ros2/tree/feature/humble) branch.
+
+> [!NOTE]
+> The [curl](https://registry.bazel.build/modules/curl) module from BCR is by
+> default built with HTTP(S) support only. In ROS 2 Jazzy, `resource_retriever`
+> uses curl to fetch `file://` and `package://` resources. For example,
+> `foxglove_bridge` relies on it to serve assets (e.g. meshes) to Foxglove.
+> To enable this, add the following to your `.bazelrc`:
+>
+> ```
+> common --@curl//:http_only=false
+> ```
+
+## Support
+
+Found a bug or have a feature request? Please open a [GitHub issue](https://github.com/mvukov/rules_ros2/issues).
+
+For anything else, feel free to [reach out](https://www.linkedin.com/in/mvukov/).
 
 ## Alternatives
 

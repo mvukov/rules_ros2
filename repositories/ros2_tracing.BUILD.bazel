@@ -16,7 +16,7 @@ expand_template(
     out = "tracetools/include/tracetools/config.h",
     substitutions = {
         "#cmakedefine TRACETOOLS_DISABLED": "/* #cmakedefine TRACETOOLS_DISABLED */",
-        "#cmakedefine TRACETOOLS_LTTNG_ENABLED": "/* #cmakedefine TRACETOOLS_LTTNG_ENABLED */",
+        "#cmakedefine TRACETOOLS_TRACEPOINTS_EXCLUDED": "#define TRACETOOLS_TRACEPOINTS_EXCLUDED",
     },
     template = "tracetools/include/tracetools/config.h.in",
 )

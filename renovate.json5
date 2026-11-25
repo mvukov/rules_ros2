@@ -1,9 +1,13 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["config:base"],
+  extends: ["config:recommended"],
   dependencyDashboard: true,
   bazel: {
     ignorePaths: ["repositories/ros2_repositories_impl.bzl"],
+  },
+  // config:recommended ignores **/examples/** by default, and we want examples/MODULE.bazel to be updated.
+  "bazel-module": {
+    ignorePaths: [],
   },
   pip_requirements: {
     enabled: false,
@@ -14,44 +18,38 @@
   packageRules: [
     {
       matchManagers: ["bazel"],
-      matchPackagePatterns: ["*"],
+      matchPackageNames: ["*"],
       enabled: false,
+    },
+    {
+      // foxglove_bridge is released from the foxglove-sdk repo with ros-v<version> tags,
+      // next to e.g. sdk/v<version> tags of the SDK itself; only consider the former.
+      // NOTE: On an update, the prebuilt Foxglove SDK pins (foxglove_sdk_*) need to be
+      // manually updated to match the bridge's CMakeLists.txt.
+      matchManagers: ["bazel"],
+      matchDepNames: ["foxglove_bridge"],
+      enabled: true,
+      versioning: "regex:^ros-v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
     },
     {
       matchManagers: ["bazel"],
       matchDepNames: [
-        "bazel_features",
-        "bazel_skylib",
-        "boringssl",
-        "curl",
-        "googletest",
-        "eigen",
-        "fmt",
-        "foxglove_bridge",
-        "libyaml",
-        "lz4",
-        "nlohmann_json",
-        "pybind11",
         "ros2_rust",
         "ros2_rosidl_runtime_rs",
         "ros2_rosidl_rust",
-        "rules_foreign_cc",
-        "rules_license",
-        "rules_python",
-        "rules_rust",
-        "rules_rust_bindgen",
-        "spdlog",
-        "tinyxml2",
-        "websocketpp",
-        "yaml-cpp",
-        "zlib",
-        "zstd",
       ],
       enabled: true,
+      groupName: "ros2-rust-deps",
+    },
+    {
+      // websocketpp 0.8.2 doesn't compile against asio >= 1.33 (io_service was removed).
+      matchManagers: ["bazel-module"],
+      matchDepNames: ["asio"],
+      allowedVersions: "<1.33",
     },
     {
       matchManagers: ["pre-commit"],
-      matchPackagePatterns: ["*"],
+      matchPackageNames: ["*"],
       groupName: "pre-commit-deps",
     },
   ],

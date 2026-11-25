@@ -6,8 +6,10 @@ load("@bazel_skylib//lib:paths.bzl", "paths")
 load(
     "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
     "Ros2InterfaceInfo",
+    "c_generator_aspect",
     "cpp_generator_aspect",
     "idl_adapter_aspect",
+    "type_description_aspect",
 )
 load(
     "@com_github_mvukov_rules_ros2//ros2:plugin_aspects.bzl",
@@ -24,7 +26,6 @@ load(
     "expand_template_impl",
 )
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("@rules_python//python:defs.bzl", "PyInfo")
 
 _AMENT_SETUP_MODULE = "ament_setup"
 
@@ -171,14 +172,19 @@ def _ros2_ament_setup_rule_impl(ctx):
         if package_name not in registered_packages:
             outputs.append(_write_package_xml(ctx, prefix_path, package_name))
             registered_packages.append(package_name)
-        dynamic_library = ctx.actions.declare_file(
-            paths.join(prefix_path, "lib", "lib" + package_name + "__" + "rosidl_typesupport_cpp" + ".so"),
-        )
-        ctx.actions.symlink(
-            output = dynamic_library,
-            target_file = plugin.dynamic_library,
-        )
-        outputs.append(dynamic_library)
+
+        # The plugin library contains both the rosidl_typesupport_cpp and
+        # the rosidl_typesupport_introspection_cpp type supports. Expose it
+        # under both names, as tools like generic service clients load both.
+        for typesupport in ["rosidl_typesupport_cpp", "rosidl_typesupport_introspection_cpp"]:
+            dynamic_library = ctx.actions.declare_file(
+                paths.join(prefix_path, "lib", "lib" + package_name + "__" + typesupport + ".so"),
+            )
+            ctx.actions.symlink(
+                output = dynamic_library,
+                target_file = plugin.dynamic_library,
+            )
+            outputs.append(dynamic_library)
 
     idls_from_deps = depset(
         transitive = [
@@ -213,6 +219,22 @@ def _ros2_ament_setup_rule_impl(ctx):
             outputs.append(src_file)
             idl_manifest_contents.append(paths.join(subdir, src.basename))
 
+        # Generated IDL files in the output tree such that the rosbag mcap writer can include them in the metadata.
+        # mcap supports both IDL and msg definitions, but not combinations. Therefore, if any handwritten IDL files are
+        # present, the rosbag writer also needs any generated IDL files it depends on.
+        if idl.idl_files != None:
+            for idl in idl.idl_files:
+                subdir = idl.dirname.split("/")[-1]
+                src_file = ctx.actions.declare_file(
+                    paths.join(prefix_path, "share", package_name, subdir, idl.basename),
+                )
+                ctx.actions.symlink(
+                    output = src_file,
+                    target_file = idl,
+                )
+                outputs.append(src_file)
+                idl_manifest_contents.append(paths.join(subdir, src.basename))
+
         idl_manifest = ctx.actions.declare_file(
             paths.join(prefix_path, _RESOURCE_INDEX_PATH, "rosidl_interfaces", package_name),
         )
@@ -238,6 +260,17 @@ def _ros2_ament_setup_rule_impl(ctx):
     ]
 
 ros2_ament_setup = rule(
+    doc = """Assembles an ament index (package.xml, .msg/.srv/.action files, plugin manifests, ...) for use at runtime.
+
+Note on generated IDL files: rosidl code generation (and with it, the .idl files produced from
+.msg/.srv/.action definitions) only runs for a `ros2_interface_library` if something in the
+dependency graph actually generates language bindings for it (e.g. `cpp_ros2_interface_library`
+or `py_ros2_interface_library`), or the `ros2_interface_library` is listed directly in `idl_deps`.
+A `ros2_interface_library` that's only reachable through `deps`/`data` without any such
+lang-bindings target still gets its .msg/.srv/.action sources registered in the ament index, but
+no .idl file is generated or embedded for it. This mainly matters for the rosbag mcap writer,
+which uses the generated .idl files (falling back to .msg/.srv/.action with a warning otherwise).
+""",
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
@@ -247,8 +280,15 @@ ros2_ament_setup = rule(
             ],
         ),
         "idl_deps": attr.label_list(
+            doc = """Interface/plugin targets to additionally generate language bindings and IDL files for.
+
+Unlike `deps`, listing a `ros2_interface_library` here forces rosidl code generation to run for
+it directly, which is what makes its generated .idl file available (see the rule doc above).
+""",
             aspects = [
                 idl_adapter_aspect,
+                type_description_aspect,
+                c_generator_aspect,
                 cpp_generator_aspect,
                 ros2_idl_plugin_aspect,
             ],
@@ -257,95 +297,6 @@ ros2_ament_setup = rule(
     },
     implementation = _ros2_ament_setup_rule_impl,
 )
-
-def py_create_ament_setup(ament_prefix_path):
-    """ The client code must do `import os`. """
-    if ament_prefix_path == None:
-        return "os.unsetenv('AMENT_PREFIX_PATH')"
-    return "os.environ['AMENT_PREFIX_PATH'] = '{}'".format(ament_prefix_path)
-
-def _py_launcher_rule_impl(ctx):
-    output = ctx.actions.declare_file(ctx.attr.name + ".py")
-    ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path
-
-    substitutions = dicts.add(
-        ctx.attr.substitutions,
-        {
-            "{ament_setup}": py_create_ament_setup(ament_prefix_path),
-        },
-    )
-
-    expand_template_impl(
-        ctx,
-        template = ctx.file.template,
-        output = output,
-        substitutions = substitutions,
-        is_executable = False,
-    )
-
-    files = depset([output])
-    runfiles = ctx.runfiles(transitive_files = files)
-    runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
-    return [
-        DefaultInfo(
-            files = files,
-            runfiles = runfiles,
-        ),
-        PyInfo(
-            transitive_sources = files,
-        ),
-    ]
-
-py_launcher_rule = rule(
-    attrs = {
-        "ament_setup": attr.label(
-            mandatory = True,
-            providers = [Ros2AmentSetupInfo],
-        ),
-        "data": attr.label_list(allow_files = True),
-        "substitutions": attr.string_dict(mandatory = True),
-        "template": attr.label(
-            mandatory = True,
-            allow_single_file = True,
-        ),
-    },
-    implementation = _py_launcher_rule_impl,
-)
-
-def py_launcher(name, deps, idl_deps = None, **kwargs):
-    """Expands a Python file template with ament setup and returns the label of the expanded .py file.
-
-    The generated .py file is intended to be used as the `main` of a `py_binary` or `py_test` target.
-    Used by ros2launch, rosbag, and ros2 test rules.  The ament prefix path is substituted into the template
-    so the entry point script itself configures the ROS 2 plugin environment.
-
-    See `sh_exec_launcher` / `py_exec_launcher` for the exec-wrapper variants used by `ros2_cpp_binary` and
-    `ros2_py_binary`.
-
-    Args:
-        name: Name for the launcher rule target.
-        deps: Dependencies used for ament setup.
-        idl_deps: Additional IDL dependencies used as runtime plugins.
-        **kwargs: Forwarded to `py_launcher_rule` (typically `template`, `substitutions`, `data`, `tags`).
-
-    Returns:
-        The label of the expanded .py file (`name + ".py"`).
-    """
-    ament_setup = name + "_ament_setup"
-    testonly = kwargs.get("testonly", False)
-    ros2_ament_setup(
-        name = ament_setup,
-        deps = deps,
-        idl_deps = idl_deps,
-        tags = ["manual"],
-        testonly = testonly,
-    )
-    py_launcher_rule(
-        name = name,
-        ament_setup = ament_setup,
-        **kwargs
-    )
-    return name + ".py"
 
 def split_kwargs(**kwargs):
     """Split kwargs into those to be forwarded to the actual binary target and launcher target respectively."""
@@ -361,10 +312,17 @@ def _sh_exec_launcher_rule_impl(ctx):
     if ctx.attr.ament_setup != None:
         ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path or ""
 
+    # Like the entry point, relative to the runfiles directory, which is the
+    # working directory of the launcher. Empty if the entry point is run directly.
+    run_test_isolated = ""
+    if ctx.attr.run_test_isolated != None:
+        run_test_isolated = ctx.executable.run_test_isolated.short_path
+
     substitutions = dicts.add(
         ctx.attr.substitutions,
         {
             "{{ament_prefix_path}}": ament_prefix_path,
+            "{{run_test_isolated}}": run_test_isolated,
             "{{sh_bin}}": ctx.toolchains[SH_TOOLCHAIN].path,
         },
     )
@@ -381,6 +339,8 @@ def _sh_exec_launcher_rule_impl(ctx):
     runfiles = ctx.runfiles(transitive_files = files)
     if ctx.attr.ament_setup != None:
         runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
+    if ctx.attr.run_test_isolated != None:
+        runfiles = runfiles.merge(ctx.attr.run_test_isolated[DefaultInfo].default_runfiles)
     return [
         DefaultInfo(
             files = files,
@@ -394,6 +354,11 @@ sh_exec_launcher_rule = rule(
             providers = [Ros2AmentSetupInfo],
         ),
         "data": attr.label_list(allow_files = True),
+        "run_test_isolated": attr.label(
+            doc = "If set, the entry point is run via this executable, which reserves a unique ROS_DOMAIN_ID.",
+            executable = True,
+            cfg = "target",
+        ),
         "substitutions": attr.string_dict(mandatory = True),
         "template": attr.label(
             mandatory = True,
@@ -404,17 +369,23 @@ sh_exec_launcher_rule = rule(
     toolchains = [SH_TOOLCHAIN],
 )
 
-def sh_exec_launcher(name, ament_setup_deps = None, idl_deps = None, **kwargs):
+def sh_exec_launcher(name, is_test, ament_setup_deps = None, idl_deps = None, **kwargs):
     """Generates a shell script that sets up the ROS 2 environment and exec()s a binary.
 
-    Used by `ros2_cpp_binary`/`ros2_cpp_test` and `ros2_rust_test` to wrap a compiled executable.
-    The generated shell script is the `srcs` of an `sh_binary`/`sh_test` target.  Requires /bin/sh at
-    runtime.
+    Used by `ros2_cpp_binary`/`ros2_cpp_test`, `ros2_py_binary`/`ros2_py_test`, and `ros2_rust_test` to
+    wrap a compiled executable or a `py_binary`/`py_test`.  The generated shell script is the `srcs` of
+    an `sh_binary`/`sh_test` target.  Requires /bin/sh at runtime.
 
-    See `py_exec_launcher` for a Python equivalent that does not require /bin/sh.
+    For tests (`is_test = True`), the binary is run via `run_test_isolated` such that
+    tests running in parallel get unique ROS_DOMAIN_IDs. Under the Linux network sandbox
+    (--sandbox_default_allow_network=false), each test has its own network namespace, so
+    reservations don't see each other and every test may get the same ROS_DOMAIN_ID; that's
+    fine since the namespace already isolates the tests.
 
     Args:
         name: Name for the launcher rule target.
+        is_test: If true, the launcher wraps a test.  Independent of `testonly`, which only
+            restricts who may depend on the launcher.
         ament_setup_deps: Dependencies for ament setup.  If None, ament setup is skipped.
         idl_deps: Additional IDL dependencies used as runtime plugins.
         **kwargs: Forwarded to `sh_exec_launcher_rule` (e.g. `template`, `substitutions`, `data`, `tags`, `testonly`)
@@ -430,86 +401,13 @@ def sh_exec_launcher(name, ament_setup_deps = None, idl_deps = None, **kwargs):
             tags = ["manual"],
             testonly = testonly,
         )
+    run_test_isolated = None
+    if is_test:
+        run_test_isolated = "@com_github_mvukov_rules_ros2//ros2/domain_coordinator:run_test_isolated"
     sh_exec_launcher_rule(
         name = name,
         ament_setup = ament_setup,
-        **kwargs
-    )
-
-def _py_exec_launcher_rule_impl(ctx):
-    output = ctx.actions.declare_file(ctx.attr.name + ".py")
-    ament_prefix_path = ""
-    if ctx.attr.ament_setup != None:
-        ament_prefix_path = ctx.attr.ament_setup[Ros2AmentSetupInfo].ament_prefix_path or ""
-
-    substitutions = dicts.add(
-        ctx.attr.substitutions,
-        {
-            "{{ament_prefix_path}}": ament_prefix_path,
-        },
-    )
-
-    expand_template_impl(
-        ctx,
-        template = ctx.file.template,
-        output = output,
-        substitutions = substitutions,
-        is_executable = False,
-    )
-
-    files = depset([output])
-    runfiles = ctx.runfiles(transitive_files = files)
-    if ctx.attr.ament_setup != None:
-        runfiles = runfiles.merge(ctx.attr.ament_setup[DefaultInfo].default_runfiles)
-    return [
-        DefaultInfo(
-            files = files,
-            runfiles = runfiles,
-        ),
-    ]
-
-py_exec_launcher_rule = rule(
-    attrs = {
-        "ament_setup": attr.label(
-            providers = [Ros2AmentSetupInfo],
-        ),
-        "data": attr.label_list(allow_files = True),
-        "substitutions": attr.string_dict(mandatory = True),
-        "template": attr.label(
-            mandatory = True,
-            allow_single_file = True,
-        ),
-    },
-    implementation = _py_exec_launcher_rule_impl,
-)
-
-def py_exec_launcher(name, ament_setup_deps = None, idl_deps = None, **kwargs):
-    """Generates a Python script that sets up the ROS 2 environment and os.execve()s a binary.
-
-    Used by `ros2_py_binary`/`ros2_py_test` to wrap a `py_binary`.  The generated script is the `srcs`
-    of a `py_binary`/`py_test` target.  Unlike `sh_exec_launcher`, does not require /bin/sh, making it
-    compatible with distroless OCI images.
-
-    Args:
-        name: Name for the launcher rule target.
-        ament_setup_deps: Dependencies for ament setup.  If None, ament setup is skipped.
-        idl_deps: Additional IDL dependencies used as runtime plugins.
-        **kwargs: Forwarded to `py_exec_launcher_rule` (e.g. `template`, `substitutions`, `data`, `tags`, `testonly`).
-    """
-    testonly = kwargs.get("testonly", False)
-    ament_setup = None
-    if ament_setup_deps != None:
-        ament_setup = name + "_ament_setup"
-        ros2_ament_setup(
-            name = ament_setup,
-            deps = ament_setup_deps,
-            idl_deps = idl_deps,
-            tags = ["manual"],
-            testonly = testonly,
-        )
-    py_exec_launcher_rule(
-        name = name,
-        ament_setup = ament_setup,
+        run_test_isolated = run_test_isolated,
         **kwargs
     )
 

@@ -27,6 +27,7 @@ ros2_cpp_library(
     visibility = ["//visibility:public"],
     deps = [
         "@ros2_pluginlib//:pluginlib",
+        "@ros2_rclcpp//:rclcpp",
         "@ros2_rcpputils//:rcpputils",
         "@ros2_rcutils//:rcutils",
         "@yaml-cpp",
@@ -34,13 +35,13 @@ ros2_cpp_library(
 )
 
 ros2_plugin(
-    name = "rosbag2_storage_default_plugins",
+    name = "rosbag2_storage_sqlite3_plugin",
     srcs = glob([
-        "rosbag2_storage_default_plugins/src/**/*.cpp",
-        "rosbag2_storage_default_plugins/src/**/*.hpp",
+        "rosbag2_storage_sqlite3/src/**/*.cpp",
+        "rosbag2_storage_sqlite3/src/**/*.hpp",
     ]),
-    hdrs = glob(["rosbag2_storage_default_plugins/include/**/*.hpp"]),
-    includes = ["rosbag2_storage_default_plugins/include"],
+    hdrs = glob(["rosbag2_storage_sqlite3/include/**/*.hpp"]),
+    includes = ["rosbag2_storage_sqlite3/include"],
     plugin_specs = [
         {
             "class_name": "sqlite3",
@@ -58,6 +59,12 @@ ros2_plugin(
     ],
 )
 
+py_library(
+    name = "ros2bag_sqlite3_cli",
+    srcs = ["rosbag2_storage_sqlite3/ros2bag_sqlite3_cli/__init__.py"],
+    imports = ["rosbag2_storage_sqlite3"],
+)
+
 ros2_cpp_library(
     name = "mcap_vendor",
     srcs = ["mcap_vendor/src/main.cpp"],
@@ -71,10 +78,8 @@ ros2_plugin(
     name = "rosbag2_storage_mcap_plugin",
     srcs = [
         "rosbag2_storage_mcap/src/mcap_storage.cpp",
-        "rosbag2_storage_mcap/src/message_definition_cache.cpp",
     ],
     hdrs = [
-        "rosbag2_storage_mcap/include/rosbag2_storage_mcap/message_definition_cache.hpp",
         "rosbag2_storage_mcap/include/rosbag2_storage_mcap/visibility_control.hpp",
     ],
     defines = [
@@ -82,6 +87,8 @@ ros2_plugin(
         "ROSBAG2_STORAGE_MCAP_HAS_STORAGE_OPTIONS",
         "ROSBAG2_STORAGE_MCAP_WRITER_CREATES_DIRECTORY",
         "ROSBAG2_STORAGE_MCAP_OVERRIDE_SEEK_METHOD",
+        "ROSBAG2_STORAGE_MCAP_HAS_SET_READ_ORDER",
+        "ROSBAG2_STORAGE_MCAP_HAS_UPDATE_METADATA",
     ],
     includes = ["rosbag2_storage_mcap/include"],
     plugin_specs = [
@@ -100,6 +107,12 @@ ros2_plugin(
     ],
 )
 
+py_library(
+    name = "ros2bag_mcap_cli",
+    srcs = ["rosbag2_storage_mcap/ros2bag_mcap_cli/__init__.py"],
+    imports = ["rosbag2_storage_mcap"],
+)
+
 ros2_cpp_library(
     name = "rosbag2_cpp",
     srcs = glob([
@@ -113,11 +126,13 @@ ros2_cpp_library(
         "rosbag2_cpp/src/rosbag2_cpp/clocks/time_controller_clock.cpp",
         "rosbag2_cpp/src/rosbag2_cpp/converter.cpp",
         "rosbag2_cpp/src/rosbag2_cpp/info.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/message_definitions/local_message_definition_source.cpp",
         "rosbag2_cpp/src/rosbag2_cpp/reader.cpp",
         "rosbag2_cpp/src/rosbag2_cpp/readers/sequential_reader.cpp",
         "rosbag2_cpp/src/rosbag2_cpp/reindexer.cpp",
         "rosbag2_cpp/src/rosbag2_cpp/rmw_implemented_serialization_format_converter.cpp",
         "rosbag2_cpp/src/rosbag2_cpp/serialization_format_converter_factory.cpp",
+        "rosbag2_cpp/src/rosbag2_cpp/service_utils.cpp",
         "rosbag2_cpp/src/rosbag2_cpp/types/introspection_message.cpp",
         "rosbag2_cpp/src/rosbag2_cpp/typesupport_helpers.cpp",
         "rosbag2_cpp/src/rosbag2_cpp/writer.cpp",
@@ -125,8 +140,8 @@ ros2_cpp_library(
     ],
     hdrs = glob(["rosbag2_cpp/include/**/*.hpp"]),
     data = [
-        ":rosbag2_storage_default_plugins",
         ":rosbag2_storage_mcap_plugin",
+        ":rosbag2_storage_sqlite3_plugin",
     ],
     includes = ["rosbag2_cpp/include"],
     visibility = ["//visibility:public"],
@@ -199,7 +214,10 @@ ros2_interface_library(
         "rosbag2_interfaces/srv/*.srv",
     ]),
     visibility = ["//visibility:public"],
-    deps = ["@ros2_rcl_interfaces//:builtin_interfaces"],
+    deps = [
+        "@ros2_rcl_interfaces//:builtin_interfaces",
+        "@ros2_rcl_interfaces//:service_msgs",
+    ],
 )
 
 cpp_ros2_interface_library(
@@ -222,6 +240,9 @@ ros2_cpp_library(
     ]),
     hdrs = glob(["rosbag2_transport/include/**/*.hpp"]),
     data = [":rosbag2_compression_zstd"],
+    implementation_deps = [
+        "@ros2_rclcpp//:rclcpp_components",
+    ],
     includes = ["rosbag2_transport/include"],
     visibility = ["//visibility:public"],
     deps = [
@@ -269,6 +290,7 @@ ros2_cpp_binary(
     deps = [
         ":pybind11",
         ":rosbag2_cpp",
+        ":rosbag2_py_info",
         ":rosbag2_storage",
     ],
 )
@@ -287,6 +309,28 @@ ros2_cpp_binary(
     ],
 )
 
+ros2_cpp_library(
+    name = "rosbag2_py_info",
+    srcs = [
+        "rosbag2_py/src/rosbag2_py/format_bag_metadata.cpp",
+        "rosbag2_py/src/rosbag2_py/format_service_info.cpp",
+        "rosbag2_py/src/rosbag2_py/info_sorting_method.cpp",
+    ],
+    hdrs = [
+        "rosbag2_py/src/rosbag2_py/format_bag_metadata.hpp",
+        "rosbag2_py/src/rosbag2_py/format_service_info.hpp",
+        "rosbag2_py/src/rosbag2_py/info_sorting_method.hpp",
+        "rosbag2_py/src/rosbag2_py/service_event_info.hpp",
+    ],
+    implementation_deps = [
+        ":rosbag2_storage",
+    ],
+    includes = ["rosbag2_py/src/rosbag2_py"],
+    deps = [
+        ":rosbag2_cpp",
+    ],
+)
+
 ros2_cpp_binary(
     name = "rosbag2_py/rosbag2_py/_info.so",
     srcs = ["rosbag2_py/src/rosbag2_py/_info.cpp"],
@@ -296,6 +340,7 @@ ros2_cpp_binary(
     deps = [
         ":pybind11",
         ":rosbag2_cpp",
+        ":rosbag2_py_info",
         ":rosbag2_storage",
     ],
 )
@@ -328,11 +373,37 @@ ros2_cpp_binary(
     ],
 )
 
+ros2_cpp_binary(
+    name = "rosbag2_py/rosbag2_py/_compression_options.so",
+    srcs = ["rosbag2_py/src/rosbag2_py/_compression_options.cpp"],
+    copts = ["-fvisibility=hidden"],
+    linkopts = ["-fvisibility=hidden"],
+    linkshared = True,
+    deps = [
+        ":pybind11",
+        ":rosbag2_compression",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "rosbag2_py/rosbag2_py/_message_definitions.so",
+    srcs = ["rosbag2_py/src/rosbag2_py/_message_definitions.cpp"],
+    copts = ["-fvisibility=hidden"],
+    linkopts = ["-fvisibility=hidden"],
+    linkshared = True,
+    deps = [
+        ":pybind11",
+        ":rosbag2_cpp",
+    ],
+)
+
 py_library(
     name = "rosbag2_py",
     srcs = ["rosbag2_py/rosbag2_py/__init__.py"],
     data = [
+        ":rosbag2_py/rosbag2_py/_compression_options.so",
         ":rosbag2_py/rosbag2_py/_info.so",
+        ":rosbag2_py/rosbag2_py/_message_definitions.so",
         ":rosbag2_py/rosbag2_py/_reader.so",
         ":rosbag2_py/rosbag2_py/_reindexer.so",
         ":rosbag2_py/rosbag2_py/_storage.so",
@@ -353,6 +424,8 @@ py_library(
     imports = ["ros2bag"],
     visibility = ["//visibility:public"],
     deps = [
+        ":ros2bag_mcap_cli",
+        ":ros2bag_sqlite3_cli",
         ":rosbag2_py",
         "@ros2cli",
         requirement("pyyaml"),

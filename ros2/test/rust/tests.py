@@ -44,8 +44,7 @@ class TestRustPublisher(unittest.TestCase):
         rclpy.init()
         try:
             subscriber = Subscriber()
-            thread = threading.Thread(target=lambda node: rclpy.spin(node),
-                                      args=(subscriber,))
+            thread = threading.Thread(target=rclpy.spin, args=(subscriber,))
             thread.start()
             event_triggered = subscriber.messages_received.wait(timeout=10.0)
             self.assertTrue(event_triggered,

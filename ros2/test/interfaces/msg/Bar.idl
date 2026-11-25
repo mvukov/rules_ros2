@@ -1,0 +1,7 @@
+module test_messages {
+  module msg {
+    struct Bar {
+      test_messages::msg::Baz baz;
+    };
+  };
+};

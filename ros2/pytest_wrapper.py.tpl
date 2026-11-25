@@ -7,7 +7,7 @@ import sys
 import coverage
 import pytest
 
-{ament_setup}
+LAUNCH_FILE = '{launch_file}'
 
 
 def start_coverage_session() -> coverage.Coverage:
@@ -31,14 +31,6 @@ def finalize_coverage_session(coverage_session: coverage.Coverage) -> None:
 
 
 def main() -> None:
-    bazel_test_output_dir = os.environ.get('TEST_UNDECLARED_OUTPUTS_DIR')
-    if bazel_test_output_dir is None:
-        bazel_test_output_dir = os.environ.get('TEST_TMPDIR')
-    if 'ROS_HOME' not in os.environ:
-        os.environ['ROS_HOME'] = bazel_test_output_dir
-    if 'ROS_LOG_DIR' not in os.environ:
-        os.environ['ROS_LOG_DIR'] = bazel_test_output_dir
-
     bazel_coverage = os.getenv('COVERAGE') == '1'
 
     coverage_session = None
@@ -48,7 +40,7 @@ def main() -> None:
     args = [
         '-ra', '-vv', '-p', 'launch_pytest.plugin',
         f'--junitxml={os.environ["XML_OUTPUT_FILE"]}'
-    ] + sys.argv[1:]
+    ] + sys.argv[1:] + [LAUNCH_FILE]
     pytest_exit_code = pytest.main(args)
 
     if coverage_session:
