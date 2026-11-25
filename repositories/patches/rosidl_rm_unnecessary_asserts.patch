@@ -1,11 +1,11 @@
 diff --git a/rosidl_adapter/rosidl_adapter/action/__init__.py b/rosidl_adapter/rosidl_adapter/action/__init__.py
-index 6e8719b..3f49661 100644
+index 53e94a0..b0bcfbb 100644
 --- a/rosidl_adapter/rosidl_adapter/action/__init__.py
 +++ b/rosidl_adapter/rosidl_adapter/action/__init__.py
-@@ -17,19 +17,16 @@ from rosidl_adapter.resource import expand_template
+@@ -20,19 +20,16 @@ from rosidl_adapter.resource import ActionData, expand_template
  
- 
- def convert_action_to_idl(package_dir, package_name, input_file, output_dir):
+ def convert_action_to_idl(package_dir: Path, package_name: str, input_file: Path,
+                           output_dir: Path) -> Path:
 -    assert package_dir.is_absolute()
      assert not input_file.is_absolute()
      assert input_file.suffix == '.action'
@@ -19,17 +19,17 @@ index 6e8719b..3f49661 100644
      output_file = output_dir / input_file.with_suffix('.idl').name
      abs_output_file = output_file.absolute()
 -    print(f'Writing output file: {abs_output_file}')
-     data = {
+     data: ActionData = {
          'pkg_name': package_name,
          'relative_input_file': input_file.as_posix(),
 diff --git a/rosidl_adapter/rosidl_adapter/msg/__init__.py b/rosidl_adapter/rosidl_adapter/msg/__init__.py
-index b02b7b5..4e26df1 100644
+index 1798ba4..4a82f5f 100644
 --- a/rosidl_adapter/rosidl_adapter/msg/__init__.py
 +++ b/rosidl_adapter/rosidl_adapter/msg/__init__.py
-@@ -17,19 +17,16 @@ from rosidl_adapter.resource import expand_template
+@@ -21,19 +21,16 @@ from rosidl_adapter.resource import expand_template, MsgData
  
- 
- def convert_msg_to_idl(package_dir, package_name, input_file, output_dir):
+ def convert_msg_to_idl(package_dir: Path, package_name: str, input_file: Path,
+                        output_dir: Path) -> Path:
 -    assert package_dir.is_absolute()
      assert not input_file.is_absolute()
      assert input_file.suffix == '.msg'
@@ -43,17 +43,17 @@ index b02b7b5..4e26df1 100644
      output_file = output_dir / input_file.with_suffix('.idl').name
      abs_output_file = output_file.absolute()
 -    print(f'Writing output file: {abs_output_file}')
-     data = {
+     data: MsgData = {
          'pkg_name': package_name,
          'relative_input_file': input_file.as_posix(),
 diff --git a/rosidl_adapter/rosidl_adapter/srv/__init__.py b/rosidl_adapter/rosidl_adapter/srv/__init__.py
-index c57b701..3a58171 100644
+index 710a97d..9656e08 100644
 --- a/rosidl_adapter/rosidl_adapter/srv/__init__.py
 +++ b/rosidl_adapter/rosidl_adapter/srv/__init__.py
-@@ -17,19 +17,16 @@ from rosidl_adapter.resource import expand_template
+@@ -20,19 +20,16 @@ from rosidl_adapter.resource import expand_template, SrvData
  
- 
- def convert_srv_to_idl(package_dir, package_name, input_file, output_dir):
+ def convert_srv_to_idl(package_dir: Path, package_name: str, input_file: Path,
+                        output_dir: Path) -> Path:
 -    assert package_dir.is_absolute()
      assert not input_file.is_absolute()
      assert input_file.suffix == '.srv'
@@ -67,6 +67,6 @@ index c57b701..3a58171 100644
      output_file = output_dir / input_file.with_suffix('.idl').name
      abs_output_file = output_file.absolute()
 -    print(f'Writing output file: {abs_output_file}')
-     data = {
+     data: SrvData = {
          'pkg_name': package_name,
          'relative_input_file': input_file.as_posix(),

@@ -42,7 +42,7 @@ ros2_cpp_test(
     name = "tests",
     size = "medium",
     srcs = ["@foxglove_bridge//:tests/smoke_test.cpp"],
-    env = {"ROS_DISTRO": "jazzy"},
+    env = {"ROS_DISTRO": "lyrical"},
     flaky = True,
     idl_deps = [
         "@ros2_common_interfaces//:std_msgs",

@@ -16,7 +16,7 @@ ros2_c_library(
 
 ros2_cpp_library(
     name = "rcl_logging_noop",
-    srcs = ["rcl_logging_noop/src/rcl_logging_noop/rcl_logging_noop.cpp"],
+    srcs = ["rcl_logging_noop/src/rcl_logging_noop.cpp"],
     visibility = ["//visibility:public"],
     deps = [
         ":rcl_logging_interface",

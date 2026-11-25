@@ -49,9 +49,9 @@ def generate_test_description():
     })
 
 
-STORAGE_IDS_TO_BAG_NAMES = {
-    'mcap': 'bag_0.mcap',
-    'sqlite3': 'bag_0.db3',
+STORAGE_IDS_TO_BAG_FILE_EXTENSIONS = {
+    'mcap': '.mcap',
+    'sqlite3': '.db3',
 }
 
 
@@ -64,16 +64,21 @@ class TestRecorder(unittest.TestCase):
             allowable_exit_codes=[launch_testing.asserts.EXIT_OK],
             process=recorder)
         bag_dir = os.path.join(os.environ['TEST_TMPDIR'], 'bag')
-        bag_db_file = os.path.join(bag_dir,
-                                   STORAGE_IDS_TO_BAG_NAMES[get_storage_id()])
         bag_metadata_file = os.path.join(bag_dir, 'metadata.yaml')
-
-        self.assertTrue(os.path.exists(bag_db_file))
         self.assertTrue(os.path.exists(bag_metadata_file))
 
         with open(bag_metadata_file, encoding='utf-8') as stream:
             bag_metadata = yaml.load(
                 stream, Loader=yaml.Loader)['rosbag2_bagfile_information']
+
+        # NOTE: Since rosbag2 0.33 (Lyrical) bag file names contain a
+        # timestamp, hence take them from the metadata.
+        bag_files = bag_metadata['relative_file_paths']
+        self.assertGreaterEqual(len(bag_files), 1)
+        extension = STORAGE_IDS_TO_BAG_FILE_EXTENSIONS[get_storage_id()]
+        for bag_file in bag_files:
+            self.assertTrue(bag_file.endswith(extension))
+            self.assertTrue(os.path.exists(os.path.join(bag_dir, bag_file)))
 
         # TODO(mvukov) Investigate why 8 and not 9 like before.
         min_num_received_msgs = 8

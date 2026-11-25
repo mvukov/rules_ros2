@@ -2,8 +2,8 @@
 """
 
 load(
-    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
-    "expand_template",
+    "@com_github_mvukov_rules_ros2//repositories:version_header.bzl",
+    "package_version_template",
 )
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
@@ -27,13 +27,15 @@ cc_library(
     ],
 )
 
-expand_template(
+package_version_template(
     name = "config_h",
     out = "orocos_kdl/src/config.h",
+    package_xml = "orocos_kdl/package.xml",
     substitutions = {
-        "@KDL_VERSION_MAJOR@": "1",
-        "@KDL_VERSION_MINOR@": "5",
-        "@KDL_VERSION_PATCH@": "1",
+        "@KDL_VERSION_MAJOR@": "{major}",
+        "@KDL_VERSION_MINOR@": "{minor}",
+        "@KDL_VERSION_PATCH@": "{patch}",
+        "@KDL_VERSION@": "{version}",
         "#cmakedefine HAVE_STL_CONTAINER_INCOMPLETE_TYPES": "#define HAVE_STL_CONTAINER_INCOMPLETE_TYPES",
         "#cmakedefine KDL_USE_NEW_TREE_INTERFACE": "//#define KDL_USE_NEW_TREE_INTERFACE",
     },

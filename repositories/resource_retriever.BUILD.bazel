@@ -17,8 +17,13 @@ ament_version_header(
 
 cc_library(
     name = "resource_retriever",
-    srcs = ["resource_retriever/src/retriever.cpp"],
-    hdrs = glob(["resource_retriever/include/resource_retriever/*.hpp"]) + [
+    srcs = [
+        "resource_retriever/src/plugins/curl_retriever.cpp",
+        "resource_retriever/src/plugins/filesystem_retriever.cpp",
+        "resource_retriever/src/plugins/retriever_plugin.cpp",
+        "resource_retriever/src/retriever.cpp",
+    ],
+    hdrs = glob(["resource_retriever/include/resource_retriever/**/*.hpp"]) + [
         ":resource_retriever_version_h",
     ],
     includes = ["resource_retriever/include"],

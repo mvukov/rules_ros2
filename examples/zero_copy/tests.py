@@ -32,7 +32,11 @@ def generate_test_description():
     return (launch.LaunchDescription([
         launch.actions.ExecuteProcess(
             name='iceoryx_roudi',
-            cmd=[zero_copy.roudi.ROUDI_PATH],
+            cmd=[
+                zero_copy.roudi.ROUDI_PATH,
+                '-c',
+                'zero_copy/roudi.toml',
+            ],
         ),
         launch.actions.SetEnvironmentVariable(name='CYCLONEDDS_URI',
                                               value='zero_copy/cyclonedds.xml'),

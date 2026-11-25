@@ -7,7 +7,7 @@ This repo provides functionality to build and use ROS 2 with Bazel.
 ## Prerequisites
 
 You will need to install Bazel, see [here](https://docs.bazel.build/versions/master/install.html).
-Besides Bazel, you will need a C++ compiler and a Python 3 interpreter.
+Besides Bazel, you will need a C++ compiler with C++20 support and a Python 3 interpreter.
 
 And no, you don't have to install any ROS 2 packages via `apt`.
 
@@ -40,7 +40,7 @@ Available features:
 
 Please take a look at the [examples](examples) folder to get started.
 
-ROS 2 packages are by default locked to versions from [release-jazzy-20260618](https://github.com/ros2/ros2/releases/tag/release-jazzy-20260618).
+ROS 2 packages are by default locked to versions from [release-lyrical-20260807](https://github.com/ros2/ros2/releases/tag/release-lyrical-20260807).
 
 ## Notes
 

@@ -1,17 +1,17 @@
 """ Builds urdf.
 """
 
+load(
+    "@com_github_mvukov_rules_ros2//repositories:version_header.bzl",
+    "package_version_template",
+)
 load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
 load("@com_github_mvukov_rules_ros2//ros2:plugin.bzl", "ros2_plugin")
-load(
-    "@com_github_mvukov_rules_ros2//third_party:expand_template.bzl",
-    "expand_template",
-)
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
     name = "urdf_parser_plugin",
-    hdrs = ["urdf_parser_plugin/include/urdf_parser_plugin/parser.h"],
+    hdrs = glob(["urdf_parser_plugin/include/urdf_parser_plugin/*"]),
     includes = ["urdf_parser_plugin/include"],
     visibility = ["//visibility:public"],
     deps = ["@ros2_urdfdom_headers//:urdfdom_headers"],
@@ -20,11 +20,7 @@ cc_library(
 ros2_cpp_library(
     name = "urdf",
     srcs = ["urdf/src/model.cpp"],
-    hdrs = [
-        "urdf/include/urdf/model.h",
-        "urdf/include/urdf/visibility_control.hpp",
-        ":urdfdom_compatibility_h",
-    ],
+    hdrs = glob(["urdf/include/urdf/*"]) + [":urdfdom_compatibility_h"],
     data = [
         ":urdf_xml_parser_plugin",
     ],
@@ -38,13 +34,14 @@ ros2_cpp_library(
     ],
 )
 
-expand_template(
+package_version_template(
     name = "urdfdom_compatibility_h",
     out = "urdf/urdfdom_compatibility.h",
+    package_xml = "@ros2_urdfdom_headers//:package.xml",
     substitutions = {
-        "@URDFDOM_HEADERS_MAJOR_VERSION@": "1",
-        "@URDFDOM_HEADERS_MINOR_VERSION@": "0",
-        "@URDFDOM_HEADERS_REVISION_VERSION@": "1.0.6",
+        "@URDFDOM_HEADERS_MAJOR_VERSION@": "{major}",
+        "@URDFDOM_HEADERS_MINOR_VERSION@": "{minor}",
+        "@URDFDOM_HEADERS_REVISION_VERSION@": "{patch}",
     },
     template = "urdf/urdfdom_compatibility.h.in",
 )

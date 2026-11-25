@@ -14,6 +14,12 @@ ros2_c_library(
         "@libyaml",
     ],
     includes = ["rcl_yaml_param_parser/include"],
+    # parse.c uses POSIX.1-2008 locale functions (newlocale, uselocale), which
+    # are hidden by glibc under strict -std=c17.
+    local_defines = select({
+        "@platforms//os:linux": ["_GNU_SOURCE"],
+        "//conditions:default": [],
+    }),
     visibility = ["//visibility:public"],
     deps = [
         "@ros2_rcutils//:rcutils",

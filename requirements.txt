@@ -9,3 +9,4 @@ psutil
 pytest~=7.4
 pytest-cov
 pyyaml
+typing-extensions

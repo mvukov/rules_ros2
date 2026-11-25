@@ -23,7 +23,9 @@
 #include "rosbag2_transport/recorder.hpp"
 #include "std_msgs/msg/string.hpp"
 
-constexpr auto kTopicName = "topic";
+// NOTE: Since rosbag2 0.33 (Lyrical) the recorder matches fully qualified
+// topic names only.
+constexpr auto kTopicName = "/topic";
 
 class BagSplitEventListener : public rclcpp::Node {
  public:
