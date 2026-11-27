@@ -19,6 +19,7 @@ For each annotated field `<name>` the generator therefore emits:
 3. `uint32 <name>_actual_size` — the number of valid elements in the buffer.
 
 The converter uses `<name>_actual_size` in **both directions**:
+
 - `ToRos`: sets `<name>_actual_size` from the proto field's element count
   (clamped to `N`).
 - `ToProto`: slices the fixed buffer to `<name>_actual_size` elements before
@@ -114,12 +115,12 @@ uint32 <name>_actual_size
 
 Concretely, the array-suffix sites become:
 
-| Field kind                | Before                      | After (array_size > 0)                              |
-| ------------------------- | --------------------------- | --------------------------------------------------- |
-| `TYPE_MESSAGE` (repeated) | `ros2_type + '[]'`          | `ros2_type + f'[{array_size}]'`                     |
-| `TYPE_ENUM` (repeated)    | `'int32[]'`                 | `f'int32[{array_size}]'`                            |
-| scalar `repeated`         | `ros2_type + '[]'`          | `ros2_type + f'[{array_size}]'`                     |
-| `TYPE_BYTES` (singular)   | `'uint8[]'`                 | `f'uint8[{array_size}]'`                            |
+| Field kind                | Before             | After (array_size > 0)          |
+| ------------------------- | ------------------ | ------------------------------- |
+| `TYPE_MESSAGE` (repeated) | `ros2_type + '[]'` | `ros2_type + f'[{array_size}]'` |
+| `TYPE_ENUM` (repeated)    | `'int32[]'`        | `f'int32[{array_size}]'`        |
+| scalar `repeated`         | `ros2_type + '[]'` | `ros2_type + f'[{array_size}]'` |
+| `TYPE_BYTES` (singular)   | `'uint8[]'`        | `f'uint8[{array_size}]'`        |
 
 Note: enum value constants (`KIND_NONE=0`, etc.) are emitted in the first pass
 before the field loop; the `MAX_SIZE` constant is emitted inline per-field in the
@@ -144,6 +145,7 @@ for annotated fields. The function signature is unchanged; it already receives
 full `field` objects with `field.options`.
 
 In every snippet below, `n` is computed with `std::min` in **both** directions:
+
 - `ToRos` clamps the proto element count to the buffer capacity.
 - `ToProto` clamps `_actual_size` to the buffer capacity so a corrupt ROS field
   cannot cause an out-of-bounds read.
@@ -228,6 +230,7 @@ message SizedBytes {
 ```
 
 Expected `.msg`:
+
 ```
 uint32 HASH_MAX_SIZE=32
 uint8[32] hash
@@ -250,6 +253,7 @@ message SizedArray {
 ```
 
 Expected `.msg`:
+
 ```
 uint32 COORDS_MAX_SIZE=3
 float32[3] coords
@@ -277,6 +281,7 @@ message SizedEnum {
 ```
 
 Expected `.msg`:
+
 ```
 # Kind constants
 int32 KIND_NONE=0
@@ -483,6 +488,7 @@ class SizedArrayConverterTests:
 ### 8. `ros2/protobuf/README.md`
 
 Add a **Sized arrays** section documenting:
+
 - The `(ros2.msg.array_size)` option, import path, and field number.
 - The sized-container model (capacity vs. actual count).
 - The emitted triple (`MAX_SIZE` constant, `T[N]` field, `_actual_size` field).
