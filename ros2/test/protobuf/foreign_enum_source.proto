@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package ros2.test.protobuf;
+
+enum ForeignColor {
+  FOREIGN_COLOR_UNKNOWN = 0;
+  FOREIGN_COLOR_RED = 1;
+  FOREIGN_COLOR_GREEN = 2;
+}

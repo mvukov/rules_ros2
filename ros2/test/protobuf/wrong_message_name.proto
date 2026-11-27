@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package ros2.test.protobuf;
+
+message NotTheRightName {
+  bool x = 1;
+}

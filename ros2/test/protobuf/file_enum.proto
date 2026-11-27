@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package ros2.test.protobuf;
+
+enum Status {
+  STATUS_UNKNOWN = 0;
+  STATUS_ACTIVE = 1;
+  STATUS_INACTIVE = 2;
+}
+
+message FileEnum {
+  Status status = 1;
+  repeated Status tags = 2;
+}

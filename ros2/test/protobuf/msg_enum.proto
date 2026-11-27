@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package ros2.test.protobuf;
+
+message MsgEnum {
+  enum Kind {
+    KIND_NONE = 0;
+    KIND_TYPE_A = 1;
+    KIND_TYPE_B = 2;
+  }
+
+  Kind kind = 1;
+  repeated Kind extra_kinds = 2;
+}
